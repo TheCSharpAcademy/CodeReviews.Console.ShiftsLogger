@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ShiftLoggerApi.Data;
+using ShiftLoggerApi.Dtos;
 using ShiftLoggerApi.Models;
 
 namespace ShiftLoggerApi.Controllers
@@ -17,28 +18,28 @@ namespace ShiftLoggerApi.Controllers
 
         // GET: api/Shift
         [HttpGet]
-        public async Task<IEnumerable<Shift>> GetShiftsAsync()
+        public async Task<IEnumerable<ShiftReadDto>> GetShiftsAsync()
         {
             return await _dataAccess.GetShiftsAsync();
         }
 
         // GET: api/Shift/5
         [HttpGet("{id}", Name = "Get")]
-        public async Task<Shift> GetShiftByIdAsync(int id)
+        public async Task<ShiftReadDto> GetShiftByIdAsync(int id)
         {
             return await _dataAccess.GetShiftByIdAsync(id);
         }
 
         // POST: api/Shift
         [HttpPost]
-        public async Task PostAsync([FromBody] Shift shift)
+        public async Task PostAsync([FromBody] ShiftWriteDto shift)
         {
             await _dataAccess.AddShiftAsync(shift);
         }
 
         // PUT: api/Shift/5
         [HttpPut("{id}")]
-        public async Task PutAsync(int id, [FromBody] Shift shift)
+        public async Task PutAsync(int id, [FromBody] ShiftUpdateDto shift)
         {
             await _dataAccess.UpdateShiftAsync(id, shift);
         }

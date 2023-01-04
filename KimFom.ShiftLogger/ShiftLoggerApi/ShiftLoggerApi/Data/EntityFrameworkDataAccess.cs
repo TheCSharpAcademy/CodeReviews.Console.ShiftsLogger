@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftLoggerApi.DataContext;
-using ShiftLoggerApi.Models;
+using ShiftLoggerApi.Dtos;
 
 namespace ShiftLoggerApi.Data;
 
@@ -12,28 +12,34 @@ public class EntityFrameworkDataAccess : IDataAccess
     {
         _shiftContext = shiftContext;
     }
-    
-    public async Task<List<Shift>> GetShiftsAsync()
+
+    public async Task<List<ShiftReadDto>> GetShiftsAsync()
     {
-        return await _shiftContext.Shifts.ToListAsync();
+        var shifts = await _shiftContext.Shifts.ToListAsync();
+        var shiftReadDtos = MapDto.MapToReadDtoList(shifts);
+
+        return shiftReadDtos;
     }
 
-    public async Task<Shift> GetShiftByIdAsync(int id)
+    public async Task<ShiftReadDto> GetShiftByIdAsync(int id)
     {
-        return await _shiftContext.Shifts.FirstAsync(x => x.Id == id);
+        var shift = await _shiftContext.Shifts.FirstAsync(x => x.Id == id);
+        var shiftReadDto = MapDto.MapToReadDto(shift);
+
+        return shiftReadDto;
     }
 
-    public async Task AddShiftAsync(Shift shift)
+    public async Task AddShiftAsync(ShiftWriteDto shiftDto)
     {
+        var shift = MapDto.MapFromWriteDto(shiftDto);
         await _shiftContext.AddAsync(shift);
         await _shiftContext.SaveChangesAsync();
     }
 
-    public async Task UpdateShiftAsync(int id, Shift shift)
+    public async Task UpdateShiftAsync(int id, ShiftUpdateDto shiftDto)
     {
-        var oldShift = await GetShiftByIdAsync(id);
-        oldShift.EndTime = shift.EndTime;
-        oldShift.Duration = shift.Duration;
+        var oldShift = await _shiftContext.Shifts.FirstAsync(x => x.Id == id);
+        MapDto.MapFromUpdateDto(oldShift, shiftDto);
         await _shiftContext.SaveChangesAsync();
     }
 
