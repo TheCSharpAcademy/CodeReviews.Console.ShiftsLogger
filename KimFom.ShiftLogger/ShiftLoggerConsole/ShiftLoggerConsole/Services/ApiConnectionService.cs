@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using ShiftLoggerConsole.Dtos;
 using ShiftLoggerConsole.Models;
 
 namespace ShiftLoggerConsole.Services;
@@ -64,7 +65,7 @@ public class ApiConnectionService : IApiConnectionService
         return shift;
     }
 
-    public async Task AddShift(Shift shift)
+    public async Task AddShift(ShiftAddDto shift)
     {
         var json = JsonSerializer.Serialize(shift);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -72,7 +73,7 @@ public class ApiConnectionService : IApiConnectionService
         await _httpClient.PostAsync("", content);
     }
 
-    public async Task UpdateShift(int id, Shift? shift)
+    public async Task UpdateShift(int id, ShiftUpdateDto shift)
     {
         var json = JsonSerializer.Serialize(shift);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
