@@ -21,32 +21,50 @@ public class EntityFrameworkDataAccess : IDataAccess
         return shiftReadDtos;
     }
 
-    public async Task<ShiftReadDto> GetShiftByIdAsync(int id)
+    public async Task<ShiftReadDto?> GetShiftByIdAsync(int id)
     {
-        var shift = await _shiftContext.Shifts.FirstAsync(x => x.Id == id);
+        var shift = await _shiftContext.Shifts.FirstOrDefaultAsync(x => x.Id == id);
+        if (shift is null)
+        {
+            return null;
+        }
+        
         var shiftReadDto = MapDto.MapToReadDto(shift);
-
         return shiftReadDto;
     }
 
-    public async Task AddShiftAsync(ShiftWriteDto shiftDto)
+    public async Task<ShiftReadDto> AddShiftAsync(ShiftWriteDto shiftDto)
     {
         var shift = MapDto.MapFromWriteDto(shiftDto);
         await _shiftContext.AddAsync(shift);
         await _shiftContext.SaveChangesAsync();
+
+        var shiftReadDto = MapDto.MapToReadDto(shift);
+        
+        return shiftReadDto;
     }
 
-    public async Task UpdateShiftAsync(int id, ShiftUpdateDto shiftDto)
+    public async Task<int> UpdateShiftAsync(int id, ShiftUpdateDto shiftDto)
     {
-        var oldShift = await _shiftContext.Shifts.FirstAsync(x => x.Id == id);
+        var oldShift = await _shiftContext.Shifts.FirstOrDefaultAsync(x => x.Id == id);
+        if (oldShift is null)
+        {
+            return -1;
+        }
+        
         MapDto.MapFromUpdateDto(oldShift, shiftDto);
-        await _shiftContext.SaveChangesAsync();
+        return await _shiftContext.SaveChangesAsync();
     }
 
-    public async Task DeleteShiftAsync(int id)
+    public async Task<int> DeleteShiftAsync(int id)
     {
-        var shift = await GetShiftByIdAsync(id);
+        var shift = await _shiftContext.Shifts.FirstOrDefaultAsync(x => x.Id == id);
+        if (shift is null)
+        {
+            return -1;
+        }
+
         _shiftContext.Remove(shift);
-        await _shiftContext.SaveChangesAsync();
+        return await _shiftContext.SaveChangesAsync();
     }
 }
