@@ -14,9 +14,9 @@ public class ShiftController : IShiftController
     private readonly ITableBuilder _builder;
 
     public ShiftController(
-        IApiConnectionService apiConnectionService, 
-        Menus menus, 
-        IInput input, 
+        IApiConnectionService apiConnectionService,
+        Menus menus,
+        IInput input,
         ITableBuilder builder)
     {
         _apiConnectionService = apiConnectionService;
@@ -103,12 +103,20 @@ public class ShiftController : IShiftController
 
         Console.WriteLine("To end a shift, we need an id");
         var id = _input.GetId();
+
         if (shifts != null)
         {
+            if (!shifts.Any(x => x.Id == id))
+            {
+                Console.WriteLine("Selected id does not exist!");
+                Continue();
+                return;
+            }
+
             var startTime = shifts.FirstOrDefault(x => x.Id == id)!.StartTime;
             var shift = new ShiftUpdateDto
             {
-                EndTime = DateTime.Now, 
+                EndTime = DateTime.Now,
                 Duration = GetDuration(startTime, DateTime.Now)
             };
             await _apiConnectionService.UpdateShift(id, shift);
@@ -132,8 +140,9 @@ public class ShiftController : IShiftController
     private string GetDuration(DateTime startTime, DateTime endTime)
     {
         var timeSpan = endTime - startTime;
-        var duration = timeSpan.TotalHours + (timeSpan.Days * 24);
-        return (int)duration + " hrs";
+        var hours = timeSpan.Hours + (timeSpan.Days * 24);
+        var minutes = timeSpan.Minutes;
+        return $"{hours} hrs, {minutes} mins";
     }
 
     private void Continue()
