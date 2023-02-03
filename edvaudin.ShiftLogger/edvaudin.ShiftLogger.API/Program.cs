@@ -1,5 +1,5 @@
-global using ShiftLogger.API.Data;
 global using Microsoft.EntityFrameworkCore;
+global using ShiftLogger.API.Data;
 
 namespace ShiftLogger.API;
 

@@ -8,7 +8,7 @@ using ShiftLogger.API.Data;
 
 #nullable disable
 
-namespace Console.ShiftLogger.API.edvaudin.Migrations
+namespace ShiftLogger.API.Migrations
 {
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
@@ -22,24 +22,6 @@ namespace Console.ShiftLogger.API.edvaudin.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ShiftLogger.API.Models.Employee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Employees", (string)null);
-                });
-
             modelBuilder.Entity("ShiftLogger.API.Models.Shift", b =>
                 {
                     b.Property<int>("Id")
@@ -51,9 +33,6 @@ namespace Console.ShiftLogger.API.edvaudin.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
@@ -62,25 +41,7 @@ namespace Console.ShiftLogger.API.edvaudin.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("Shifts", (string)null);
-                });
-
-            modelBuilder.Entity("ShiftLogger.API.Models.Shift", b =>
-                {
-                    b.HasOne("ShiftLogger.API.Models.Employee", "Employee")
-                        .WithMany("Shifts")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("ShiftLogger.API.Models.Employee", b =>
-                {
-                    b.Navigation("Shifts");
+                    b.ToTable("Shifts");
                 });
 #pragma warning restore 612, 618
         }
