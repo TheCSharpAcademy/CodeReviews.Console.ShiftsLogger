@@ -3,6 +3,7 @@ using ShiftLogger.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +37,21 @@ namespace ShiftLogger.UI
                 }
             }
             
+        }
+
+        internal static async void AddShift(ShiftRequest shift)
+        {
+            using (HttpResponseMessage response = await ApiClient.PostAsJsonAsync(ApiClient.BaseAddress + "api/Shifts", shift))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("New shift successfully added.");
+                }
+                else
+                {
+                    Console.WriteLine(response.ReasonPhrase);
+                }
+            }
         }
     }
 }

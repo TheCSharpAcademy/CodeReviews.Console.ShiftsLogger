@@ -70,20 +70,21 @@ namespace ShiftLogger.UI
 
         private static void DeleteShift()
         {
+
         }
 
         private static void AddShift()
         {
             Console.WriteLine("When did this shift start? Use the format dd/MM/yyyy HH:mm:ss");
-            DateTime startTime = UserInput.GetTime();
+            DateTime startTime = UserInput.GetStartTime();
             Console.WriteLine("When did this shift end? Use the format dd/MM/yyyy HH:mm:ss");
-            DateTime endTime = UserInput.GetTime();
+            DateTime endTime = UserInput.GetEndTime(startTime);
             ShiftRequest shift = new()
             {
                 StartTime = startTime,
                 EndTime = endTime,
             };
-
+            ShiftService.AddShift(shift);
         }
 
         private static void Exit()
