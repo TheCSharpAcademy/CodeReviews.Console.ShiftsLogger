@@ -1,9 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using ShiftLogger.API.Data;
+﻿using Microsoft.IdentityModel.Tokens;
 using ShiftLogger.API.Models;
-using System.Configuration;
 
 namespace ShiftLogger.UI
 {
