@@ -10,7 +10,13 @@ namespace ShiftLogger.UI
     internal class Program
     {
         static bool endApp = false;
-        static void Main(string[] args)
+
+        static async Task Main()
+        {
+            await Startup();
+        }
+
+        static async Task Startup()
         {
             ShiftService.InitializeClient();
             Viewer.DisplayTitle();
@@ -18,26 +24,26 @@ namespace ShiftLogger.UI
             {
                 Viewer.DisplayOptionsMenu();
                 string input = UserInput.GetOption();
-                ProcessOption(input);
+                ProcessOption(input).Wait();
             }
             Exit();
         }
 
-        private static void ProcessOption(string input)
+        private static async Task ProcessOption(string input)
         {
             switch (input)
             {
                 case "v":
-                    ViewShifts();
+                    await ViewShifts();
                     break;
                 case "a":
-                    AddShift();
+                    await AddShift();
                     break;
                 case "d":
-                    DeleteShift();
+                    await DeleteShift();
                     break;
                 case "u":
-                    UpdateShift();
+                    await UpdateShift();
                     break;
                 case "0":
                     endApp = true;
@@ -47,7 +53,7 @@ namespace ShiftLogger.UI
             }
         }
 
-        private static async void ViewShifts()
+        private static async Task ViewShifts()
         {
             List<Shift> shifts = await ShiftService.LoadShifts();
             if (shifts.IsNullOrEmpty())
@@ -63,17 +69,34 @@ namespace ShiftLogger.UI
             Console.WriteLine(output);
         }
 
-        private static void UpdateShift()
+        private static async Task UpdateShift()
         {
-            throw new NotImplementedException();
+            await ViewShifts();
+            Console.WriteLine("Which shift would you like to update? Please type the number:");
+            int id = await UserInput.GetId();
+            if (id == -1) { return; }
+            Console.WriteLine("When did this shift start? Use the format dd/MM/yyyy HH:mm:ss");
+            DateTime startTime = UserInput.GetStartTime();
+            Console.WriteLine("When did this shift end? Use the format dd/MM/yyyy HH:mm:ss");
+            DateTime endTime = UserInput.GetEndTime(startTime);
+            ShiftRequest shift = new()
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+            };
+            ShiftService.UpdateShift(id, shift).Wait();
         }
 
-        private static void DeleteShift()
+        private static async Task DeleteShift()
         {
-
+            await ViewShifts();
+            Console.WriteLine("Which shift would you like to delete? Please type the number:");
+            int id = await UserInput.GetId();
+            if (id == -1) { return; }
+            ShiftService.DeleteShift(id).Wait();
         }
 
-        private static void AddShift()
+        private static async Task AddShift()
         {
             Console.WriteLine("When did this shift start? Use the format dd/MM/yyyy HH:mm:ss");
             DateTime startTime = UserInput.GetStartTime();
@@ -84,7 +107,7 @@ namespace ShiftLogger.UI
                 StartTime = startTime,
                 EndTime = endTime,
             };
-            ShiftService.AddShift(shift);
+            ShiftService.AddShift(shift).Wait();
         }
 
         private static void Exit()

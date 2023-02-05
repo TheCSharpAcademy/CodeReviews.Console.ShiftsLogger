@@ -39,13 +39,43 @@ namespace ShiftLogger.UI
             
         }
 
-        internal static async void AddShift(ShiftRequest shift)
+        internal static async Task AddShift(ShiftRequest shift)
         {
             using (HttpResponseMessage response = await ApiClient.PostAsJsonAsync(ApiClient.BaseAddress + "api/Shifts", shift))
             {
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine("New shift successfully added.");
+                }
+                else
+                {
+                    Console.WriteLine(response.ReasonPhrase);
+                }
+            }
+        }
+
+        internal static async Task DeleteShift(int id)
+        {
+            using (HttpResponseMessage response = await ApiClient.DeleteAsync(ApiClient.BaseAddress + $"api/Shifts/{id}"))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Shift successfully deleted.");
+                }
+                else
+                {
+                    Console.WriteLine(response.ReasonPhrase);
+                }
+            }
+        }
+
+        internal static async Task UpdateShift(int id, ShiftRequest shift)
+        {
+            using (HttpResponseMessage response = await ApiClient.PutAsJsonAsync(ApiClient.BaseAddress + $"api/Shifts/{id}", shift))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Shift successfully updated");
                 }
                 else
                 {

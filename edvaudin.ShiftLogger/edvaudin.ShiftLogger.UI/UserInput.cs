@@ -1,4 +1,6 @@
-﻿namespace ShiftLogger.UI
+﻿using ShiftLogger.API.Models;
+
+namespace ShiftLogger.UI
 {
     internal class UserInput
     {
@@ -40,6 +42,26 @@
                 input = Console.ReadLine();
             }
             return input;
+        }
+
+        internal static async Task<int> GetId()
+        {
+            List<Shift> shifts = await ShiftService.LoadShifts();
+            List<int> validIds = shifts.Select(o => o.Id).ToList();
+            bool validIdEntered = false;
+            while (!validIdEntered)
+            {
+                if (int.TryParse(Console.ReadLine(), out int result))
+                {
+                    if (validIds.Contains(result) || result == -1)
+                    {
+                        validIdEntered = true;
+                        return result;
+                    }
+                }
+                Console.Write("\nThis is not a valid id, please enter a number or to return to main menu type '-1': ");
+            }
+            return -1;
         }
     }
 }

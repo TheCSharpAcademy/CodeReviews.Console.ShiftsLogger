@@ -15,7 +15,7 @@
 
         internal static void DisplayTitle()
         {
-            Console.WriteLine("+----- Shift Logger -----+\n");
+            Console.WriteLine("+----- Shift Logger -----+");
         }
     }
 }
