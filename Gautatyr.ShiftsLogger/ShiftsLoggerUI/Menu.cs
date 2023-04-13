@@ -46,11 +46,11 @@ public static class Menu
     private static async Task DisplayShifts()
     {
         List<Shift> unformatedShifts = GetShifts().Result;
-        List<ShiftDTODisplay> formatedShifts = new();
+        List<ShiftDtoDisplay> formatedShifts = new();
         
         foreach (Shift shift in unformatedShifts)
         {
-            formatedShifts.Add(new ShiftDTODisplay
+            formatedShifts.Add(new ShiftDtoDisplay
             {
                 Id = shift.Id,
                 Start = shift.Start.ToString("HH:mm"),

@@ -7,14 +7,14 @@ public record Shift(
     [property: JsonPropertyName("start")] DateTime Start,
     [property: JsonPropertyName("end")] DateTime End);
 
-public class ShiftDTO
+public class ShiftDto
 {
     public int Id { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
 }
 
-public class ShiftDTODisplay
+public class ShiftDtoDisplay
 {
     public int Id { get; set; }
     public string? Start { get; set; }

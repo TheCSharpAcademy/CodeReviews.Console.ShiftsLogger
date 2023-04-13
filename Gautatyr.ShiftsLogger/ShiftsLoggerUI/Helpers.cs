@@ -16,8 +16,11 @@ public static class Helpers
         try
         {
             if (GetShift(id).Result != null) exists = true;
-        }  
-        catch { }
+        }
+        catch
+        {
+            exists = false;
+        }
 
         return exists;
     }

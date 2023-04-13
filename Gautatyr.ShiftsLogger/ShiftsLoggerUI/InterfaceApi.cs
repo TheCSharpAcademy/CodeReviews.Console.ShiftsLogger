@@ -39,7 +39,7 @@ public static class InterfaceApi
 
     public static async Task<HttpResponseMessage> CreateShift(DateTime start, DateTime end)
     {
-        var shift = new ShiftDTO
+        var shift = new ShiftDto
         {
             Start = start,
             End = end
@@ -58,7 +58,7 @@ public static class InterfaceApi
 
     public static async Task<HttpResponseMessage> UpdateShift(int id, DateTime start, DateTime end)
     {
-        var shift = new ShiftDTO
+        var shift = new ShiftDto
         {
             Id = id,
             Start = start,
