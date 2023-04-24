@@ -12,8 +12,8 @@ using ShiftsLoggerAPI.Models;
 namespace ShiftsLoggerAPI.Migrations
 {
     [DbContext(typeof(ShiftContext))]
-    [Migration("20230411103457_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230424073401_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

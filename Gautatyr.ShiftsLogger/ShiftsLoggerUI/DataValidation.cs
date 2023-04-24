@@ -5,7 +5,7 @@ namespace ShiftsLoggerUI;
 public static class DataValidation
 {
     public static int GetNumberInput()
-    {        
+    {
         var userInput = Console.ReadLine();
         int number;
 
@@ -48,7 +48,7 @@ public static class DataValidation
     {
         var input = Console.ReadLine();
 
-        while(!DateTime.TryParseExact(input, "HH:mm", System.Globalization.CultureInfo.InvariantCulture,
+        while (!DateTime.TryParseExact(input, "HH:mm", System.Globalization.CultureInfo.InvariantCulture,
         System.Globalization.DateTimeStyles.None, out _))
         {
             DisplayError("Invalid Format, try again");

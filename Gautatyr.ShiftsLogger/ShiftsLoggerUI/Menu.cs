@@ -1,8 +1,8 @@
-﻿using static ShiftsLoggerUI.Helpers;
-using static ShiftsLoggerUI.DataValidation;
-using static ShiftsLoggerUI.InterfaceApi;
+﻿using ConsoleTableExt;
 using ShiftsLoggerUI.Models;
-using ConsoleTableExt;
+using static ShiftsLoggerUI.DataValidation;
+using static ShiftsLoggerUI.Helpers;
+using static ShiftsLoggerUI.InterfaceApi;
 
 namespace ShiftsLoggerUI;
 
@@ -12,7 +12,9 @@ public static class Menu
     {
         Console.Clear();
         Console.WriteLine("\nMAIN MENU\n");
+        Thread.Sleep(250);
         await DisplayShifts();
+        Thread.Sleep(250);
         if (!string.IsNullOrEmpty(error)) DisplayError(error);
 
         Console.WriteLine("\n- Type 1 to Add a new Shift");
@@ -25,15 +27,19 @@ public static class Menu
             case 0:
                 Environment.Exit(0);
                 break;
+
             case 1:
                 AddShiftMenu();
                 break;
+
             case 2:
                 UpdateShiftMenu();
                 break;
+
             case 3:
                 DeleteShiftMenu();
                 break;
+
             default:
                 error = "Wrong input ! Please type a number between 0 and 3";
                 MainMenu(error);
@@ -46,8 +52,9 @@ public static class Menu
     private static async Task DisplayShifts()
     {
         List<Shift> unformatedShifts = GetShifts().Result;
+        Thread.Sleep(250);
         List<ShiftDtoDisplay> formatedShifts = new();
-        
+
         foreach (Shift shift in unformatedShifts)
         {
             formatedShifts.Add(new ShiftDtoDisplay

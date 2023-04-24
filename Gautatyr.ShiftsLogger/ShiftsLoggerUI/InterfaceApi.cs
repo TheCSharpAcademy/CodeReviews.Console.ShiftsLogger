@@ -1,7 +1,7 @@
-﻿using System.Net.Http.Headers;
+﻿using ShiftsLoggerUI.Models;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using ShiftsLoggerUI.Models;
 
 namespace ShiftsLoggerUI;
 
@@ -17,9 +17,7 @@ public static class InterfaceApi
 
         await using Stream stream = await client.GetStreamAsync(api_url);
 
-        var shifts = await JsonSerializer.DeserializeAsync<List<Shift>>(stream);
-
-        return shifts;
+        return await JsonSerializer.DeserializeAsync<List<Shift>>(stream);
     }
 
     public static async Task<Shift> GetShift(int id)
@@ -49,11 +47,10 @@ public static class InterfaceApi
         var httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
 
         using HttpClient client = new();
-        
+
         var api_url = $"https://localhost:7060/api/Shifts";
 
-        var response = await client.PostAsync(api_url, httpContent);
-        return response;
+        return await client.PostAsync(api_url, httpContent);
     }
 
     public static async Task<HttpResponseMessage> UpdateShift(int id, DateTime start, DateTime end)
@@ -75,7 +72,6 @@ public static class InterfaceApi
         var response = await client.PutAsync(api_url, httpContent);
         return response;
     }
-
 
     public static async Task<HttpResponseMessage> DeleteShift(int id)
     {
