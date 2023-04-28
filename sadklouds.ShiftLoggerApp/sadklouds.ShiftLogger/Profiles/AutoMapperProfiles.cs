@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-
 namespace sadklouds.ShiftLogger.Profiles;
 public class AutoMapperProfiles : Profile
 {

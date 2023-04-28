@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ShiftLoggerConsoleUI.Models
+﻿namespace ShiftLoggerConsoleUI.Models
 {
     internal class DisplayShiftDto
     {
@@ -20,6 +14,5 @@ namespace ShiftLoggerConsoleUI.Models
         public DateTime ShiftStart { get; set; }
         public DateTime ShiftEnd { get; set; }
         public string Duration { get; set; }
-
     }
 }

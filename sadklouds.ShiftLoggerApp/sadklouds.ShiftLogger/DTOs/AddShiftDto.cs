@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-
 namespace sadklouds.ShiftLogger.DTOs;
-
 public class AddShiftDto
 {
     [Required(ErrorMessage = "Shift start is required")]

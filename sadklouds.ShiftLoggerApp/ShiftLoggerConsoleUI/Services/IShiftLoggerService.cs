@@ -1,7 +1,5 @@
 ﻿using ShiftLoggerConsoleUI.Models;
-
 namespace ShiftLoggerConsoleUI.Services;
-
 internal interface IShiftLoggerService
 {
     public Task<List<DisplayShiftDto>> GetShifts();

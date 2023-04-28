@@ -8,7 +8,7 @@ namespace ShiftLoggerConsoleUI.Services;
 internal class ShiftLoggerService : IShiftLoggerService
 {
     private static readonly HttpClient _client = new HttpClient();
-    
+
     public async Task<List<DisplayShiftDto>> GetShifts()
     {
         List<DisplayShiftDto?> shifts = new();
@@ -50,20 +50,20 @@ internal class ShiftLoggerService : IShiftLoggerService
         }
     }
 
-    public async Task<string> AddShift(DateTime shiftStart, DateTime shiftEnd) 
+    public async Task<string> AddShift(DateTime shiftStart, DateTime shiftEnd)
     {
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
         var shift = new AddShiftDto
-        { 
+        {
             ShiftStart = shiftStart,
             ShiftEnd = shiftEnd
         };
         var json = JsonSerializer.Serialize(shift);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        using (HttpResponseMessage response = await _client.PostAsync($"https://localhost:7272/api/shifts/", content ))
+        using (HttpResponseMessage response = await _client.PostAsync($"https://localhost:7272/api/shifts/", content))
         {
             if (response.IsSuccessStatusCode)
             {
@@ -76,7 +76,7 @@ internal class ShiftLoggerService : IShiftLoggerService
         }
     }
 
-    public async Task<string> UpdateShift(int id , DateTime shiftStart, DateTime shiftEnd)
+    public async Task<string> UpdateShift(int id, DateTime shiftStart, DateTime shiftEnd)
     {
         _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
@@ -88,7 +88,7 @@ internal class ShiftLoggerService : IShiftLoggerService
         };
 
         HttpResponseMessage response = await _client.PutAsJsonAsync($"https://localhost:7272/api/shifts/{id}", updatedShift);
-        
+
         if (response.IsSuccessStatusCode)
         {
             return $"Shift successfully updated";

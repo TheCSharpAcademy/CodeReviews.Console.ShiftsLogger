@@ -1,5 +1,4 @@
 ﻿namespace sadklouds.ShiftLogger.Services.ShiftLoggerService;
-
 public interface IShiftLoggerService
 {
     public Task<List<GetShiftDto>> GetShifts();

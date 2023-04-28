@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
-
 namespace sadklouds.ShiftLogger.Services.ShiftLoggerService;
 public class ShiftLoggerService : IShiftLoggerService
 {
@@ -42,8 +41,6 @@ public class ShiftLoggerService : IShiftLoggerService
 
             var dbShifts = await _context.Shifts.ToListAsync();
             serviceResponse = dbShifts.Select(s => _mapper.Map<GetShiftDto>(s)).ToList();
-          
-
         }
         catch (Exception ex)
         {
@@ -84,18 +81,16 @@ public class ShiftLoggerService : IShiftLoggerService
     {
         var serviceResponse = new GetShiftDto();
        
-            var shift = await _context.Shifts.FindAsync(id);
-            if (shift == null)
-                return null;
+        var shift = await _context.Shifts.FindAsync(id);
+        if (shift == null)
+            return null;
 
-            shift = _mapper.Map(updatedShift, shift);
-            shift.Duration = updatedShift.ShiftEnd - updatedShift.ShiftStart;
-            shift.LastUpdate = DateTime.Now;
-            await _context.SaveChangesAsync();
+        shift = _mapper.Map(updatedShift, shift);
+        shift.Duration = updatedShift.ShiftEnd - updatedShift.ShiftStart;
+        shift.LastUpdate = DateTime.Now;
+        await _context.SaveChangesAsync();
 
-            serviceResponse = _mapper.Map<GetShiftDto>(shift);
-        
-       
+        serviceResponse = _mapper.Map<GetShiftDto>(shift);
         return serviceResponse;
     }
 }

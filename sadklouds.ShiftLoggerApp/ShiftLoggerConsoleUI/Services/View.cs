@@ -15,7 +15,7 @@ internal class View
 
     public void Start()
     {
-        
+
         while (Exit == false)
         {
             Console.Clear();
@@ -43,7 +43,7 @@ internal class View
                 await ShowAllShifts();
                 break;
             case "g":
-               await ShowShift();
+                await ShowShift();
                 break;
             case "a":
                 await AddNewShift();
@@ -93,7 +93,8 @@ internal class View
 
             Console.Write("Press any key to continue: ");
             Console.ReadLine();
-        } else
+        }
+        else
         {
             Console.WriteLine("Error getting shify");
         }
