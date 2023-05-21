@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net;
+using System.Net.Http.Json;
 
 namespace ShiftLogger;
 
@@ -69,10 +70,21 @@ public class APIClient
     public async Task<string> GetWorkerAsync(int id)
     {
         var response = await httpClient.GetAsync($"/api/Worker/{id}");
-        response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadAsStringAsync();
 
-        return result;
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+        else if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+        else
+        {       
+            response.EnsureSuccessStatusCode();
+            return null;
+        }
     }
 
     public async Task<string> AddWorkerAsync(int superHeroId, string name, DateTime loginTime, DateTime logoutTime)
@@ -98,10 +110,21 @@ public class APIClient
     public async Task<string> DeleteWorkerAsync(int id)
     {
         var response = await httpClient.DeleteAsync($"/api/Worker/{id}");
-        response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadAsStringAsync();
 
-        return result;
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+        else if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+        else
+        {          
+            response.EnsureSuccessStatusCode();
+            return null;
+        }
     }
 
     public class SuperHero

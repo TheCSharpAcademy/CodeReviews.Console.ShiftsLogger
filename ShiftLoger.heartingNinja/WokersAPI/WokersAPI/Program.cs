@@ -1,5 +1,7 @@
 global using Microsoft.EntityFrameworkCore;
 global using WokersAPI.Data;
+using WokersAPI.Services.SuperHeroServices;
+using WokersAPI.Services.WorkerShiftServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<ISuperHeroService, SuperHeroService>();
+builder.Services.AddScoped<IWorkerShiftService, WorkerShiftService>();
 
 var app = builder.Build();
 

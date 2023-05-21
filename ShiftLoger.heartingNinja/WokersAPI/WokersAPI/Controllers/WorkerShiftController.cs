@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WokersAPI.Services.WorkerShiftServices;
 
 namespace WokersAPI.Controllers;
 
@@ -6,71 +7,52 @@ namespace WokersAPI.Controllers;
 [ApiController]
 public class WorkerController : ControllerBase
 {
-    private readonly DataContext context;
-
-    public WorkerController(DataContext context)
+    private readonly IWorkerShiftService _workerShift;
+    public WorkerController(IWorkerShiftService workerShift)
     {
-        this.context = context;
+        _workerShift = workerShift;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<WorkerShift>>> Get()
+    public async Task<ActionResult<List<WorkerShift>>> GetAll()
     {
-        return Ok(await context.WorkerShift.ToListAsync());
+        return await _workerShift.GetAll();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<WorkerShift>> GetBySuperHeroId(int id)
     {
-        var worker = await context.WorkerShift
-            .Where(w => w.SuperHeroId == id)
-            .OrderByDescending(w => w.Id)
-            .FirstOrDefaultAsync();
-
-        if (worker == null)
-            return BadRequest("Worker not found.");
-
-        return Ok(worker);
+        var results = await _workerShift.GetBySuperHeroId(id);
+        if (results is null)
+            return NotFound();
+        return Ok(results);
     }
 
     [HttpPost]
     public async Task<ActionResult<List<WorkerShift>>> AddWorker(WorkerShift worker)
     {
-        context.WorkerShift.Add(worker);
-        await context.SaveChangesAsync();
-
-        return Ok(await context.WorkerShift.ToListAsync());
+        var results = await _workerShift.AddWorker(worker);
+        if (results is null)
+            return NotFound();
+        return Ok(results);
     }
 
     [HttpPut]
     public async Task<ActionResult<List<WorkerShift>>> UpdateWorker(WorkerShift request)
     {
-        var dbWorker = await context.WorkerShift.FindAsync(request.Id);
-        if (dbWorker == null)
-            return BadRequest("Worker not found.");
-
-        dbWorker.LoginTime = request.LoginTime;
-        dbWorker.LogoutTime = request.LogoutTime;
-
-        await context.SaveChangesAsync();
-
-        return Ok(await context.WorkerShift.ToListAsync());
+        var results = await _workerShift.UpdateWorker(request);
+        if (results is null)
+            return NotFound();
+        return Ok(results);
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<List<WorkerShift>>> Delete(int id)
     {
-        var workers = await context.WorkerShift
-            .Where(w => w.SuperHeroId == id)
-            .ToListAsync();
-
-        if (workers.Count == 0)
-            return BadRequest("No workers found.");
-
-        context.WorkerShift.RemoveRange(workers);
-        await context.SaveChangesAsync();
-
-        return Ok(await context.WorkerShift.ToListAsync());
+        var results = await _workerShift.Delete(id);
+        if (results is null)
+            return NotFound();
+        return Ok(results);
     }
 
 }

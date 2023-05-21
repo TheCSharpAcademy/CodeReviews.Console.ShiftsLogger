@@ -152,26 +152,35 @@ internal class WorkerInput
      
         var response = await apiClient.GetSuperHeroAsyncID(superheroId);      
         var superHero = JsonSerializer.Deserialize<SuperHero>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        var workerResponse = await apiClient.GetWorkerAsync(superHero.Id);
-        var worker = JsonSerializer.Deserialize<WorkerShift>(workerResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        var workerResponse = await apiClient.GetWorkerAsync(superHero?.Id ?? 0);
 
-        if (worker.LogoutTime == DateTime.MinValue)
+        if (!string.IsNullOrEmpty(workerResponse))
         {
-            worker.LogoutTime = DateTime.Now;
-    
-            await apiClient.UpdateWorkerAsync(
-                worker.Id,
-                worker.SuperHeroId,
-                worker.Name,
-                worker.LoginTime,
-                DateTime.Now);
+            var worker = JsonSerializer.Deserialize<WorkerShift>(workerResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            if (worker.LogoutTime == DateTime.MinValue)
+            {
+                worker.LogoutTime = DateTime.Now;
+
+                await apiClient.UpdateWorkerAsync(
+                    worker.Id,
+                    worker.SuperHeroId,
+                    worker.Name,
+                    worker.LoginTime,
+                    DateTime.Now);
+
+                Console.WriteLine($"{superHero.Name} is now logged out at {worker.LogoutTime}.");
+            }
+            else
+            {
+                Console.WriteLine("No worker found with matching LoginTime or worker has already logged out.");
+            }
         }
         else
         {
-            Console.WriteLine("No worker found with matching LoginTime or worker has already logged out.");
+            Console.WriteLine("No worker found for the selected superhero.");
         }
 
-        Console.WriteLine($"{superHero.Name} are now logged out at {worker.LogoutTime}.");
         Console.WriteLine("Hit Enter to continue");
         Console.ReadLine();
         await WorkerUI();
