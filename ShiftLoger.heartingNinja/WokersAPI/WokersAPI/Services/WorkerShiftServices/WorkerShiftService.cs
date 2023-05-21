@@ -62,5 +62,5 @@ public class WorkerShiftService : IWorkerShiftService
         await _context.SaveChangesAsync();
 
         return await _context.WorkerShift.ToListAsync();
-    }
+    }   
 }

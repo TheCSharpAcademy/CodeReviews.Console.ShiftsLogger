@@ -1,6 +1,6 @@
 ﻿using ConsoleTableExt;
 using System.Text.Json;
-using static ShiftLogger.APIClient;
+using static ShiftLogger.ApiClient;
 
 namespace ShiftLogger;
 
@@ -14,7 +14,7 @@ internal class ManagmentInput
 
     internal static async Task ManagerUI()
     {
-        var apiClient = new APIClient();
+        var apiClient = new ApiClient();
 
         Console.Clear();
         Console.WriteLine("Manager Options:");
@@ -74,8 +74,7 @@ internal class ManagmentInput
         }
     }
 
-
-    internal static async Task ListSuperHeroesAsync(APIClient apiClient)
+    internal static async Task ListSuperHeroesAsync(ApiClient apiClient)
     {
         Console.WriteLine("Listing all super heroes...");
 
@@ -105,7 +104,7 @@ internal class ManagmentInput
         }
     }
 
-    private static async Task GetSuperHeroAsync(APIClient apiClient)
+    private static async Task GetSuperHeroAsync(ApiClient apiClient)
     {
         seeWorker = false;
         Console.WriteLine("Enter the ID of the superhero (or 'b' to go back to Menu):");
@@ -151,7 +150,7 @@ internal class ManagmentInput
         await ManagerUI();
     }
 
-    private static async Task AddSuperHeroAsync(APIClient apiClient)
+    private static async Task AddSuperHeroAsync(ApiClient apiClient)
     {
         Console.WriteLine("Enter the name of the new super hero:");
         var name = Console.ReadLine();
@@ -187,7 +186,7 @@ internal class ManagmentInput
         await ManagerUI();
     }
 
-    private static async Task PrintLastSuperHeroAsync(APIClient apiClient)
+    private static async Task PrintLastSuperHeroAsync(ApiClient apiClient)
     {
         var superHeroesJson = await apiClient.GetSuperHeroesAsync();
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -201,7 +200,7 @@ internal class ManagmentInput
             .ExportAndWriteLine(TableAligntment.Center);
     }
 
-    private static async Task UpdateSuperHeroAsync(APIClient apiClient)
+    private static async Task UpdateSuperHeroAsync(ApiClient apiClient)
     {
         updateWorker = false;
         Console.WriteLine("Enter the ID of the superhero (or 'b' to go back to Menu):");
@@ -266,14 +265,14 @@ internal class ManagmentInput
         }
 
         Console.WriteLine(place);
-        APIClient.UpdateSuperHeroAsync(id, name, firstName, lastName, place);
+        await ApiClient.UpdateSuperHeroAsync(id, name, firstName, lastName, place);      
         Console.WriteLine($"Super hero with name: {name} updated.");
         Console.WriteLine("Hit Enter to continue");
         Console.ReadLine();
         await ManagerUI();
     }
 
-    private static async Task DeleteSuperHeroAsync(APIClient apiClient)
+    private static async Task DeleteSuperHeroAsync(ApiClient apiClient)
     {
         Console.WriteLine("Enter the ID of the superhero to delete (or 'b' to go back to Menu):");
         string input = Console.ReadLine();

@@ -1,9 +1,8 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 
 namespace ShiftLogger;
 
-public class APIClient
+public class ApiClient
 {
     private static readonly HttpClient httpClient = new HttpClient()
     {
@@ -75,11 +74,7 @@ public class APIClient
         {
             var result = await response.Content.ReadAsStringAsync();
             return result;
-        }
-        else if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return null;
-        }
+        }     
         else
         {       
             response.EnsureSuccessStatusCode();
@@ -105,7 +100,7 @@ public class APIClient
         var result = await response.Content.ReadAsStringAsync();
 
         return result;
-    }
+    }  
 
     public async Task<string> DeleteWorkerAsync(int id)
     {
@@ -115,11 +110,7 @@ public class APIClient
         {
             var result = await response.Content.ReadAsStringAsync();
             return result;
-        }
-        else if (response.StatusCode == HttpStatusCode.NotFound)
-        {
-            return null;
-        }
+        }          
         else
         {          
             response.EnsureSuccessStatusCode();

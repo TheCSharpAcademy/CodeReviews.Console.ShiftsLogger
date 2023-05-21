@@ -1,6 +1,6 @@
 ﻿using ConsoleTableExt;
 using System.Text.Json;
-using static ShiftLogger.APIClient;
+using static ShiftLogger.ApiClient;
 
 namespace ShiftLogger;
 
@@ -8,7 +8,7 @@ internal class WorkerInput
 {
     internal static async Task WorkerUI()
     {
-        var apiClient = new APIClient();
+        var apiClient = new ApiClient();
 
         Console.Clear();
         Console.WriteLine("Worker Options:");
@@ -52,7 +52,7 @@ internal class WorkerInput
         }
     }
    
-    private static async Task LogIn(APIClient apiClient)
+    private static async Task LogIn(ApiClient apiClient)
     {
         ManagmentInput.workerLoginLogout = false;
         Console.WriteLine("Enter your worker ID log in (or 'b' to go back):");
@@ -113,7 +113,7 @@ internal class WorkerInput
         }
     }
 
-    private static async Task LogOut(APIClient apiClient)
+    private static async Task LogOut(ApiClient apiClient)
     {
         ManagmentInput.workerLoginLogout = false;
         Console.WriteLine("Enter your worker ID log out (or 'b' to go back):");
@@ -186,7 +186,7 @@ internal class WorkerInput
         await WorkerUI();
     }
 
-    internal static async Task SeeWorkerLogIn(APIClient apiClient)
+    internal static async Task SeeWorkerLogIn(ApiClient apiClient)
     {
 
         Console.WriteLine("List of Workers:");
@@ -206,7 +206,7 @@ internal class WorkerInput
         await ManagmentInput.ManagerUI();
     }
 
-    internal static async Task DeleteWorkers(APIClient apiClient, int workerId)
+    internal static async Task DeleteWorkers(ApiClient apiClient, int workerId)
     {
         await apiClient.DeleteWorkerAsync(workerId);
     }

@@ -54,6 +54,13 @@ public class SuperHeroService : ISuperHeroService
         hero.FirstName = request.FirstName;
         hero.LastName = request.LastName;
         hero.Place = request.Place;
+      
+        var workers = await _context.WorkerShift.Where(w => w.SuperHeroId == hero.Id).ToListAsync();
+        foreach (var worker in workers)
+        {
+            worker.Name = request.Name;                
+            await _context.SaveChangesAsync();
+        }
 
         return await _context.SuperHeroes.ToListAsync();
     }
