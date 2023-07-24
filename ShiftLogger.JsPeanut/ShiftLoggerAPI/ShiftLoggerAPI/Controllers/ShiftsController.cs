@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftLogger.JsPeanut.Models;
 
@@ -89,7 +84,6 @@ namespace ShiftLogger.JsPeanut.Controllers
             _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
 
-            //    return CreatedAtAction("GetShift", new { id = shift.Id }, shift);
             return CreatedAtAction(nameof(GetShift), new { id = shift.Id }, shift);
         }
 

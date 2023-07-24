@@ -100,7 +100,6 @@ namespace ShiftLoggerApp
 
         public static void UpdateShift()
         {
-            List<Shift> shifts = ReadShifts();
             string chosenId = AnsiConsole.Ask<String>("REMINDER: You can go back to the main menu by typing M.\n\n Which shift do you want to update?");
 
             var client = new RestClient(ApiUrl);

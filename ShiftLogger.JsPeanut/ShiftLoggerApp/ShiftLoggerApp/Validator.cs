@@ -7,7 +7,6 @@ namespace ShiftLoggerApp
         public static bool ValidateStartDateString(string startTimeString,  string format, CultureInfo culture, DateTimeStyles styles)
         {
             bool tryParseStartDateString = DateTime.TryParseExact(startTimeString, format, culture, styles, out _);
-            DateTime startTime = DateTime.ParseExact(startTimeString, format, culture, styles);
 
             if (tryParseStartDateString == false)
             {
@@ -21,7 +20,6 @@ namespace ShiftLoggerApp
 
         public static bool ValidateEndDateString(string startTimeString, string endTimeString, string format, CultureInfo culture, DateTimeStyles styles)
         {
-            bool tryParseStartDateString = DateTime.TryParseExact(startTimeString, format, culture, styles, out _);
             bool tryParseEndDateString = DateTime.TryParseExact(endTimeString, format, culture, styles, out _);
             DateTime startTime = DateTime.ParseExact(startTimeString, format, culture, styles);
             DateTime endTime = DateTime.ParseExact(endTimeString, format, culture, styles);
