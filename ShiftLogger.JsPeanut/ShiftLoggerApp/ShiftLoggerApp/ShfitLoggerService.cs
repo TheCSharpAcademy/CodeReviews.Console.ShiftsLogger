@@ -35,7 +35,7 @@ namespace ShiftLoggerApp
                 endTime = parsedToISO8601EndTime
             });
 
-            var response = client.ExecuteAsync(request);
+            client.ExecuteAsync(request);
 
             Console.WriteLine("\nEnter any key to go back to the main menu.");
             Console.ReadLine();
