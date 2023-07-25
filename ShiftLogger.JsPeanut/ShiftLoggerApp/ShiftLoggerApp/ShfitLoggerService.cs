@@ -22,8 +22,6 @@ namespace ShiftLoggerApp
             DateTime parsedStartTime = DateTime.ParseExact(StartTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None);
             DateTime parsedEndTime = DateTime.ParseExact(EndTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None);
 
-            TimeSpan WorkedTime = parsedEndTime - parsedStartTime;
-
             string parsedToISO8601StartTime = parsedStartTime.ToString("o");
             string parsedToISO8601EndTime = parsedEndTime.ToString("o");
 
@@ -127,7 +125,7 @@ namespace ShiftLoggerApp
                 workedTime = WorkedTime
             });
 
-            var response = client.ExecutePutAsync(request);
+            client.ExecutePutAsync(request);
 
             Console.WriteLine("\nEnter any key to go back to the main menu.");
             Console.ReadLine();
@@ -141,7 +139,7 @@ namespace ShiftLoggerApp
 
             var client = new RestClient(ApiUrl);
             var request = new RestRequest($"api/Shifts/{HttpUtility.UrlEncode(chosenId)}", Method.Delete);
-            var response = client.ExecuteAsync(request);
+            client.ExecuteAsync(request);
 
             Console.WriteLine("\nEnter any key to go back to the main menu.");
             Console.ReadLine();
