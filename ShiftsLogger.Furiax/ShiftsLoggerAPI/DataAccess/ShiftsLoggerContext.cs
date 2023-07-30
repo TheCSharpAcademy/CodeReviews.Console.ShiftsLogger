@@ -8,6 +8,6 @@ namespace ShiftsLoggerAPI.DataAccess
 		public ShiftsLoggerContext(DbContextOptions<ShiftsLoggerContext> options) : base(options) 
 		{ 
 		}
-		public DbSet<ShiftModel> Shifts { get; set; } = null!;
+		public DbSet<ShiftModel> Shifts { get; set; }
 	}
 }
