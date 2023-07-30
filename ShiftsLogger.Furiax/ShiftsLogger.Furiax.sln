@@ -5,6 +5,8 @@ VisualStudioVersion = 17.6.33712.159
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLoggerAPI", "ShiftsLoggerAPI\ShiftsLoggerAPI.csproj", "{3A88604D-F923-4A6D-9622-1EE2889CF50B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLoggerUI", "ShiftsLoggerUI\ShiftsLoggerUI.csproj", "{0379A5E5-DD00-48EE-BAA4-CD9D0CAC0ED4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3A88604D-F923-4A6D-9622-1EE2889CF50B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A88604D-F923-4A6D-9622-1EE2889CF50B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A88604D-F923-4A6D-9622-1EE2889CF50B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0379A5E5-DD00-48EE-BAA4-CD9D0CAC0ED4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0379A5E5-DD00-48EE-BAA4-CD9D0CAC0ED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0379A5E5-DD00-48EE-BAA4-CD9D0CAC0ED4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0379A5E5-DD00-48EE-BAA4-CD9D0CAC0ED4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
