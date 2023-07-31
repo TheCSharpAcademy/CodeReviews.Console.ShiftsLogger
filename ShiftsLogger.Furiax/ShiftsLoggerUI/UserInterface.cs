@@ -1,9 +1,33 @@
-﻿using Spectre.Console;
+﻿using ShiftsLoggerUI.Models;
+using Spectre.Console;
 
 namespace ShiftsLoggerUI
 {
 	internal class UserInterface
 	{
+		internal static void DisplayShifts(List<Shift> shifts)
+		{
+			var table = new Table();
+			table.AddColumn("Id");
+			table.AddColumn("Name");
+			table.AddColumn("StartOfShift");
+			table.AddColumn("EndOfShift");
+			table.AddColumn("Duration");
+
+			foreach (var shift in shifts)
+			{
+				table.AddRow(shift.Id.ToString(),
+					shift.EmployeeName,
+					shift.StartOfShift.ToString(),
+					shift.EndOfShift.ToString(),
+					shift.Duration.ToString());
+			}
+			AnsiConsole.Write(table);
+			Console.WriteLine("Press any key to continue");
+			Console.ReadKey();
+			Console.Clear();
+		}
+
 		internal static void MainMenu()
 		{
 			bool isAppAlive = true;
@@ -38,6 +62,7 @@ namespace ShiftsLoggerUI
 				}
 			}
 		}
+
 		enum MenuOptions
 		{
 			AddShift,
