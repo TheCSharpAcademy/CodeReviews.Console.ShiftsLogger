@@ -28,7 +28,7 @@ namespace ShiftsLoggerUI
 			Console.Clear();
 		}
 
-		internal static void MainMenu()
+		internal static async Task MainMenu()
 		{
 			bool isAppAlive = true;
 			while (isAppAlive)
@@ -48,7 +48,7 @@ namespace ShiftsLoggerUI
 					case MenuOptions.AddShift:
 						break;
 					case MenuOptions.ShowAllShifts:
-						ShiftsLoggerUIService.GetShifts();
+						await ShiftsLoggerUIService.GetShifts();
 						break;
 					case MenuOptions.ShowShift:
 						break;

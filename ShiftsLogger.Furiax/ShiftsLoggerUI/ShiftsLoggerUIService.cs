@@ -6,7 +6,6 @@
 		{
 			var shifts = await ShiftLoggersUIController.GetShifts();
 			UserInterface.DisplayShifts(shifts);
-			Console.ReadKey();
 		}
 	}
 }

@@ -8,7 +8,7 @@ namespace ShiftsLoggerUI
 	{
 		internal static async Task<List<Shift>> GetShifts()
 		{
-			List<Shift> shifts = new ();
+			List<Shift> shifts = new();
 
 			using HttpClient client = new();
 			client.DefaultRequestHeaders.Accept.Clear();

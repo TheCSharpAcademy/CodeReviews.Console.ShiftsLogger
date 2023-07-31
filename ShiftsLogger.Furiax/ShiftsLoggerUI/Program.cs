@@ -1,3 +1,4 @@
 ﻿using ShiftsLoggerUI;
 
-UserInterface.MainMenu();
+await UserInterface.MainMenu();
+
