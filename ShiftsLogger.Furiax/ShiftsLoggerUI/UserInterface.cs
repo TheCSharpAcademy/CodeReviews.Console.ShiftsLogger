@@ -27,6 +27,20 @@ namespace ShiftsLoggerUI
 			Console.ReadKey();
 			Console.Clear();
 		}
+		internal static void DisplayShift(Shift shift)
+		{
+			var panel = new Panel($@"Employee: {shift.EmployeeName}
+Start Time: {shift.StartOfShift}
+End Time: {shift.EndOfShift}
+Time worked: {shift.Duration}");
+			panel.Header = new PanelHeader("Employee shift info");
+			panel.Padding = new Padding(2, 2, 2, 2);
+
+			AnsiConsole.Write(panel);
+            Console.WriteLine("Press any key to continue");
+			Console.ReadKey();
+			Console.Clear();
+        }
 
 		internal static async Task MainMenu()
 		{
@@ -51,6 +65,7 @@ namespace ShiftsLoggerUI
 						await ShiftsLoggerUIService.GetShifts();
 						break;
 					case MenuOptions.ShowShift:
+						ShiftsLoggerUIService.GetShift();
 						break;
 					case MenuOptions.UpdateShift:
 						break;
