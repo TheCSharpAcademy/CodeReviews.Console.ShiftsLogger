@@ -65,7 +65,7 @@ Time worked: {shift.Duration}");
 						await ShiftsLoggerUIService.GetShifts();
 						break;
 					case MenuOptions.ShowShift:
-						ShiftsLoggerUIService.GetShift();
+						await ShiftsLoggerUIService.GetShift();
 						break;
 					case MenuOptions.UpdateShift:
 						break;
