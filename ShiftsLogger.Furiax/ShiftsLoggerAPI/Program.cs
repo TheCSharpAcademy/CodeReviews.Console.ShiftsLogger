@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerAPI.DataAccess;
-using ShiftsLoggerAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

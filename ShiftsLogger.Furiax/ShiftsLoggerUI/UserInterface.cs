@@ -37,10 +37,10 @@ Time worked: {shift.Duration}");
 			panel.Padding = new Padding(2, 2, 2, 2);
 
 			AnsiConsole.Write(panel);
-            Console.WriteLine("Press any key to continue");
+			Console.WriteLine("Press any key to continue");
 			Console.ReadKey();
 			Console.Clear();
-        }
+		}
 
 		internal static async Task MainMenu()
 		{

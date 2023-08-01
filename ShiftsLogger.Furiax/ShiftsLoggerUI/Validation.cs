@@ -24,15 +24,15 @@
 				Console.WriteLine("The end of the shift must be a date greater then the start of the shift");
 				Console.ForegroundColor = ConsoleColor.White;
 				return false;
-            }
-            else
-            {
+			}
+			else
+			{
 				Console.ForegroundColor = ConsoleColor.Red;
 				Console.WriteLine("Date can't be in the future");
 				Console.ForegroundColor = ConsoleColor.White;
 				return false;
 			}
-           
+
 		}
 	}
 }

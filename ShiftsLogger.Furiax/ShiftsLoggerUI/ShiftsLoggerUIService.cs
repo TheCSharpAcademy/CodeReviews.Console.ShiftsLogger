@@ -87,7 +87,7 @@ namespace ShiftsLoggerUI
 						AnsiConsole.Ask<DateTime>("Enter a new start time (format yyyy-mm-dd hh:mm)")
 						: shift.StartOfShift;
 
-					shift.EndOfShift = AnsiConsole.Confirm($"Update the end of shift ({shift.EndOfShift}) ?" ) ?
+					shift.EndOfShift = AnsiConsole.Confirm($"Update the end of shift ({shift.EndOfShift}) ?") ?
 						AnsiConsole.Ask<DateTime>("Enter a new end time (format yyyy-mm-dd hh:mm)")
 						: shift.EndOfShift;
 				} while (!Validation.IsEndDateGreaterThanStartDate(shift.StartOfShift, shift.EndOfShift));
