@@ -60,7 +60,7 @@ Time worked: {shift.Duration}");
 				switch (option)
 				{
 					case MenuOptions.AddShift:
-						ShiftsLoggerUIService.InsertShift();
+						await ShiftsLoggerUIService.InsertShift();
 						break;
 					case MenuOptions.ShowAllShifts:
 						await ShiftsLoggerUIService.GetShifts();
@@ -69,8 +69,10 @@ Time worked: {shift.Duration}");
 						await ShiftsLoggerUIService.GetShift();
 						break;
 					case MenuOptions.UpdateShift:
+						await ShiftsLoggerUIService.UpdateShift();
 						break;
 					case MenuOptions.DeleteShift:
+						await ShiftsLoggerUIService.DeleteShift();
 						break;
 					case MenuOptions.Quit:
 						isAppAlive = false;

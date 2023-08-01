@@ -10,11 +10,18 @@ namespace ShiftsLoggerUI
 		internal static async void AddShift(Shift shift)
 		{
 			string serializeShift = JsonSerializer.Serialize(shift);
-			string apiUrl = "https://localhost:7054/api/ShiftsLogger/";
 			using (HttpClient client = new HttpClient())
 			{
 				HttpContent shiftContent = new StringContent(serializeShift, Encoding.UTF8, "application/json");
-				HttpResponseMessage response = await client.PostAsync(apiUrl, shiftContent).ConfigureAwait(false);
+				HttpResponseMessage response = await client.PostAsync("https://localhost:7054/api/ShiftsLogger/", shiftContent).ConfigureAwait(false);
+			}
+		}
+
+		internal static async Task DeleteShift(int shiftId)
+		{
+			using (HttpClient client = new HttpClient())
+			{
+				HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7054/api/ShiftsLogger/{shiftId}").ConfigureAwait(false);
 			}
 		}
 

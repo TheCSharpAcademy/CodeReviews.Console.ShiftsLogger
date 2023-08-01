@@ -11,6 +11,7 @@ namespace ShiftsLoggerUI
 			if (shifts.Count == 0)
 			{
 				Console.WriteLine("No shiftslogs found");
+				Console.ReadKey();
 			}
 			else
 			{
@@ -24,7 +25,7 @@ namespace ShiftsLoggerUI
 			var shifts = await ShiftLoggersUIController.GetShifts();
 			var shiftsArray = shifts.Select(x => x.EmployeeName).ToArray();
 			var option = AnsiConsole.Prompt(new SelectionPrompt<string>()
-				.Title("From wich employee would you like to see the shift")
+				.Title("Select the employee")
 				.AddChoices(shiftsArray));
 			var id = shifts.Single(x => x.EmployeeName == option).Id;
 			var shift = await ShiftLoggersUIController.GetEmployeeShiftById(id);
@@ -53,6 +54,35 @@ namespace ShiftsLoggerUI
 			ShiftLoggersUIController.AddShift(shift);
 			Console.Clear();
 			
+		}
+
+		internal static async Task UpdateShift()
+		{
+			var shifts = await ShiftLoggersUIController.GetShifts();
+			if (shifts.Count == 0)
+			{
+				Console.WriteLine("No shiftlogs found");
+				Console.ReadKey();
+			}
+			else
+			{
+				var shift = GetShiftOption();
+			}
+		}
+
+		internal static async Task DeleteShift()
+		{
+			var shifts = await ShiftLoggersUIController.GetShifts();
+			if (shifts.Count == 0) 
+			{
+				Console.WriteLine("No shiftlogs found");
+				Console.ReadKey();
+			}
+			else
+			{
+				var shift = await GetShiftOption();
+				await ShiftLoggersUIController.DeleteShift(shift.Id);
+			}
 		}
 	}
 
