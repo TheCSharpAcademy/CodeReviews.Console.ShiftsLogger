@@ -6,7 +6,7 @@ using System.Globalization;
 
 partial class Program
 {
-   static async Task DeleteShift()
+    static async Task DeleteShift()
     {
         ShowShifts(true);
         Console.WriteLine("Inform a id to delete");
@@ -36,7 +36,7 @@ partial class Program
         }
     }
 
-    static async Task ShowShifts(bool justShow)
+    static async Task ShowShifts( bool justShow )
     {
         var jsonClient = new RestClient("https://localhost:7221/api/");
         var request = new RestRequest("ShiftItems");
@@ -96,23 +96,15 @@ partial class Program
     static async Task AddShift()
     {
         Console.Clear();
-        Console.WriteLine("Start date!");
-        string startDate = GetDateInput();
+
+        (string startDate, string endDate) = GetDateInput();
 
         Console.Clear();
-        Console.WriteLine("Insert start time (hh:mm)");
-        string startTime = Console.ReadLine();
 
+        (string startTime, string endTime) = GetTimeInput();
+        
         DateTime startingTimeDate = DateTime.ParseExact($"{startDate} {startTime}", "dd-MM-yyyy HH:mm",
                                            System.Globalization.CultureInfo.InvariantCulture);
-
-        Console.Clear();
-        Console.WriteLine("End date!");
-        string endDate = GetDateInput();
-
-        Console.Clear();
-        Console.WriteLine("Insert end time (hh:mm)");
-        string endTime = Console.ReadLine();
 
         DateTime endingTimeDate = DateTime.ParseExact($"{endDate} {endTime}", "dd-MM-yyyy HH:mm",
                                            System.Globalization.CultureInfo.InvariantCulture);
@@ -201,20 +193,5 @@ partial class Program
             await Console.Out.WriteLineAsync("Press enter to continue!");
             Console.ReadLine();
         }
-    }
-
-    static string GetDateInput()
-    {
-        Console.WriteLine("\nPlease insert the date in the format dd-mm-yyyy. Make sure the ending date is the same or higher than the starting date!");
-
-        string dateInput = Console.ReadLine();
-
-        while (!DateTime.TryParseExact(dateInput, "dd-MM-yyyy", new CultureInfo("en-US"), DateTimeStyles.None, out _))
-        {
-            Console.WriteLine("\nInvalid date. Try again:\n");
-            dateInput = Console.ReadLine();
-        }
-
-        return dateInput;
     }
 }
