@@ -54,7 +54,7 @@ namespace ShiftsLoggerUI
 		internal static async Task UpdateShift(Shift shift)
 		{
 			string serializeShift = JsonSerializer.Serialize(shift);
-			using(HttpClient client = new HttpClient()) 
+			using (HttpClient client = new HttpClient())
 			{
 				HttpContent shiftContent = new StringContent(serializeShift, Encoding.UTF8, "application/json");
 				HttpResponseMessage response = await client.PutAsync($"https://localhost:7054/api/ShiftsLogger/{shift.Id}", shiftContent);
