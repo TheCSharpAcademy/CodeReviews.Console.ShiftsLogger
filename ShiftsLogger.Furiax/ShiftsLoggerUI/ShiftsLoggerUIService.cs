@@ -66,7 +66,22 @@ namespace ShiftsLoggerUI
 			}
 			else
 			{
-				var shift = GetShiftOption();
+				var shift = await GetShiftOption();
+
+				shift.EmployeeName = AnsiConsole.Confirm("Update name?") ?
+					AnsiConsole.Ask<string>("Enter the new employee name:")
+					: shift.EmployeeName;
+
+				shift.StartOfShift = AnsiConsole.Confirm("Update start of shift ?") ?
+					AnsiConsole.Ask<DateTime>("Enter a new start time (format yyyy-mm-dd hh:mm)")
+					: shift.StartOfShift;
+
+				shift.EndOfShift = AnsiConsole.Confirm("Update end of shift ?") ?
+					AnsiConsole.Ask<DateTime>("Enter a new end time (format yyyy-mm-dd hh:mm)")
+					: shift.EndOfShift;
+
+				await ShiftLoggersUIController.UpdateShift(shift);
+				Console.Clear();
 			}
 		}
 
