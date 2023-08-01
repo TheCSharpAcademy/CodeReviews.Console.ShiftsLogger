@@ -36,6 +36,24 @@ namespace ShiftsLoggerUI
 			var shifts = await ShiftLoggersUIController.GetShifts();
 			UserInterface.DisplayShifts(shifts);
 		}
+
+		internal static async Task InsertShift()
+		{
+			var shift = new Shift();
+
+			string name = AnsiConsole.Ask<string>("Enter the name of the employee:");
+			shift.EmployeeName = name;
+
+			DateTime start = AnsiConsole.Ask<DateTime>("Enter the start of the shift (format yyyy-mm-dd hh:mm): ");
+			shift.StartOfShift = start;
+
+			DateTime end = AnsiConsole.Ask<DateTime>("Enter the end of the shift: (format yyyy-mm-dd hh:mm) ");
+			shift.EndOfShift = end;
+
+			ShiftLoggersUIController.AddShift(shift);
+			Console.Clear();
+			
+		}
 	}
 
 }

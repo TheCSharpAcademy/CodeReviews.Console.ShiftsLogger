@@ -1,11 +1,23 @@
 ﻿using ShiftsLoggerUI.Models;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 
 namespace ShiftsLoggerUI
 {
 	internal class ShiftLoggersUIController
 	{
+		internal static async void AddShift(Shift shift)
+		{
+			string serializeShift = JsonSerializer.Serialize(shift);
+			string apiUrl = "https://localhost:7054/api/ShiftsLogger/";
+			using (HttpClient client = new HttpClient())
+			{
+				HttpContent shiftContent = new StringContent(serializeShift, Encoding.UTF8, "application/json");
+				HttpResponseMessage response = await client.PostAsync(apiUrl, shiftContent).ConfigureAwait(false);
+			}
+		}
+
 		internal static async Task<Shift> GetEmployeeShiftById(int id)
 		{
 			using HttpClient client = new HttpClient();

@@ -60,6 +60,7 @@ Time worked: {shift.Duration}");
 				switch (option)
 				{
 					case MenuOptions.AddShift:
+						ShiftsLoggerUIService.InsertShift();
 						break;
 					case MenuOptions.ShowAllShifts:
 						await ShiftsLoggerUIService.GetShifts();
