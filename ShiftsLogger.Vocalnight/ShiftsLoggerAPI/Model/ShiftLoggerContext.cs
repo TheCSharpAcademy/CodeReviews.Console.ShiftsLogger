@@ -22,7 +22,6 @@ public class ShiftLoggerContext : DbContext
         builder.MultipleActiveResultSets = true;
         builder.ConnectTimeout = 3;
 
-        string? connection = builder.ConnectionString;
     }
 
     protected override void OnModelCreating( ModelBuilder modelBuilder )

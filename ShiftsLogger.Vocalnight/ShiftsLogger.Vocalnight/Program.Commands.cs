@@ -41,7 +41,6 @@ partial class Program
         var jsonClient = new RestClient("https://localhost:7221/api/");
         var request = new RestRequest("ShiftItems");
         var response = jsonClient.ExecuteAsync(request);
-        HttpClient _client = new HttpClient();
 
         List<ShiftModel> shiftsList;
 
@@ -68,9 +67,6 @@ partial class Program
         var jsonClient = new RestClient("https://localhost:7221/api/");
         var request = new RestRequest("Employees");
         var response = jsonClient.ExecuteAsync(request);
-        HttpClient _client = new HttpClient();
-
-        List<EmployeeModel> EmployeeList;
 
         if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
         {
