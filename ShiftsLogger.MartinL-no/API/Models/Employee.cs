@@ -1,8 +1,11 @@
-﻿namespace API.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace API.Models;
 
 internal class Employee
 {
-    public int EmployeeId { get; set; }
+    public int Id { get; set; }
+    [Required]
     public string Name { get; set; }
-    public ICollection<Shift> Shifts { get; set; }
+    public ICollection<Shift> Shifts { get; } = new List<Shift>();
 }
