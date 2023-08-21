@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using API.Models;
+using API.Services;
 
 namespace API.Controllers
 {
@@ -9,39 +11,37 @@ namespace API.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly ShiftsLoggerContext _context;
+        private readonly EmployeeService _employeeService;
 
-        public EmployeeController(ShiftsLoggerContext context)
+        public EmployeeController(ShiftsLoggerContext context, EmployeeService employeeService)
         {
             _context = context;
+            _employeeService = employeeService;
         }
 
         // GET: api/Employee
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-          if (_context.Employees == null)
-          {
-              return NotFound();
-          }
-            return await _context.Employees.ToListAsync();
+            var employees = await _employeeService.GetEmployeesAsync();
+            if (employees.Count() == 0)
+            {
+                return NotFound();
+            }
+            return Ok(employees);
         }
 
         // GET: api/Employee/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
-          if (_context.Employees == null)
-          {
-              return NotFound();
-          }
-            var employee = await _context.Employees.FindAsync(id);
-
+            var employee = await _employeeService.GetEmployeeAsync(id);
             if (employee == null)
             {
                 return NotFound();
             }
 
-            return employee;
+            return Ok(employee);
         }
 
         // PUT: api/Employee/5
