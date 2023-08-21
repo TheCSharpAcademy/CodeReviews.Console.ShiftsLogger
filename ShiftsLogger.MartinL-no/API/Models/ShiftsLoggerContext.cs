@@ -2,7 +2,7 @@
 
 namespace API.Models;
 
-internal class ShiftsLoggerContext : DbContext
+public class ShiftsLoggerContext : DbContext
 {
     public DbSet<Employee> Employees { get; set; } = null!;
     public DbSet<Shift> Shifts { get; set; } = null!;

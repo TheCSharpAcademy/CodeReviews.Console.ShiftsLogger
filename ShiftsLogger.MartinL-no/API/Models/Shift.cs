@@ -2,7 +2,7 @@
 
 namespace API.Models;
 
-internal class Shift
+public class Shift
 {
     public int Id { get; set; }
     [Required]
