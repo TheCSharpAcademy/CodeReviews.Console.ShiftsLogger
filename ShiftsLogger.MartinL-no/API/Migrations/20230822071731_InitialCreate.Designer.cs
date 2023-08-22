@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
-    [DbContext(typeof(ShiftsLoggerContext))]
-    [Migration("20230820172612_InitialCreate")]
+    [DbContext(typeof(ShiftsContext))]
+    [Migration("20230822071731_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,23 +25,6 @@ namespace API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("API.Models.Employee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Employees");
-                });
-
             modelBuilder.Entity("API.Models.Shift", b =>
                 {
                     b.Property<int>("Id")
@@ -49,9 +32,6 @@ namespace API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
@@ -61,25 +41,7 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeId");
-
                     b.ToTable("Shifts");
-                });
-
-            modelBuilder.Entity("API.Models.Shift", b =>
-                {
-                    b.HasOne("API.Models.Employee", "Employee")
-                        .WithMany("Shifts")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("API.Models.Employee", b =>
-                {
-                    b.Navigation("Shifts");
                 });
 #pragma warning restore 612, 618
         }
