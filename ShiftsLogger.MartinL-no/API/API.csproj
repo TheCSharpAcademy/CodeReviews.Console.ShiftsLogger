@@ -28,13 +28,23 @@
   <ItemGroup>
     <None Remove="Models\" />
     <None Remove="Controllers\" />
+<<<<<<< Updated upstream
     <None Remove="Services\" />
     <None Remove="Models\Interfaces\" />
+=======
+    <None Remove="Models\Interfaces\" />
+    <None Remove="DAL\" />
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Controllers\" />
+<<<<<<< Updated upstream
     <Folder Include="Services\" />
     <Folder Include="Models\Interfaces\" />
+=======
+    <Folder Include="Models\Interfaces\" />
+    <Folder Include="DAL\" />
+>>>>>>> Stashed changes
   </ItemGroup>
 </Project>
