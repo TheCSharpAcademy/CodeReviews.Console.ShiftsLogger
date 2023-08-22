@@ -1,45 +1,44 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+
 using UI.Models;
 
 namespace UI.DAL;
 
 public class ShiftDataAccess
 {
-    private readonly HttpClient _client;
-
-    public ShiftDataAccess(HttpClient client)
+    private static HttpClient _sharedClient = new()
     {
-        _client = client;
+        BaseAddress = new Uri("https://localhost:7012")
+    };
+
+    public static async Task<IEnumerable<Shift>> GetShifts()
+    {
+        return await _sharedClient.GetFromJsonAsync<List<Shift>>("api/Shift");
     }
 
-    public async Task<IEnumerable<Shift>> GetShifts()
+    public static async Task<Shift> GetShift(int id)
     {
-        return await _client.GetFromJsonAsync<List<Shift>>("api/Shift");
+        return await _sharedClient.GetFromJsonAsync<Shift>($"api/Shift/{id}");
     }
 
-    public async Task<Shift> GetShift(int id)
+    public static async Task<bool> UpdateShift(int id, Shift shift)
     {
-        return await _client.GetFromJsonAsync<Shift>($"api/Shift/{id}");
-    }
-
-    public async Task<bool> UpdateShift(int id, Shift shift)
-    {
-        var response = await _client.PutAsJsonAsync($"api/Shift/{id}", shift);
+        var response = await _sharedClient.PutAsJsonAsync($"api/Shift/{id}", shift);
 
         return response.StatusCode == HttpStatusCode.NoContent;
     }
 
-    public async Task<bool> AddShift(Shift shift)
+    public static async Task<bool> AddShift(Shift shift)
     {
-        var response = await _client.PostAsJsonAsync("api/Shift", shift);
+        var response = await _sharedClient.PostAsJsonAsync("api/Shift", shift);
 
         return response.StatusCode == HttpStatusCode.Created;
     }
 
-    public async Task<bool> DeleteShift(int id)
+    public static async Task<bool> DeleteShift(int id)
     {
-        var response = await _client.DeleteAsync($"api/Shift/{id}");
+        var response = await _sharedClient.DeleteAsync($"api/Shift/{id}");
 
         return response.StatusCode == HttpStatusCode.NoContent;
     }
