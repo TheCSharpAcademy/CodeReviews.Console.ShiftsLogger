@@ -18,19 +18,6 @@ internal static class InputValidator
         return false;
     }
 
-    public static bool AreValidDates(string startTimeString, string endTimeString)
-    {
-        DateTime startTime;
-        DateTime endTime;
-
-        if (IsValidDate(startTimeString, out startTime) && IsValidDate(endTimeString, out endTime) && startTime < endTime)
-        {
-            return true;
-        }
-
-        else return false;
-    }
-
     public static DateTime ParseDateTime(string dateTimeString)
     {
         return DateTime.ParseExact(dateTimeString, _format, _cultureInfo, _style);

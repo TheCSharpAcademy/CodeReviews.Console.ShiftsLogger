@@ -7,7 +7,7 @@ namespace UI.UserInterface;
 
 static internal class UserInterface
 {
-    static public void MainMenu()
+    static public async Task MainMenuAsync()
     {
         var isAppRunning = true;
         while (isAppRunning)
@@ -26,16 +26,16 @@ static internal class UserInterface
             switch (option)
             {
                 case MainMenuOptions.AddShift:
-                    ShiftService.InsertShiftAsync();
+                    await ShiftService.InsertShiftAsync();
                     break;
                 case MainMenuOptions.UpdateShift:
-                    ShiftService.UpdateShift();
+                    await ShiftService.UpdateShiftAsync();
                     break;
                 case MainMenuOptions.DeleteShift:
-                    ShiftService.DeleteShift();
+                    //ShiftService.DeleteShift();
                     break;
                 case MainMenuOptions.ViewAllShifts:
-                    ShiftService.ViewAllShifts();
+                    //ShiftService.ViewAllShifts();
                     break;
                 case MainMenuOptions.Quit:
                     Console.WriteLine("Goodbye");
