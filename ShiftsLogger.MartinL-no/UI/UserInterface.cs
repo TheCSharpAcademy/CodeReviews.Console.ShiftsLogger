@@ -60,7 +60,7 @@ static public class UserInterface
                 shift.StartTime.ToString("yyyy-MM-dd HH:mm"),
                 shift.EndTime.ToString("yyyy-MM-dd HH:mm"),
                 shift.Duration.ToString(@"hh\:mm")
-                ); ;
+                );
         }
 
         AnsiConsole.Write(table);

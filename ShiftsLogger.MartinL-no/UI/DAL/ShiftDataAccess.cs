@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 
 using UI.Models;
 
@@ -26,14 +25,14 @@ public class ShiftDataAccess
     {
         var response = await _sharedClient.PutAsJsonAsync($"api/Shift/{id}", shift);
 
-        return response.StatusCode == HttpStatusCode.NoContent;
+        return response.StatusCode == System.Net.HttpStatusCode.NoContent;
     }
 
     public static async Task<bool> InsertShift(Shift shift)
     {
         var response = await _sharedClient.PostAsJsonAsync("api/Shift", shift);
 
-        return response.StatusCode == HttpStatusCode.Created;
+        return response.StatusCode == System.Net.HttpStatusCode.Created;
     }
 
     public static async Task<bool> DeleteShift(int id)
