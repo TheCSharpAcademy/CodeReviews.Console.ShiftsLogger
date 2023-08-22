@@ -1,3 +1,3 @@
-﻿using UI.UserInterface;
+﻿using UI;
 
 await UserInterface.MainMenuAsync();

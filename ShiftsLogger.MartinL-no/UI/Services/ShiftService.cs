@@ -35,25 +35,46 @@ internal static class ShiftService
     public static async Task UpdateShiftAsync()
     {
         var shift = await GetShiftOptionInputAsync();
+        DateTime startTime;
+        DateTime endTime;
 
         while (true)
         {
-            shift.StartTime = AnsiConsole.Confirm("Update start time?") ? GetDateTime("What is the new time (enter in this format - yyyy-MM-dd HH:mm): ") : shift.StartTime;
-            shift.EndTime = AnsiConsole.Confirm("Update end time?") ? GetDateTime("What is the new time (enter in this format - yyyy-MM-dd HH:mm): ") : shift.EndTime;
+            Console.Clear();
+            UserInterface.ShowShifts(shift);
 
-            if (shift.StartTime < shift.EndTime) break;
+            startTime = AnsiConsole.Confirm("Update start time?") ? GetDateTime("What is the new time (enter in this format - yyyy-MM-dd HH:mm): ") : shift.StartTime;
+            endTime = AnsiConsole.Confirm("Update end time?") ? GetDateTime("What is the new time (enter in this format - yyyy-MM-dd HH:mm): ") : shift.EndTime;
+
+            if (startTime < endTime) break;
             else ShowMessage("Start time must be before end time");
         }
 
+        shift.StartTime = startTime;
+        shift.EndTime = endTime;
         await ShiftDataAccess.UpdateShift(shift.Id, shift);
-        ShowMessage("Shift updated!");
 
+        ShowMessage("Shift updated!");
+    }
+
+    public static async Task DeleteShiftAsync()
+    {
+        var shift = await GetShiftOptionInputAsync();
+
+        await ShiftDataAccess.DeleteShift(shift.Id);
+        ShowMessage("Shift deleted!");
+    }
+
+    public static async Task ViewAllShiftsAsync()
+    {
+        var shifts = await ShiftDataAccess.GetShifts();
+        UserInterface.ShowShifts(shifts);
     }
 
     private static async Task<Shift> GetShiftOptionInputAsync()
     {
         var shifts = await ShiftDataAccess.GetShifts();
-        var shiftsArray = shifts.Select(x => $"{x.Id, -5}: {x.StartTime, 5} - {x.EndTime}");
+        var shiftsArray = shifts.Select(x => $"{x.Id, -5}: {x.StartTime.ToString("yyyy-MM-dd HH:mm"), 5} - {x.EndTime.ToString("yyyy-MM-dd HH:mm")}");
         var option = AnsiConsole.Prompt(new SelectionPrompt<string>()
             .Title("Choose Shift")
             .AddChoices(shiftsArray));
@@ -80,8 +101,8 @@ internal static class ShiftService
 
     private static void ShowMessage(string message)
     {
+        Console.Clear();
         Console.WriteLine(message);
         Thread.Sleep(2000);
-        Console.Clear();
     }
 }
