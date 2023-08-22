@@ -9,4 +9,5 @@ public class Shift
     public DateTime StartTime { get; set; }
     [Required]
     public DateTime EndTime { get; set; }
+    public TimeSpan Duration => EndTime - StartTime;
 }
