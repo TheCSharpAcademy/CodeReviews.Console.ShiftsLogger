@@ -9,6 +9,4 @@ public class Shift
     public DateTime StartTime { get; set; }
     [Required]
     public DateTime EndTime { get; set; }
-    public int EmployeeId { get; set; }
-    public Employee Employee { get; set; } = null!;
 }
