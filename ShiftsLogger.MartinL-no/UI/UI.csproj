@@ -11,11 +11,13 @@
     <None Remove="DAL\" />
     <None Remove="Models\" />
     <None Remove="Services\" />
+    <None Remove="UserInterface\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DAL\" />
     <Folder Include="Models\" />
     <Folder Include="Services\" />
+    <Folder Include="UserInterface\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Spectre.Console" Version="0.47.0" />

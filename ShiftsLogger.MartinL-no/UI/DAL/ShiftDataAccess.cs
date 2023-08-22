@@ -29,7 +29,7 @@ public class ShiftDataAccess
         return response.StatusCode == HttpStatusCode.NoContent;
     }
 
-    public static async Task<bool> AddShift(Shift shift)
+    public static async Task<bool> InsertShift(Shift shift)
     {
         var response = await _sharedClient.PostAsJsonAsync("api/Shift", shift);
 

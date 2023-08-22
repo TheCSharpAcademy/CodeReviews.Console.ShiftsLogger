@@ -1,8 +1,9 @@
 ﻿using Spectre.Console;
 
+using UI.Services;
 using static UI.Enums;
 
-namespace UI;
+namespace UI.UserInterface;
 
 static internal class UserInterface
 {
@@ -25,16 +26,16 @@ static internal class UserInterface
             switch (option)
             {
                 case MainMenuOptions.AddShift:
-                    AddShift();
+                    ShiftService.InsertShiftAsync();
                     break;
                 case MainMenuOptions.UpdateShift:
-                    UpdateShift();
+                    ShiftService.UpdateShift();
                     break;
                 case MainMenuOptions.DeleteShift:
-                    DeleteShift();
+                    ShiftService.DeleteShift();
                     break;
                 case MainMenuOptions.ViewAllShifts:
-                    ViewAllShifts();
+                    ShiftService.ViewAllShifts();
                     break;
                 case MainMenuOptions.Quit:
                     Console.WriteLine("Goodbye");
@@ -42,25 +43,5 @@ static internal class UserInterface
                     break;
             }
         }
-    }
-
-    private static void ViewAllShifts()
-    {
-        throw new NotImplementedException();
-    }
-
-    private static void DeleteShift()
-    {
-        throw new NotImplementedException();
-    }
-
-    private static void UpdateShift()
-    {
-        throw new NotImplementedException();
-    }
-
-    private static void AddShift()
-    {
-        throw new NotImplementedException();
     }
 }
