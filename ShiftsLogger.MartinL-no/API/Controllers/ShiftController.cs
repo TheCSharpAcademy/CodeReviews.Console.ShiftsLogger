@@ -71,7 +71,7 @@ namespace API.Controllers
 
         // DELETE: api/Shift/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteShift(int id)
+        public IActionResult DeleteShift(int id)
         {
             var isDeleted = _repository.DeleteShift(id);
             if (!isDeleted)
