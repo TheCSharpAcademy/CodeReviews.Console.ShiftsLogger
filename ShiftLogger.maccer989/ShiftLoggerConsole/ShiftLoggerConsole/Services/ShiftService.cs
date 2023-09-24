@@ -89,7 +89,7 @@ namespace ShiftLogger
                 Date = UserInput.GetShiftDate("\nPlease insert the date of shift in the format DD:MM:YY:");
                 (Duration, StartTime, EndTime) = CalculateDuration();
                 var client = new RestClient("https://localhost:7048/");
-                var request = new RestRequest($"api/ShiftLogger/{HttpUtility.UrlEncode(recordId.ToString())}", Method.Put);
+                var request = new RestRequest($"api/ShiftLogger/{HttpUtility.UrlEncode(recordId)}", Method.Put);
 
                 request.AddJsonBody(new
                 {
