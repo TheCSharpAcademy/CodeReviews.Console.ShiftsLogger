@@ -12,7 +12,7 @@ using ShiftsLoggerWebAPI.Models;
 namespace ShiftsLoggerWebAPI.Migrations
 {
     [DbContext(typeof(ShiftContext))]
-    [Migration("20231003143654_InitialCreate")]
+    [Migration("20231003161055_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,13 +25,13 @@ namespace ShiftsLoggerWebAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ShiftsLoggerWebAPI.Models.ShiftModel", b =>
+            modelBuilder.Entity("ShiftsLoggerWebAPI.Models.Shift", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("EmployeeName")
                         .HasColumnType("nvarchar(max)");

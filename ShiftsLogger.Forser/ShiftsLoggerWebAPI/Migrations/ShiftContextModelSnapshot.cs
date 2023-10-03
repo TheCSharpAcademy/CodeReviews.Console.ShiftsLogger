@@ -22,13 +22,13 @@ namespace ShiftsLoggerWebAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ShiftsLoggerWebAPI.Models.ShiftModel", b =>
+            modelBuilder.Entity("ShiftsLoggerWebAPI.Models.Shift", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("EmployeeName")
                         .HasColumnType("nvarchar(max)");
@@ -41,7 +41,7 @@ namespace ShiftsLoggerWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shifts", (string)null);
+                    b.ToTable("Shifts");
                 });
 #pragma warning restore 612, 618
         }

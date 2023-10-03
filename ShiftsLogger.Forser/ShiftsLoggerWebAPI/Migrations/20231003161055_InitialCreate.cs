@@ -15,7 +15,7 @@ namespace ShiftsLoggerWebAPI.Migrations
                 name: "Shifts",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartOfShift = table.Column<DateTime>(type: "datetime2", nullable: false),

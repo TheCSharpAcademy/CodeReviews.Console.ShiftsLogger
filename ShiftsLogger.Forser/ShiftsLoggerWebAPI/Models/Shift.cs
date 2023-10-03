@@ -1,8 +1,8 @@
 ﻿namespace ShiftsLoggerWebAPI.Models
 {
-    public class ShiftModel
+    public class Shift
     {
-        public long Id {  get; set; }
+        public int Id {  get; set; }
         public string? EmployeeName { get; set; }
         public DateTime StartOfShift {  get; set; }
         public DateTime EndOfShift { get; set; }

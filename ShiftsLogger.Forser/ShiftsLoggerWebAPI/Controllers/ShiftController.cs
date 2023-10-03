@@ -17,7 +17,7 @@ namespace ShiftsLoggerWebAPI.Controllers
 
         // GET: api/Shift
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ShiftModel>>> GetShifts()
+        public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
         {
           if (_context.Shifts == null)
           {
@@ -28,7 +28,7 @@ namespace ShiftsLoggerWebAPI.Controllers
 
         // GET: api/Shift/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ShiftModel>> GetShiftModel(int id)
+        public async Task<ActionResult<Shift>> GetShiftModel(int id)
         {
           if (_context.Shifts == null)
           {
@@ -47,7 +47,7 @@ namespace ShiftsLoggerWebAPI.Controllers
         // PUT: api/Shift/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutShiftModel(int id, ShiftModel shiftModel)
+        public async Task<IActionResult> PutShiftModel(int id, Shift shiftModel)
         {
             if (id != shiftModel.Id)
             {
@@ -78,7 +78,7 @@ namespace ShiftsLoggerWebAPI.Controllers
         // POST: api/Shift
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ShiftModel>> PostShiftModel(ShiftModel shiftModel)
+        public async Task<ActionResult<Shift>> PostShiftModel(Shift shiftModel)
         {
           if (_context.Shifts == null)
           {

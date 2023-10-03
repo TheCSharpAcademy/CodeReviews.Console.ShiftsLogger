@@ -6,7 +6,7 @@ namespace ShiftsLoggerWebAPI.Models
     {
         public ShiftContext() { }
         public ShiftContext(DbContextOptions<ShiftContext> options) : base(options) { }
-        public DbSet<ShiftModel> Shifts { get; set; }
+        public DbSet<Shift> Shifts { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=.\;Database=ShiftsLogger;Trusted_Connection=True;MultipleActiveResultSets=True;Encrypt=False");
