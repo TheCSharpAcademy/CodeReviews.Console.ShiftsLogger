@@ -84,21 +84,21 @@ internal class UserInterface
                 do
                 {
                     startOfDate = AnsiConsole.Ask("Update the Start of Shift:", shift.StartOfShift.ToString(dateFormat, cultureInfo));
-                    if (!Validator.ValidateDateTime(startOfDate.ToString()))
+                    if (!Validator.ValidateDateTime(startOfDate))
                     {
                         AnsiConsole.WriteLine("Invalid date, make sure the format is (dd-MM-yy HH:mm)");
                     }
-                } while (!Validator.ValidateDateTime(startOfDate.ToString()));
+                } while (!Validator.ValidateDateTime(startOfDate));
                 do
                 {
                     do
                     {
                         endOfDate = AnsiConsole.Ask("Update the End of Shift:", shift.EndOfShift.ToString(dateFormat, cultureInfo));
-                        if (!Validator.ValidateDateTime(endOfDate.ToString()))
+                        if (!Validator.ValidateDateTime(endOfDate))
                         {
                             AnsiConsole.WriteLine("Invalid date, make sure the format is (dd-MM-yy HH:mm)");
                         }
-                    } while (!Validator.ValidateDateTime(endOfDate.ToString()));
+                    } while (!Validator.ValidateDateTime(endOfDate));
                 } while (!Validator.AreDatesValid(DateTime.Parse(startOfDate), DateTime.Parse(endOfDate)));
 
 
@@ -174,19 +174,19 @@ internal class UserInterface
         do
         {
             startOfShift = AnsiConsole.Ask<string>("Enter the start of shift (dd-MM-yy HH:mm):");
-            if (!Validator.ValidateDateTime(startOfShift.ToString()))
+            if (!Validator.ValidateDateTime(startOfShift))
             {
                 AnsiConsole.WriteLine("Invalid date, make sure the format is (dd-MM-yy HH:mm)");
             }
-        } while (!Validator.ValidateDateTime(startOfShift.ToString()));
+        } while (!Validator.ValidateDateTime(startOfShift));
         do
         {
             endOfShift = AnsiConsole.Ask<string>("Enter the end of shift (dd-MM-yy HH:mm):");
-            if (!Validator.ValidateDateTime(endOfShift.ToString()))
+            if (!Validator.ValidateDateTime(endOfShift))
             {
                 AnsiConsole.WriteLine("Invalid date, make sure the format is (dd-MM-yy HH:mm)");
             }
-        } while (!Validator.ValidateDateTime(endOfShift.ToString()));
+        } while (!Validator.ValidateDateTime(endOfShift));
 
         ShiftDto newShift = new()
         {
