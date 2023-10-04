@@ -10,7 +10,22 @@ internal class ShiftLoggerController
     }
     public async Task<IEnumerable<Shift>> GetShifts()
     {
-        var shifts = await _apiRepo.GetShifts();
-        return shifts;
+        return await _apiRepo.GetShifts();
+    }
+    public async Task<Shift> GetShift(int id)
+    {
+        return await _apiRepo.GetShift(id);
+    }
+    public async Task<bool> PostShift(ShiftDto newShift)
+    {
+        return await _apiRepo.PostShift(newShift);
+    }
+    internal async Task<bool> DeleteShift(int selectedShift)
+    {
+        return await _apiRepo.DeleteShift(selectedShift);
+    }
+    internal async Task<bool> UpdateShift(ShiftDto newShift)
+    {
+        return await _apiRepo.UpdateShift(newShift);
     }
 }

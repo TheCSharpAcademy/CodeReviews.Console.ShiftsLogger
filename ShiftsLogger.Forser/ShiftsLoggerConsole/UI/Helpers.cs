@@ -11,5 +11,9 @@
         {
             AnsiConsole.Write(new Rule($"[lightslateblue]{message}[/]"));
         }
+        internal static void RenderMessage(string message)
+        {
+            AnsiConsole.WriteLine($"{message}");
+        }
     }
 }
