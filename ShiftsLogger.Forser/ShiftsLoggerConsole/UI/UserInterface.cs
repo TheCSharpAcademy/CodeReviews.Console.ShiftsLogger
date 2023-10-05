@@ -212,19 +212,21 @@ internal class UserInterface
     {
         AnsiConsole.Clear();
         Helpers.RenderTitle("List of Shifts");
-        List<Shift> shifts = (await _controller.GetShifts()).ToList();
+        List<Shift>? shifts = (await _controller.GetShifts()).ToList();
 
-        Table table = new Table();
-        table.Expand();
-        table.AddColumns("Employee Name", "Start of Shift", "End of Shift", "Duration");
-
-        foreach (Shift shift in shifts)
+        if (shifts != null)
         {
-            table.AddRow($"{shift.EmployeeName}", $"{shift.StartOfShift}", $"{shift.EndOfShift}", $"{shift.Duration}");
+            Table table = new Table();
+            table.Expand();
+            table.AddColumns("Employee Name", "Start of Shift", "End of Shift", "Duration");
+
+            foreach (Shift shift in shifts)
+            {
+                table.AddRow($"{shift.EmployeeName}", $"{shift.StartOfShift}", $"{shift.EndOfShift}", $"{shift.Duration}");
+            }
+
+            AnsiConsole.Write(table);
         }
-
-        AnsiConsole.Write(table);
-
         AnsiConsole.WriteLine("Press any key to return to main menu");
     }
     private SelectionPrompt<Menu> DrawMenu()

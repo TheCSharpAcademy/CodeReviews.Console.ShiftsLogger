@@ -14,7 +14,7 @@ namespace ShiftsLoggerConsole.API
         }
         public async Task<IEnumerable<Shift>> GetShifts()
         {
-            List<Shift>? response = null;
+            List<Shift>? response = new List<Shift>();
             
             try
             {
@@ -101,7 +101,7 @@ namespace ShiftsLoggerConsole.API
             }
             catch (Exception ex)
             {
-                AnsiConsole.WriteLine($"API Service isn't responding. - {ex.Message}");
+                AnsiConsole.WriteLine($"API Service isn't responding. - {ex.Message}, Press any key to return to Main Menu");
                 return false;
             }
         }
