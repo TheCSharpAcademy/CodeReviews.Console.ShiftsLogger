@@ -14,7 +14,16 @@ namespace ShiftsLoggerConsole.API
         }
         public async Task<IEnumerable<Shift>> GetShifts()
         {
-            var response = await _apiClient.GetFromJsonAsync<List<Shift>>("");
+            List<Shift>? response = null;
+            
+            try
+            {
+                response = await _apiClient.GetFromJsonAsync<List<Shift>>("");
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.WriteLine($"API Service isn't responding. - {ex.Message}");
+            }
 
             return response;
         }
@@ -22,46 +31,79 @@ namespace ShiftsLoggerConsole.API
         {
             var json = JsonSerializer.Serialize(shift);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            using (HttpResponseMessage response = await _apiClient.PostAsync("", content))
+            try
             {
-                if (response.IsSuccessStatusCode)
+                using (HttpResponseMessage response = await _apiClient.PostAsync("", content))
                 {
-                    return true;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
-                else
-                {
-                    return false;
-                }
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.WriteLine($"API Service isn't responding. - {ex.Message}");
+                return false;
             }
         }
         public async Task<bool> DeleteShift(int selectedShift)
         {
-            using (HttpResponseMessage response = await _apiClient.DeleteAsync($"{selectedShift}"))
+            try
             {
-                if (!response.IsSuccessStatusCode)
+                using (HttpResponseMessage response = await _apiClient.DeleteAsync($"{selectedShift}"))
                 {
-                    return false;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return false;
+                    }
                 }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.WriteLine($"API Service isn't responding. - {ex.Message}");
+                return false;
             }
 
-            return true;
         }
         public async Task<Shift> GetShift(int id)
         {
-            var response = await _apiClient.GetFromJsonAsync<Shift>($"{id}");
+            Shift? response = null;
+            try
+            {
+                 response = await _apiClient.GetFromJsonAsync<Shift>($"{id}");
+            }
+            catch (Exception ex)
+            {
+                AnsiConsole.WriteLine($"API Service isn't responding. - {ex.Message}");
+            }
 
             return response;
         }
         public async Task<bool> UpdateShift(ShiftDto newShift)
         {
-            using (HttpResponseMessage response = await _apiClient.PutAsJsonAsync($"{newShift.Id}", newShift))
+            try
             {
-                if (!response.IsSuccessStatusCode)
+                using (HttpResponseMessage response = await _apiClient.PutAsJsonAsync($"{newShift.Id}", newShift))
                 {
-                    return false;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return false;
+                    }
                 }
+                return true;
             }
-            return true;
+            catch (Exception ex)
+            {
+                AnsiConsole.WriteLine($"API Service isn't responding. - {ex.Message}");
+                return false;
+            }
         }
     }
 }
