@@ -6,7 +6,26 @@ using ShiftLogger.Models;
 namespace ShiftLogger
 {
     public class ShiftService
-    {        
+    {
+        public static void CheckAPIIsConnected()
+        {
+            Console.WriteLine("Checking API is connected");
+            var client = new RestClient("https://localhost:7048/");
+            var request = new RestRequest("api/ShiftLogger");
+            var response = client.ExecuteAsync(request);           
+
+            if (response.Result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                Console.WriteLine("\nAPI is connected: Status Code - " + response.Result.StatusCode + " press enter to go to Main Menu");
+                Console.ReadLine();
+            }
+            else
+            {
+                Console.WriteLine("\nAPI Error: Status Code - " + response.Result.StatusCode + " API not connected press enter to go to Main Menu");
+                Console.ReadLine();
+            }
+        }
+
         public static List<Shift> GetAllShifts()
         {
             var client = new RestClient("https://localhost:7048/");
@@ -22,6 +41,10 @@ namespace ShiftLogger
                 TableVisualisation.ShowTable(shifts, "Shift Logger");
                 return shifts;
             }
+            else
+            {
+                Console.WriteLine("\nAPI Error: Status Code - " + response.Result.StatusCode + " Returning to Main Menu");
+            }
             return shifts;
         }
         public static void DeleteAShift()
@@ -30,7 +53,15 @@ namespace ShiftLogger
             recordId = Validator.CheckShiftId(recordId);
             var client = new RestClient("https://localhost:7048/");
             var request = new RestRequest($"api/ShiftLogger/{HttpUtility.UrlEncode(recordId)}", Method.Delete);
-            client.ExecuteAsync(request);            
+            var response = client.ExecuteAsync(request);
+            if (response.Result.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                Console.WriteLine("\nDELETE request was successful.");
+            }
+            else
+            {
+                Console.WriteLine("\nDELETE request failed with status code: " + response.Result.StatusCode + " Returning to Main Menu");
+            }
         }
         public static void InsertAShift()
         {
@@ -56,8 +87,15 @@ namespace ShiftLogger
                 shiftEndTime = EndTime,
                 duration = Duration.ToString()
             });
-            
-            client.ExecuteAsync(request);
+            var response = client.ExecuteAsync(request);
+            if (response.Result.StatusCode == System.Net.HttpStatusCode.Created)
+            {
+                Console.WriteLine("\nINSERT request was successful.");
+            }
+            else
+            {
+                Console.WriteLine("\nINSERT request failed with status code: " + response.Result.StatusCode + " Returning to Main Menu");
+            }
         }
         private static (string, string)GetEmployee()
         {
@@ -89,7 +127,7 @@ namespace ShiftLogger
                 Date = UserInput.GetShiftDate("\nPlease insert the date of shift in the format DD:MM:YY:");
                 (Duration, StartTime, EndTime) = CalculateDuration();
                 var client = new RestClient("https://localhost:7048/");
-                var request = new RestRequest($"api/ShiftLogger/{HttpUtility.UrlEncode(recordId)}", Method.Put);
+                var request = new RestRequest($"api/ShiftLogger/{HttpUtility.UrlEncode(recordId.ToString())}", Method.Put);
 
                 request.AddJsonBody(new
                 {
@@ -101,7 +139,15 @@ namespace ShiftLogger
                     shiftEndTime = EndTime,
                     duration = Duration.ToString()
                 });
-                client.ExecuteAsync(request);
+                var response = client.ExecuteAsync(request);
+                if (response.Result.StatusCode == System.Net.HttpStatusCode.NoContent)
+                {
+                    Console.WriteLine("\nUPDATE request was successful.");
+                }
+                else
+                {
+                    Console.WriteLine("\nUPDATE request failed with status code: " + response.Result.StatusCode + " Returning to Main Menu");
+                }
             }
         }
         public static (int, string, string) CalculateDuration()

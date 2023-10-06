@@ -1,5 +1,5 @@
 ﻿using ShiftLogger;
-
+ShiftService.CheckAPIIsConnected();
 GetMainMenu();
 static void GetMainMenu()
 {

@@ -37,6 +37,7 @@ namespace ShiftLogger
         public static string CheckShiftId(string recordId)
         {
             bool isValidRecord = false;
+            string output;
             do
             {
                 var client = new RestClient("https://localhost:7048/");
@@ -46,6 +47,12 @@ namespace ShiftLogger
                 {
                     isValidRecord = true;
                     Console.WriteLine("Shift Record is Valid");
+                }
+                else if (response.Result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine("API Error: Status Code - " + response.Result.StatusCode + " Returning to Main Menu");
+                    recordId = "0";
+                    break;
                 }
                 else
                 {
