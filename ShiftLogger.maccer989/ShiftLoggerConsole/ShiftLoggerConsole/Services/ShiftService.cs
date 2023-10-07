@@ -7,7 +7,7 @@ namespace ShiftLogger
 {
     public class ShiftService
     {
-        public static void CheckAPIIsConnected()
+        public static void CheckApiIsConnected()
         {
             Console.WriteLine("Checking API is connected");
             var client = new RestClient("https://localhost:7048/");
@@ -127,7 +127,7 @@ namespace ShiftLogger
                 Date = UserInput.GetShiftDate("\nPlease insert the date of shift in the format DD:MM:YY:");
                 (Duration, StartTime, EndTime) = CalculateDuration();
                 var client = new RestClient("https://localhost:7048/");
-                var request = new RestRequest($"api/ShiftLogger/{HttpUtility.UrlEncode(recordId.ToString())}", Method.Put);
+                var request = new RestRequest($"api/ShiftLogger/{HttpUtility.UrlEncode(recordId)}", Method.Put);
 
                 request.AddJsonBody(new
                 {
