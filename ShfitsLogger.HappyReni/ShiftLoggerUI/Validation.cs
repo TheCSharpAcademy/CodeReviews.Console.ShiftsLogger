@@ -15,5 +15,14 @@ namespace ShiftLoggerUI
 
             throw new Exception("Invalid DateTime format.");
         }
+        public static bool CheckStartEndTime(DateTime start, DateTime end)
+        {
+            if (end - start > TimeSpan.Zero)
+            {
+                return true;
+            }
+
+            throw new Exception("end time shouldn't come before start time.");
+        }
     }
 }

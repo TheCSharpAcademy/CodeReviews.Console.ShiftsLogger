@@ -55,14 +55,14 @@ namespace ShiftLoggerUI
                 var name = UI.GetInput("Type a worker's name.").str;
                 var startTime = Validation.CheckDateTime(UI.GetInput("Type a start time of work. (YYYY-MM-dd HH:mm:ss)").str);
                 var endTime = Validation.CheckDateTime(UI.GetInput("Type a end time of work. (YYYY-MM-dd HH:mm:ss)").str);
-
-                ShiftController.AddShift(new Shift() { Id = 0, Name = name, StartTime = startTime, EndTime = endTime });
+                
+                if(Validation.CheckStartEndTime(startTime, endTime))
+                    ShiftController.AddShift(new Shift() { Id = 0, Name = name, StartTime = startTime, EndTime = endTime });
             }
             catch(Exception ex)
             {
                 UI.Write(ex.Message);
             }
-            
         }
 
         private void ReadShift()
@@ -88,7 +88,9 @@ namespace ShiftLoggerUI
                 var name = UI.GetInput("Type new worker's name.").str;
                 var startTime = Validation.CheckDateTime(UI.GetInput("Type a start time of work. (YYYY-MM-dd HH:mm:ss)").str);
                 var endTime = Validation.CheckDateTime(UI.GetInput("Type a end time of work. (YYYY-MM-dd HH:mm:ss)").str);
-                await ShiftController.UpdateShift(id,
+
+                if (Validation.CheckStartEndTime(startTime, endTime))
+                    await ShiftController.UpdateShift(id,
                                 new Shift() { Id = id, Name = name, StartTime = startTime, EndTime = endTime });
             } 
             catch(Exception ex)
