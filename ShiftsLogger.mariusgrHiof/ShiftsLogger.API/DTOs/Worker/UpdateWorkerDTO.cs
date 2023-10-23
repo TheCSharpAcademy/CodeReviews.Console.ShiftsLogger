@@ -1,5 +1,5 @@
 ﻿namespace ShiftsLogger.API.DTOs.Worker;
-public class UpdateWorkerDTO
+public class UpdateWorkerDto
 {
     public int Id { get; set; }
     public string FirstName { get; set; } = string.Empty;
