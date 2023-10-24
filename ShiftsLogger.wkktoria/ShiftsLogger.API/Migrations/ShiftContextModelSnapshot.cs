@@ -33,10 +33,10 @@ namespace ShiftsLogger.API.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<DateTime>("FinishAt")
+                    b.Property<DateTime>("FinishedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartAt")
+                    b.Property<DateTime>("StartedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("WorkerName")

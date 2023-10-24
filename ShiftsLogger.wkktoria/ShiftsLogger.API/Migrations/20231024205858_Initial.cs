@@ -17,8 +17,9 @@ namespace ShiftsLogger.API.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StartAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FinishAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    WorkerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FinishedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false)
                 },
                 constraints: table =>

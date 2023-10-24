@@ -45,9 +45,9 @@ public class ShiftsController : ControllerBase
         if (shift == null) return NotFound();
 
         shift.WorkerName = shiftDto.WorkerName;
-        shift.StartAt = shiftDto.StartAt;
-        shift.FinishAt = shiftDto.FinishAt;
-        shift.Duration = (shiftDto.FinishAt - shiftDto.StartAt).Duration();
+        shift.StartedAt = shiftDto.StartedAt;
+        shift.FinishedAt = shiftDto.FinishedAt;
+        shift.Duration = (shiftDto.FinishedAt - shiftDto.StartedAt).Duration();
 
         try
         {
@@ -68,9 +68,9 @@ public class ShiftsController : ControllerBase
         var shift = new Shift
         {
             WorkerName = shiftDto.WorkerName,
-            StartAt = shiftDto.StartAt,
-            FinishAt = shiftDto.FinishAt,
-            Duration = (shiftDto.FinishAt - shiftDto.StartAt).Duration()
+            StartedAt = shiftDto.StartedAt,
+            FinishedAt = shiftDto.FinishedAt,
+            Duration = (shiftDto.FinishedAt - shiftDto.StartedAt).Duration()
         };
 
         _context.Shifts.Add(shift);

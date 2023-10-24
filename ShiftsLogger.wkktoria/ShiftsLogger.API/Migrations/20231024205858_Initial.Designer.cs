@@ -12,7 +12,7 @@ using ShiftsLogger.API.Models.Contexts;
 namespace ShiftsLogger.API.Migrations
 {
     [DbContext(typeof(ShiftContext))]
-    [Migration("20231024180906_Initial")]
+    [Migration("20231024205858_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -36,11 +36,15 @@ namespace ShiftsLogger.API.Migrations
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
-                    b.Property<DateTime>("FinishAt")
+                    b.Property<DateTime>("FinishedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartAt")
+                    b.Property<DateTime>("StartedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("WorkerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
