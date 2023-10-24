@@ -1,25 +1,41 @@
-using System.Net;
 using Newtonsoft.Json;
 using RestSharp;
+using ShiftsLogger.UI.Exceptions;
 using ShiftsLogger.UI.Models;
+using Spectre.Console;
 
 namespace ShiftsLogger.UI.Controllers;
 
 public static class ShiftController
 {
+    private static readonly RestClient Client = new("http://localhost:5145/api");
+
     public static List<Shift>? GetShifts()
     {
-        var client = new RestClient("http://localhost:5145/api");
-        var request = new RestRequest("/shifts");
-        var response = client.ExecuteAsync(request);
+        try
+        {
+            var request = new RestRequest("/shifts")
+            {
+                Method = Method.Get
+            };
+            var response = Client.ExecuteAsync(request);
 
-        if (response.Result.StatusCode != HttpStatusCode.OK) return null;
+            if (!response.Result.IsSuccessful) throw new ApiException("Request was not successful.");
 
-        var rawResponse = response.Result.Content;
-        if (rawResponse == null) return null;
+            var rawResponse = response.Result.Content;
 
-        var shifts = JsonConvert.DeserializeObject<List<Shift>>(rawResponse);
+            if (rawResponse == null) throw new ApiException("No content.");
 
-        return shifts;
+            var shifts = JsonConvert.DeserializeObject<List<Shift>>(rawResponse);
+
+            return shifts;
+        }
+        catch (ApiException ex)
+        {
+            var messageParts = ex.Message.Split(":");
+            AnsiConsole.MarkupLineInterpolated($"[red]{messageParts[0]}[/]{messageParts[1]}");
+        }
+
+        return null;
     }
 }

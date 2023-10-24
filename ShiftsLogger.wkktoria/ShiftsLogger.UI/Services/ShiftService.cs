@@ -9,13 +9,9 @@ public static class ShiftService
     {
         var shifts = ShiftController.GetShifts();
 
-        if (shifts == null)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Cannot get shifts.");
-            Console.ResetColor();
-        }
-        else if (shifts.Any())
+        if (shifts == null) return;
+
+        if (shifts.Any())
         {
             var shiftsForView = shifts.Select(shift =>
                 new ShiftViewDto
@@ -30,7 +26,7 @@ public static class ShiftService
         }
         else
         {
-            Console.WriteLine("No shifts found.");
+            Console.WriteLine("No logged shifts.");
         }
     }
 }

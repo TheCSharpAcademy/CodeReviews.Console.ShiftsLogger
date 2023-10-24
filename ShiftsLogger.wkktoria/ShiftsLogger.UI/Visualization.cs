@@ -14,8 +14,8 @@ public static class Visualization
         };
 
         table.AddColumn("Worker Name");
-        table.AddColumn("Start At");
-        table.AddColumn("Finish At");
+        table.AddColumn("Started At");
+        table.AddColumn("Finished At");
         table.AddColumn("Duration");
 
         foreach (var shift in shifts)
