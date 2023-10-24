@@ -21,11 +21,27 @@ public static class Visualization
         foreach (var shift in shifts)
             table.AddRow(
                 shift.WorkerName,
-                shift.StartAt.ToString(CultureInfo.InvariantCulture),
-                shift.FinishAt.ToString(CultureInfo.InvariantCulture),
+                shift.StartedAt.ToString(CultureInfo.InvariantCulture),
+                shift.FinishedAt.ToString(CultureInfo.InvariantCulture),
                 shift.Duration.ToString()
             );
 
         AnsiConsole.Write(table);
+    }
+
+    public static void ShowShiftDetails(ShiftViewDto shift)
+    {
+        var panel = new Panel($"""
+                               Worker Name: {shift.WorkerName}
+                               Started At: {shift.StartedAt}
+                               Finished At: {shift.FinishedAt}
+                               Duration: {shift.Duration}
+                               """)
+        {
+            Header = new PanelHeader("Details"),
+            Padding = new Padding(1)
+        };
+
+        AnsiConsole.Write(panel);
     }
 }
