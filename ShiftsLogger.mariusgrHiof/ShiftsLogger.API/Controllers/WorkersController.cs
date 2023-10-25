@@ -37,7 +37,7 @@ public class WorkersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateWorker(AddWorkerDTO newWorker)
+    public async Task<IActionResult> CreateWorker(AddWorkerDto newWorker)
     {
         Worker? worker = await _workersService.CreateWorkerAsync(newWorker);
         if (worker == null) return BadRequest();
@@ -46,7 +46,7 @@ public class WorkersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateWorkerById(int id, UpdateWorkerDTO updateWorker)
+    public async Task<IActionResult> UpdateWorkerById(int id, UpdateWorkerDto updateWorker)
     {
         var worker = await _workersService.UpdateWorkerAsync(id, updateWorker);
         if (worker == null) return NotFound();

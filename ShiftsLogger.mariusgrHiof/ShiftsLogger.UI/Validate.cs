@@ -37,7 +37,7 @@ public static class Validate
         {
             var json = result.Content.ReadAsStringAsync().Result;
 
-            UpdateShiftDTO? shift = JsonSerializer.Deserialize<UpdateShiftDTO>(json);
+            UpdateShiftDto? shift = JsonSerializer.Deserialize<UpdateShiftDto>(json);
 
             if (shift == null)
             {
@@ -66,7 +66,7 @@ public static class Validate
         {
             var json = result.Content.ReadAsStringAsync().Result;
 
-            UpdateShiftDTO? shift = JsonSerializer.Deserialize<UpdateShiftDTO>(json);
+            UpdateShiftDto? shift = JsonSerializer.Deserialize<UpdateShiftDto>(json);
 
             if (shift == null)
             {

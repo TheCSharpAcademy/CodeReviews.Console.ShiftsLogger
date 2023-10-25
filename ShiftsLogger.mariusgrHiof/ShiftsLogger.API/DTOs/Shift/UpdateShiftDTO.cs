@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace ShiftsLogger.API.DTOs.Shift;
-public class UpdateShiftDTO
+public class UpdateShiftDto
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }
