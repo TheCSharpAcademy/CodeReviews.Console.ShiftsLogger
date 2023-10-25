@@ -87,7 +87,7 @@ public static class UI
             }
             var json = result.Content.ReadAsStringAsync().Result;
 
-            UpdateShiftDTO? updateShift = JsonSerializer.Deserialize<UpdateShiftDTO>(json);
+            UpdateShiftDto? updateShift = JsonSerializer.Deserialize<UpdateShiftDto>(json);
 
             string? startDate = GetStartDate();
             if (startDate == null) CloseApp();
@@ -166,7 +166,7 @@ public static class UI
             }
             string? workerId = GetWorkerId();
 
-            var newShift = new AddShiftDTO
+            var newShift = new AddShiftDto
             {
                 Start = DateTime.Parse(startDate),
                 End = DateTime.Parse(endDate),
@@ -197,11 +197,11 @@ public static class UI
             {
                 var json = result.Content.ReadAsStringAsync().Result;
 
-                List<GetShiftDTO>? shifts = JsonSerializer.Deserialize<List<GetShiftDTO>>(json);
+                List<GetShiftDto>? shifts = JsonSerializer.Deserialize<List<GetShiftDto>>(json);
 
                 if (shifts != null && shifts.Count > 0)
                 {
-                    foreach (GetShiftDTO shift in shifts)
+                    foreach (GetShiftDto shift in shifts)
                     {
                         tableData.Add(new List<object> { shift.Id, shift.Start, shift.End, shift.Duration, shift.WorkerId });
                     }
@@ -268,11 +268,11 @@ public static class UI
             {
                 var json = result.Content.ReadAsStringAsync().Result;
 
-                List<GetWorkerDTO>? workers = JsonSerializer.Deserialize<List<GetWorkerDTO>>(json);
+                List<GetWorkerDto>? workers = JsonSerializer.Deserialize<List<GetWorkerDto>>(json);
 
                 if (workers != null && workers.Count > 0)
                 {
-                    foreach (GetWorkerDTO worker in workers)
+                    foreach (GetWorkerDto worker in workers)
                     {
                         tableData.Add(new List<object> { worker.Id, worker.FirstName, worker.LastName });
                     }
@@ -305,7 +305,7 @@ public static class UI
                 lastName = GetLastName();
             }
 
-            var newWorker = new AddWorkerDTO
+            var newWorker = new AddWorkerDto
             {
                 FirstName = firstName,
                 LastName = lastName,
@@ -343,7 +343,7 @@ public static class UI
 
             var json = result.Content.ReadAsStringAsync().Result;
 
-            UpdateWorkerDTO? updateWorker = JsonSerializer.Deserialize<UpdateWorkerDTO>(json);
+            UpdateWorkerDto? updateWorker = JsonSerializer.Deserialize<UpdateWorkerDto>(json);
 
             string? firstName = GetFirstName();
 

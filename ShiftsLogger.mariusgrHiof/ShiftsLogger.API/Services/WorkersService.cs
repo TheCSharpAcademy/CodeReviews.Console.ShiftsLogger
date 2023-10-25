@@ -14,11 +14,11 @@ public class WorkersService
         _context = context;
     }
 
-    public async Task<List<GetWorkerDTO>> GetAllWorkersAsync()
+    public async Task<List<GetWorkerDto>> GetAllWorkersAsync()
     {
         var workers = await _context
            .Workers
-           .Select(w => new GetWorkerDTO
+           .Select(w => new GetWorkerDto
            {
                Id = w.Id,
                FirstName = w.FirstName,
@@ -29,12 +29,12 @@ public class WorkersService
         return workers;
     }
 
-    public async Task<GetWorkerDTO?> GetWorkerByIdAsync(int id)
+    public async Task<GetWorkerDto?> GetWorkerByIdAsync(int id)
     {
         var worker = await _context.Workers.FirstOrDefaultAsync(w => w.Id == id);
         if (worker == null) return null;
 
-        GetWorkerDTO workerDTO = new GetWorkerDTO
+        GetWorkerDto workerDTO = new GetWorkerDto
         {
             Id = worker.Id,
             FirstName = worker.FirstName,
@@ -42,7 +42,7 @@ public class WorkersService
         };
         return workerDTO;
     }
-    public async Task<Worker?> CreateWorkerAsync(AddWorkerDTO newWorker)
+    public async Task<Worker?> CreateWorkerAsync(AddWorkerDto newWorker)
     {
         if (newWorker == null) return null;
 
@@ -58,7 +58,7 @@ public class WorkersService
 
         return worker;
     }
-    public async Task<Worker?> UpdateWorkerAsync(int id, UpdateWorkerDTO updateWorker)
+    public async Task<Worker?> UpdateWorkerAsync(int id, UpdateWorkerDto updateWorker)
     {
         if (updateWorker == null) return null;
         if (id != updateWorker.Id) return null;
@@ -84,12 +84,12 @@ public class WorkersService
 
         return worker;
     }
-    public async Task<List<UpdateShiftDTO>> GetWorkerShiftsAsync(int id)
+    public async Task<List<UpdateShiftDto>> GetWorkerShiftsAsync(int id)
     {
         var shifts = await _context
            .Shifts
            .Include(s => s.Worker)
-           .Select(s => new UpdateShiftDTO
+           .Select(s => new UpdateShiftDto
            {
                WorkerId = s.WorkerId,
                Start = s.Start,

@@ -37,7 +37,7 @@ public class ShiftsLoggerController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateShift(AddShiftDTO newShift)
+    public async Task<IActionResult> CreateShift(AddShiftDto newShift)
     {
         Shift? shift = await _shiftsService.CreateShiftAsync(newShift);
         if (shift == null) return BadRequest();
@@ -46,7 +46,7 @@ public class ShiftsLoggerController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateShift(int id, UpdateShiftDTO updateShift)
+    public async Task<IActionResult> UpdateShift(int id, UpdateShiftDto updateShift)
     {
         Shift? shift = await _shiftsService.UpdateShiftAsync(id, updateShift);
         if (shift == null) return BadRequest();

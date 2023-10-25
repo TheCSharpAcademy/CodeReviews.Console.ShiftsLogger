@@ -2,7 +2,7 @@
 
 namespace ShiftsLogger.API.DTOs.Shift
 {
-    public class GetShiftDTO
+    public class GetShiftDto
     {
         [JsonPropertyName("id")]
         public int Id { get; set; }
