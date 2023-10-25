@@ -12,44 +12,58 @@ public static class ShiftController
 
     public static List<Shift> GetShifts()
     {
-        var request = new RestRequest("/shifts")
+        try
         {
-            Method = Method.Get
-        };
-        var response = Client.ExecuteAsync(request);
+            var request = new RestRequest("/shifts")
+            {
+                Method = Method.Get
+            };
+            var response = Client.ExecuteAsync(request);
 
-        if (!response.Result.IsSuccessful) throw new ApiException("Request was not successful. Is API server running?");
+            if (!response.Result.IsSuccessful) throw new ApiException("Operation was not successful.");
 
-        var rawResponse = response.Result.Content;
+            var rawResponse = response.Result.Content;
 
-        if (rawResponse == null) throw new ApiException("Response content doesn't exist.");
+            if (rawResponse == null) throw new ApiException("Response content doesn't exist.");
 
-        var shifts = JsonConvert.DeserializeObject<List<Shift>>(rawResponse);
+            var shifts = JsonConvert.DeserializeObject<List<Shift>>(rawResponse);
 
-        if (shifts == null) throw new ApiException("Cannot deserialize response content.");
+            if (shifts == null) throw new ApiException("Cannot deserialize response content.");
 
-        return shifts;
+            return shifts;
+        }
+        catch (Exception)
+        {
+            throw new ApiException("Cannot connect to server. Is API server running?");
+        }
     }
 
     public static Shift GetShiftById(long id)
     {
-        var request = new RestRequest($"/shifts/{id}")
+        try
         {
-            Method = Method.Get
-        };
-        var response = Client.ExecuteAsync(request);
+            var request = new RestRequest($"/shifts/{id}")
+            {
+                Method = Method.Get
+            };
+            var response = Client.ExecuteAsync(request);
 
-        if (!response.Result.IsSuccessful) throw new ApiException("Request was not successful. Is API server running?");
+            if (!response.Result.IsSuccessful) throw new ApiException("Operation was not successful.");
 
-        var rawResponse = response.Result.Content;
+            var rawResponse = response.Result.Content;
 
-        if (rawResponse == null) throw new ApiException("Response content doesn't exist.");
+            if (rawResponse == null) throw new ApiException("Response content doesn't exist.");
 
-        var shift = JsonConvert.DeserializeObject<Shift>(rawResponse);
+            var shift = JsonConvert.DeserializeObject<Shift>(rawResponse);
 
-        if (shift == null) throw new ApiException("Cannot deserialize response content.");
+            if (shift == null) throw new ApiException("Cannot deserialize response content.");
 
-        return shift;
+            return shift;
+        }
+        catch (Exception)
+        {
+            throw new ApiException("Cannot connect to server. Is API server running?");
+        }
     }
 
     public static void AddShift(ShiftDto shift)
