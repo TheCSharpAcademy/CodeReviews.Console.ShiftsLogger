@@ -30,8 +30,8 @@ namespace ShiftsLogger.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
+                    b.Property<double>("Duration")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("FinishedAt")
                         .HasColumnType("datetime2");

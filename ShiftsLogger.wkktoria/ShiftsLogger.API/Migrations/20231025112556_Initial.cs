@@ -20,7 +20,7 @@ namespace ShiftsLogger.API.Migrations
                     WorkerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StartedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FinishedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "time", nullable: false)
+                    Duration = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {

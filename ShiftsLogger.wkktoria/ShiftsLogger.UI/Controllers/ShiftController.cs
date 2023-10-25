@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using RestSharp;
 using ShiftsLogger.UI.Exceptions;
 using ShiftsLogger.UI.Models;
+using ShiftsLogger.UI.Models.DTOs;
 
 namespace ShiftsLogger.UI.Controllers;
 
@@ -49,5 +50,21 @@ public static class ShiftController
         if (shift == null) throw new ApiException("Cannot deserialize response content.");
 
         return shift;
+    }
+
+    public static void AddShift(ShiftDto shift)
+    {
+        try
+        {
+            var response = Client.PostJsonAsync("/shifts", shift);
+
+            response.Wait();
+
+            if (!response.IsCompletedSuccessfully) throw new ApiException("Operation was not successful.");
+        }
+        catch (Exception)
+        {
+            throw new ApiException("Cannot connect to server. Is API server running?");
+        }
     }
 }

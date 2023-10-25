@@ -1,3 +1,4 @@
+using System.Globalization;
 using ShiftsLogger.UI.Controllers;
 using ShiftsLogger.UI.Exceptions;
 using ShiftsLogger.UI.Models.DTOs;
@@ -31,9 +32,9 @@ public static class ShiftService
                 Console.WriteLine("No logged shifts.");
             }
         }
-        catch (ApiException ex)
+        catch (ApiException e)
         {
-            var messageParts = ex.Message.Split(":");
+            var messageParts = e.Message.Split(":");
             AnsiConsole.MarkupLineInterpolated($"[red]{messageParts[0]}[/]{messageParts[1]}");
         }
     }
@@ -62,11 +63,50 @@ public static class ShiftService
                 Console.WriteLine("No logged shifts.");
             }
         }
-        catch (ApiException ex)
+        catch (ApiException e)
         {
-            var messageParts = ex.Message.Split(":");
+            var messageParts = e.Message.Split(":");
             AnsiConsole.MarkupLineInterpolated($"[red]{messageParts[0]}[/]{messageParts[1]}");
         }
+    }
+
+    public static void AddShift()
+    {
+        try
+        {
+            var shift = GetShiftInput();
+
+            ShiftController.AddShift(shift);
+            AnsiConsole.MarkupLine("[green]Shift was added.[/]");
+        }
+        catch (ApiException e)
+        {
+            var messageParts = e.Message.Split(":");
+            AnsiConsole.MarkupLineInterpolated($"[red]{messageParts[0]}[/]{messageParts[1]}");
+        }
+    }
+
+    private static ShiftDto GetShiftInput()
+    {
+        var workerName = AnsiConsole.Ask<string>("Worker:");
+
+        var dateFormat = CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern;
+        var timeFormat = CultureInfo.InvariantCulture.DateTimeFormat.ShortTimePattern;
+
+        var startDate = AnsiConsole.Ask<DateTime>($"Start Date (format: {dateFormat}):");
+        var startTime = AnsiConsole.Ask<TimeSpan>($"Start Time (format: {timeFormat}): ");
+
+        var finishDate = AnsiConsole.Confirm("Use the same date as start date for finish date?")
+            ? startDate
+            : AnsiConsole.Ask<DateTime>($"Finish Date (format: {dateFormat}):");
+        var finishTime = AnsiConsole.Ask<TimeSpan>($"Finish Time (format: {timeFormat}): ");
+
+        return new ShiftDto
+        {
+            WorkerName = workerName,
+            StartedAt = startDate.Add(startTime),
+            FinishedAt = finishDate.Add(finishTime)
+        };
     }
 
     private static long? GetShiftIdInput()

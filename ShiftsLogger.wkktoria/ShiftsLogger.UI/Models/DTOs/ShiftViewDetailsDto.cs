@@ -5,10 +5,10 @@ public class ShiftViewDetailsDto
     public string WorkerName { get; set; } = null!;
     public DateTime StartedAt { get; set; }
     public DateTime FinishedAt { get; set; }
-    public TimeSpan Duration { get; set; }
+    public double Duration { get; set; }
 
     public override string ToString()
     {
-        return $"Worker: {WorkerName}; Started: {StartedAt}; Duration: {Duration}";
+        return $"Worker: {WorkerName}; Started: {StartedAt}";
     }
 }

@@ -6,5 +6,5 @@ public class Shift
     public string WorkerName { get; set; } = null!;
     public DateTime StartedAt { get; set; }
     public DateTime FinishedAt { get; set; }
-    public TimeSpan Duration { get; set; }
+    public double Duration { get; set; }
 }

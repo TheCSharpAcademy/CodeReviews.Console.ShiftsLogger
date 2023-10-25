@@ -47,7 +47,7 @@ public class ShiftsController : ControllerBase
         shift.WorkerName = shiftDto.WorkerName;
         shift.StartedAt = shiftDto.StartedAt;
         shift.FinishedAt = shiftDto.FinishedAt;
-        shift.Duration = (shiftDto.FinishedAt - shiftDto.StartedAt).Duration();
+        shift.Duration = (shiftDto.FinishedAt - shiftDto.StartedAt).TotalHours;
 
         try
         {
@@ -70,7 +70,7 @@ public class ShiftsController : ControllerBase
             WorkerName = shiftDto.WorkerName,
             StartedAt = shiftDto.StartedAt,
             FinishedAt = shiftDto.FinishedAt,
-            Duration = (shiftDto.FinishedAt - shiftDto.StartedAt).Duration()
+            Duration = (shiftDto.FinishedAt - shiftDto.StartedAt).TotalHours
         };
 
         _context.Shifts.Add(shift);
