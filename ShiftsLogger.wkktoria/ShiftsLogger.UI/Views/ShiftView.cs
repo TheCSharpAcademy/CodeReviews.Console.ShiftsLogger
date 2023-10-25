@@ -2,9 +2,9 @@ using System.Globalization;
 using ShiftsLogger.UI.Models.DTOs;
 using Spectre.Console;
 
-namespace ShiftsLogger.UI;
+namespace ShiftsLogger.UI.Views;
 
-public static class Visualization
+public static class ShiftView
 {
     public static void ShowShiftsTable(List<ShiftViewDto> shifts)
     {

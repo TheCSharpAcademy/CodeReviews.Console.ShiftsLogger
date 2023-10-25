@@ -1,6 +1,7 @@
 using ShiftsLogger.UI.Controllers;
 using ShiftsLogger.UI.Exceptions;
 using ShiftsLogger.UI.Models.DTOs;
+using ShiftsLogger.UI.Views;
 using Spectre.Console;
 
 namespace ShiftsLogger.UI.Services;
@@ -23,7 +24,7 @@ public static class ShiftService
                         FinishedAt = shift.FinishedAt
                     }).ToList();
 
-                Visualization.ShowShiftsTable(shiftsForView);
+                ShiftView.ShowShiftsTable(shiftsForView);
             }
             else
             {
@@ -54,7 +55,7 @@ public static class ShiftService
                     Duration = shift.Duration
                 };
 
-                Visualization.ShowShiftDetails(shiftForView);
+                ShiftView.ShowShiftDetails(shiftForView);
             }
             else
             {
