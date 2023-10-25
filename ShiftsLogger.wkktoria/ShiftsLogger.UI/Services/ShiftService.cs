@@ -2,6 +2,7 @@ using System.Globalization;
 using ShiftsLogger.UI.Controllers;
 using ShiftsLogger.UI.Exceptions;
 using ShiftsLogger.UI.Models.DTOs;
+using ShiftsLogger.UI.Validators;
 using ShiftsLogger.UI.Views;
 using Spectre.Console;
 
@@ -141,17 +142,28 @@ public static class ShiftService
 
         var startDate = AnsiConsole.Ask<DateTime>($"Start date (format: {DateFormat}):");
         var startTime = AnsiConsole.Ask<TimeSpan>($"Start dime (format: {TimeFormat}): ");
+        var startedAt = startDate.Add(startTime);
 
-        var finishDate = AnsiConsole.Confirm("Use the same date as start date for finish date?")
-            ? startDate
-            : AnsiConsole.Ask<DateTime>($"Finish date (format: {DateFormat}):");
-        var finishTime = AnsiConsole.Ask<TimeSpan>($"Finish time (format: {TimeFormat}): ");
+        DateTime finishedAt;
+
+        do
+        {
+            var finishDate = AnsiConsole.Confirm("Use the same date as start date for finish date?")
+                ? startDate
+                : AnsiConsole.Ask<DateTime>($"Finish date (format: {DateFormat}):");
+            var finishTime = AnsiConsole.Ask<TimeSpan>($"Finish time (format: {TimeFormat}): ");
+            finishedAt = finishDate.Add(finishTime);
+
+            if (!ShiftValidator.IsStartDateBeforeFinishDate(startedAt, finishedAt))
+                AnsiConsole.MarkupLine("[red]Finish date cannot be before start date.[/]");
+        } while (!ShiftValidator.IsStartDateBeforeFinishDate(startedAt, finishedAt));
+
 
         return new ShiftDto
         {
             WorkerName = workerName,
-            StartedAt = startDate.Add(startTime),
-            FinishedAt = finishDate.Add(finishTime)
+            StartedAt = startedAt,
+            FinishedAt = finishedAt
         };
     }
 
@@ -186,16 +198,17 @@ public static class ShiftService
         }
 
         if (AnsiConsole.Confirm("Update finish date?"))
-        {
-            var finishDate = AnsiConsole.Ask<DateTime>($"Finish date (format: {DateFormat}):");
-            var finishTime = AnsiConsole.Ask<TimeSpan>($"Finish time (format: {TimeFormat}): ");
+            do
+            {
+                var finishDate = AnsiConsole.Ask<DateTime>($"Finish date (format: {DateFormat}):");
+                var finishTime = AnsiConsole.Ask<TimeSpan>($"Finish time (format: {TimeFormat}): ");
+                shift.FinishedAt = finishDate.Add(finishTime);
 
-            shift.FinishedAt = finishDate.Add(finishTime);
-        }
+                if (!ShiftValidator.IsStartDateBeforeFinishDate(shift.StartedAt, shift.FinishedAt))
+                    AnsiConsole.MarkupLine("[red]Finish date cannot be before start date.[/]");
+            } while (!ShiftValidator.IsStartDateBeforeFinishDate(shift.StartedAt, shift.FinishedAt));
         else
-        {
             shift.FinishedAt = shift.FinishedAt;
-        }
 
         return new ShiftToUpdateDto
         {
