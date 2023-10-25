@@ -51,6 +51,8 @@ public static partial class UserInterface
                 ShiftsMenuOptions.ViewAllShifts.ToDescription(),
                 ShiftsMenuOptions.ViewShiftDetails.ToDescription(),
                 ShiftsMenuOptions.AddShift.ToDescription(),
+                ShiftsMenuOptions.DeleteShift.ToDescription(),
+                ShiftsMenuOptions.UpdateShift.ToDescription(),
                 ShiftsMenuOptions.GoBack.ToDescription()
             });
 
@@ -66,6 +68,14 @@ public static partial class UserInterface
                     break;
                 case nameof(ShiftsMenuOptions.AddShift):
                     ShiftService.AddShift();
+                    PressKeyToContinue();
+                    break;
+                case nameof(ShiftsMenuOptions.DeleteShift):
+                    ShiftService.DeleteShift();
+                    PressKeyToContinue();
+                    break;
+                case nameof(ShiftsMenuOptions.UpdateShift):
+                    ShiftService.UpdateShift();
                     PressKeyToContinue();
                     break;
                 case nameof(ShiftsMenuOptions.GoBack):

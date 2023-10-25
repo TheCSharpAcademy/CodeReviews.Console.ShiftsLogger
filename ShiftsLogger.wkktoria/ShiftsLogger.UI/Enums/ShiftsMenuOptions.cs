@@ -11,6 +11,12 @@ public enum ShiftsMenuOptions
     [EnumExtensions.DisplayText("Add Shift")]
     AddShift,
 
+    [EnumExtensions.DisplayText("Delete Shift")]
+    DeleteShift,
+
+    [EnumExtensions.DisplayText("Update Shift")]
+    UpdateShift,
+
     [EnumExtensions.DisplayText("Go Back")]
     GoBack
 }

@@ -10,7 +10,7 @@ public static class ShiftController
 {
     private static readonly RestClient Client = new("http://localhost:5145/api");
 
-    public static List<Shift> GetShifts()
+    public static async Task<List<Shift>> GetShifts()
     {
         try
         {
@@ -18,27 +18,25 @@ public static class ShiftController
             {
                 Method = Method.Get
             };
-            var response = Client.ExecuteAsync(request);
 
-            if (!response.Result.IsSuccessful) throw new ApiException("Operation was not successful.");
+            var response = await Client.ExecuteAsync(request);
+            if (!response.IsSuccessful) throw new ApiException("Operation was not successful.");
 
-            var rawResponse = response.Result.Content;
-
+            var rawResponse = response.Content;
             if (rawResponse == null) throw new ApiException("Response content doesn't exist.");
 
             var shifts = JsonConvert.DeserializeObject<List<Shift>>(rawResponse);
-
             if (shifts == null) throw new ApiException("Cannot deserialize response content.");
 
             return shifts;
         }
         catch (Exception)
         {
-            throw new ApiException("Cannot connect to server. Is API server running?");
+            throw new ApiException("Problem with the server has occurred. Is API running?");
         }
     }
 
-    public static Shift GetShiftById(long id)
+    public static async Task<Shift> GetShiftById(long id)
     {
         try
         {
@@ -46,39 +44,64 @@ public static class ShiftController
             {
                 Method = Method.Get
             };
-            var response = Client.ExecuteAsync(request);
 
-            if (!response.Result.IsSuccessful) throw new ApiException("Operation was not successful.");
+            var response = await Client.ExecuteAsync(request);
+            if (!response.IsSuccessful) throw new ApiException("Operation was not successful.");
 
-            var rawResponse = response.Result.Content;
-
+            var rawResponse = response.Content;
             if (rawResponse == null) throw new ApiException("Response content doesn't exist.");
 
             var shift = JsonConvert.DeserializeObject<Shift>(rawResponse);
-
             if (shift == null) throw new ApiException("Cannot deserialize response content.");
 
             return shift;
         }
         catch (Exception)
         {
-            throw new ApiException("Cannot connect to server. Is API server running?");
+            throw new ApiException("Problem with the server has occurred. Is API running?");
         }
     }
 
-    public static void AddShift(ShiftDto shift)
+    public static async void AddShift(ShiftDto shift)
     {
         try
         {
-            var response = Client.PostJsonAsync("/shifts", shift);
-
-            response.Wait();
-
-            if (!response.IsCompletedSuccessfully) throw new ApiException("Operation was not successful.");
+            await Client.PostJsonAsync("/shifts", shift);
         }
         catch (Exception)
         {
-            throw new ApiException("Cannot connect to server. Is API server running?");
+            throw new ApiException("Problem with the server has occurred. Is API running?");
+        }
+    }
+
+    public static async void DeleteShift(long id)
+    {
+        try
+        {
+            var request = new RestRequest($"/shifts/{id}")
+            {
+                Method = Method.Delete
+            };
+
+            var response = await Client.DeleteAsync(request);
+            if (!response.IsSuccessful) throw new ApiException("Operation was not successful.");
+        }
+        catch (Exception)
+        {
+            throw new ApiException("Problem with the server has occurred. Is API server running?");
+        }
+    }
+
+    public static async void UpdateShift(long id, ShiftToUpdateDto shift)
+    {
+        try
+        {
+            await Client.PutJsonAsync($"/shifts/{id}", shift);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            throw new ApiException("Problem with the server has occurred. Is API running?");
         }
     }
 }

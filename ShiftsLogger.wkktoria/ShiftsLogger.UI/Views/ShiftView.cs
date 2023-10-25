@@ -42,4 +42,18 @@ public static class ShiftView
 
         AnsiConsole.Write(panel);
     }
+
+    public static void ShowShiftBeingUpdated(ShiftDto shift)
+    {
+        var panel = new Panel($"""
+                               Worker: {shift.WorkerName}
+                               Started: {shift.StartedAt}
+                               Finished: {shift.FinishedAt}
+                               """)
+        {
+            Header = new PanelHeader("Shift to Update")
+        };
+
+        AnsiConsole.Write(panel);
+    }
 }

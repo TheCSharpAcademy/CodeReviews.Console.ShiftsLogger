@@ -9,11 +9,14 @@ namespace ShiftsLogger.UI.Services;
 
 public static class ShiftService
 {
+    private static readonly string DateFormat = CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern;
+    private static readonly string TimeFormat = CultureInfo.InvariantCulture.DateTimeFormat.ShortTimePattern;
+
     public static void ShowShifts()
     {
         try
         {
-            var shifts = ShiftController.GetShifts();
+            var shifts = ShiftController.GetShifts().Result;
 
             if (shifts.Any())
             {
@@ -47,7 +50,7 @@ public static class ShiftService
 
             if (shiftId != null)
             {
-                var shift = ShiftController.GetShiftById((long)shiftId);
+                var shift = ShiftController.GetShiftById((long)shiftId).Result;
                 var shiftForView = new ShiftViewDetailsDto
                 {
                     WorkerName = shift.WorkerName,
@@ -77,7 +80,53 @@ public static class ShiftService
             var shift = GetShiftInput();
 
             ShiftController.AddShift(shift);
-            AnsiConsole.MarkupLine("[green]Shift was added.[/]");
+            AnsiConsole.MarkupLine("[green]Shift has been added.[/]");
+        }
+        catch (ApiException e)
+        {
+            var messageParts = e.Message.Split(":");
+            AnsiConsole.MarkupLineInterpolated($"[red]{messageParts[0]}[/]{messageParts[1]}");
+        }
+    }
+
+    public static void DeleteShift()
+    {
+        try
+        {
+            var shiftId = GetShiftIdInput();
+
+            if (shiftId != null)
+            {
+                ShiftController.DeleteShift((long)shiftId);
+                AnsiConsole.MarkupLine("[green]Shift has been deleted.[/]");
+            }
+            else
+            {
+                Console.WriteLine("No logged shifts.");
+            }
+        }
+        catch (ApiException e)
+        {
+            var messageParts = e.Message.Split(":");
+            AnsiConsole.MarkupLineInterpolated($"[red]{messageParts[0]}[/]{messageParts[1]}");
+        }
+    }
+
+    public static void UpdateShift()
+    {
+        try
+        {
+            var shift = GetShiftToUpdateInput();
+
+            if (shift != null)
+            {
+                ShiftController.UpdateShift(shift.Id, shift);
+                AnsiConsole.MarkupLine("[green]Shift has been updated.[/]");
+            }
+            else
+            {
+                Console.WriteLine("No logged shifts.");
+            }
         }
         catch (ApiException e)
         {
@@ -90,16 +139,13 @@ public static class ShiftService
     {
         var workerName = AnsiConsole.Ask<string>("Worker:");
 
-        var dateFormat = CultureInfo.InvariantCulture.DateTimeFormat.ShortDatePattern;
-        var timeFormat = CultureInfo.InvariantCulture.DateTimeFormat.ShortTimePattern;
-
-        var startDate = AnsiConsole.Ask<DateTime>($"Start Date (format: {dateFormat}):");
-        var startTime = AnsiConsole.Ask<TimeSpan>($"Start Time (format: {timeFormat}): ");
+        var startDate = AnsiConsole.Ask<DateTime>($"Start date (format: {DateFormat}):");
+        var startTime = AnsiConsole.Ask<TimeSpan>($"Start dime (format: {TimeFormat}): ");
 
         var finishDate = AnsiConsole.Confirm("Use the same date as start date for finish date?")
             ? startDate
-            : AnsiConsole.Ask<DateTime>($"Finish Date (format: {dateFormat}):");
-        var finishTime = AnsiConsole.Ask<TimeSpan>($"Finish Time (format: {timeFormat}): ");
+            : AnsiConsole.Ask<DateTime>($"Finish date (format: {DateFormat}):");
+        var finishTime = AnsiConsole.Ask<TimeSpan>($"Finish time (format: {TimeFormat}): ");
 
         return new ShiftDto
         {
@@ -109,9 +155,60 @@ public static class ShiftService
         };
     }
 
+    private static ShiftToUpdateDto? GetShiftToUpdateInput()
+    {
+        var shiftId = GetShiftIdInput();
+        if (shiftId == null) return null;
+
+        var shift = ShiftController.GetShiftById((long)shiftId).Result;
+
+        ShiftView.ShowShiftBeingUpdated(new ShiftDto
+        {
+            WorkerName = shift.WorkerName,
+            StartedAt = shift.StartedAt,
+            FinishedAt = shift.FinishedAt
+        });
+
+        shift.WorkerName = AnsiConsole.Confirm("Update worker?")
+            ? AnsiConsole.Ask<string>("Worker:")
+            : shift.WorkerName;
+
+        if (AnsiConsole.Confirm("Update start date?"))
+        {
+            var startDate = AnsiConsole.Ask<DateTime>($"Start date (format: {DateFormat}):");
+            var startTime = AnsiConsole.Ask<TimeSpan>($"Start dime (format: {TimeFormat}): ");
+
+            shift.StartedAt = startDate.Add(startTime);
+        }
+        else
+        {
+            shift.StartedAt = shift.StartedAt;
+        }
+
+        if (AnsiConsole.Confirm("Update finish date?"))
+        {
+            var finishDate = AnsiConsole.Ask<DateTime>($"Finish date (format: {DateFormat}):");
+            var finishTime = AnsiConsole.Ask<TimeSpan>($"Finish time (format: {TimeFormat}): ");
+
+            shift.FinishedAt = finishDate.Add(finishTime);
+        }
+        else
+        {
+            shift.FinishedAt = shift.FinishedAt;
+        }
+
+        return new ShiftToUpdateDto
+        {
+            Id = shift.Id,
+            WorkerName = shift.WorkerName,
+            StartedAt = shift.StartedAt,
+            FinishedAt = shift.FinishedAt
+        };
+    }
+
     private static long? GetShiftIdInput()
     {
-        var shifts = ShiftController.GetShifts();
+        var shifts = ShiftController.GetShifts().Result;
         if (!shifts.Any()) return null;
 
         var shiftsOptions = shifts.Select(shift =>
