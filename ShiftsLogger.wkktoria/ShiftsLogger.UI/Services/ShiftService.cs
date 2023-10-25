@@ -1,4 +1,5 @@
 using ShiftsLogger.UI.Controllers;
+using ShiftsLogger.UI.Exceptions;
 using ShiftsLogger.UI.Models.DTOs;
 using Spectre.Console;
 
@@ -8,59 +9,70 @@ public static class ShiftService
 {
     public static void ShowShifts()
     {
-        var shifts = ShiftController.GetShifts();
-
-        if (shifts == null) return;
-
-        if (shifts.Any())
+        try
         {
-            var shiftsForView = shifts.Select(shift =>
-                new ShiftViewDto
-                {
-                    WorkerName = shift.WorkerName,
-                    StartedAt = shift.StartedAt,
-                    FinishedAt = shift.FinishedAt,
-                    Duration = shift.Duration
-                }).ToList();
+            var shifts = ShiftController.GetShifts();
 
-            Visualization.ShowShiftsTable(shiftsForView);
+            if (shifts.Any())
+            {
+                var shiftsForView = shifts.Select(shift =>
+                    new ShiftViewDto
+                    {
+                        WorkerName = shift.WorkerName,
+                        StartedAt = shift.StartedAt,
+                        FinishedAt = shift.FinishedAt,
+                        Duration = shift.Duration
+                    }).ToList();
+
+                Visualization.ShowShiftsTable(shiftsForView);
+            }
+            else
+            {
+                Console.WriteLine("No logged shifts.");
+            }
         }
-        else
+        catch (ApiException ex)
         {
-            Console.WriteLine("No logged shifts.");
+            var messageParts = ex.Message.Split(":");
+            AnsiConsole.MarkupLineInterpolated($"[red]{messageParts[0]}[/]{messageParts[1]}");
         }
     }
 
     public static void ShowShiftDetails()
     {
-        var shiftId = GetShiftIdInput();
-
-        if (shiftId == null) return;
-
-        if (shiftId != long.MinValue)
+        try
         {
-            var shift = ShiftController.GetShiftById(shiftId);
-            var shiftForView = new ShiftViewDto
+            var shiftId = GetShiftIdInput();
+
+            if (shiftId != null)
             {
-                WorkerName = shift!.WorkerName,
-                StartedAt = shift.StartedAt,
-                FinishedAt = shift.FinishedAt,
-                Duration = shift.Duration
-            };
+                var shift = ShiftController.GetShiftById((long)shiftId);
+                var shiftForView = new ShiftViewDto
+                {
+                    WorkerName = shift!.WorkerName,
+                    StartedAt = shift.StartedAt,
+                    FinishedAt = shift.FinishedAt,
+                    Duration = shift.Duration
+                };
 
-            Visualization.ShowShiftDetails(shiftForView);
+                Visualization.ShowShiftDetails(shiftForView);
+            }
+            else
+            {
+                Console.WriteLine("No logged shifts.");
+            }
         }
-        else
+        catch (ApiException ex)
         {
-            Console.WriteLine("No logged shifts.");
+            var messageParts = ex.Message.Split(":");
+            AnsiConsole.MarkupLineInterpolated($"[red]{messageParts[0]}[/]{messageParts[1]}");
         }
     }
 
     private static long? GetShiftIdInput()
     {
         var shifts = ShiftController.GetShifts();
-        if (shifts == null) return null;
-        if (!shifts.Any()) return long.MinValue;
+        if (!shifts.Any()) return null;
 
         var shiftsOptions = shifts.Select(shift =>
             new ShiftViewDto

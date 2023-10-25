@@ -1,3 +1,3 @@
 ﻿using ShiftsLogger.UI.Services;
 
-ShiftService.ShowShiftDetails();
+ShiftService.ShowShifts();
