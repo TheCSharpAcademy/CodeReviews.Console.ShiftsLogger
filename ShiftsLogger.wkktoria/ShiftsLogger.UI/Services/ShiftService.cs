@@ -20,8 +20,7 @@ public static class ShiftService
                     {
                         WorkerName = shift.WorkerName,
                         StartedAt = shift.StartedAt,
-                        FinishedAt = shift.FinishedAt,
-                        Duration = shift.Duration
+                        FinishedAt = shift.FinishedAt
                     }).ToList();
 
                 Visualization.ShowShiftsTable(shiftsForView);
@@ -47,9 +46,9 @@ public static class ShiftService
             if (shiftId != null)
             {
                 var shift = ShiftController.GetShiftById((long)shiftId);
-                var shiftForView = new ShiftViewDto
+                var shiftForView = new ShiftViewDetailsDto
                 {
-                    WorkerName = shift!.WorkerName,
+                    WorkerName = shift.WorkerName,
                     StartedAt = shift.StartedAt,
                     FinishedAt = shift.FinishedAt,
                     Duration = shift.Duration
@@ -75,7 +74,7 @@ public static class ShiftService
         if (!shifts.Any()) return null;
 
         var shiftsOptions = shifts.Select(shift =>
-            new ShiftViewDto
+            new ShiftViewDetailsDto
             {
                 WorkerName = shift.WorkerName,
                 StartedAt = shift.StartedAt,
@@ -83,9 +82,10 @@ public static class ShiftService
                 Duration = shift.Duration
             }).ToList();
 
-        var selected = AnsiConsole.Prompt(new SelectionPrompt<ShiftViewDto>()
+        var selected = AnsiConsole.Prompt(new SelectionPrompt<ShiftViewDetailsDto>()
             .Title("Choose shift")
             .AddChoices(shiftsOptions));
+
         var id = shifts.Find(shift =>
             shift.WorkerName == selected.WorkerName &&
             shift.StartedAt == selected.StartedAt &&
