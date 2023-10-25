@@ -1,3 +1,4 @@
+using System.Net;
 using Newtonsoft.Json;
 using RestSharp;
 using ShiftsLogger.UI.Exceptions;
@@ -47,6 +48,8 @@ public static class ShiftController
 
             var response = await Client.ExecuteAsync(request);
             if (!response.IsSuccessful) throw new ApiException("Operation was not successful.");
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new ApiException("Cannot find requested resource.");
 
             var rawResponse = response.Content;
             if (rawResponse == null) throw new ApiException("Response content doesn't exist.");
@@ -85,6 +88,8 @@ public static class ShiftController
 
             var response = await Client.DeleteAsync(request);
             if (!response.IsSuccessful) throw new ApiException("Operation was not successful.");
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new ApiException("Cannot find requested resource.");
         }
         catch (Exception)
         {
@@ -96,7 +101,10 @@ public static class ShiftController
     {
         try
         {
-            await Client.PutJsonAsync($"/shifts/{id}", shift);
+            var response = await Client.PutJsonAsync($"/shifts/{id}", shift);
+
+            if (response == HttpStatusCode.BadRequest) throw new ApiException("Bad request.");
+            if (response == HttpStatusCode.NotFound) throw new ApiException("Cannot find requested resource");
         }
         catch (Exception e)
         {
