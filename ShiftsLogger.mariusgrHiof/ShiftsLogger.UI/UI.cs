@@ -15,7 +15,6 @@ public static class UI
 
         while (keepGoing)
         {
-
             Console.WriteLine("\nMain Menu");
             Console.WriteLine("---------\n");
             Console.WriteLine("Make sure to add a worker before you add a shift!\n");
