@@ -5,7 +5,7 @@ namespace ShiftsLogger.Lonchanick.Models;
 public class Worker
 {
 
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
     
     [JsonIgnore]

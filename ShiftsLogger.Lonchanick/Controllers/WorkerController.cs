@@ -25,8 +25,6 @@ public class WorkerController : ControllerBase
     public IActionResult NewWorker([FromBody] Worker worker)
     {
         workerService.SaveWorker(worker);
-        Console.WriteLine("Hola desde el controller");
-
         return Ok();
     }
 

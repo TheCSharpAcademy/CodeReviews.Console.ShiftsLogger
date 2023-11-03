@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace ShiftsLogger.Lonchanick.Migrations
 {
     /// <inheritdoc />
-    public partial class intialCreate : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +15,8 @@ namespace ShiftsLogger.Lonchanick.Migrations
                 name: "Worker",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
@@ -29,10 +28,11 @@ namespace ShiftsLogger.Lonchanick.Migrations
                 name: "Shift",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Check = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CheckTypeField = table.Column<int>(type: "int", nullable: false),
-                    WorkerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    WorkerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,26 +43,6 @@ namespace ShiftsLogger.Lonchanick.Migrations
                         principalTable: "Worker",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Worker",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa02"), "Ramon" },
-                    { new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa03"), "Trespatines" },
-                    { new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa97"), "Leopoldo" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Shift",
-                columns: new[] { "Id", "Check", "CheckTypeField", "WorkerId" },
-                values: new object[,]
-                {
-                    { new Guid("85df9217-bc1a-4490-92c9-883b572bc001"), new DateTime(2023, 11, 1, 22, 12, 33, 401, DateTimeKind.Local).AddTicks(7783), 0, new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa97") },
-                    { new Guid("85df9217-bc1a-4490-92c9-883b572bc002"), new DateTime(2023, 11, 1, 22, 12, 33, 401, DateTimeKind.Local).AddTicks(7820), 0, new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa02") },
-                    { new Guid("85df9217-bc1a-4490-92c9-883b572bc003"), new DateTime(2023, 11, 1, 22, 12, 33, 401, DateTimeKind.Local).AddTicks(7825), 0, new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa03") }
                 });
 
             migrationBuilder.CreateIndex(

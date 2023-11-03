@@ -22,7 +22,6 @@ public class ShiftService: IShiftService
     {
         contexdb.Shifts.Add(shift);
         await contexdb.SaveChangesAsync();
-        Console.WriteLine("Cambios guardados");
 
     }
 

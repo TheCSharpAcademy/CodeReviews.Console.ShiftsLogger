@@ -24,9 +24,11 @@ namespace ShiftsLogger.Lonchanick.Migrations
 
             modelBuilder.Entity("ShiftsLogger.Lonchanick.Models.Shift", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Check")
                         .HasColumnType("datetime2");
@@ -34,44 +36,23 @@ namespace ShiftsLogger.Lonchanick.Migrations
                     b.Property<int>("CheckTypeField")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("WorkerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("WorkerId");
 
                     b.ToTable("Shift", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("85df9217-bc1a-4490-92c9-883b572bc001"),
-                            Check = new DateTime(2023, 11, 1, 22, 12, 33, 401, DateTimeKind.Local).AddTicks(7783),
-                            CheckTypeField = 0,
-                            WorkerId = new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa97")
-                        },
-                        new
-                        {
-                            Id = new Guid("85df9217-bc1a-4490-92c9-883b572bc002"),
-                            Check = new DateTime(2023, 11, 1, 22, 12, 33, 401, DateTimeKind.Local).AddTicks(7820),
-                            CheckTypeField = 0,
-                            WorkerId = new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa02")
-                        },
-                        new
-                        {
-                            Id = new Guid("85df9217-bc1a-4490-92c9-883b572bc003"),
-                            Check = new DateTime(2023, 11, 1, 22, 12, 33, 401, DateTimeKind.Local).AddTicks(7825),
-                            CheckTypeField = 0,
-                            WorkerId = new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa03")
-                        });
                 });
 
             modelBuilder.Entity("ShiftsLogger.Lonchanick.Models.Worker", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -81,23 +62,6 @@ namespace ShiftsLogger.Lonchanick.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Worker", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa97"),
-                            Name = "Leopoldo"
-                        },
-                        new
-                        {
-                            Id = new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa02"),
-                            Name = "Ramon"
-                        },
-                        new
-                        {
-                            Id = new Guid("2928fb74-46c1-439c-b8ad-b9aee833fa03"),
-                            Name = "Trespatines"
-                        });
                 });
 
             modelBuilder.Entity("ShiftsLogger.Lonchanick.Models.Shift", b =>

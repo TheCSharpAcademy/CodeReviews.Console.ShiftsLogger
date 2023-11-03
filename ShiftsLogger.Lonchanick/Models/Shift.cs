@@ -4,10 +4,10 @@ namespace ShiftsLogger.Lonchanick.Models;
 
 public class Shift
 {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public DateTime Check { get; set; }
     public CheckType CheckTypeField {get; set;} 
-    public Guid WorkerId { get; set; }
+    public int WorkerId { get; set; }
 
     [JsonIgnore]
     public virtual Worker Worker { get; set; }
