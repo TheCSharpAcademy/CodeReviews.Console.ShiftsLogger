@@ -71,118 +71,166 @@ public static class UI
 
         void UpdateShift()
         {
-            GetAllShifts();
-
             var endpoint = new Uri("https://localhost:7184/api/ShiftsLogger");
-            string shiftId = GetShiftId();
-            var result = client.GetAsync($"{endpoint}/{shiftId}").Result;
 
-            while (!result.IsSuccessStatusCode)
+            if (!Helpers.CheckApiHealth(endpoint))
             {
-                Console.WriteLine("Invlaid id. Try again.");
-                shiftId = GetShiftId();
-
-                result = client.GetAsync($"{endpoint}/{shiftId}").Result;
-            }
-            var json = result.Content.ReadAsStringAsync().Result;
-
-            UpdateShiftDto? updateShift = JsonSerializer.Deserialize<UpdateShiftDto>(json);
-
-            string? startDate = GetStartDate();
-            if (startDate == null) CloseApp();
-
-            string? endDate = GetEndDate();
-
-            while (!Validate.IsValidDateRange(DateTime.Parse(startDate), DateTime.Parse(endDate)))
-            {
-                Console.WriteLine("Not a valid end date. Try again.");
-                endDate = GetEndDate();
-            }
-            string? workerId = GetWorkerId();
-
-            updateShift.Id = int.Parse(shiftId);
-            updateShift.Start = DateTime.Parse(startDate);
-            updateShift.End = DateTime.Parse(endDate);
-            updateShift.WorkerId = int.Parse(workerId);
-
-            JsonContent content = JsonContent.Create(updateShift);
-
-            var updatedContact = client.PutAsync($"{endpoint}/{shiftId}", content);
-
-            if (updatedContact != null)
-            {
-                Console.WriteLine("Record updated!");
+                Console.WriteLine("API Service not avaiable.Try again later.");
             }
             else
             {
-                Console.WriteLine("Error: Fail to update record!");
+                GetAllShifts();
+                string shiftId = GetShiftId();
+
+                try
+                {
+                    var result = client.GetAsync($"{endpoint}/{shiftId}").Result;
+
+                    while (!result.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Invlaid id. Try again.");
+                        shiftId = GetShiftId();
+
+                        result = client.GetAsync($"{endpoint}/{shiftId}").Result;
+                    }
+                    var json = result.Content.ReadAsStringAsync().Result;
+
+                    UpdateShiftDto? updateShift = JsonSerializer.Deserialize<UpdateShiftDto>(json);
+
+                    string? startDate = GetStartDate();
+                    if (startDate == null) CloseApp();
+
+                    string? endDate = GetEndDate();
+
+                    while (!Validate.IsValidDateRange(DateTime.Parse(startDate), DateTime.Parse(endDate)))
+                    {
+                        Console.WriteLine("Not a valid end date. Try again.");
+                        endDate = GetEndDate();
+                    }
+                    string? workerId = GetWorkerId();
+
+                    updateShift.Id = int.Parse(shiftId);
+                    updateShift.Start = DateTime.Parse(startDate);
+                    updateShift.End = DateTime.Parse(endDate);
+                    updateShift.WorkerId = int.Parse(workerId);
+
+                    JsonContent content = JsonContent.Create(updateShift);
+
+                    var updatedContact = client.PutAsync($"{endpoint}/{shiftId}", content);
+
+                    if (updatedContact != null)
+                    {
+                        Console.WriteLine("Record updated!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Fail to update record!");
+                    }
+                }
+                catch (Exception)
+                {
+
+                    Console.WriteLine("Something unexpected happend.Try again later.");
+                }
             }
         }
 
         void DeleteShift()
         {
-            GetAllShifts();
-
             var endpoint = new Uri("https://localhost:7184/api/ShiftsLogger");
 
-            string? shiftId = GetShiftId();
-
-            var result = client.GetAsync($"{endpoint}/{shiftId}").Result;
-
-            while (!result.IsSuccessStatusCode)
+            if (!Helpers.CheckApiHealth(endpoint))
             {
-                Console.WriteLine("Invlaid id. Try again.");
-                shiftId = GetShiftId();
-
-                result = client.GetAsync($"{endpoint}/{shiftId}").Result;
-            }
-            var deleteContact = client.DeleteAsync($"{endpoint}/{shiftId}");
-
-            if (deleteContact != null)
-            {
-                Console.WriteLine("Record deleted!");
+                Console.WriteLine(Helpers.API_ERROR_MESSAGE);
             }
             else
             {
-                Console.WriteLine("Error: Fail to delete record!");
+                GetAllShifts();
+                string? shiftId = GetShiftId();
+
+                try
+                {
+                    var result = client.GetAsync($"{endpoint}/{shiftId}").Result;
+
+                    while (!result.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Invlaid id. Try again.");
+                        shiftId = GetShiftId();
+
+                        result = client.GetAsync($"{endpoint}/{shiftId}").Result;
+                    }
+                    var deleteContact = client.DeleteAsync($"{endpoint}/{shiftId}");
+
+                    if (deleteContact != null)
+                    {
+                        Console.WriteLine("Record deleted!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Fail to delete record!");
+                    }
+
+                }
+                catch (Exception)
+                {
+
+                    Console.WriteLine("Something unexpected happend.Try again later.");
+                }
+
             }
         }
 
         void InsertShift()
         {
-            GetAllWorkers();
             var endpoint = new Uri("https://localhost:7184/api/ShiftsLogger");
 
-            string? startDate = GetStartDate();
-            if (startDate == null) CloseApp();
-
-            string? endDate = GetEndDate();
-
-            while (!Validate.IsValidDateRange(DateTime.Parse(startDate), DateTime.Parse(endDate)))
+            if (!Helpers.CheckApiHealth(endpoint))
             {
-                Console.WriteLine("End date can't be earlier than start date. Try again.");
-                endDate = GetEndDate();
-            }
-            string? workerId = GetWorkerId();
-
-            var newShift = new AddShiftDto
-            {
-                Start = DateTime.Parse(startDate),
-                End = DateTime.Parse(endDate),
-                WorkerId = int.Parse(workerId)
-            };
-
-            JsonContent content = JsonContent.Create(newShift);
-
-            var insertRecord = client.PostAsync($"{endpoint}", content);
-
-            if (insertRecord == null)
-            {
-                Console.WriteLine("Fail to insert record to db");
+                Console.WriteLine(Helpers.API_ERROR_MESSAGE);
             }
             else
             {
-                Console.WriteLine("Record inserted to db");
+                GetAllWorkers();
+                string? startDate = GetStartDate();
+                if (startDate == null) CloseApp();
+
+                string? endDate = GetEndDate();
+
+                while (!Validate.IsValidDateRange(DateTime.Parse(startDate), DateTime.Parse(endDate)))
+                {
+                    Console.WriteLine("End date can't be earlier than start date. Try again.");
+                    endDate = GetEndDate();
+                }
+                string? workerId = GetWorkerId();
+
+                var newShift = new AddShiftDto
+                {
+                    Start = DateTime.Parse(startDate),
+                    End = DateTime.Parse(endDate),
+                    WorkerId = int.Parse(workerId)
+                };
+
+                JsonContent content = JsonContent.Create(newShift);
+
+                try
+                {
+                    var insertRecord = client.PostAsync($"{endpoint}", content);
+
+                    if (insertRecord == null)
+                    {
+                        Console.WriteLine("Fail to insert record to db");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Record inserted to db");
+                    }
+                }
+                catch (Exception)
+                {
+
+                    Console.WriteLine("Something unexpected happend.Try again later.");
+                }
+
             }
         }
 
@@ -190,27 +238,46 @@ public static class UI
         {
             var tableData = new List<List<object>>();
             var endpoint = new Uri("https://localhost:7184/api/ShiftsLogger");
-            var result = client.GetAsync(endpoint).Result;
 
-            if (result.IsSuccessStatusCode)
+            if (!Helpers.CheckApiHealth(endpoint))
             {
-                var json = result.Content.ReadAsStringAsync().Result;
-
-                List<GetShiftDto>? shifts = JsonSerializer.Deserialize<List<GetShiftDto>>(json);
-
-                if (shifts != null && shifts.Count > 0)
+                Console.WriteLine(Helpers.API_ERROR_MESSAGE);
+            }
+            else
+            {
+                HttpResponseMessage result = new HttpResponseMessage();
+                try
                 {
-                    foreach (GetShiftDto shift in shifts)
+                    result = client.GetAsync(endpoint).Result;
+
+                    if (result.IsSuccessStatusCode)
                     {
-                        tableData.Add(new List<object> { shift.Id, shift.Start, shift.End, shift.Duration, shift.WorkerId });
+                        var json = result.Content.ReadAsStringAsync().Result;
+
+                        List<GetShiftDto>? shifts = JsonSerializer.Deserialize<List<GetShiftDto>>(json);
+
+                        if (shifts != null && shifts.Count > 0)
+                        {
+                            foreach (GetShiftDto shift in shifts)
+                            {
+                                tableData.Add(new List<object> { shift.Id, shift.Start, shift.End, shift.Duration, shift.WorkerId });
+                            }
+                        }
+
+                        ConsoleTableBuilder
+                        .From(tableData)
+                        .WithColumn("Shift Id", "Start Date", "End Date", "Duration", "Worker Id")
+                        .ExportAndWriteLine();
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Something unexpected happend.Try again later.");
 
-                ConsoleTableBuilder
-                .From(tableData)
-                .WithColumn("Shift Id", "Start Date", "End Date", "Duration", "Worker Id")
-                .ExportAndWriteLine();
+                }
             }
+
+
         }
 
         string? GetStartDate()
@@ -261,26 +328,41 @@ public static class UI
         {
             var tableData = new List<List<object>>();
             var endpoint = new Uri("https://localhost:7184/api/Workers");
-            var result = client.GetAsync(endpoint).Result;
 
-            if (result.IsSuccessStatusCode)
+            if (!Helpers.CheckApiHealth(endpoint))
             {
-                var json = result.Content.ReadAsStringAsync().Result;
-
-                List<GetWorkerDto>? workers = JsonSerializer.Deserialize<List<GetWorkerDto>>(json);
-
-                if (workers != null && workers.Count > 0)
+                Console.WriteLine(Helpers.API_ERROR_MESSAGE);
+            }
+            else
+            {
+                try
                 {
-                    foreach (GetWorkerDto worker in workers)
+                    var result = client.GetAsync(endpoint).Result;
+
+                    if (result.IsSuccessStatusCode)
                     {
-                        tableData.Add(new List<object> { worker.Id, worker.FirstName, worker.LastName });
+                        var json = result.Content.ReadAsStringAsync().Result;
+
+                        List<GetWorkerDto>? workers = JsonSerializer.Deserialize<List<GetWorkerDto>>(json);
+
+                        if (workers != null && workers.Count > 0)
+                        {
+                            foreach (GetWorkerDto worker in workers)
+                            {
+                                tableData.Add(new List<object> { worker.Id, worker.FirstName, worker.LastName });
+                            }
+                        }
+
+                        ConsoleTableBuilder
+                        .From(tableData)
+                        .WithColumn("Worker Id", "First Name", "Last Name")
+                        .ExportAndWriteLine();
                     }
                 }
-
-                ConsoleTableBuilder
-                .From(tableData)
-                .WithColumn("Worker Id", "First Name", "Last Name")
-                .ExportAndWriteLine();
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Something unexpected happend.Try again later.");
+                }
             }
         }
 
@@ -288,119 +370,163 @@ public static class UI
         {
             var endpoint = new Uri("https://localhost:7184/api/Workers");
 
-            string? firstName = GetFirstName();
-
-            while (!Validate.IsValidString(firstName))
+            if (!Helpers.CheckApiHealth(endpoint))
             {
-                Console.WriteLine("Firstname can't be empty.Try again.");
-                firstName = GetFirstName();
-            }
-
-            string? lastName = GetLastName();
-
-            while (!Validate.IsValidString(lastName))
-            {
-                Console.WriteLine("Lastname can't be empty.Try again.");
-                lastName = GetLastName();
-            }
-
-            var newWorker = new AddWorkerDto
-            {
-                FirstName = firstName,
-                LastName = lastName,
-            };
-
-            JsonContent content = JsonContent.Create(newWorker);
-
-            var insertRecord = client.PostAsync($"{endpoint}", content);
-
-            if (insertRecord == null)
-            {
-                Console.WriteLine("Fail to insert record to db");
+                Console.WriteLine(Helpers.API_ERROR_MESSAGE);
             }
             else
             {
-                Console.WriteLine("Record inserted to db");
+                string? firstName = GetFirstName();
+
+                while (!Validate.IsValidString(firstName))
+                {
+                    Console.WriteLine("Firstname can't be empty.Try again.");
+                    firstName = GetFirstName();
+                }
+
+                string? lastName = GetLastName();
+
+                while (!Validate.IsValidString(lastName))
+                {
+                    Console.WriteLine("Lastname can't be empty.Try again.");
+                    lastName = GetLastName();
+                }
+
+                var newWorker = new AddWorkerDto
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                };
+
+                JsonContent content = JsonContent.Create(newWorker);
+
+                try
+                {
+                    var insertRecord = client.PostAsync($"{endpoint}", content);
+
+                    if (insertRecord == null)
+                    {
+                        Console.WriteLine("Fail to insert record to db");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Record inserted to db");
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Something unexpected happend.Try again later.");
+                }
             }
         }
 
         void UpdateWorker()
         {
-            GetAllWorkers();
-
             var endpoint = new Uri("https://localhost:7184/api/Workers");
-            string workerId = GetWorkerId();
-            var result = client.GetAsync($"{endpoint}/{workerId}").Result;
 
-            while (!result.IsSuccessStatusCode)
+            if (!Helpers.CheckApiHealth(endpoint))
             {
-                Console.WriteLine("Invlaid worker id. Try again.");
-                workerId = GetShiftId();
-
-                result = client.GetAsync($"{endpoint}/{workerId}").Result;
-            }
-
-            var json = result.Content.ReadAsStringAsync().Result;
-
-            UpdateWorkerDto? updateWorker = JsonSerializer.Deserialize<UpdateWorkerDto>(json);
-
-            string? firstName = GetFirstName();
-
-            while (!Validate.IsValidString(firstName))
-            {
-                Console.WriteLine("Firstname can't be empty.Try again.");
-                firstName = GetFirstName();
-            }
-            string? lastName = GetLastName();
-
-            while (!Validate.IsValidString(lastName))
-            {
-                Console.WriteLine("Lastname can't be empty.Try again.");
-                lastName = GetLastName();
-            }
-
-            updateWorker.FirstName = firstName;
-            updateWorker.LastName = lastName;
-
-            JsonContent content = JsonContent.Create(updateWorker);
-
-            var updatedContact = client.PutAsync($"{endpoint}/{workerId}", content);
-
-            if (updatedContact != null)
-            {
-                Console.WriteLine("Record updated!");
+                Console.WriteLine(Helpers.API_ERROR_MESSAGE);
             }
             else
             {
-                Console.WriteLine("Error: Fail to update record!");
+                GetAllWorkers();
+                string workerId = GetWorkerId();
+                try
+                {
+                    var result = client.GetAsync($"{endpoint}/{workerId}").Result;
+
+                    while (!result.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Invlaid worker id. Try again.");
+                        workerId = GetShiftId();
+
+                        result = client.GetAsync($"{endpoint}/{workerId}").Result;
+                    }
+
+                    var json = result.Content.ReadAsStringAsync().Result;
+
+                    UpdateWorkerDto? updateWorker = JsonSerializer.Deserialize<UpdateWorkerDto>(json);
+
+                    string? firstName = GetFirstName();
+
+                    while (!Validate.IsValidString(firstName))
+                    {
+                        Console.WriteLine("Firstname can't be empty.Try again.");
+                        firstName = GetFirstName();
+                    }
+                    string? lastName = GetLastName();
+
+                    while (!Validate.IsValidString(lastName))
+                    {
+                        Console.WriteLine("Lastname can't be empty.Try again.");
+                        lastName = GetLastName();
+                    }
+
+                    updateWorker.FirstName = firstName;
+                    updateWorker.LastName = lastName;
+
+                    JsonContent content = JsonContent.Create(updateWorker);
+
+                    var updatedContact = client.PutAsync($"{endpoint}/{workerId}", content);
+
+                    if (updatedContact != null)
+                    {
+                        Console.WriteLine("Record updated!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Fail to update record!");
+                    }
+                }
+                catch (Exception)
+                {
+
+                    Console.WriteLine("Something unexpected happend.Try again later.");
+                }
             }
         }
 
         void DeleteWorker()
         {
-            GetAllWorkers();
-
             var endpoint = new Uri("https://localhost:7184/api/Workers");
-            string workerId = GetWorkerId();
-            var result = client.GetAsync($"{endpoint}/{workerId}").Result;
 
-            while (!result.IsSuccessStatusCode)
+            if (!Helpers.CheckApiHealth(endpoint))
             {
-                Console.WriteLine("Invlaid worker id. Try again.");
-                workerId = GetShiftId();
-
-                result = client.GetAsync($"{endpoint}/{workerId}").Result;
-            }
-
-            var deletedContact = client.DeleteAsync($"{endpoint}/{workerId}");
-
-            if (deletedContact != null)
-            {
-                Console.WriteLine("Record deleted!");
+                Console.WriteLine(Helpers.API_ERROR_MESSAGE);
             }
             else
             {
-                Console.WriteLine("Error: Fail to remove record!");
+                GetAllWorkers();
+                string workerId = GetWorkerId();
+
+                try
+                {
+                    var result = client.GetAsync($"{endpoint}/{workerId}").Result;
+
+                    while (!result.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Invlaid worker id. Try again.");
+                        workerId = GetShiftId();
+
+                        result = client.GetAsync($"{endpoint}/{workerId}").Result;
+                    }
+
+                    var deletedContact = client.DeleteAsync($"{endpoint}/{workerId}");
+
+                    if (deletedContact != null)
+                    {
+                        Console.WriteLine("Record deleted!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: Fail to remove record!");
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Something unexpected happend.Try again later.");
+                }
             }
         }
 
@@ -438,6 +564,8 @@ public static class UI
 
             return lastName;
         }
+
+
     }
 
 
