@@ -8,11 +8,6 @@ public class WorkerController
 {
     public WorkerService workerService = new();
 
-    // public WorkerController(WorkerService workerService)
-    // {
-    //     this.workerService=workerService;
-    // }
-
     public async Task Get()
     {
         try
@@ -60,8 +55,6 @@ public class WorkerController
             if(id != 0 )
             {
                 await workerService.Update(id);
-                // Worker? worker = await workerService.GetById(id);
-                // Worker.PrintWorker(worker);
             }else
             {
                 WriteLine("Id must be != 0");

@@ -9,7 +9,6 @@ public class Menu
     {
         ShiftController shiftController = new();
 
-        //animated fake loading 
         AnsiConsole.Status()
             .Start("Loading...", ctx =>
             {
@@ -48,7 +47,6 @@ public class Menu
                     await shiftController.Add();
                     break;
                 case MainMenuOptions.CheckOut:
-                    //Clear();
                     break;
 
                 case MainMenuOptions.Quit:
@@ -61,7 +59,6 @@ public class Menu
 
     internal static async Task ManageShifts(ShiftController shiftController)
     {
-        //Clear();
         bool AppIsRunningYet = true;
         while (AppIsRunningYet)
         {
@@ -82,7 +79,6 @@ public class Menu
                     break;
 
                 case ManageShiftOptions.Shifts_By_Worker:
-                    //Clear();
                     break;
 
                 case ManageShiftOptions.Back:
@@ -95,7 +91,6 @@ public class Menu
     internal static async Task ManageWorker()
     {
         WorkerController workerController = new();
-        //Clear();
         bool AppIsRunningYet = true;
         while (AppIsRunningYet)
         {
@@ -116,11 +111,9 @@ public class Menu
             {
                 case ManageWorkerOptions.GetAllWorkers:
                     await workerController.Get();
-                    //Clear();
                     break;
                 case ManageWorkerOptions.GetWorkerById:
                     await workerController.GetById();
-                    //Clear();
                     break;
                 case ManageWorkerOptions.AddWorker:
                     await workerController.Add();
@@ -128,7 +121,6 @@ public class Menu
                     break;
                 case ManageWorkerOptions.UpdateWorker:
                     await workerController.Update();
-                    //Clear();
                     break;
                 case ManageWorkerOptions.DeleteWorker:
                     await workerController.Delete();

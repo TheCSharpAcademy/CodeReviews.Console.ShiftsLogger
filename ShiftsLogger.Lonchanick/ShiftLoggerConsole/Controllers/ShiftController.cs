@@ -12,8 +12,6 @@ public class ShiftController
     {
         Shift shift=new();
         shift.WorkerId= AnsiConsole.Ask<int>("Worker Id: ");
-        // shift.CheckTypeField = 
-        // = AnsiConsole.Ask<string>("Worker Id: ");
 
         var option = AnsiConsole.Prompt(new SelectionPrompt<String>()
 			.Title("ChechIn or CheckOut")

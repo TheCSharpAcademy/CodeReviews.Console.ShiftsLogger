@@ -43,7 +43,6 @@ public class WorkerService:IWorkerService
         if(result is not null)
         {
             result.Name = worker.Name;
-            //contexDB.worker.Update(result);
             await contexDB.SaveChangesAsync();
         }
     }
@@ -54,7 +53,6 @@ public class WorkerService:IWorkerService
         if (result is not null)
         {
             contexDB.Remove(result);
-            //contexDB.worker.Update(result);
             await contexDB.SaveChangesAsync();
         }
     }

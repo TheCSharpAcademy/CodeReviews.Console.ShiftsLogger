@@ -17,7 +17,6 @@ public class ShiftController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        // return Ok(await workerService.GetWorkers());
         return Ok(await ShiftService.getShifts());
     }
 

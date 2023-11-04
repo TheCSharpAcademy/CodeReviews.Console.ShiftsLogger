@@ -64,7 +64,6 @@ public class WorkerService
     public async Task Update(int id)
     {
         string tempUrl = updateUrl+id;
-        //how to make an update request?
         string newName = AnsiConsole.Ask<string>("New Name: ");
         Worker newWorker = new(){
             Id=id,
