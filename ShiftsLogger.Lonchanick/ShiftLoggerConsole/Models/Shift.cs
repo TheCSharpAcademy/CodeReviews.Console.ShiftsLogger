@@ -11,7 +11,7 @@ public class Shift
     public CheckType CheckTypeField {get; set;} 
     public int WorkerId { get; set; }
 
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual Worker Worker { get; set; }
 
     public static void printTable(IEnumerable<Shift> shifts)
@@ -21,13 +21,15 @@ public class Shift
 		table.AddColumn("Check Date");
 		table.AddColumn("Chech Type Field");
 		table.AddColumn("Worker Id");
+		table.AddColumn("Name");
 
-		foreach (var shift in shifts)
+        foreach (var shift in shifts)
 		{
 			table.AddRow(shift.Id.ToString(),
-				shift.Check.ToShortDateString(),
+				shift.Check.ToString(), //shift.Check.ToShortDateString(),
                 shift.CheckTypeField.ToString(),
-                shift.WorkerId.ToString()); 
+                shift.WorkerId.ToString(),
+                shift.Worker.Name.ToString()); 
 		}
 
 		AnsiConsole.Write(table);
@@ -37,7 +39,8 @@ public class Shift
 
     public override string  ToString()
     {
-        return$"{this.Id} - {this.WorkerId} - {this.Check} - {this.CheckTypeField}";
+        string worker = $"{this.Id} - {this.WorkerId} - {this.Check} - {this.CheckTypeField}";
+        return worker;
     }
 
 

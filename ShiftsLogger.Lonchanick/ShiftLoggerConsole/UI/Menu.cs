@@ -19,13 +19,13 @@ public class Menu
         bool AppIsRunningYet = true;
         while (AppIsRunningYet)
         {
+            Clear();
             AnsiConsole.Write(new FigletText("Shift-Logger").LeftJustified().Color(Color.Blue));
             var options = new SelectionPrompt<MainMenuOptions>();
 
             options.AddChoices
                 (
-                    MainMenuOptions.CheckIn,
-                    MainMenuOptions.CheckOut,
+                    MainMenuOptions.Check_In_Out,
                     MainMenuOptions.Manage_Workers,
                     MainMenuOptions.Manage_Shifts,
                     MainMenuOptions.Quit
@@ -36,19 +36,19 @@ public class Menu
             switch (r)
             {
                 case MainMenuOptions.Manage_Shifts:
+                    Clear();
                     await ManageShifts(shiftController);
                     break;
 
                 case MainMenuOptions.Manage_Workers:
+                    Clear();
                     await ManageWorker();
                     break;
 
-                case MainMenuOptions.CheckIn:
+                case MainMenuOptions.Check_In_Out:
                     await shiftController.Add();
-                    break;
-                case MainMenuOptions.CheckOut:
-                    break;
-
+                    Clear();
+                    break; 
                 case MainMenuOptions.Quit:
                     AppIsRunningYet = false;
                     break;
@@ -62,6 +62,7 @@ public class Menu
         bool AppIsRunningYet = true;
         while (AppIsRunningYet)
         {
+            Clear();
             AnsiConsole.Write(new FigletText("Shifts").LeftJustified().Color(Color.Blue));
             var options = new SelectionPrompt<ManageShiftOptions>();
             options.AddChoices
@@ -76,9 +77,12 @@ public class Menu
             {
                 case ManageShiftOptions.All_Shifts:
                     await shiftController.GetAsync();
+                    Clear();
                     break;
 
                 case ManageShiftOptions.Shifts_By_Worker:
+                    WriteLine("nothing yet");
+                    Clear();
                     break;
 
                 case ManageShiftOptions.Back:
@@ -111,19 +115,23 @@ public class Menu
             {
                 case ManageWorkerOptions.GetAllWorkers:
                     await workerController.Get();
+                    Clear();
                     break;
                 case ManageWorkerOptions.GetWorkerById:
                     await workerController.GetById();
+                    Clear();
                     break;
                 case ManageWorkerOptions.AddWorker:
                     await workerController.Add();
-
+                    Clear();
                     break;
                 case ManageWorkerOptions.UpdateWorker:
                     await workerController.Update();
+                    Clear();
                     break;
                 case ManageWorkerOptions.DeleteWorker:
                     await workerController.Delete();
+                    Clear();
                     break;
                 case ManageWorkerOptions.Back:
                     AppIsRunningYet=false;
@@ -137,8 +145,7 @@ public class Menu
 public enum MainMenuOptions
 {
 	Manage_Shifts,
-	CheckIn,
-	CheckOut,
+    Check_In_Out,
     Manage_Workers,
 	Quit,
 }

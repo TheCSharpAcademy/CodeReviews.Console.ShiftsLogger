@@ -54,13 +54,31 @@ public class WorkerController
             int id = AnsiConsole.Ask<int>("Worker id: ");
             if(id != 0 )
             {
-                await workerService.Update(id);
+                Worker? worker = await workerService.GetById(id);
+                if (worker is not null)
+                {
+                    Worker.PrintWorker(worker, pressKeyToContinue: false);
+                    string newName = AnsiConsole.Ask<string>("Worker New Name: ");
+                    //Worker newWorker = new()
+                    //{
+                    //    Id = id,
+                    //    Name = newName
+                    //};
+                    worker.Name = newName;
+                    await workerService.Update(worker);
+                }
+                else
+                    throw new NullReferenceException();
+
             }else
             {
                 WriteLine("Id must be != 0");
+                throw new IndexOutOfRangeException();
+
             }
 
-        }catch(Exception e)
+        }
+        catch(Exception e)
         {
             WriteLine("Something went wrong: {0}", e.Message);
         }

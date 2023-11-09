@@ -61,15 +61,10 @@ public class WorkerService
         await client.DeleteAsync(tempUrl);
     }
 
-    public async Task Update(int id)
+    public async Task Update(Worker worker)
     {
-        string tempUrl = updateUrl+id;
-        string newName = AnsiConsole.Ask<string>("New Name: ");
-        Worker newWorker = new(){
-            Id=id,
-            Name=newName
-        };
-        await client.PutAsJsonAsync(tempUrl,newWorker);
+        string tempUrl = updateUrl+worker.Id;
+        await client.PutAsJsonAsync(tempUrl, worker);
     }
 
 }

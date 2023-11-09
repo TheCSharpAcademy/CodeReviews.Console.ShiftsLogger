@@ -30,15 +30,18 @@ public class Worker
 		Console.ReadLine();
     }
 
-    public static void PrintWorker(Worker worker)
+    public static void PrintWorker(Worker worker, bool pressKeyToContinue=true)
 	{
 		var panel = new Panel
 ($@"Id: {worker.Id}
 Name: {worker.Name}");
         panel.Padding = new Padding(0, 0, 0, 0);
         AnsiConsole.Write(panel);
-        Console.WriteLine("Press any key to continue ...");
-        Console.ReadLine();
+        if(pressKeyToContinue)
+        {
+            Console.WriteLine("Press any key to continue ...");
+            Console.ReadLine();
+        }
     }
 
     public static explicit operator Worker(Task<Worker?> v)

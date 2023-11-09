@@ -11,10 +11,10 @@ public class ShiftController
     public async Task Add()
     {
         Shift shift=new();
-        shift.WorkerId= AnsiConsole.Ask<int>("Worker Id: ");
+        shift.WorkerId= AnsiConsole.Ask<int>("Type your Worker Id: ");
 
         var option = AnsiConsole.Prompt(new SelectionPrompt<String>()
-			.Title("ChechIn or CheckOut")
+			//.Title("ChechIn or CheckOut")
 			.AddChoices(chechInType));
 
         if(option.Equals(chechInType[0]))
