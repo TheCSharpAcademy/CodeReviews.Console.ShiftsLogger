@@ -23,6 +23,7 @@ public class ShiftController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> NewShift([FromBody] Shift shift)
     {
+        shift.Check = DateTime.Now;
         await ShiftService.SaveShift(shift);
         return Ok(); 
     }
@@ -37,7 +38,7 @@ public class ShiftController : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    public async Task<IActionResult> UpdateShift(int id)
+    public async Task<IActionResult> DeleteShift(int id)
     {
         await ShiftService.DeleteShift(id);
         return Ok();

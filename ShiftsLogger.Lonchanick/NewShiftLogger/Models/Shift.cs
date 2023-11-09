@@ -9,7 +9,7 @@ public class Shift
     public CheckType CheckTypeField {get; set;} 
     public int WorkerId { get; set; }
 
-    [JsonIgnore]
+    //[JsonIgnore]
     public virtual Worker Worker { get; set; }
 }
 

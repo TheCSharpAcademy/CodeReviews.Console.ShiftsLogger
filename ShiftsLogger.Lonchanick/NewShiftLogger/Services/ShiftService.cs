@@ -1,4 +1,5 @@
-﻿using ShiftsLogger.Lonchanick.ContextDataBase;
+﻿using Microsoft.EntityFrameworkCore;
+using ShiftsLogger.Lonchanick.ContextDataBase;
 using ShiftsLogger.Lonchanick.Models;
 
 namespace ShiftsLogger.Lonchanick.Services;
@@ -14,7 +15,8 @@ public class ShiftService: IShiftService
 
     public async Task<IEnumerable<Shift>> getShifts()
     {
-        return contexdb.Shifts;
+        var shifts = contexdb.Shifts.Include(p=>p.Worker);
+        return shifts;
     }
 
     public async Task SaveShift(Shift shift)
