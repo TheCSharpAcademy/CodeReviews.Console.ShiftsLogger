@@ -53,5 +53,14 @@ namespace ShiftTrackerUI
 
             await ShiftService.PutShift(Id, name, startDate, startTime, endTime, duration);
         }
+        public static async Task DeleteShift()
+        {
+            Console.Clear();
+            await ShiftService.GetShifts();
+
+            var Id = UserValidation.GetNumberInput("Please enter Id of the record you wish to delete");
+
+            await ShiftService.DeleteShift(Id);
+        }
     }
 }

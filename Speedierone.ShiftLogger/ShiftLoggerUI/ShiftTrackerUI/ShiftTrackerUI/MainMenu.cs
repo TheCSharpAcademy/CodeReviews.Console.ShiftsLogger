@@ -41,6 +41,7 @@ namespace ShiftTrackerUI
                         break;
 
                     case "3":
+                        await UserInput.DeleteShift();
                         break;
                     case "4":
                         await UserInput.PutShift();

@@ -84,6 +84,32 @@ namespace ShiftTrackerUI
             }
 
         }
+        public static async Task DeleteShift(int Id)
+        {
+            try
+            {
+                var apiUrl = $"https://localhost:7217/api/ShiftTimes/{Id}";
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    HttpResponseMessage response = await httpClient.DeleteAsync(apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("Shift deleted. Press any button to continue.");
+                        Console.ReadLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: " + response.StatusCode);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex}");
+            }
+        }
 
         public static async Task PutShift(int Id, string name, string startDate, string startTime, string endTime, string duration)
         {
