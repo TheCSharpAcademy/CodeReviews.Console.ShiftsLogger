@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ShiftTrackerUI
+﻿namespace ShiftTrackerUI
 {
     internal class MainMenu
     {
@@ -13,8 +7,7 @@ namespace ShiftTrackerUI
             Console.Clear();
             bool closeApp = false;
             while (closeApp == false)
-            {
-                
+            {              
                 Console.WriteLine("Welcome to the Shift Tracker app. Please choose from the following options");
                 Console.WriteLine("Type 0 to exit programme");
                 Console.WriteLine("Press 1 to view current recorded shifts");
@@ -31,23 +24,22 @@ namespace ShiftTrackerUI
                         closeApp = true;
                         Environment.Exit(0);
                         break;
-
                     case "1":
                         await ShiftService.GetShifts();
                         break;
-
                     case "2":
                         await UserInput.AddShift();
                         break;
-
                     case "3":
                         await UserInput.DeleteShift();
                         break;
                     case "4":
                         await UserInput.PutShift();
                         break;
-
-
+                    default:
+                        Console.WriteLine("Invalid input. Press enter to try again.");
+                        Console.ReadLine();
+                        break;
                 }
             }
         }
