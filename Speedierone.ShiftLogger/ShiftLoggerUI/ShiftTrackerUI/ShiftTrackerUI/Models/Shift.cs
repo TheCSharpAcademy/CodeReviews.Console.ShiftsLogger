@@ -15,12 +15,13 @@ namespace ShiftTrackerUI.Models
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("startDate")]
-        public DateTime StartDate { get; set; }
+        public string StartDate { get; set; }
         [JsonProperty("startTime")]
-        public DateTime StartTime { get; set; }
+        public string StartTime { get; set; }
         [JsonProperty("endTime")]
-        public DateTime EndDate { get; set; }
-
+        public string EndDate { get; set; }
+        [JsonProperty("duration")]
+        public string Duration { get; set; }
 
     }
 }

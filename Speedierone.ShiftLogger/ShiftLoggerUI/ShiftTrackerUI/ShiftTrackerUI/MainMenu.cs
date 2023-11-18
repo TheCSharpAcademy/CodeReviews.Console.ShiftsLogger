@@ -36,6 +36,10 @@ namespace ShiftTrackerUI
                         await ShiftService.GetShifts();
                         break;
 
+                    case "2":
+                        await UserInput.AddShift();
+                        break;
+
                 }
             }
         }

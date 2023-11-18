@@ -12,7 +12,7 @@ namespace ShiftLoggerAPI.Models
         public string StartDate {  get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
-        public int Duration { get; set; }
+        public string Duration { get; set; }
 
         
     }
