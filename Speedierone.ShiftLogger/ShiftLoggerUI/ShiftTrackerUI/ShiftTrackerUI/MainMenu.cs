@@ -40,6 +40,13 @@ namespace ShiftTrackerUI
                         await UserInput.AddShift();
                         break;
 
+                    case "3":
+                        break;
+                    case "4":
+                        await UserInput.PutShift();
+                        break;
+
+
                 }
             }
         }

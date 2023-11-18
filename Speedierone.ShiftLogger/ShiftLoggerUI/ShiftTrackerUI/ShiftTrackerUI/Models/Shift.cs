@@ -11,7 +11,7 @@ namespace ShiftTrackerUI.Models
     public class Shift
     {
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("startDate")]
@@ -19,7 +19,7 @@ namespace ShiftTrackerUI.Models
         [JsonProperty("startTime")]
         public string StartTime { get; set; }
         [JsonProperty("endTime")]
-        public string EndDate { get; set; }
+        public string EndTime { get; set; }
         [JsonProperty("duration")]
         public string Duration { get; set; }
 

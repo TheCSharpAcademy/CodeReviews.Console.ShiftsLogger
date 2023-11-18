@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+using static System.Net.WebRequestMethods;
 
 namespace ShiftTrackerUI
 {
@@ -54,7 +55,7 @@ namespace ShiftTrackerUI
                     Name = name,
                     StartDate = startDate,
                     StartTime = startTime,
-                    EndDate = endTime,
+                    EndTime = endTime,
                     Duration = duration
                 };
                 var jsonData = JsonConvert.SerializeObject(shift);
@@ -82,6 +83,47 @@ namespace ShiftTrackerUI
                 Console.WriteLine($"Error: {ex}");
             }
 
+        }
+
+        public static async Task PutShift(int Id, string name, string startDate, string startTime, string endTime, string duration)
+        {
+            try
+            {
+                var apiUrl = $"https://localhost:7217/api/ShiftTimes{Id}";
+                var shift = new Shift()
+                {
+                    Id = Id,
+                    Name = name,
+                    StartDate = startDate,
+                    StartTime = startTime,
+                    EndTime = endTime,
+                    Duration = duration
+                };
+                
+                var jsonData = JsonConvert.SerializeObject(shift);
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    using (StringContent content = new StringContent(jsonData, Encoding.UTF8 , "application/json"))
+                    {
+                        HttpResponseMessage response = await httpClient.PutAsync(apiUrl, content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            Console.WriteLine("Shift Updated. Press any button to continue.");
+                            Console.ReadLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Error: " + response.StatusCode);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex}");
+            }
         }
     }
 }
