@@ -26,13 +26,14 @@ namespace ShiftTrackerUI
 
                         resultList = JsonConvert.DeserializeObject<List<Shift>>(data);
 
-                        TableVisualisation.ShowTable(resultList, "Shifts");
+                        TableVisualisation.ShowTable(resultList);
                     }
                     else
                     {
                         Console.WriteLine($"Error: {response.StatusCode}");
                     }
                 }
+                Console.WriteLine("Press any button to continue.");
                 Console.ReadLine();
             }
             catch (Exception ex) { Console.WriteLine(ex); Console.ReadLine(); }

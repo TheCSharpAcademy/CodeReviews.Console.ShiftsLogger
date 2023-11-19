@@ -36,7 +36,7 @@ namespace ShiftTrackerUI
                     dateString = Console.ReadLine();
                 }
             }
-            return dateString.ToString();        
+            return dateString;        
         }
 
         internal static string CheckTime()
@@ -53,7 +53,7 @@ namespace ShiftTrackerUI
                     timeString = Console.ReadLine();
                 }
             }
-            return timeString.ToString();
+            return timeString;
         }
     }
 }
