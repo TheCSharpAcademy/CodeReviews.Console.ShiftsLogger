@@ -1,6 +1,6 @@
 ﻿namespace ShiftsLoggerUI;
 
-public class Errors(List<string> InvalidEmail, List<string> PasswordTooShort, List<string> PasswordRequiresNonAlphanumeric, List<string> PasswordRequiresDigit, List<string> PasswordRequiresUpper, List<string> InvalidUserName)
+public class Errors(List<string> InvalidEmail, List<string> PasswordTooShort, List<string> PasswordRequiresNonAlphanumeric, List<string> PasswordRequiresDigit, List<string> PasswordRequiresUpper, List<string> InvalidUserName, List<string> DuplicateUserName)
 {
     public string InvalidEmail { get; set; } = InvalidEmail is null ? "" : InvalidEmail![0].TrimEnd('.');
     public string PasswordTooShort { get; set; } = PasswordTooShort is null ? "" : PasswordTooShort![0].TrimEnd('.');
@@ -8,6 +8,7 @@ public class Errors(List<string> InvalidEmail, List<string> PasswordTooShort, Li
     public string PasswordRequiresDigit { get; set; } = PasswordRequiresDigit is null ? "" : PasswordRequiresDigit[0].TrimEnd('.');
     public string PasswordRequiresUpper { get; set; } = PasswordRequiresUpper is null ? "" : PasswordRequiresUpper[0].TrimEnd('.');
     public string InvalidUserName { get; set; } = InvalidUserName is null ? "" : "Invalid Email Adress: Only Numbers, Letters And Certain Characters [-._@+] Are Allowed";
+    public string DuplicateUserName { get; set; } = DuplicateUserName is null ? "" : DuplicateUserName[0].TrimEnd('.');
 
     public override string ToString()
     {
