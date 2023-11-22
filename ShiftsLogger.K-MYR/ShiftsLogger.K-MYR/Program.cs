@@ -4,7 +4,7 @@ using ShiftsLogger.K_MYR;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 
-using (var dbContext = new DataContext()) { dbContext.Database.Migrate(); };
+using (var dbContext = new DataContext()) { dbContext.Database.Migrate(); }
 
 var builder = WebApplication.CreateBuilder(args);
 

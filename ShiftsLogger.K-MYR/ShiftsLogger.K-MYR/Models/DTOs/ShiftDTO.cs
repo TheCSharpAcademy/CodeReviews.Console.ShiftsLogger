@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShiftsLogger.K_MYR;
 
-public class ShiftDTO
+public class ShiftDto
 {
     [SwaggerSchema(ReadOnly = true)]
     public int Id { get; set; }

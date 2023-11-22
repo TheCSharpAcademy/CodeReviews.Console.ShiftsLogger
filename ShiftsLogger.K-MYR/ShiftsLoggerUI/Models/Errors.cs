@@ -18,7 +18,7 @@ public class Errors(List<string> InvalidEmail, List<string> PasswordTooShort, Li
         {
             if (!String.IsNullOrEmpty(prop.GetValue(this)!.ToString()))
                 message += $"{prop.GetValue(this)} | ";
-        };
+        }
 
         return message;
     }

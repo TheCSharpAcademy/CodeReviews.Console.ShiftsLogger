@@ -16,9 +16,9 @@ public class Shift
     public string? UserId { get; set; }
     public ApplicationUser? ApplicationUser { get; set; }
 
-    public ShiftDTO GetDTO()
+    public ShiftDto GetDto()
     {
-        return new ShiftDTO
+        return new ShiftDto
         {
             Id = Id,
             StartTime = StartTime,

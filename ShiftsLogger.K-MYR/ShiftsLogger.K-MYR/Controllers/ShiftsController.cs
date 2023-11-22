@@ -19,7 +19,7 @@ namespace ShiftsLogger.K_MYR.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ShiftDTO>> PostShift(ShiftInsertModel shiftDTO)
+        public async Task<ActionResult<ShiftDto>> PostShift(ShiftInsertModel shiftDTO)
         {
             if (ModelState.IsValid)
             {
@@ -43,7 +43,7 @@ namespace ShiftsLogger.K_MYR.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ShiftDTO>> GetShift(int id)
+        public async Task<ActionResult<ShiftDto>> GetShift(int id)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -54,7 +54,7 @@ namespace ShiftsLogger.K_MYR.Controllers
                                 .Include(x => x.Shifts)
                                 .Single(u => u.Id == user.Id)
                                 .Shifts
-                                .FirstOrDefault(s => s.Id == id)?.GetDTO();
+                                .FirstOrDefault(s => s.Id == id)?.GetDto();
 
             return shift is null ? NotFound() : Ok(shift);
         }
@@ -63,7 +63,7 @@ namespace ShiftsLogger.K_MYR.Controllers
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<ShiftDTO>>> GetShifts()
+        public async Task<ActionResult<List<ShiftDto>>> GetShifts()
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -74,7 +74,7 @@ namespace ShiftsLogger.K_MYR.Controllers
                                 .Include(x => x.Shifts)
                                 .Single(u => u.Id == user.Id)
                                 .Shifts
-                                .Select(x => x.GetDTO())
+                                .Select(x => x.GetDto())
                                 .ToList();
 
             return user.Shifts.Count != 0 ? Ok(shifts) : NotFound();

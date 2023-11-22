@@ -6,7 +6,7 @@ public class ShiftsService(DataContext context) : IShiftsService
 {
     private readonly DataContext _context = context;
 
-    public async Task<ShiftDTO> AddShiftAsync(ShiftInsertModel shiftDTO, ApplicationUser user)
+    public async Task<ShiftDto> AddShiftAsync(ShiftInsertModel shiftDTO, ApplicationUser user)
     {
         Shift shift = new()
         {
@@ -19,7 +19,7 @@ public class ShiftsService(DataContext context) : IShiftsService
         user!.Shifts.Add(shift);
         await _context.SaveChangesAsync();
 
-        return shift.GetDTO();
+        return shift.GetDto();
     }
 
     public async Task<bool> UpdateShiftAsync(int id, ShiftInsertModel shift, ApplicationUser user)
