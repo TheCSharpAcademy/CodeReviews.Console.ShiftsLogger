@@ -26,6 +26,7 @@
                         break;
                     case "1":
                         await ShiftService.GetShifts();
+                        Console.Clear();
                         break;
                     case "2":
                         await UserInput.AddShift();

@@ -11,7 +11,7 @@ namespace ShiftTrackerUI
         {
             Console.Clear();
 
-            string apiEndPoint = ConfigurationManager.AppSettings.Get("apiAddress");
+            string apiEndPoint = "https://localhost:7217/api/ShiftTimes/";
 
             List<Shift> resultList = new List<Shift>();
             try
