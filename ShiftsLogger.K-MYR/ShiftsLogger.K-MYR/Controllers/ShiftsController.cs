@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -5,88 +7,112 @@ namespace ShiftsLogger.K_MYR.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ShiftsController : ControllerBase
+    public class ShiftsController(UserManager<ApplicationUser> userManager, DataContext dataContext, IShiftsService shiftsService) : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly DataContext _dataContext = dataContext;
 
-        public ShiftsController(DataContext context)
-        {
-            _context = context; 
-        }
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
 
+        private readonly IShiftsService _shiftsService = shiftsService;
+
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Shift>> PostShift(Shift shift)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ShiftDTO>> PostShift(ShiftInsertModel shiftDTO)
         {
-            _context.Shifts.Add(shift);
-            await _context.SaveChangesAsync();
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
 
-            return CreatedAtAction(nameof(GetShift), new { id = shift.Id});
-        } 
+                if (user is null)
+                    return NotFound("User Claim Not Found");
 
+                var shift = await _shiftsService.AddShiftAsync(shiftDTO, user);
+
+                return CreatedAtAction(nameof(GetShift), new { id = shift.Id }, shift);
+            }
+            else
+            {
+                return BadRequest();
+
+            }
+        }
+
+        [Authorize]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Shift>> GetShift(int id)
+        public async Task<ActionResult<ShiftDTO>> GetShift(int id)
         {
-            var shift = await _context.Shifts.FindAsync(id);
+            var user = await _userManager.GetUserAsync(User);
 
-            if (shift is null)
-                return NotFound();
-            
-            return shift;
+            if (user is null)
+                return NotFound("User Claim Not Found");
+
+            var shift = _userManager.Users
+                                .Include(x => x.Shifts)
+                                .Single(u => u.Id == user.Id)
+                                .Shifts
+                                .FirstOrDefault(s => s.Id == id)?.GetDTO();
+
+            return shift is null ? NotFound() : Ok(shift);
         }
 
+        [Authorize]
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Shift>> GetShifts()
+        public async Task<ActionResult<List<ShiftDTO>>> GetShifts()
         {
-            if (_context.Shifts.Any())
-                return NotFound();
-            
-            return Ok( await _context.Shifts.ToListAsync());
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user is null)
+                return NotFound("User Claim Not Found");
+
+            var shifts = _userManager.Users
+                                .Include(x => x.Shifts)
+                                .Single(u => u.Id == user.Id)
+                                .Shifts
+                                .Select(x => x.GetDTO())
+                                .ToList();
+
+            return user.Shifts.Count != 0 ? Ok(shifts) : NotFound();
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> PutShift(int id, Shift shift)
+        public async Task<ActionResult> PutShift(int id, ShiftInsertModel shift)
         {
-            if (id != shift.Id)
-                return BadRequest();
-
-            _context.Entry(shift).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException) when (!ShiftExists(id))
-            {               
-                    return NotFound();                
-            }
+                var user = await _userManager.GetUserAsync(User);
 
-            return NoContent();
+                if (user is null)
+                    return NotFound("User Claim Not Found");
+
+                return await _shiftsService.UpdateShiftAsync(id, shift, user) ? NoContent() : NotFound();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
-        [HttpDelete]
+        [Authorize]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> DeleteShift(int id)
         {
-            var shift = await _context.Shifts.FindAsync(id);
+            var user = await _userManager.GetUserAsync(User);
 
-            if (shift is null)
-                return NotFound();
-            
-            _context.Remove(shift);
-            await _context.SaveChangesAsync();
+            if (user is null)
+                return NotFound("User Claim Not Found");
 
-            return NoContent();
+            return await _shiftsService.DeleteShiftAsync(id, user) ? NoContent() : NotFound();
         }
-
-        private bool ShiftExists(int id) => _context.Shifts.Any(s => s.Id == id);
     }
 }
