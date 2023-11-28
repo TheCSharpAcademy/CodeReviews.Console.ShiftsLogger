@@ -23,17 +23,18 @@ public class ShiftController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> NewShift([FromBody] Shift shift)
     {
+        bool onGoingShift = await ShiftService.OnGoingShift(shift.WorkerId);
+
+        if(onGoingShift & (shift.CheckTypeField == CheckType.CheckIn))
+            return BadRequest("Is a shift currently ongoing, you can't check in again");
+
+        if (!onGoingShift & (shift.CheckTypeField == CheckType.CheckOut))
+            return BadRequest("You can't check out [again]");
+
         shift.Check = DateTime.Now;
         await ShiftService.SaveShift(shift);
-        return Ok(); 
-    }
+        return Ok(1);
 
-    [HttpPut]
-    [Route("{id}")]
-    public async Task<IActionResult> UpdateShift(int id, [FromBody] Shift shift)
-    {
-        await ShiftService.UpdateShift(id, shift);
-        return Ok();
     }
 
     [HttpDelete]

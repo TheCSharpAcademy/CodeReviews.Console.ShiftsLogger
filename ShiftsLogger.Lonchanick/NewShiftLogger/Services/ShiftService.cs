@@ -13,6 +13,23 @@ public class ShiftService: IShiftService
         this.contexdb = contexdb;
     }
 
+    public async Task<bool> OnGoingShift(int id)
+    {
+        var lastShiftRecordOfAWorker = (contexdb
+            .Shifts
+            .Where(s => s.WorkerId == id)
+            .OrderByDescending(s => s.Check)
+            .ToList()).FirstOrDefault();
+
+        if (lastShiftRecordOfAWorker is null)
+            return false;
+
+        if(lastShiftRecordOfAWorker.CheckTypeField == CheckType.CheckIn)
+            return true;
+
+        return false;
+    }
+
     public async Task<IEnumerable<Shift>> getShifts()
     {
         var shifts = contexdb.Shifts.Include(p=>p.Worker);
@@ -56,5 +73,6 @@ public interface IShiftService
     public Task UpdateShift(int id, Shift shift);
     public Task SaveShift(Shift shift);
     public Task<IEnumerable<Shift>> getShifts();
+    public Task<bool> OnGoingShift(int id);
 
 }

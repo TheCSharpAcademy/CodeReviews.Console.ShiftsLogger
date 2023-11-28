@@ -31,19 +31,16 @@ public class ShiftService
         throw new NotImplementedException();
     }
 
-    public async Task Add(Shift shift)
+    public async Task<int> Add(Shift shift)
     {
         string tempUrl=getUrl;
-        await client.PostAsJsonAsync(tempUrl,shift);
+        var r = await client.PostAsJsonAsync(tempUrl,shift);
+
+        if (r.IsSuccessStatusCode)
+            return 1;
+
+        return -1;
+
     }
 
-    public Task Delete(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task Update(int id)
-    {
-        throw new NotImplementedException();
-    }
 }

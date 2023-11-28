@@ -7,35 +7,36 @@ namespace ShiftLoggerConsole.Controllers;
 public class ShiftController
 {
     ShiftService shiftService = new();
-    public string[] chechInType ={"Check In", "Check Out"};
+    public string[] checkType ={"Check In", "Check Out"};
     public async Task Add()
     {
-        Shift shift=new();
-        shift.WorkerId= AnsiConsole.Ask<int>("Type your Worker Id: ");
+        Shift shift = new();
+        shift.WorkerId = AnsiConsole.Ask<int>("Type your Worker Id: ");
 
         var option = AnsiConsole.Prompt(new SelectionPrompt<String>()
-			//.Title("ChechIn or CheckOut")
-			.AddChoices(chechInType));
+            .AddChoices(checkType));
 
-        if(option.Equals(chechInType[0]))
-            shift.CheckTypeField=CheckType.CheckIn;
+        if (option.Equals(checkType[0]))
+            shift.CheckTypeField = CheckType.CheckIn;
         else
-            shift.CheckTypeField=CheckType.CheckOut;
+            shift.CheckTypeField = CheckType.CheckOut;
 
-        try
-        {
-            await shiftService.Add(shift);
 
-        }catch(Exception e)
+        if (await shiftService.Add(shift) == -1)
         {
-            WriteLine(e);
+            WriteLine("You can't checkin o checkout twice!");
+            Console.Write("Press any Key to continue");
+            Console.ReadLine();
         }
-        
-    }
+        else
+        {
+            WriteLine("Record Inserted!");
+            Console.Write("Press any Key to continue");
+            Console.ReadLine();
+        }
 
-    public Task Delete(int id)
-    {
-        throw new NotImplementedException();
+        
+
     }
 
     public async Task GetAsync()
@@ -55,15 +56,5 @@ public class ShiftController
             WriteLine("Something went wrong:\n {0}",e.Message);
         }
 
-    }
-
-    public Task<Worker?> GetById(int id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task Update(int id)
-    {
-        throw new NotImplementedException();
     }
 }
