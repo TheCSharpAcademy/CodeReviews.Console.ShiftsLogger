@@ -44,10 +44,6 @@ Name: {worker.Name}");
         }
     }
 
-    public static explicit operator Worker(Task<Worker?> v)
-    {
-        throw new NotImplementedException();
-    }
     public static Worker WorkerMenuPickable(IEnumerable<Worker> workers)
 	{
 		var option = AnsiConsole.Prompt(new SelectionPrompt<Worker>()

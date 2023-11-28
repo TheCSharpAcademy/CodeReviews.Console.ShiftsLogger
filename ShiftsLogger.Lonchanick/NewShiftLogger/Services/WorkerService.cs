@@ -3,7 +3,7 @@ using ShiftsLogger.Lonchanick.Models;
 
 namespace ShiftsLogger.Lonchanick.Services;
 
-public class WorkerService:IWorkerService
+public class WorkerService : IWorkerService
 {
     ContextDB contexDB;
 
@@ -30,17 +30,18 @@ public class WorkerService:IWorkerService
         {
             contexDB.worker.Add(worker);
             await contexDB.SaveChangesAsync();
-        }catch(Exception e)
+        }
+        catch (Exception e)
         {
             WriteLine($"Something went wrong:\n{e.Message}");
         }
-        
+
     }
 
     public async Task UpdateWorker(int id, Worker worker)
     {
         Worker? result = contexDB.worker.Find(id);
-        if(result is not null)
+        if (result is not null)
         {
             result.Name = worker.Name;
             await contexDB.SaveChangesAsync();

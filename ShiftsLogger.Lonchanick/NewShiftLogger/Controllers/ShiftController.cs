@@ -25,7 +25,7 @@ public class ShiftController : ControllerBase
     {
         bool onGoingShift = await ShiftService.OnGoingShift(shift.WorkerId);
 
-        if(onGoingShift & (shift.CheckTypeField == CheckType.CheckIn))
+        if (onGoingShift & (shift.CheckTypeField == CheckType.CheckIn))
             return BadRequest("Is a shift currently ongoing, you can't check in again");
 
         if (!onGoingShift & (shift.CheckTypeField == CheckType.CheckOut))

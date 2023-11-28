@@ -81,7 +81,7 @@ public class Menu
                     break;
 
                 case ManageShiftOptions.Shifts_By_Worker:
-                    WriteLine("I owu you this Pablo! xD");
+                    WriteLine("I owe you this Pablo! xD");
                     ReadLine();
                     Clear();
                     break;
