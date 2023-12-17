@@ -16,7 +16,7 @@ namespace ShiftsLoggerUI
         {
             _shiftsLoggerService = shiftsLoggerService;
         }
-        internal void MainMenu()
+        internal async void MainMenu()
         {
             Console.WriteLine("Shift management: \n");
             Console.WriteLine("Press 1 to add a new shift\n");
@@ -32,9 +32,9 @@ namespace ShiftsLoggerUI
                     var newShift = getUserInput.getUserShiftInfo();
                     _shiftsLoggerService.AddShift(newShift);
                     break;
-                //case "2":
-                //    ShiftsLoggerService.GetShifts();
-                //    break;
+                case "2":
+                    await _shiftsLoggerService.GetShifts();
+                    break;
                 //case "3":
                 //    ShiftsLoggerService.GetShiftById();
                 //    break;
