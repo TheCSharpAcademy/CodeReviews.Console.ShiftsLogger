@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ShiftsLogger.Models;
+using ShiftsLoggerUI.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +10,13 @@ namespace ShiftsLoggerUI
 {
     internal class MenuBuilders
     {
-        internal static void MainMenu()
+        private readonly ShiftsLoggerService _shiftsLoggerService;
+
+        public MenuBuilders(ShiftsLoggerService shiftsLoggerService)
+        {
+            _shiftsLoggerService = shiftsLoggerService;
+        }
+        internal void MainMenu()
         {
             Console.WriteLine("Shift management: \n");
             Console.WriteLine("Press 1 to add a new shift\n");
@@ -21,20 +29,21 @@ namespace ShiftsLoggerUI
             switch (userInput)
             {
                 case "1":
-                    ShiftsLoggerUIService.AddShift();
+                    var newShift = getUserInput.getUserShiftInfo();
+                    _shiftsLoggerService.AddShift(newShift);
                     break;
-                case "2":
-                    ShiftsLoggerUIService.GetShifts();
-                    break;
-                case "3":
-                    ShiftsLoggerUIService.GetShiftById();
-                    break;
-                case "4":
-                    ShiftsLoggerUIService.UpdateShift();
-                    break;
-                case "5":
-                    ShiftsLoggerUIService.DeleteShift();
-                    break;
+                //case "2":
+                //    ShiftsLoggerService.GetShifts();
+                //    break;
+                //case "3":
+                //    ShiftsLoggerService.GetShiftById();
+                //    break;
+                //case "4":
+                //    ShiftsLoggerService.UpdateShift();
+                //    break;
+                //case "5":
+                //    ShiftsLoggerService.DeleteShift();
+                //    break;
                 default:
                     Console.WriteLine("Invalid input");
                     Console.ReadLine();
