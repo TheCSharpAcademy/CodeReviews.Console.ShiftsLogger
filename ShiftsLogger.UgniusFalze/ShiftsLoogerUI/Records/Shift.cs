@@ -13,5 +13,5 @@ public record Shift(
     [property: JsonPropertyName("comment")]
     string? comment)
 {
-    public int Duration => (ShiftEnd - ShiftStart).Seconds;
+    public double Duration => (ShiftEnd - ShiftStart).TotalSeconds;
 }
