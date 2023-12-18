@@ -42,7 +42,6 @@ namespace ShiftsLoggerAPI
         }
 
         // PUT: api/Shifts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutShift(int id, Shift shift)
         {
@@ -73,7 +72,6 @@ namespace ShiftsLoggerAPI
         }
 
         // POST: api/Shifts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Shift>> PostShift(Shift shift)
         {

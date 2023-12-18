@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using System.Globalization;
+using Spectre.Console;
 
 namespace ShiftsLoogerUI.Util;
 
@@ -10,9 +11,24 @@ public class UserInput
         return name;
     }
 
-    public static DateTime GetStartDate()
+    public static DateTime GetStartDate(DateTime? endDate = null)
     {
-        var dateTime = AnsiConsole.Prompt(new TextPrompt<DateTime>("Please enter the start date of the shift:").ValidationErrorMessage("Invalid Date Time"));
+        var prompt = new TextPrompt<DateTime>("Please enter the start date of the shift: ").ValidationErrorMessage("Please enter using correct date and time format");
+        if (endDate != null)
+        {
+            prompt.Validate(startDate =>
+            {
+                if (endDate > startDate)
+                {
+                    return ValidationResult.Success();
+                }
+                else
+                {
+                    return ValidationResult.Error($"The start date should be lower than the end date, end date is {endDate.ToString()}");
+                }
+            });
+        }
+        var dateTime = AnsiConsole.Prompt(prompt);
         return dateTime;
     }
 
@@ -25,6 +41,7 @@ public class UserInput
     public static DateTime GetEndDate(DateTime startDate)
     {
         var dateTime = AnsiConsole.Prompt(new TextPrompt<DateTime>("Please enter the end date of the shift:")
+            .ValidationErrorMessage("Please enter using correct date and time format")
             .Validate(endDate =>
             {
                 if (endDate > startDate)
@@ -33,9 +50,15 @@ public class UserInput
                 }
                 else
                 {
-                    return ValidationResult.Error("The end date should be higher than start date");
+                    return ValidationResult.Error($"The end date should be higher than start date, start date is {startDate.ToString(CultureInfo.CurrentCulture)}");
                 }
             }));
         return dateTime;
+    }
+
+    public static void GetKeyToContinue()
+    {
+        Console.WriteLine("Press any key to continue..");
+        Console.ReadKey();
     }
 }

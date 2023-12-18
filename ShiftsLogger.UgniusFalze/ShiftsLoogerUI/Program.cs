@@ -1,3 +1,10 @@
 ﻿using ShiftsLoogerUI;
 var menu = new Menu();
-menu.display();
+try
+{
+    menu.Display();
+}
+catch (Exception exception)
+{
+    Console.WriteLine(exception.Message);
+}

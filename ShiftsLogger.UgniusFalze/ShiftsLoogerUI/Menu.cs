@@ -1,10 +1,12 @@
-﻿using ShiftsLoogerUI.Records;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
+using ShiftsLoogerUI.Records;
 using ShiftsLoogerUI.Util;
 using Spectre.Console;
 
 namespace ShiftsLoogerUI;
 
-enum MenuOptions
+internal enum MenuOptions
 {
     ViewShifts,
     AddShift,
@@ -12,46 +14,65 @@ enum MenuOptions
     Exit
 }
 
+internal enum ModifyShift
+{
+    DeleteShift,
+    ChangeName,
+    ChangeComment,
+    ChangeStartDate,
+    ChangeEndDate,
+    Exit
+}
+
 public class Menu
 {
 
-    private ShiftService _shiftService { get; set; }
+    private ShiftService ShiftService { get; set; } = new();
 
-    public Menu()
+    public void Display()
     {
-        _shiftService = new ShiftService();
-    }
-    public void display()
-    {
-        bool exit = false;
+        var exit = false;
         do
         {
+            AnsiConsole.Clear();
             var prompt = new SelectionPrompt<MenuOptions>()
                 .AddChoices(
                     MenuOptions.ViewShifts,
                     MenuOptions.AddShift,
                     MenuOptions.ManageShift,
                     MenuOptions.Exit);
+            prompt.Converter =
+                options => Regex.Replace(options.ToString(), "(\\B[A-Z])",
+                    " $1");
             var choice = AnsiConsole.Prompt(prompt);
-            switch (choice)
+            try
             {
-                case MenuOptions.ViewShifts:
-                    DisplayShifts();
-                    break;
-                case MenuOptions.AddShift:
-                    AddShift();
-                    break;
-                case MenuOptions.ManageShift:
-                    ManageShifts();
-                    break;
-                case MenuOptions.Exit:
-                    exit = true;
-                    break;
+                switch (choice)
+                {
+                    case MenuOptions.ViewShifts:
+                        DisplayShifts();
+                        break;
+                    case MenuOptions.AddShift:
+                        AddShift();
+                        break;
+                    case MenuOptions.ManageShift:
+                        ManageShifts();
+                        break;
+                    case MenuOptions.Exit:
+                        exit = true;
+                        break;
+                }
             }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine("Failed to connect to the api. Press any key to restart..");
+                Console.ReadKey();
+            }
+            
         } while (!exit);
     }
 
-    public void AddShift()
+    private void AddShift()
     {
         var name = UserInput.GetName();
         var dateStart = UserInput.GetStartDate();
@@ -68,31 +89,96 @@ public class Menu
                 break;
         }
 
-        _shiftService.AddShift(new Shift(Name: name, ShiftId: 0, ShiftStart: dateStart, ShiftEnd: dateEnd, comment));
+        Console.WriteLine(ShiftService.AddShift(new Shift(name, 0, dateStart, dateEnd,
+            comment)) == false
+            ? "Failed to insert shift."
+            : "New shift inserted.");
+        UserInput.GetKeyToContinue();
     }
-    public void DisplayShifts()
+
+    private void DisplayShifts()
     {
-        var shifts = _shiftService.GetShifts();
+        var shifts = ShiftService.GetShifts();
+        if (shifts.Count == 0)
+        {
+            Console.WriteLine("There are no shifts to manage. Press any key to continue.");
+            Console.ReadKey();
+            return;
+        }
         var table = new Table();
-        table.AddColumns("Shift Id","Name","Shift Start", "Shift End", "Duration in seconds");
+        table.AddColumns("Shift Id","Name","Shift Start", "Shift End", "Duration in hours");
         foreach (var shift in shifts)
         {
-            table.AddRow(shift.ShiftId.ToString(), shift.Name, shift.ShiftStart.ToString(), shift.ShiftEnd.ToString(), shift.Duration.ToString());
+            table.AddRow(shift.ShiftId.ToString(), shift.Name, shift.ShiftStart.ToString(CultureInfo.CurrentCulture), shift.ShiftEnd.ToString(CultureInfo.CurrentCulture), shift.Duration.ToString(CultureInfo.CurrentCulture));
         }
         
         AnsiConsole.Write(table);
+        UserInput.GetKeyToContinue();
     }
 
     private void ManageShifts()
     {
-        var shifts = _shiftService.GetShifts();
+        var shifts = ShiftService.GetShifts();
+        if (shifts.Count == 0)
+        {
+            Console.WriteLine("There are no shifts to manage. Press any key to continue.");
+            Console.ReadKey();
+            return;
+        }
         var prompt = new SelectionPrompt<Shift>().Title("Which shift would you like to manage?");
+        prompt.Converter = shift => shift.ShiftId + " " + shift.Name;
         foreach (var shift in shifts)
         {
             prompt.AddChoice(shift);
         }
         var choice = AnsiConsole.Prompt(prompt);
         
-        
+        AnsiConsole.Clear();
+        var modifyPrompt = new SelectionPrompt<ModifyShift>()
+            .AddChoices(
+                ModifyShift.ChangeName,
+                ModifyShift.ChangeComment,
+                ModifyShift.ChangeStartDate,
+                ModifyShift.ChangeEndDate,
+                ModifyShift.DeleteShift,
+                ModifyShift.Exit);
+        modifyPrompt.Converter =
+            options => Regex.Replace(options.ToString(), "(\\B[A-Z])",
+                " $1");
+        var modifyChoice = AnsiConsole.Prompt(modifyPrompt);
+        var success = false;
+        var successMessage = "Shift update successfully.";
+        switch (modifyChoice)
+        {
+            case ModifyShift.ChangeName:
+                var name = UserInput.GetName();
+                choice.Name = name;
+                success = ShiftService.UpdateShift(choice);
+                break;
+            case ModifyShift.ChangeComment:
+                var comment = UserInput.GetComment();
+                choice.Comment = comment;
+                success = ShiftService.UpdateShift(choice);
+                break;
+            case ModifyShift.ChangeStartDate:
+                var startDate = UserInput.GetStartDate(choice.ShiftEnd);
+                choice.ShiftStart = startDate;
+                success = ShiftService.UpdateShift(choice);
+                break;
+            case ModifyShift.ChangeEndDate:
+                var endDate = UserInput.GetEndDate(choice.ShiftStart);
+                choice.ShiftEnd = endDate;
+                success = ShiftService.UpdateShift(choice);
+                break;
+            case ModifyShift.DeleteShift:
+                success = ShiftService.DeleteShift(choice);
+                successMessage = "Shift deleted successfully.";
+                break;
+            case ModifyShift.Exit:
+                return;
+        }
+
+        Console.WriteLine(success ? successMessage : "Failed to update shift.");
+        UserInput.GetKeyToContinue();
     }
 }

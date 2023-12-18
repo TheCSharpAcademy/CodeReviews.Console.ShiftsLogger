@@ -2,16 +2,22 @@
 
 namespace ShiftsLoogerUI.Records;
 
-public record Shift(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("shiftId")]
-    int ShiftId,
-    [property: JsonPropertyName("shiftStart")]
-    DateTime ShiftStart,
-    [property: JsonPropertyName("shiftEnd")]
-    DateTime ShiftEnd,
-    [property: JsonPropertyName("comment")]
-    string? comment)
+public class Shift(string name, int shiftId, DateTime shiftStart, DateTime shiftEnd, string? comment)
 {
-    public double Duration => (ShiftEnd - ShiftStart).TotalSeconds;
+    [JsonPropertyName("name")] 
+    public string Name { get; set; } = name;
+
+    [JsonPropertyName("shiftId")]
+    public int ShiftId { get; set; } = shiftId;
+
+    [JsonPropertyName("shiftStart")]
+    public DateTime ShiftStart { get; set; } = shiftStart;
+
+    [JsonPropertyName("shiftEnd")]
+    public DateTime ShiftEnd { get; set; } = shiftEnd;
+
+    [JsonPropertyName("comment")]
+    public string? Comment { get; set; } = comment;
+
+    public double Duration => (ShiftEnd - ShiftStart).TotalHours;
 }

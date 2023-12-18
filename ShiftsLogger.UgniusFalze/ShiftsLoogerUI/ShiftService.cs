@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Microsoft.Extensions.Configuration;
 using RestSharp;
 using ShiftsLoogerUI.Records;
 
@@ -7,11 +8,19 @@ namespace ShiftsLoogerUI;
 public class ShiftService
 {
     private string ApiUrl { get; set; }
-    public ShiftService(string apiUrl = "https://localhost:7200/api")
-    {
-        ApiUrl = apiUrl;
-    }
 
+    public ShiftService()
+    {
+        var url = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build()
+            .GetSection("AppSettings")["ApiUrl"];
+        if (url == null)
+        {
+            throw new Exception("Failed to get api url");
+        }
+
+        ApiUrl = url;
+    }
+    
     public List<Shift> GetShifts()
     {
         var client = new RestClient(ApiUrl);
@@ -22,15 +31,30 @@ public class ShiftService
     public bool AddShift(Shift shift)
     {
         var client = new RestClient(ApiUrl);
-        var response = client.PostJson<Shift>("shifts", shift);
-        if (response == HttpStatusCode.Accepted)
+        var response = client.PostJson("shifts", shift);
+        return response == HttpStatusCode.Created;
+    }
+
+    public bool DeleteShift(Shift shift)
+    {
+        var client = new RestClient(ApiUrl);
+        var request = new RestRequest("shifts/{id}", Method.Delete)
+            .AddUrlSegment("id", shift.ShiftId);
+        var response = client.Execute<RestResponse>(request);
+        return response.IsSuccessful;
+    }
+
+    public bool UpdateShift(Shift shift)
+    {
+        var client = new RestClient(ApiUrl);
+        var request = new RestRequest("shifts/{id}", Method.Put)
         {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+            RequestFormat = DataFormat.Json
+        };
+        request.AddJsonBody(shift);
+        request.AddUrlSegment("id", shift.ShiftId);
+        var response = client.Execute<RestResponse>(request);
+        return response.IsSuccessful;
     }
     
 }
