@@ -19,8 +19,14 @@ namespace ShiftsLoggerUI
         }
         internal async Task AddShift(ShiftModel newShift)
         {
-            await _context.Shifts.AddAsync(newShift);
-            await _context.SaveChangesAsync();
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri("https://localhost:7009/api/ShiftModels");
+                var json = JsonConvert.SerializeObject(newShift);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var result = await client.PostAsync(endpoint, content);
+            }
         }
 
         internal async Task DeleteShift()
@@ -54,6 +60,7 @@ namespace ShiftsLoggerUI
                     Console.WriteLine("---------------------");
                 }
             }
+            Console.ReadLine();
         }
 
         internal async Task UpdateShift()

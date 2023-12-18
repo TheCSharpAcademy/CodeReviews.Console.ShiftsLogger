@@ -11,6 +11,8 @@ namespace ShiftsLoggerUI.Helpers
     {
         internal static ShiftModel getUserShiftInfo()
         {
+            Console.Clear();
+
             Console.WriteLine("Enter start time: ");
             DateTime startTime = DateTime.Parse(Console.ReadLine());
 
