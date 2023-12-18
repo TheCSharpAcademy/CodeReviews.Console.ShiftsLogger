@@ -80,7 +80,7 @@ namespace ShiftsLoggerAPI
             _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetShift", new { id = shift.ShiftId }, shift);
+            return CreatedAtAction(nameof(GetShifts), new { id = shift.ShiftId }, shift);
         }
 
         // DELETE: api/Shifts/5
