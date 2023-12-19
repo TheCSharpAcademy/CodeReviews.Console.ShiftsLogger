@@ -1,9 +1,8 @@
-﻿using System.Net;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using RestSharp;
-using ShiftsLoogerUI.Records;
+using ShiftsLoggerUI.Records;
 
-namespace ShiftsLoogerUI;
+namespace ShiftsLoggerUI;
 
 public class ShiftService
 {
@@ -32,7 +31,7 @@ public class ShiftService
     {
         var client = new RestClient(ApiUrl);
         var response = client.PostJson("shifts", shift);
-        return response == HttpStatusCode.Created;
+        return response == System.Net.HttpStatusCode.Created;
     }
 
     public bool DeleteShift(Shift shift)

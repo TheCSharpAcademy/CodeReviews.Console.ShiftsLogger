@@ -1,4 +1,4 @@
-﻿using ShiftsLoogerUI;
+﻿using ShiftsLoggerUI;
 var menu = new Menu();
 try
 {

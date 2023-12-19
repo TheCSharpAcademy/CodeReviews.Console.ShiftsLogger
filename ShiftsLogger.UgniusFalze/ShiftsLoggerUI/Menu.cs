@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using ShiftsLoogerUI.Records;
-using ShiftsLoogerUI.Util;
+using ShiftsLoggerUI.Records;
+using ShiftsLoggerUI.Util;
 using Spectre.Console;
 
-namespace ShiftsLoogerUI;
+namespace ShiftsLoggerUI;
 
 internal enum MenuOptions
 {

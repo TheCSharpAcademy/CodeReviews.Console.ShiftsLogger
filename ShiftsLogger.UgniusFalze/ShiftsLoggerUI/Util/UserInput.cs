@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Spectre.Console;
 
-namespace ShiftsLoogerUI.Util;
+namespace ShiftsLoggerUI.Util;
 
 public static class UserInput
 {

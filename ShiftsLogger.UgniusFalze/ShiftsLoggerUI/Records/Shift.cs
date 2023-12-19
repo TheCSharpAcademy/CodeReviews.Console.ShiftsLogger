@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ShiftsLoogerUI.Records;
+namespace ShiftsLoggerUI.Records;
 
 public class Shift(string name, int shiftId, DateTime shiftStart, DateTime shiftEnd, string? comment)
 {
