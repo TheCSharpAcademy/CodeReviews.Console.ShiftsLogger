@@ -3,7 +3,7 @@ using Spectre.Console;
 
 namespace ShiftsLoogerUI.Util;
 
-public class UserInput
+public static class UserInput
 {
     public static string GetName()
     {
