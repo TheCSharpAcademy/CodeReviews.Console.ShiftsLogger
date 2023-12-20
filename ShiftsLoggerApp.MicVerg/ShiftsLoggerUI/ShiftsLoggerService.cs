@@ -1,11 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ShiftsLogger.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ShiftsLoggerUI
 {
@@ -29,14 +24,38 @@ namespace ShiftsLoggerUI
             }
         }
 
-        internal async Task DeleteShift()
+        internal async Task DeleteShift(int idToDelete)
         {
-            throw new NotImplementedException();
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri($"https://localhost:7009/api/ShiftModels/{idToDelete}");
+                var result = await client.DeleteAsync(endpoint);
+
+                if (result.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"Shift with ID {idToDelete} deleted successfully.");
+                }
+                else
+                {
+                    Console.WriteLine($"Error deleting shift. Status code: {result.StatusCode}");
+                }
+                Console.ReadLine();
+            }
         }
 
-        internal async Task GetShiftById()
+        internal async Task GetShiftById(int idToGet)
         {
-            throw new NotImplementedException();
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri($"https://localhost:7009/api/ShiftModels/{idToGet}");
+                var result = client.GetAsync(endpoint).Result;
+                var json = result.Content.ReadAsStringAsync().Result;
+
+                var deserializedGet = JsonConvert.DeserializeObject<ShiftModel>(json);
+
+                Console.WriteLine($"Id: {deserializedGet.Id} | StartTime: {deserializedGet.StartTime} | EndTime: {deserializedGet.EndTime} | Worker name: {deserializedGet.WorkerName}");
+                Console.ReadLine();
+            }
         }
 
         internal async Task GetShifts()
@@ -63,9 +82,17 @@ namespace ShiftsLoggerUI
             Console.ReadLine();
         }
 
-        internal async Task UpdateShift()
+        internal async Task UpdateShift(int idToUpdate, ShiftModel updatedShift)
         {
-            throw new NotImplementedException();
+            updatedShift.Id = idToUpdate;
+
+            using (var client = new HttpClient())
+            {
+                var endpoint = new Uri($"https://localhost:7009/api/ShiftModels/{idToUpdate}");
+                var json = JsonConvert.SerializeObject(updatedShift);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var result = client.PutAsync(endpoint, content).Result;
+            }
         }
     }
 }

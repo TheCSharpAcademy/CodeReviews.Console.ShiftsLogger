@@ -1,10 +1,4 @@
-﻿using ShiftsLogger.Models;
-using ShiftsLoggerUI.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ShiftsLoggerUI.Helpers;
 
 namespace ShiftsLoggerUI
 {
@@ -35,21 +29,26 @@ namespace ShiftsLoggerUI
                 switch (userInput)
                 {
                     case "1":
-                        var newShift = getUserInput.getUserShiftInfo();
+                        var newShift = getUserInput.GetUserShiftInfo();
                         await _shiftsLoggerService.AddShift(newShift);
                         break;
                     case "2":
                         await _shiftsLoggerService.GetShifts();
                         break;
-                    //case "3":
-                    //    ShiftsLoggerService.GetShiftById();
-                    //    break;
-                    //case "4":
-                    //    ShiftsLoggerService.UpdateShift();
-                    //    break;
-                    //case "5":
-                    //    ShiftsLoggerService.DeleteShift();
-                    //    break;
+                    case "3":
+                        var idToGet = getUserInput.GetUserShiftId("What ID do you want to look up?");
+                        await _shiftsLoggerService.GetShiftById(int.Parse(idToGet));
+                        break;
+                    case "4":
+                        await _shiftsLoggerService.GetShifts();
+                        var idToUpdate = getUserInput.GetUserShiftId("What ID do you want to update?");
+                        await _shiftsLoggerService.UpdateShift(int.Parse(idToUpdate), getUserInput.GetUserNewShiftInfo());
+                        break;
+                    case "5":
+                        await _shiftsLoggerService.GetShifts();
+                        var idToDelete = getUserInput.GetUserShiftId("What ID do you want to delete");
+                        await _shiftsLoggerService.DeleteShift(int.Parse(idToDelete));
+                        break;
                     case "0":
                         isAppRunning = false;
                         break;
@@ -58,7 +57,7 @@ namespace ShiftsLoggerUI
                         Console.WriteLine("Press Enter to continue...");
                         Console.ReadLine();
                         break;
-                } 
+                }
             }
         }
     }
