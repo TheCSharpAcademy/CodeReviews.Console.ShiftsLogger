@@ -33,11 +33,12 @@ public static class Formatter
             var game = games[i];
             gamesString
                 .AppendLine("<tr>")
-                .AppendLine($"<td>{i+1}</td>")
+                .AppendLine($"<td>{i + 1}</td>")
                 .AppendLine($"<td>{game.Winner}</td>")
                 .AppendLine($"<td>{game.WinnerScore}</td>")
                 .AppendLine($"<td>{game.Looser}</td>")
-                .AppendLine($"<td>{game.LooserScore}</td>");
+                .AppendLine($"<td>{game.LooserScore}</td>")
+                .AppendLine("</tr>");
         }
 
         gamesString
