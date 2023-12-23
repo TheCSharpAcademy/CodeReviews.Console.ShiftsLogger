@@ -40,12 +40,10 @@ namespace ShiftsLoggerUI
                         await _shiftsLoggerService.GetShiftById(int.Parse(idToGet));
                         break;
                     case "4":
-                        await _shiftsLoggerService.GetShifts();
                         var idToUpdate = getUserInput.GetUserShiftId("What ID do you want to update?");
                         await _shiftsLoggerService.UpdateShift(int.Parse(idToUpdate), getUserInput.GetUserNewShiftInfo());
                         break;
                     case "5":
-                        await _shiftsLoggerService.GetShifts();
                         var idToDelete = getUserInput.GetUserShiftId("What ID do you want to delete");
                         await _shiftsLoggerService.DeleteShift(int.Parse(idToDelete));
                         break;

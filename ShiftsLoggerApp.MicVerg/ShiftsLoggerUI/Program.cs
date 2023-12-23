@@ -1,19 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using ShiftsLogger.Models;
 using ShiftsLoggerUI;
 
-var options = new DbContextOptionsBuilder<ShiftContext>()
-            .UseSqlServer("SqlServerConnectionString")
-            .Options;
+var builder = WebApplication.CreateBuilder(args);
 
-// Create the ShiftContext (database context)
-ShiftContext shiftContext = new ShiftContext(options);
+// Add services to the container.
+builder.Services.AddDbContext<ShiftContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnectionString"));
+});
+builder.Services.AddScoped<ShiftContext>();
 
-// Create the ShiftsLoggerService and MenuBuilders with dependencies
-ShiftsLoggerService shiftsLoggerService = new ShiftsLoggerService(shiftContext);
-MenuBuilders menuBuilder = new MenuBuilders(shiftsLoggerService);
+var app = builder.Build();
 
-// Call the MainMenu method to start the application
-menuBuilder.MainMenu();
+// Use the existing ShiftContext instance registered in the web project
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ShiftContext>();
+
+    // Create the ShiftsLoggerService and MenuBuilders with dependencies
+    ShiftsLoggerService shiftsLoggerService = new ShiftsLoggerService(dbContext);
+    MenuBuilders menuBuilder = new MenuBuilders(shiftsLoggerService);
+
+    // Call the MainMenu method to start the application
+    menuBuilder.MainMenu();
+}
 
 Console.ReadLine();
