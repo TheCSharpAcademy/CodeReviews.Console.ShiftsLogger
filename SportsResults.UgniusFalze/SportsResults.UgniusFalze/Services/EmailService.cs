@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Net.Mail;
-using SportsResults.UgniusFalze.Models;
+﻿using System.Net.Mail;
 using SportsResults.UgniusFalze.Utils;
 
 namespace SportsResults.UgniusFalze.Services;
@@ -17,7 +15,7 @@ public class EmailService(EmailConfig config)
         mail.Body = body;  
         mail.IsBodyHtml = true;
         using var smtp = new SmtpClient(config.SMTP, config.PortNumber);
-        smtp.Credentials = new NetworkCredential(config.EmailFrom, config.AppPassword);  
+        smtp.Credentials = new System.Net.NetworkCredential(config.EmailFrom, config.AppPassword);  
         smtp.EnableSsl = true;  
         smtp.Send(mail);
     }
