@@ -6,12 +6,6 @@ namespace ShiftsLoggerUI
 {
     internal class ShiftsLoggerService
     {
-        private readonly ShiftContext _context;
-
-        public ShiftsLoggerService(ShiftContext context)
-        {
-            _context = context;
-        }
         internal async Task AddShift(ShiftModel newShift)
         {
             using (var client = new HttpClient())
