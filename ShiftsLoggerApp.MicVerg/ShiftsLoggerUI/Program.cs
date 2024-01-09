@@ -3,6 +3,6 @@
 ShiftsLoggerService shiftsLoggerService = new ShiftsLoggerService();
 MenuBuilders menuBuilder = new MenuBuilders(shiftsLoggerService);
 
-menuBuilder.MainMenu();
+await menuBuilder.MainMenu();
 
 Console.ReadLine();

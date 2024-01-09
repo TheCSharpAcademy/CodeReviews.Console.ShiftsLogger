@@ -10,7 +10,7 @@ namespace ShiftsLoggerUI
         {
             _shiftsLoggerService = shiftsLoggerService;
         }
-        internal async void MainMenu()
+        internal async Task MainMenu()
         {
             bool isAppRunning = true;
 
