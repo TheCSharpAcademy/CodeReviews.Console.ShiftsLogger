@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<ShiftContext>(opt =>
-    opt.UseSqlServer("localhost;Database=master;Trusted_Connection=True;"));
+    opt.UseSqlServer("server=localhost;initial catalog=shifts;Trusted_Connection=True;Integrated Security=SSPI;TrustServerCertificate=True"));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
