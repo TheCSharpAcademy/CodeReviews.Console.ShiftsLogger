@@ -1,3 +1,8 @@
 -- Get a list of databases
-SELECT name FROM sys.databases
+USE ShiftsLoggerProgram
+
+SELECT * FROM Employees
+GO
+
+SELECT * FROM Shifts
 GO
