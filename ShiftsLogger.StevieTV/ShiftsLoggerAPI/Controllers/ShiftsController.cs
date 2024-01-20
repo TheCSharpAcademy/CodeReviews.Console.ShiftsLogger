@@ -21,14 +21,20 @@ namespace ShiftsLoggerAPI.Controllers
         }
 
         // GET: api/Shifts
+        /// <response code="200">Returns OK when found</response>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
         {
             return await _context.Shifts.ToListAsync();
         }
 
         // GET: api/Shifts/5
+        /// <response code="200">Returns OK when found</response>
+        /// <response code="404">Returns 404 Response when {id} not found</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Shift>> GetShift(long id)
         {
             var shift = await _context.Shifts.FindAsync(id);
@@ -42,8 +48,13 @@ namespace ShiftsLoggerAPI.Controllers
         }
 
         // PUT: api/Shifts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <response code="204">Returns No Content when Updated</response>
+        /// <response code="404">Returns when Shift does not exist</response>
+        /// <response code="400">Returns when ShiftId being updated does not match the posted data</response>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> PutShift(long id, Shift shift)
         {
             if (id != shift.ShiftId)
@@ -73,8 +84,10 @@ namespace ShiftsLoggerAPI.Controllers
         }
 
         // POST: api/Shifts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        /// <response code="201">Returns the newly created item</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+
         public async Task<ActionResult<Shift>> PostShift(Shift shift)
         {
             _context.Shifts.Add(shift);
@@ -84,7 +97,11 @@ namespace ShiftsLoggerAPI.Controllers
         }
 
         // DELETE: api/Shifts/5
+        /// <response code="204">Returns No Content when deleted</response>
+        /// <response code="404">Returns shift is not found</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteShift(long id)
         {
             var shift = await _context.Shifts.FindAsync(id);
