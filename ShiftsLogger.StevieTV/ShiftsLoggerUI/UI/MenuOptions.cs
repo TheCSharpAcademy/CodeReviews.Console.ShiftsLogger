@@ -15,3 +15,19 @@ public enum MainMenuOptions
     [Description("Exit")]
     Exit
 }
+
+public enum UpdateMenuOptions
+{
+    [Description("Employee ID")]
+    EmployeeId,
+    [Description("Date")]
+    Date,
+    [Description("Start Time")]
+    StartTime,
+    [Description("End Time")]
+    EndTime,
+    [Description("Comment")]
+    Comment,
+    [Description("Save")]
+    Save
+}

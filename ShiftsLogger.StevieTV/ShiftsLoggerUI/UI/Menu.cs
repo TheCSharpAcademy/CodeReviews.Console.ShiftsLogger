@@ -33,10 +33,10 @@ internal class Menu
                 AddShift();
                 break;
             case MainMenuOptions.UpdateShift:
-                // DeleteShift();
+                UpdateShift();
                 break;
             case MainMenuOptions.DeleteShift:
-                // UpdateShift();
+                DeleteShift();
                 break;
             case MainMenuOptions.Exit:
                 Environment.Exit(0);
@@ -45,7 +45,6 @@ internal class Menu
                 throw new ArgumentOutOfRangeException();
         }
     }
-
     private static void ViewShifts()
     {
         var shifts = ShiftsService.GetShifts();
@@ -86,6 +85,145 @@ internal class Menu
             Comment = comment
         };
 
-        ShiftsService.AddShift(shift);
+       var result = ShiftsService.AddShift(shift);
+
+       if (!result)
+       {
+           AnsiConsole.Prompt(new ConfirmationPrompt("Unable to record this shift. Press enter to continue"));
+       }
+       else if (!AnsiConsole.Prompt(new ConfirmationPrompt("Shift Added - Do you wish to do more?")))
+       {
+           Environment.Exit(0);
+       }
     }
+ 
+    private static void DeleteShift()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new FigletText("Delete a Shift")
+            .Color(Color.Red));
+
+        var selectedShift = SelectShift();
+
+        if (selectedShift.ShiftId == 0) return;
+        
+        var result = ShiftsService.DeleteShift(selectedShift);
+        
+        if (!result)
+        {
+            AnsiConsole.Prompt(new ConfirmationPrompt("Unable to delete this shift. Press enter to continue"));
+        }
+        else if (!AnsiConsole.Prompt(new ConfirmationPrompt("Shift Deleted - Do you wish to do more?")))
+        {
+            Environment.Exit(0);
+        }
+    }
+
+    private static void UpdateShift()
+    {
+        AnsiConsole.Clear();
+        AnsiConsole.Write(new FigletText("Update a Shift")
+            .Color(Color.Yellow));
+
+        var selectedShift = SelectShift();
+
+        if (selectedShift.ShiftId == 0) return;
+        
+        var finishedUpdating = false;
+
+        while (!finishedUpdating)
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Write(new FigletText("Updating Shift")
+                .Color(Color.Yellow));
+                
+            var table = new Table();
+            table.AddColumns("Date", "Employee ID", "Start", "End", "Duration", "Comment");
+
+            table.AddRow(selectedShift.StartTime.ToShortDateString(), selectedShift.EmployeeId.ToString(), selectedShift.StartTime.ToShortTimeString(), selectedShift.EndTime.ToShortTimeString(),
+                $"{selectedShift.Duration.Hours}h {selectedShift.Duration.Minutes:00}m", selectedShift.Comment);
+            AnsiConsole.Write(table);
+
+            var fieldMenu = new SelectionPrompt<UpdateMenuOptions>();
+            fieldMenu.Title("Please choose an option");
+            fieldMenu.AddChoice(UpdateMenuOptions.EmployeeId);
+            fieldMenu.AddChoice(UpdateMenuOptions.Date);
+            fieldMenu.AddChoice(UpdateMenuOptions.StartTime);
+            fieldMenu.AddChoice(UpdateMenuOptions.EndTime);
+            fieldMenu.AddChoice(UpdateMenuOptions.Comment);
+            fieldMenu.AddChoice(UpdateMenuOptions.Save);
+
+            var fieldOption = AnsiConsole.Prompt(fieldMenu);
+            
+            switch (fieldOption)
+            {
+                case UpdateMenuOptions.EmployeeId:
+                {
+                    selectedShift.EmployeeId = UserInput.GetEmployeeId(selectedShift.EmployeeId);
+                    break;
+                }
+                case UpdateMenuOptions.Date:
+                {
+                    var date = UserInput.GetDate(selectedShift.StartTime);
+                    var startTime = selectedShift.StartTime.ToShortTimeString();
+                    var endTime = selectedShift.EndTime.ToShortTimeString();
+                    selectedShift.StartTime = DateTime.ParseExact($"{date} {startTime}", "dd/MM/yy HH:mm", CultureInfo.InvariantCulture);
+                    selectedShift.EndTime = DateTime.ParseExact($"{date} {endTime}", "dd/MM/yy HH:mm", CultureInfo.InvariantCulture);
+                    break;
+                }
+                case UpdateMenuOptions.StartTime:
+                {
+                    var date = selectedShift.StartTime.Date;
+                    var startTime = UserInput.GetTime(true, selectedShift.StartTime);
+                    var newStartTime = date.Add(TimeSpan.ParseExact(startTime, @"h\:mm", CultureInfo.InvariantCulture));
+                    selectedShift.StartTime = newStartTime;
+                    selectedShift.Duration = selectedShift.EndTime - selectedShift.StartTime;
+                    break;
+                }
+                case UpdateMenuOptions.EndTime:
+                {
+                    var date = selectedShift.EndTime.Date;
+                    var endTime = UserInput.GetTime(false, selectedShift.StartTime);
+                    var newEndTime = date.Add(TimeSpan.ParseExact(endTime, @"h\:mm", CultureInfo.InvariantCulture));
+                    selectedShift.EndTime = newEndTime;
+                    selectedShift.Duration = selectedShift.EndTime - selectedShift.StartTime;
+                    break;
+                }
+                case UpdateMenuOptions.Comment:
+                {
+                    selectedShift.Comment = UserInput.GetComment(selectedShift.Comment);
+                    break;
+                } case UpdateMenuOptions.Save:
+                    finishedUpdating = true;
+                    break;
+            }
+        }
+
+        var result = ShiftsService.UpdateShift(selectedShift);
+        
+        if (!result)
+        {
+            AnsiConsole.Prompt(new ConfirmationPrompt("Unable to update this shift. Press enter to continue"));
+        }
+        else if (!AnsiConsole.Prompt(new ConfirmationPrompt("Shift updated - Do you wish to do more?")))
+        {
+            Environment.Exit(0);
+        }
+    }
+    
+    private static Shift SelectShift()
+    {
+        var shifts = ShiftsService.GetShifts();
+        var sortedShifts = shifts.OrderBy(x => x.StartTime).ThenBy(x => x.EmployeeId).ToList();
+        
+        var selectOptions = new SelectionPrompt<Shift>();
+        selectOptions.AddChoice(new Shift {ShiftId = 0});
+        selectOptions.AddChoices(sortedShifts);
+        selectOptions.UseConverter(shift => (shift.ShiftId == 0 ? "CANCEL" : $"{shift.EmployeeId} on {shift.StartTime.ToShortDateString()} @ {shift.StartTime.ToShortTimeString()} - ({shift.Comment})"));
+
+        var selectedShift = AnsiConsole.Prompt(selectOptions);
+
+        return selectedShift;
+    }
+    
 }

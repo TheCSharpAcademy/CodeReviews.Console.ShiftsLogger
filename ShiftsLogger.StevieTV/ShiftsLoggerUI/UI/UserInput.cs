@@ -34,7 +34,7 @@ public class UserInput
         return AnsiConsole.Prompt(new TextPrompt<string>("End Shift Time (hh:mm):")
             .DefaultValue(startTime != null ? startTime.Value.ToShortTimeString() : DateTime.Now.ToString("HH:mm"))
             .Validate(
-                x => DateTime.TryParseExact(x, @"H\:m", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTime) && parsedTime > startTime,
+                x => DateTime.TryParseExact(x, @"H\:m", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedTime) && TimeOnly.FromDateTime(parsedTime) > TimeOnly.FromDateTime(startTime.Value),
                 "Please enter a valid shift time in the format hh:mm, that is also later that your shift start time")
         );
     }

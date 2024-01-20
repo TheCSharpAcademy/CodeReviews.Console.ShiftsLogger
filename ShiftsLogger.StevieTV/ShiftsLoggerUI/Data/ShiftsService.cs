@@ -39,7 +39,7 @@ public class ShiftsService
         try
         {
             var result = client.PostJson("shifts", shift);
-            return result == HttpStatusCode.OK;
+            return result == HttpStatusCode.Created;
         }
         catch (Exception)
         {
@@ -56,7 +56,7 @@ public class ShiftsService
         try
         {
             var response = client.ExecuteAsync(request);
-            return response.Result.StatusCode == HttpStatusCode.OK;
+            return response.Result.StatusCode == HttpStatusCode.NoContent;
         }
         catch (Exception)
         {
@@ -72,7 +72,7 @@ public class ShiftsService
         try
         {
             var result = client.PutJson($"shifts/{shift.ShiftId}", shift);
-            return result == HttpStatusCode.OK;
+            return result == HttpStatusCode.NoContent;
         }
         catch (Exception)
         {
