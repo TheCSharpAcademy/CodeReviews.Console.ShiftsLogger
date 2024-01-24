@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerWebApi.Models;
@@ -16,7 +17,7 @@ public class ShiftsController : ControllerBase
     {
         DBContext = dbContext;
     }
-    
+
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<ShiftDto>>> GetShifts(int id)
     {
@@ -26,11 +27,12 @@ public class ShiftsController : ControllerBase
 
         var shifts = employee.First().Shifts?.Select(p => ShiftDto.FromShift(p))
             .OrderBy( p => p.ShiftStartTime).ToList();
-        
+
         if(shifts?.Count > ShiftMaxGetQty)
-            return Ok(shifts.GetRange(shifts.Count-ShiftMaxGetQty, ShiftMaxGetQty));
-        else
-            return Ok(shifts);
+            return shifts.GetRange(shifts.Count-ShiftMaxGetQty, ShiftMaxGetQty);
+        else if(shifts != null)
+            return shifts;
+        return NotFound();
     }
 
     [HttpPut("{id}")]
@@ -39,25 +41,39 @@ public class ShiftsController : ControllerBase
         var employee = await DBContext.Employees.Where(p => p.EmployeeId == id).ToListAsync();
         if (employee.Count <= 0)
             return NotFound();
-
-        employee.First().Shifts?.Add(Shift.FromShiftDto(shift));
-        DBContext.SaveChanges();
-        return NoContent();
+    
+        if(employee.First().Shifts.Any(p => p.ShiftEndTime == null))
+        {
+            return BadRequest();
+        }
+        else
+        {
+            employee.First().Shifts.Add(Shift.FromShiftDto(shift));
+            DBContext.SaveChanges();
+            return NoContent();
+        }
     }
 
     [HttpPatch("{id}")]
-    public async Task<ActionResult> PatchShift(int id, DateTime shiftEndTime)
+    [Consumes("application/json-patch+json")]
+    public async Task<ActionResult> PatchShift(int id,[FromBody] JsonPatchDocument<Shift> patchDoc)
     {
         var employee = await DBContext.Employees.Where(p => p.EmployeeId == id).ToListAsync();
         if(employee.Count <= 0)
             return NotFound();
-        
-        var shift = employee.First().Shifts?.OrderBy(p => p.ShiftStartTime).ToList();
+
+        var shift = employee.First().Shifts.OrderBy(p => p.ShiftStartTime).ToList();
         if (shift == null || shift.Count <= 0)
             return NotFound();
 
-        shift.Last().ShiftEndTime = shiftEndTime;
-        DBContext.SaveChanges();
-        return NoContent();
+        if(patchDoc != null && shift.Last().ShiftEndTime == null)  //end time validation, should have a time requirement
+        {
+            patchDoc.ApplyTo(shift.Last(), ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);        
+            DBContext.SaveChanges();
+            return NoContent();
+        }
+        return BadRequest();
     }
 }

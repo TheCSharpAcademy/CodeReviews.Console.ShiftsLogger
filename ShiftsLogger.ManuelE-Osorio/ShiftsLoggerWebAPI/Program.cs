@@ -1,7 +1,3 @@
-using System.Data.Common;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.Configuration;
 using ShiftsLoggerWebApi.Models;
 
 namespace ShiftsLogger;
@@ -20,7 +16,7 @@ public class ShiftsLoggerWebAPI
     {
         var builder = WebApplication.CreateBuilder();
         
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddNewtonsoftJson();
         builder.Services.AddDbContext<ShiftsLoggerContext>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -32,7 +28,7 @@ public class ShiftsLoggerWebAPI
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        // app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
         app.Run();
@@ -49,9 +45,9 @@ public class ShiftsLoggerWebAPI
     public static void PopulateDB()
     {
         var db = new ShiftsLoggerContext();
-        db.Employees.Add(new Employee{Name = "Employee1"});
+        db.Employees.Add(new Employee{Name = "Employee1", Admin = true});
         db.Employees.Add(new Employee{Name = "Employee2"});
-        db.Employees.Add(new Employee{Name = "Employee3"});
+        db.Employees.Add(new Employee{Name = "Employee3", Admin = true});
         db.Employees.Add(new Employee{Name = "Employee4"});
         db.Employees.Add(new Employee{Name = "Employee5"});
         db.Employees.Add(new Employee{Name = "Employee6"});
@@ -121,50 +117,7 @@ public class ShiftsLoggerWebAPI
     public static void DBInit()
     {
         var db = new ShiftsLoggerContext();
+        // db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
     }
 }
-// var builder = WebApplication.CreateBuilder(args);
-
-// // Add services to the container.
-// // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-// builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen();
-
-// var app = builder.Build();
-
-// // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
-
-// app.UseHttpsRedirection();
-
-// var summaries = new[]
-// {
-//     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-// };
-
-// app.MapGet("/weatherforecast", () =>
-// {
-//     var forecast =  Enumerable.Range(1, 5).Select(index =>
-//         new WeatherForecast
-//         (
-//             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-//             Random.Shared.Next(-20, 55),
-//             summaries[Random.Shared.Next(summaries.Length)]
-//         ))
-//         .ToArray();
-//     return forecast;
-// })
-// .WithName("GetWeatherForecast")
-// .WithOpenApi();
-
-// app.Run();
-
-// record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-// {
-//     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-// }
