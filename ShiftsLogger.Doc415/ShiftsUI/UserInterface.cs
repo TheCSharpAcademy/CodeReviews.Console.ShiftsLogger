@@ -51,9 +51,20 @@ internal class UserInterface
 
     private async Task AddShift()
     {
-        DateTime start = await GetDate("start");
-        DateTime end = await GetDate("end");
-        string duration = String.Format("{0:0.00}", (end - start).TotalHours);
+        DateTime start = DateTime.MinValue;
+        DateTime end = DateTime.MaxValue;
+        string duration = "";
+        bool valid = false;
+        do
+        {
+            start = await GetDate("start");
+            end = await GetDate("end");
+            var difference = (end - start).TotalHours;
+            duration = String.Format("{0:0.00}", difference);
+            if (difference > 0) valid = true;
+            else
+                Console.WriteLine("Working hours can't be negative. Check your date-times.");
+        } while (!valid);
         string startTime = start.ToString();
         string endTime = end.ToString();
         string name = AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Select shift type")
@@ -137,9 +148,23 @@ internal class UserInterface
             string name = AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Select shift type")
                                                                       .AddChoices("Morning Shift",
                                                                                   "Night Shift"));
-            DateTime start = await GetDate("start");
-            DateTime end = await GetDate("end");
-            string duration = String.Format("{0:0.00}", (end - start).TotalHours);
+
+            DateTime start = DateTime.MinValue;
+            DateTime end = DateTime.MaxValue;
+            string duration = "";
+            bool valid = false;
+            do
+            {
+                start = await GetDate("start");
+                end = await GetDate("end");
+                var difference = (end - start).TotalHours;
+                duration = String.Format("{0:0.00}", difference);
+                if (difference > 0) valid = true;
+                else
+                    Console.WriteLine("Working hours can't be negative. Check your date-times.");
+            } while (!valid);
+
+
             string startTime = start.ToString();
             string endTime = end.ToString();
 
