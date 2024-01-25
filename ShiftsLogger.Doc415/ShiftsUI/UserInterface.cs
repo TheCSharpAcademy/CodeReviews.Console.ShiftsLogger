@@ -134,7 +134,6 @@ internal class UserInterface
 
         try
         {
-            var shift = await _dataAccess.GetShiftById(id);
             string name = AnsiConsole.Prompt(new SelectionPrompt<string>().Title("Select shift type")
                                                                       .AddChoices("Morning Shift",
                                                                                   "Night Shift"));
@@ -202,7 +201,7 @@ internal class UserInterface
                 valid = int.TryParse(dateComponents[2], out int year);
                 if (!valid) continue;
                 valid = int.TryParse(timeComponents[0], out int hour);
-                if (!valid) continue; ;
+                if (!valid) continue;
                 valid = int.TryParse(timeComponents[1], out int minute);
                 if (!valid) continue;
                 result = new DateTime(year, month, day, hour, minute, 0);
