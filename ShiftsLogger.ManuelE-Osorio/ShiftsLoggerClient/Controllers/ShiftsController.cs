@@ -25,30 +25,27 @@ public class ShiftsController
             new MediaTypeWithQualityHeaderValue("application/json-patch+json"));
     }
 
-    public async Task<List<Shift>?> GetShifts(int? id)
+    public async Task<List<ShiftJson>?> GetShifts(int? id)
     {
         var response = await Client.GetAsync($"{id}");
         if(response.IsSuccessStatusCode)
         {
-            var shifts = await JsonSerializer.DeserializeAsync<List<Shift>>(response.Content.ReadAsStream());
+            var shifts = await JsonSerializer.DeserializeAsync<List<ShiftJson>>(response.Content.ReadAsStream());
             return shifts;
         }
         else
-            throw new Exception(response.StatusCode.ToString());
+            throw new Exception(await response.Content.ReadAsStringAsync());
     }
 
-    public async Task<bool> PutShift(int? id, Shift shift)
+    public async Task<HttpResponseMessage> PutShift(int? id, ShiftJson shift)
     {
         var response = await Client.PutAsJsonAsync($"{id}", shift);
-        if(response.StatusCode.Equals(HttpStatusCode.NoContent))
-            return true;        // Needs more info on status codes, maybe return a error message string
-        else
-            return false;
+        return response;
     }
 
-    public async Task<bool> PatchShift(int? id, DateTime endTime)
+    public async Task<HttpResponseMessage> PatchShift(int? id, DateTime endTime)
     {
-        var patchEndTime = new JsonPatchDocument<Shift>();
+        var patchEndTime = new JsonPatchDocument<ShiftJson>();
         patchEndTime.Replace( p => p.ShiftEndTime, endTime);
 
         // var content = JsonSerializer.Serialize(endTime);
@@ -56,9 +53,6 @@ public class ShiftsController
         request.Content = new StringContent(NewtonJson.JsonConvert.SerializeObject(patchEndTime), 
             System.Text.Encoding.UTF8, "application/json-patch+json");
         HttpResponseMessage response = await Client.SendAsync(request);
-        if(response.StatusCode.Equals(HttpStatusCode.NoContent))
-            return true;    // Needs more info on status codes, maybe return a error message string  improve patch methods
-        else
-            throw new Exception(response.StatusCode.ToString());
+        return response;
     }
 }

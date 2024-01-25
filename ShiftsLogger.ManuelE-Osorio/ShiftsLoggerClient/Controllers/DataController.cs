@@ -1,4 +1,4 @@
-using System.Reflection.Metadata;
+using Microsoft.VisualBasic;
 using ShiftsLoggerClient.Models;
 using ShiftsLoggerClient.UI;
 using ShiftsLoggerClient.Validation;
@@ -37,13 +37,13 @@ public class DataController
             input = Console.ReadLine() ?? "";
             if(InputValidation.IntValidation(input))
             {
-                var employeeTask = Employees.GetEmployee(Convert.ToInt32(input));
+                var employeeTask = Employees.GetEmployeeById(Convert.ToInt32(input));
                 MainUI.DisplayUIMessage("Loading ...");
                 try
                 {
                     var employeeData = await employeeTask;
-                    AdminUser = employeeData?.Admin; 
-                    UserId = employeeData?.EmployeeId;
+                    AdminUser = employeeData?.FirstOrDefault()?.Admin; 
+                    UserId = employeeData?.FirstOrDefault()?.EmployeeId;
                     return true;
                 }
                 catch(Exception e)
@@ -109,7 +109,7 @@ public class DataController
         RunAdminMenu = true;
         while(RunAdminMenu)
         {
-            MainUI.DisplayUserMenu();  //Change to admin menu
+            MainUI.DisplayAdminMenu();  //Change to admin menu
             PressedKey = Console.ReadKey(false).Key;
             switch(PressedKey)
             {
@@ -123,15 +123,18 @@ public class DataController
                     ShiftHistory();
                     break;
                 case(ConsoleKey.D4):
-                    // Employee1();
+                    EmployeeByName();
                     break;
                 case(ConsoleKey.D5):
-                    // Employee2();
+                    EmployeeByID();
                     break;
                 case(ConsoleKey.D6):
-                    // Employee3();
+                    CreateNewEmployee();
                     break;
-                
+                case(ConsoleKey.D7):
+                    // Employee4();
+                    break;
+                // "7) Modify a employee\n"
 
                 case(ConsoleKey.Escape):
                 case(ConsoleKey.Backspace):
@@ -145,18 +148,18 @@ public class DataController
     {
         var shiftTask = Shifts.GetShifts(UserId);
         MainUI.DisplayUIMessage("Loading ...");
-        var shiftList = shiftTask.Result;  //Error Handling
+        var shiftList = shiftTask.Result?.Select(p => new ShiftDto(p)).ToList();  //Error Handling
         MainUI.DisplayList(shiftList);
         Console.ReadKey(false);
     }
 
     public void StartShift()
     {
-        var newShift = new Shift(DateTime.UtcNow, null);
+        var newShift = new ShiftJson(DateTime.UtcNow, null);
         var shiftTask = Shifts.PutShift(UserId, newShift);
         MainUI.DisplayUIMessage("Loading ...");
-        var status = shiftTask.Result; //Error Handling
-        Console.WriteLine(status);
+        var status = shiftTask.Result; //Error Handling Finished?
+        Console.WriteLine(status.Content.ToString());
         Console.ReadKey(false);
     }
 
@@ -164,15 +167,121 @@ public class DataController
     {
         var shiftTask = Shifts.PatchShift(UserId, DateTime.UtcNow);
         MainUI.DisplayUIMessage("Loading ...");
+        var status = shiftTask.Result; //Error Handling Finished?
+        MainUI.DisplayUIMessage(status.Content.ToString());
+        Console.WriteLine("Press any key to continue.\n");
+        Console.ReadKey(false);
+    }
+
+    public void EmployeeByID()
+    {
+        string employeeId;
+        string? errorMessage = null;
+        while(true)
+        {
+            MainUI.EnterEmployeeID(errorMessage);
+            employeeId = Console.ReadLine() ?? "";
+            if(InputValidation.IntValidation(employeeId))
+            {
+                var employeeTask = Employees.GetEmployeeById(Convert.ToInt32(employeeId));
+                MainUI.DisplayUIMessage("Loading ...");
+                try
+                {
+                    var employeeData = employeeTask.Result;
+                    MainUI.DisplayList(employeeData);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                Console.ReadKey(false);
+                return;
+            }
+            else
+            {
+                errorMessage = "Please enter a valid ID";
+            }
+        }
+    }
+
+    public void EmployeeByName()
+    {
+        string employeeName;
+        string? errorMessage = null;
+        MainUI.EnterEmployeeID(errorMessage);
+        employeeName = Console.ReadLine() ?? "";
+
+        var employeeTask = Employees.GetEmployeeByName(employeeName);
+        MainUI.DisplayUIMessage("Loading ...");
         try
         {
-            var status = shiftTask.Result; //Error Handling
+            var employeeData = employeeTask.Result;
+            MainUI.DisplayList(employeeData);
         }
         catch(Exception e)
         {
             Console.WriteLine(e.Message);
         }
-        Console.WriteLine("Press any key to continue.\n");
+
         Console.ReadKey(false);
+        return;
+    }
+
+    public void CreateNewEmployee()
+    {
+        string name;
+        string isNewEmployeeAdminString;
+        bool isNewEmployeeAdmin = false;
+        string? errorMessage = null;
+        while(true)
+        {
+            MainUI.EnterEmployeeName(errorMessage);
+            name = Console.ReadLine() ?? "";
+            if(InputValidation.NameValidation(name))
+            {
+                MainUI.IsEmployeeAdmin();
+                isNewEmployeeAdminString = Console.ReadLine() ?? "";
+                if(isNewEmployeeAdminString.Equals("y", StringComparison.InvariantCultureIgnoreCase))
+                    isNewEmployeeAdmin = true;
+
+                var employeeTask = Employees.PutEmployee(
+                    new Employee(EmployeeId:0, Name:name, Admin:isNewEmployeeAdmin));
+                MainUI.DisplayUIMessage("Loading ...");
+                
+                var status = employeeTask.Result;
+                MainUI.DisplayUIMessage(status.Content.ToString());
+                Console.ReadKey(false);
+                return;
+            }
+            else
+            {
+                errorMessage = "Invalid Name.";
+            }
+        }
+    }
+
+    public void ModifyEmployee()
+    {
+        var id = InputController.InputID();
+        if(id == null)
+            return;
+        var name = InputController.InputName();
+        if(name == null)
+            return;
+        var isEmployeeAdmin = InputController.InputEmployeeAdmin();
+        var employeeTask = Employees
+            .PutEmployee(new Employee(EmployeeId: id ?? 0, Name: name, Admin: isEmployeeAdmin));
+        
+        MainUI.DisplayUIMessage("Loading ...");
+        try
+        {
+            var response = employeeTask.Result;
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        Console.ReadKey(false);
+        return;
     }
 }

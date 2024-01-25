@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ShiftsLoggerWebApi.Models;
 public class ShiftsLoggerContext : DbContext
 {
-    public static readonly int EmployeeNameLenght = 150;
+    public static readonly int EmployeeNameLenght = 200;
     public static string? ShiftsLoggerConnectionString {get; set;}
     public DbSet<Employee> Employees {get; set;}
     public DbSet<Shift> Shifts {get; set;}

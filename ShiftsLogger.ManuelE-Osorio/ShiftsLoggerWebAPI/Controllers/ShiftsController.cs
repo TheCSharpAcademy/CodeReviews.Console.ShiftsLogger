@@ -25,7 +25,7 @@ public class ShiftsController : ControllerBase
         if (employee.Count <= 0)
             return NotFound();
 
-        var shifts = employee.First().Shifts?.Select(p => ShiftDto.FromShift(p))
+        var shifts = employee.First().Shifts?.Select(ShiftDto.FromShift)
             .OrderBy( p => p.ShiftStartTime).ToList();
 
         if(shifts?.Count > ShiftMaxGetQty)

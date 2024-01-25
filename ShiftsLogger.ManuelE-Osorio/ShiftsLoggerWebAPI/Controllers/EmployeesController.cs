@@ -22,45 +22,40 @@ public class EmployeesController : ControllerBase
         var employee = await DBContext.Employees.Where(p => p.Name.StartsWith(employeeName)).ToListAsync();
 
         if (employee.Count <= 0)
-            return NotFound();
+            return NotFound("Employee name does not exists.");
         else
             return employee;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Employee>> GetEmployee(int id)
+    public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee(int id)
     {
         var employee = await DBContext.Employees.Where(p => p.EmployeeId == id).ToListAsync();
         if (employee.Count <= 0)
-            return NotFound();
+            return NotFound("Employee ID does not exists");
         else
-            return employee.First();
+            return employee;
     }
 
     [HttpPut()]
-    public async Task<ActionResult> PutEmployee(EmployeeDto employee)
+    public async Task<ActionResult> PutEmployee(Employee employee)
     {
-        DBContext.Employees.Add(new Employee{Name = employee.Name});
+        DBContext.Employees.Add(new Employee{Name = employee.Name, Admin = employee.Admin});
         await DBContext.SaveChangesAsync();
         return NoContent();
     }
 
-    [HttpPatch("{id}")]
-    [Consumes("application/json-patch+json")]
-    public async Task<ActionResult> PatchEmployee(int id,[FromBody] JsonPatchDocument<Employee> patchDoc)
+    [HttpPost()]
+    public async Task<ActionResult> PatchEmployee(Employee employeeToModify)
     {
-        var employee = await DBContext.Employees.Where(p => p.EmployeeId == id).ToListAsync();
+        var employee = await DBContext.Employees
+            .Where(p => p.EmployeeId == employeeToModify.EmployeeId).ToListAsync();
         if(employee.Count <= 0)
             return NotFound();
 
-        if(patchDoc != null)
-        {
-            patchDoc.ApplyTo(employee.First(), ModelState);
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);        
-            DBContext.SaveChanges();
-            return NoContent();
-        }
-        return BadRequest();
+        employee.First().Name = employeeToModify.Name;
+        employee.First().Admin = employeeToModify.Admin;
+        await DBContext.SaveChangesAsync();
+        return NoContent();
     }
 }

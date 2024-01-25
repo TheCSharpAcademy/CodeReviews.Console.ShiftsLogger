@@ -2,11 +2,10 @@ using System.Text.Json.Serialization;
 
 namespace ShiftsLoggerClient.Models;
 
-public record Shift
+public record ShiftJson
 (
-    [property:JsonPropertyName("shiftStartTime")] 
+    [property:JsonPropertyName("shiftStartTime")]
     DateTime ShiftStartTime,
-    
-    [property:JsonPropertyName("shiftEndTime")] 
-    DateTime? ShiftEndTime
-);
+
+    [property:JsonPropertyName("shiftEndTime")]
+    DateTime? ShiftEndTime );
