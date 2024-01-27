@@ -9,9 +9,11 @@ public class Shift
 
     public static Shift FromShiftDto(ShiftDto shiftDto)
     {
-        var shift = new Shift();
-        shift.ShiftStartTime = shiftDto.ShiftStartTime;
-        shift.ShiftEndTime = shiftDto?.ShiftEndTime;
+        var shift = new Shift
+        {
+            ShiftStartTime = shiftDto.ShiftStartTime,
+            ShiftEndTime = shiftDto?.ShiftEndTime
+        };
         return shift;
     }
 }

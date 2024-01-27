@@ -1,70 +1,65 @@
 using ShiftsLoggerClient.Models;
 using ShiftsLoggerClient.UI;
-using ShiftsLoggerClient.Validation;
 
 namespace ShiftsLoggerClient.Controllers;
 
 public class DataController
 {
     private ConsoleKey? PressedKey;
-    private bool RunLogin;
     private bool RunMainMenu;
     private bool? AdminUser;
     private int? UserId;
+    private string? UserName;
     private bool RunUserMenu;
     private bool RunAdminMenu;
-    private EmployeesController Employees;
-    private ShiftsController Shifts;
+    private readonly EmployeesController Employees;
+    private readonly ShiftsController Shifts;
 
-    public DataController()
+    public DataController(string baseAddress)
     {
-        PressedKey = null;
         RunMainMenu = true;
-        RunLogin = true;
         AdminUser = false;
-        Employees = new();
-        Shifts = new();
+        Employees = new(baseAddress);
+        Shifts = new(baseAddress);
     }
 
     public async Task<bool> Login()
     {
-        string input;
-        string? errorMessage = null;
-        do
+        int? id;
+        Task<HttpResponseMessage>? employeeTask;
+        while(true)
         {
-            MainUI.DisplayLoginMenu(errorMessage);
-            input = Console.ReadLine() ?? "";
-            if(InputValidation.IntValidation(input))
+            id = InputController.InputLogin();
+            if (id == null)
+                return false;
+            MainUI.LoadingMessage();
+            employeeTask = Employees.GetEmployeeById(id ?? 0);
+            try
             {
-                var employeeTask = Employees.GetEmployeeById(Convert.ToInt32(input));
-                MainUI.DisplayUIMessage("Loading ...");
-                try
+                var response = await employeeTask;
+                if(response.IsSuccessStatusCode)
                 {
-                    var employeeData = await employeeTask;
-                    AdminUser = employeeData?.FirstOrDefault()?.Admin; 
-                    UserId = employeeData?.FirstOrDefault()?.EmployeeId;
+                    var employee = await JsonController.DeserializeResponse<Employee>(response);
+                    AdminUser = employee?.FirstOrDefault()?.Admin;
+                    UserId = employee?.FirstOrDefault()?.EmployeeId;
+                    UserName = employee?.FirstOrDefault()?.Name;
                     return true;
                 }
-                catch(Exception e)
-                {
-                    errorMessage = e.Message;
-                }
+                else
+                    MainUI.DisplayUIMessage(HandleHttpResponseMessage(response));
             }
-            else if(input.Equals("c", StringComparison.InvariantCultureIgnoreCase))
+            catch
             {
-                RunLogin = false;
+                MainUI.DisplayUIMessage("There's an error with the server. Please try again later!");
             }
-            else
-            {
-                errorMessage = "Please enter a valid id number.";
-            }
+            Console.ReadKey(false);
         }
-        while(RunLogin);
-        return false;
     }
 
     public void Main()
     {
+        MainUI.WelcomeMessage();
+        JsonController.AppSettings();
         while(RunMainMenu)
         {
             RunMainMenu = Login().Result;
@@ -75,6 +70,7 @@ public class DataController
             else if(RunMainMenu)
                 UserMenu();
         }
+        MainUI.ExitMessage();
     }
 
     public void UserMenu()
@@ -82,7 +78,7 @@ public class DataController
         RunUserMenu = true;
         while(RunUserMenu)
         {
-            MainUI.DisplayUserMenu();
+            MainUI.DisplayUserMenu(UserName);
             PressedKey = Console.ReadKey(false).Key;
             switch(PressedKey)
             {
@@ -95,7 +91,6 @@ public class DataController
                 case(ConsoleKey.D3):
                     ShiftHistory();
                     break;
-
                 case(ConsoleKey.Escape):
                 case(ConsoleKey.Backspace):
                     RunUserMenu = false;
@@ -109,7 +104,7 @@ public class DataController
         RunAdminMenu = true;
         while(RunAdminMenu)
         {
-            MainUI.DisplayAdminMenu();
+            MainUI.DisplayAdminMenu(UserName);
             PressedKey = Console.ReadKey(false).Key;
             switch(PressedKey)
             {
@@ -134,7 +129,6 @@ public class DataController
                 case(ConsoleKey.D7):
                     ModifyEmployee();
                     break;
-
                 case(ConsoleKey.Escape):
                 case(ConsoleKey.Backspace):
                     RunAdminMenu = false;
@@ -146,9 +140,22 @@ public class DataController
     public void ShiftHistory()
     {
         var shiftTask = Shifts.GetShifts(UserId);
-        MainUI.DisplayUIMessage("Loading ...");
-        var shiftList = shiftTask.Result?.Select(p => new ShiftDto(p)).ToList();  //Error Handling
-        MainUI.DisplayList(shiftList);
+        MainUI.LoadingMessage();
+        try
+        {
+            var response = shiftTask.Result;
+            if(response.IsSuccessStatusCode)
+            {
+                var shiftData = JsonController.DeserializeResponse<ShiftJson>(response);
+                MainUI.DisplayList(shiftData.Result?.Select( p => new ShiftDto(p)).ToList());
+            }
+            else
+                MainUI.DisplayUIMessage(HandleHttpResponseMessage(response));
+        }
+        catch
+        {
+            MainUI.DisplayUIMessage("There's an error with the server. Please try again later!");
+        }
         Console.ReadKey(false);
     }
 
@@ -156,39 +163,64 @@ public class DataController
     {
         var newShift = new ShiftJson(DateTime.UtcNow, null);
         var shiftTask = Shifts.PutShift(UserId, newShift);
-        MainUI.DisplayUIMessage("Loading ...");
-        var status = shiftTask.Result; //Error Handling Finished?
-        Console.WriteLine(status.Content.ReadAsStringAsync().Result);
-        Console.WriteLine("Press any key to continue.\n");
+        MainUI.LoadingMessage();
+        try
+        {
+            var response = shiftTask.Result;
+            MainUI.DisplayUIMessage(HandleHttpResponseMessage(response));
+        }
+        catch
+        {
+            MainUI.DisplayUIMessage("There's an error with the server. Please try again later!");
+        }
+
         Console.ReadKey(false);
+        return;
     }
 
     public void FinishShift()
     {
-        var shiftTask = Shifts.PatchShift(UserId, DateTime.UtcNow);
-        MainUI.DisplayUIMessage("Loading ...");
-        var status = shiftTask.Result; //Error Handling Finished?
-        MainUI.DisplayUIMessage(status.Content.ReadAsStringAsync().Result);
-        Console.WriteLine("Press any key to continue.\n");
+        if(!InputController.GetShiftEndConfirmation())
+            return;
+        var patchContent = JsonController.CreateShiftPatch(DateTime.UtcNow);
+        var shiftTask = Shifts.PatchShift(UserId, patchContent);
+        MainUI.LoadingMessage();
+        try
+        {
+            var response = shiftTask.Result;
+            MainUI.DisplayUIMessage(HandleHttpResponseMessage(response));
+        }
+        catch
+        {
+            MainUI.DisplayUIMessage("There's an error with the server. Please try again later!");
+        }
+
         Console.ReadKey(false);
+        return;
     }
 
     public void EmployeeByID()
     {
-        var id = InputController.InputID();
+        var id = InputController.InputID("search");
         if (id == null)
             return;
 
         var employeeTask = Employees.GetEmployeeById(Convert.ToInt32(id));
-        MainUI.DisplayUIMessage("Loading ...");
+        MainUI.LoadingMessage();
         try
         {
-            var employeeData = employeeTask.Result;
-            MainUI.DisplayList(employeeData);
+            var response = employeeTask.Result;
+            if(response.IsSuccessStatusCode)
+            {
+                var employeeData = JsonController.DeserializeResponse<Employee>(response);
+                MainUI.DisplayList(employeeData.Result);
+            }
+            else
+                MainUI.DisplayUIMessage(HandleHttpResponseMessage(response));
         }
-        catch(Exception e)
+        catch
         {
-            Console.WriteLine(e.Message);
+            MainUI.DisplayUIMessage("There's an error with the server. Please try again later!");
         }
 
         Console.ReadKey(false);
@@ -197,20 +229,26 @@ public class DataController
 
     public void EmployeeByName()
     {
-        var name = InputController.InputName();
+        var name = InputController.InputName("search");
         if (name == null)
             return;
         var employeeTask = Employees.GetEmployeeByName(name);
         
-        MainUI.DisplayUIMessage("Loading ...");
+        MainUI.LoadingMessage();
         try
         {
-            var employeeData = employeeTask.Result;
-            MainUI.DisplayList(employeeData);
+            var response = employeeTask.Result;
+            if(response.IsSuccessStatusCode)
+            {
+                var employeeData = JsonController.DeserializeResponse<Employee>(response);
+                MainUI.DisplayList(employeeData.Result);
+            }
+            else
+                MainUI.DisplayUIMessage(HandleHttpResponseMessage(response));
         }
-        catch(Exception e)
+        catch
         {
-            Console.WriteLine(e.Message);
+            MainUI.DisplayUIMessage("There's an error with the server. Please try again later!");
         }
 
         Console.ReadKey(false);
@@ -219,22 +257,23 @@ public class DataController
 
     public void CreateNewEmployee()
     {
-        var name = InputController.InputName();
+        var name = InputController.InputName("create");
         if(name == null)
             return;
-        var isEmployeeAdmin = InputController.InputEmployeeAdmin();
+        var isEmployeeAdmin = InputController.InputEmployeeAdmin("create");
         var employeeTask = Employees
             .PutEmployee( new Employee( EmployeeId: 0, Name: name, Admin: isEmployeeAdmin ));
         
-        MainUI.DisplayUIMessage("Loading ...");            
+        MainUI.LoadingMessage();
         try
         {
             var response = employeeTask.Result;
-            MainUI.DisplayUIMessage(response.Content.ReadAsStringAsync().Result);
+            MainUI.DisplayUIMessage(HandleHttpResponseMessage(response));
         }
-        catch(Exception e)
+        catch
         {
-            Console.WriteLine(e.Message);
+            MainUI.DisplayUIMessage("There's an error with the server. Please try again later!");
+            return;
         }
 
         Console.ReadKey(false);
@@ -243,33 +282,39 @@ public class DataController
 
     public void ModifyEmployee()
     {
-        var id = InputController.InputID();
+        var id = InputController.InputID("modify");
         if(id == null)
             return;
-        var name = InputController.InputName();
+        var name = InputController.InputName("modify");
         if(name == null)
             return;
-        var isEmployeeAdmin = InputController.InputEmployeeAdmin();
+        var isEmployeeAdmin = InputController.InputEmployeeAdmin("modify");
         var employeeTask = Employees
             .PostEmployee(new Employee( EmployeeId: id ?? 0, Name: name, Admin: isEmployeeAdmin ));
 
-        MainUI.DisplayUIMessage("Loading ...");
+        MainUI.LoadingMessage();
         try
         {
             var response = employeeTask.Result;
-            MainUI.DisplayUIMessage(response.Content.ReadAsStringAsync().Result);
+            MainUI.DisplayUIMessage(HandleHttpResponseMessage(response));
         }
-        catch(Exception e)
+        catch
         {
-            Console.WriteLine(e.Message);
+            MainUI.DisplayUIMessage("There's an error with the server. Please try again later!");
         }
 
         Console.ReadKey(false);
         return;
     }
 
-    public static string HandleHttpResponseMessage(HttpResponseMessage? response)
+    public static string HandleHttpResponseMessage(HttpResponseMessage response)
     {
-        return "";
+        if (response.IsSuccessStatusCode)
+            return "Successful operation!";
+        else if(response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            return "Operation failed. The employee/shift you entered does not exist.";
+        else if(response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            return "Operation failed. You have to start or finish your shift first.";
+        return "Operation failed. Please try again later.";
     }
 }

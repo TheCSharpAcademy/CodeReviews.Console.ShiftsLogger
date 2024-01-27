@@ -1,9 +1,5 @@
-using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
-using Microsoft.AspNetCore.JsonPatch;
-using NewtonJson = Newtonsoft.Json;
 using ShiftsLoggerClient.Models;
 
 namespace ShiftsLoggerClient.Controllers;
@@ -11,48 +7,38 @@ namespace ShiftsLoggerClient.Controllers;
 public class ShiftsController
 {
     public HttpClient Client;
-    private static readonly Uri ShiftsBaseAdress = new("http://localhost:5039/api/Shifts/");
+    private readonly Uri ShiftsBaseAdress;
 
-    public ShiftsController()
+    public ShiftsController(string appUrl)
     {
+        ShiftsBaseAdress = new(appUrl + "/api/Shifts/");
         Client = new()
         {
             BaseAddress = ShiftsBaseAdress,
-            // Timeout = new TimeSpan(0, 0, 10)
+            Timeout = new TimeSpan(0, 0, 10)
         };
         Client.DefaultRequestHeaders.Accept.Clear();
         Client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json-patch+json"));
     }
 
-    public async Task<List<ShiftJson>?> GetShifts(int? id)
+    public async Task<HttpResponseMessage> GetShifts(int? id)
     {
-        var response = await Client.GetAsync($"{id}");
-        if(response.IsSuccessStatusCode)
-        {
-            var shifts = await JsonSerializer.DeserializeAsync<List<ShiftJson>>(response.Content.ReadAsStream());
-            return shifts;
-        }
-        else
-            throw new Exception(await response.Content.ReadAsStringAsync());
+        return await Client.GetAsync($"{id}");
     }
 
     public async Task<HttpResponseMessage> PutShift(int? id, ShiftJson shift)
     {
-        var response = await Client.PutAsJsonAsync($"{id}", shift);
-        return response;
+        return await Client.PutAsJsonAsync($"{id}", shift);
     }
 
-    public async Task<HttpResponseMessage> PatchShift(int? id, DateTime endTime)
+    public async Task<HttpResponseMessage> PatchShift(int? id, string patchContent)
     {
-        var patchEndTime = new JsonPatchDocument<ShiftJson>();
-        patchEndTime.Replace( p => p.ShiftEndTime, endTime);
-
-        // var content = JsonSerializer.Serialize(endTime);
-        var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"{id}");
-        request.Content = new StringContent(NewtonJson.JsonConvert.SerializeObject(patchEndTime), 
-            System.Text.Encoding.UTF8, "application/json-patch+json");
-        HttpResponseMessage response = await Client.SendAsync(request);
-        return response;
+        var request = new HttpRequestMessage(new HttpMethod("PATCH"), $"{id}")
+        {
+            Content = new StringContent(patchContent,
+            System.Text.Encoding.UTF8, "application/json-patch+json")
+        };
+        return await Client.SendAsync(request);
     }
 }

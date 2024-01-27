@@ -8,10 +8,25 @@ public class ShiftsLoggerContext : DbContext
     public DbSet<Employee> Employees {get; set;}
     public DbSet<Shift> Shifts {get; set;}
 
+    public ShiftsLoggerContext()
+    {
+        try
+        {
+            Database.OpenConnection();
+            Database.CanConnect();
+        }
+        catch
+        {
+            throw new Exception("The app cannot connect to the Database. "+
+                "Please check your Connection String configuration in your appsettings.json");
+        }
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options
         .UseSqlServer(ShiftsLoggerConnectionString,
-        sqlServerOptions => sqlServerOptions.CommandTimeout(5))
+        sqlServerOptions => sqlServerOptions.CommandTimeout(5)
+        )
         .LogTo(Console.WriteLine);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

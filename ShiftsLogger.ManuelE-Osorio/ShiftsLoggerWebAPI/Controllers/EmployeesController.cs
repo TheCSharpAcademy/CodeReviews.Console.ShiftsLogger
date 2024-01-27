@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerWebApi.Models;
@@ -7,15 +6,10 @@ namespace ShiftsLoggerWebApi.Controllers;
 
 [Route("api/Employees")]
 [ApiController]
-public class EmployeesController : ControllerBase
+public class EmployeesController(ShiftsLoggerContext dbContext) : ControllerBase
 {
-    private readonly ShiftsLoggerContext DBContext;
+    private readonly ShiftsLoggerContext DBContext = dbContext;
 
-    public EmployeesController(ShiftsLoggerContext dbContext)
-    {
-        DBContext = dbContext;
-    }
-    
     [HttpGet()]
     public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee([FromQuery(Name = "name")] string employeeName)
     {

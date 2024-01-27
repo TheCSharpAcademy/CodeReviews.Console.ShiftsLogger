@@ -7,9 +7,17 @@ public class ShiftsLoggerWebAPI
     public static void Main()
     {
         JsonConfig();
-        DBInit();
-        PopulateDB();
-        WebAPIBuilder();
+        bool dbInitSuccesful = false;
+        try
+        {
+            dbInitSuccesful = DBInit();
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+        if (dbInitSuccesful)
+            WebAPIBuilder();
     }
 
     public static void WebAPIBuilder()
@@ -28,7 +36,7 @@ public class ShiftsLoggerWebAPI
             app.UseSwaggerUI();
         }
 
-        // app.UseHttpsRedirection();
+        app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
         app.Run();
@@ -36,42 +44,49 @@ public class ShiftsLoggerWebAPI
 
     public static void JsonConfig()
     {
-        IConfiguration jsonConfig = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-        ShiftsLoggerContext.ShiftsLoggerConnectionString = jsonConfig.GetConnectionString("DefaultConnection");
+        try
+        {
+            IConfiguration jsonConfig = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+            ShiftsLoggerContext.ShiftsLoggerConnectionString = jsonConfig.GetConnectionString("DefaultConnection"); //Try catch block
+        }
+        catch
+        {
+            Console.WriteLine("Please configure your connection string.");
+        }   
     }
 
-    public static void DBInit()
+    public static bool DBInit()
     {
         var db = new ShiftsLoggerContext();
-        db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
+        return true;
     }
 
     public static void PopulateDB()
     {
         var db = new ShiftsLoggerContext();
-        db.Employees.Add(new Employee{Name = "Employee1", Admin = true});
-        db.Employees.Add(new Employee{Name = "Employee2"});
-        db.Employees.Add(new Employee{Name = "Employee3", Admin = true});
-        db.Employees.Add(new Employee{Name = "Employee4"});
-        db.Employees.Add(new Employee{Name = "Employee5"});
-        db.Employees.Add(new Employee{Name = "Employee6"});
-        db.Employees.Add(new Employee{Name = "Employee7"});
-        db.Employees.Add(new Employee{Name = "Employee8"});
-        db.Employees.Add(new Employee{Name = "Employee9"});
-        db.Employees.Add(new Employee{Name = "Employee10"});
-        db.Employees.Add(new Employee{Name = "Employee11"});
-        db.Employees.Add(new Employee{Name = "Employee12"});
-        db.Employees.Add(new Employee{Name = "Employee13"});
-        db.Employees.Add(new Employee{Name = "Employee14"});
-        db.Employees.Add(new Employee{Name = "Employee15"});
-        db.Employees.Add(new Employee{Name = "Employee16"});
-        db.Employees.Add(new Employee{Name = "Employee17"});
-        db.Employees.Add(new Employee{Name = "Employee18"});
-        db.Employees.Add(new Employee{Name = "Employee19"});
-        db.Employees.Add(new Employee{Name = "Employee20"});                
+        db.Employees.Add(new Employee{Name = "John Doe", Admin = true});
+        db.Employees.Add(new Employee{Name = "John Smith"});
+        db.Employees.Add(new Employee{Name = "John Roberts", Admin = true});
+        db.Employees.Add(new Employee{Name = "Michael Smith"});
+        db.Employees.Add(new Employee{Name = "William Johnson"});
+        db.Employees.Add(new Employee{Name = "Mathew Simmons"});
+        db.Employees.Add(new Employee{Name = "Donald Jones"});
+        db.Employees.Add(new Employee{Name = "John Jones"});
+        db.Employees.Add(new Employee{Name = "Paul Anderson"});
+        db.Employees.Add(new Employee{Name = "Michael Taylor"});
+        db.Employees.Add(new Employee{Name = "Paul Brown"});
+        db.Employees.Add(new Employee{Name = "Brian Johnson"});
+        db.Employees.Add(new Employee{Name = "Brian Garcia"});
+        db.Employees.Add(new Employee{Name = "Megan Brown"});
+        db.Employees.Add(new Employee{Name = "Jean Simmons"});
+        db.Employees.Add(new Employee{Name = "Judi Smith"});
+        db.Employees.Add(new Employee{Name = "Julia Taylor"});
+        db.Employees.Add(new Employee{Name = "Sophia Garcia"});
+        db.Employees.Add(new Employee{Name = "Marilyn Simmons"});
+        db.Employees.Add(new Employee{Name = "Beverly Anderson"});                
         db.SaveChanges();
         
         foreach(Employee employee in db.Employees)

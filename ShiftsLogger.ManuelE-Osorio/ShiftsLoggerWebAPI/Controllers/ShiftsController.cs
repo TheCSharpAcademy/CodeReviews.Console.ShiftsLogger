@@ -8,15 +8,10 @@ namespace ShiftsLoggerWebApi.Controllers;
 [Route("api/Shifts")]
 [ApiController]
 
-public class ShiftsController : ControllerBase
+public class ShiftsController(ShiftsLoggerContext dbContext) : ControllerBase
 {
     private static readonly int ShiftMaxGetQty = 5; 
-    private readonly ShiftsLoggerContext DBContext;
-
-    public ShiftsController(ShiftsLoggerContext dbContext)
-    {
-        DBContext = dbContext;
-    }
+    private readonly ShiftsLoggerContext DBContext = dbContext;
 
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<ShiftDto>>> GetShifts(int id)
@@ -66,7 +61,7 @@ public class ShiftsController : ControllerBase
         if (shift == null || shift.Count <= 0)
             return NotFound();
 
-        if(patchDoc != null && shift.Last().ShiftEndTime == null)  //end time validation, should have a time requirement
+        if(patchDoc != null && shift.Last().ShiftEndTime == null)
         {
             patchDoc.ApplyTo(shift.Last(), ModelState);
             if (!ModelState.IsValid)
