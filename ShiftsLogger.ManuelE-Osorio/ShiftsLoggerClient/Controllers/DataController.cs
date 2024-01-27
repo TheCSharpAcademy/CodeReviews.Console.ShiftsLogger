@@ -1,4 +1,3 @@
-using Microsoft.VisualBasic;
 using ShiftsLoggerClient.Models;
 using ShiftsLoggerClient.UI;
 using ShiftsLoggerClient.Validation;
@@ -63,6 +62,7 @@ public class DataController
         while(RunLogin);
         return false;
     }
+
     public void Main()
     {
         while(RunMainMenu)
@@ -109,7 +109,7 @@ public class DataController
         RunAdminMenu = true;
         while(RunAdminMenu)
         {
-            MainUI.DisplayAdminMenu();  //Change to admin menu
+            MainUI.DisplayAdminMenu();
             PressedKey = Console.ReadKey(false).Key;
             switch(PressedKey)
             {
@@ -132,9 +132,8 @@ public class DataController
                     CreateNewEmployee();
                     break;
                 case(ConsoleKey.D7):
-                    // Employee4();
+                    ModifyEmployee();
                     break;
-                // "7) Modify a employee\n"
 
                 case(ConsoleKey.Escape):
                 case(ConsoleKey.Backspace):
@@ -159,7 +158,8 @@ public class DataController
         var shiftTask = Shifts.PutShift(UserId, newShift);
         MainUI.DisplayUIMessage("Loading ...");
         var status = shiftTask.Result; //Error Handling Finished?
-        Console.WriteLine(status.Content.ToString());
+        Console.WriteLine(status.Content.ReadAsStringAsync().Result);
+        Console.WriteLine("Press any key to continue.\n");
         Console.ReadKey(false);
     }
 
@@ -168,50 +168,40 @@ public class DataController
         var shiftTask = Shifts.PatchShift(UserId, DateTime.UtcNow);
         MainUI.DisplayUIMessage("Loading ...");
         var status = shiftTask.Result; //Error Handling Finished?
-        MainUI.DisplayUIMessage(status.Content.ToString());
+        MainUI.DisplayUIMessage(status.Content.ReadAsStringAsync().Result);
         Console.WriteLine("Press any key to continue.\n");
         Console.ReadKey(false);
     }
 
     public void EmployeeByID()
     {
-        string employeeId;
-        string? errorMessage = null;
-        while(true)
+        var id = InputController.InputID();
+        if (id == null)
+            return;
+
+        var employeeTask = Employees.GetEmployeeById(Convert.ToInt32(id));
+        MainUI.DisplayUIMessage("Loading ...");
+        try
         {
-            MainUI.EnterEmployeeID(errorMessage);
-            employeeId = Console.ReadLine() ?? "";
-            if(InputValidation.IntValidation(employeeId))
-            {
-                var employeeTask = Employees.GetEmployeeById(Convert.ToInt32(employeeId));
-                MainUI.DisplayUIMessage("Loading ...");
-                try
-                {
-                    var employeeData = employeeTask.Result;
-                    MainUI.DisplayList(employeeData);
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-                Console.ReadKey(false);
-                return;
-            }
-            else
-            {
-                errorMessage = "Please enter a valid ID";
-            }
+            var employeeData = employeeTask.Result;
+            MainUI.DisplayList(employeeData);
         }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        Console.ReadKey(false);
+        return;
     }
 
     public void EmployeeByName()
     {
-        string employeeName;
-        string? errorMessage = null;
-        MainUI.EnterEmployeeID(errorMessage);
-        employeeName = Console.ReadLine() ?? "";
-
-        var employeeTask = Employees.GetEmployeeByName(employeeName);
+        var name = InputController.InputName();
+        if (name == null)
+            return;
+        var employeeTask = Employees.GetEmployeeByName(name);
+        
         MainUI.DisplayUIMessage("Loading ...");
         try
         {
@@ -229,35 +219,26 @@ public class DataController
 
     public void CreateNewEmployee()
     {
-        string name;
-        string isNewEmployeeAdminString;
-        bool isNewEmployeeAdmin = false;
-        string? errorMessage = null;
-        while(true)
+        var name = InputController.InputName();
+        if(name == null)
+            return;
+        var isEmployeeAdmin = InputController.InputEmployeeAdmin();
+        var employeeTask = Employees
+            .PutEmployee( new Employee( EmployeeId: 0, Name: name, Admin: isEmployeeAdmin ));
+        
+        MainUI.DisplayUIMessage("Loading ...");            
+        try
         {
-            MainUI.EnterEmployeeName(errorMessage);
-            name = Console.ReadLine() ?? "";
-            if(InputValidation.NameValidation(name))
-            {
-                MainUI.IsEmployeeAdmin();
-                isNewEmployeeAdminString = Console.ReadLine() ?? "";
-                if(isNewEmployeeAdminString.Equals("y", StringComparison.InvariantCultureIgnoreCase))
-                    isNewEmployeeAdmin = true;
-
-                var employeeTask = Employees.PutEmployee(
-                    new Employee(EmployeeId:0, Name:name, Admin:isNewEmployeeAdmin));
-                MainUI.DisplayUIMessage("Loading ...");
-                
-                var status = employeeTask.Result;
-                MainUI.DisplayUIMessage(status.Content.ToString());
-                Console.ReadKey(false);
-                return;
-            }
-            else
-            {
-                errorMessage = "Invalid Name.";
-            }
+            var response = employeeTask.Result;
+            MainUI.DisplayUIMessage(response.Content.ReadAsStringAsync().Result);
         }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        Console.ReadKey(false);
+        return;
     }
 
     public void ModifyEmployee()
@@ -270,18 +251,25 @@ public class DataController
             return;
         var isEmployeeAdmin = InputController.InputEmployeeAdmin();
         var employeeTask = Employees
-            .PutEmployee(new Employee(EmployeeId: id ?? 0, Name: name, Admin: isEmployeeAdmin));
-        
+            .PostEmployee(new Employee( EmployeeId: id ?? 0, Name: name, Admin: isEmployeeAdmin ));
+
         MainUI.DisplayUIMessage("Loading ...");
         try
         {
             var response = employeeTask.Result;
+            MainUI.DisplayUIMessage(response.Content.ReadAsStringAsync().Result);
         }
         catch(Exception e)
         {
             Console.WriteLine(e.Message);
         }
+
         Console.ReadKey(false);
         return;
+    }
+
+    public static string HandleHttpResponseMessage(HttpResponseMessage? response)
+    {
+        return "";
     }
 }

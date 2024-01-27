@@ -48,7 +48,7 @@ public class MainUI
         Console.Clear();
         if(errorMessage != null)    
             Console.WriteLine($"Error: {errorMessage}.");
-        Console.WriteLine("Please enter the employee ID or \"c\" to cancel:");
+        Console.WriteLine("Please enter the employee ID or press ESC to cancel:");
     }
 
     public static void EnterEmployeeName(string? errorMessage)
@@ -56,12 +56,18 @@ public class MainUI
         Console.Clear();
         if(errorMessage != null)    
             Console.WriteLine($"Error: {errorMessage}.");
-        Console.WriteLine("Please enter the new employee name (within 100 characters):");
+        Console.WriteLine("Please enter the new employee name (within 100 characters) or press ESC to cancel:");
     }
 
     public static void IsEmployeeAdmin()
     {
         Console.Clear();
         Console.WriteLine("Is the new employee admin? [y/N]\n");
+    }
+
+    public static void LoadingMessage()
+    {
+        Console.Clear();
+        Console.WriteLine("Loading ...");
     }
 }

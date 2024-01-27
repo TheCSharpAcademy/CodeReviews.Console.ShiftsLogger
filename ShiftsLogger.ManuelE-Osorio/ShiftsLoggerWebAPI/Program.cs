@@ -8,7 +8,7 @@ public class ShiftsLoggerWebAPI
     {
         JsonConfig();
         DBInit();
-        // PopulateDB();
+        PopulateDB();
         WebAPIBuilder();
     }
 
@@ -42,6 +42,13 @@ public class ShiftsLoggerWebAPI
         ShiftsLoggerContext.ShiftsLoggerConnectionString = jsonConfig.GetConnectionString("DefaultConnection");
     }
 
+    public static void DBInit()
+    {
+        var db = new ShiftsLoggerContext();
+        db.Database.EnsureDeleted();
+        db.Database.EnsureCreated();
+    }
+
     public static void PopulateDB()
     {
         var db = new ShiftsLoggerContext();
@@ -66,58 +73,29 @@ public class ShiftsLoggerWebAPI
         db.Employees.Add(new Employee{Name = "Employee19"});
         db.Employees.Add(new Employee{Name = "Employee20"});                
         db.SaveChanges();
-
-        var employee = db.Employees.Where(p => p.Name == "Employee1").First();
-        var start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );
-
-         start = new DateTime(2024, 1, 19);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), 
-            ShiftEndTime = new DateTime(2024, 1 ,20).ToUniversalTime()} );
-
-        employee = db.Employees.Where(p => p.Name == "Employee3").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );
-
-        employee = db.Employees.Where(p => p.Name == "Employee5").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );
-
-        employee = db.Employees.Where(p => p.Name == "Employee7").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );    
-
-        employee = db.Employees.Where(p => p.Name == "Employee9").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );
-
-        employee = db.Employees.Where(p => p.Name == "Employee11").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );
-
-        employee = db.Employees.Where(p => p.Name == "Employee13").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );
-
-        employee = db.Employees.Where(p => p.Name == "Employee15").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );
-
-        employee = db.Employees.Where(p => p.Name == "Employee17").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );    
-
-        employee = db.Employees.Where(p => p.Name == "Employee19").First();
-         start = new DateTime(2024, 1, 20);
-        employee.Shifts?.Add(new Shift{ShiftStartTime = start.ToUniversalTime(), ShiftEndTime = DateTime.UtcNow} );
         
-        db.SaveChanges();
+        foreach(Employee employee in db.Employees)
+        {
+            AddShifts(employee.EmployeeId);
+        }
     }
 
-    public static void DBInit()
+    public static void AddShifts(int id)
     {
         var db = new ShiftsLoggerContext();
-        // db.Database.EnsureDeleted();
-        db.Database.EnsureCreated();
+        var employee = db.Employees.Where(p => p.EmployeeId == id).First();
+
+        employee.Shifts?.Add(new Shift{ShiftStartTime = new DateTime(2024, 1, 19, 9, 5, 0).ToUniversalTime(), 
+            ShiftEndTime = new DateTime(2024, 1, 19, 18, 10, 0).ToUniversalTime()} );
+        employee.Shifts?.Add(new Shift{ShiftStartTime = new DateTime(2024, 1, 20, 9, 7, 0).ToUniversalTime(), 
+            ShiftEndTime = new DateTime(2024, 1, 20, 18, 2, 0).ToUniversalTime()} );
+        employee.Shifts?.Add(new Shift{ShiftStartTime = new DateTime(2024, 1, 21, 9, 3, 0).ToUniversalTime(), 
+            ShiftEndTime = new DateTime(2024, 1, 21, 18, 9, 0).ToUniversalTime()} );
+        employee.Shifts?.Add(new Shift{ShiftStartTime = new DateTime(2024, 1, 22, 9, 1, 0).ToUniversalTime(), 
+            ShiftEndTime = new DateTime(2024, 1, 22, 18, 2, 0).ToUniversalTime()} );
+        employee.Shifts?.Add(new Shift{ShiftStartTime = new DateTime(2024, 1, 23, 9, 0, 0).ToUniversalTime(), 
+            ShiftEndTime = new DateTime(2024, 1, 23, 18, 0, 0).ToUniversalTime()} );
+
+        db.SaveChanges();
     }
 }

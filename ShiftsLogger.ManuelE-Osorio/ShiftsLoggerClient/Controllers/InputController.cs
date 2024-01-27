@@ -13,6 +13,7 @@ public class InputController
         while(true)
         {
             MainUI.EnterEmployeeID(errorMessage);
+            Console.Write(idString);
             pressedKey = Console.ReadKey();
             switch(pressedKey.Key)
             {
@@ -49,7 +50,8 @@ public class InputController
         ConsoleKeyInfo pressedKey;            
         while(true)
         {
-            MainUI.EnterEmployeeID(errorMessage);
+            MainUI.EnterEmployeeName(errorMessage);
+            Console.Write(name);
             pressedKey = Console.ReadKey();
             switch(pressedKey.Key)
             {
@@ -83,7 +85,7 @@ public class InputController
     public static bool InputEmployeeAdmin()
     {
         string isEmployeeAdmin;
-        MainUI.DisplayAdminMenu();
+        MainUI.IsEmployeeAdmin();
         isEmployeeAdmin = Console.ReadLine() ?? "";
         if(isEmployeeAdmin.Equals("y", StringComparison.InvariantCultureIgnoreCase))
             return true;
