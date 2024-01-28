@@ -2,7 +2,7 @@ using ShiftsLoggerWebApi.Models;
 
 namespace ShiftsLogger;
 
-public class ShiftsLoggerWebAPI
+public class ShiftsLoggerWebApi
 {
     public static void Main()
     {
@@ -17,10 +17,10 @@ public class ShiftsLoggerWebAPI
             Console.WriteLine(e.Message);
         }
         if (dbInitSuccesful)
-            WebAPIBuilder();
+            WebApiBuilder();
     }
 
-    public static void WebAPIBuilder()
+    public static void WebApiBuilder()
     {
         var builder = WebApplication.CreateBuilder();
         

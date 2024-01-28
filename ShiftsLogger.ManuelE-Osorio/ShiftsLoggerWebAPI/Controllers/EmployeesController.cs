@@ -40,7 +40,7 @@ public class EmployeesController(ShiftsLoggerContext dbContext) : ControllerBase
     }
 
     [HttpPost()]
-    public async Task<ActionResult> PatchEmployee(Employee employeeToModify)
+    public async Task<ActionResult> PostEmployee(Employee employeeToModify)
     {
         var employee = await DBContext.Employees
             .Where(p => p.EmployeeId == employeeToModify.EmployeeId).ToListAsync();
