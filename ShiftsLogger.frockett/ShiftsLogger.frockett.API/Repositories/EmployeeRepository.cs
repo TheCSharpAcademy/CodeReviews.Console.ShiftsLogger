@@ -24,6 +24,10 @@ public class EmployeeRepository : IEmployeeRepository
     {
         return await context.Employees.OrderBy(e => e.Name).ToListAsync();
     }
+    public async Task<Employee> GetEmployeeByIdAsync(int employeeId)
+    {
+        return await context.Employees.FindAsync(employeeId);
+    }
     public async Task<Employee> UpdateEmployeeAsync(Employee employee)
     {
         var employeeToUpdate = await context.Employees.FirstOrDefaultAsync(e => e.Id == employee.Id);

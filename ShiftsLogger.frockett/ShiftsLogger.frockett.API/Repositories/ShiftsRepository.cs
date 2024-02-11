@@ -23,6 +23,7 @@ public class ShiftsRepository : IShiftsRepository
     {
         return await context.Shifts.OrderBy(s => s.StartTime).ToListAsync();
     }
+
     public async Task<Shift> GetShiftByIdAsync(int shiftId)
     {
         return await context.Shifts.FindAsync(shiftId);
