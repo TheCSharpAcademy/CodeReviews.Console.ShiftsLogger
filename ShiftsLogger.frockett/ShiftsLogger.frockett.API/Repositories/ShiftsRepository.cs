@@ -40,13 +40,15 @@ public class ShiftsRepository : IShiftsRepository
         await context.SaveChangesAsync();
         return shift;
     }
-    public async Task DeleteShiftAsync(int shiftId)
+    public async Task<bool> DeleteShiftAsync(int shiftId)
     {
         var shift = await context.Shifts.FindAsync(shiftId);
         if (shift != null)
         {
             context.Shifts.Remove(shift);
             await context.SaveChangesAsync();
+            return true;
         }
+        else return false;
     }
 }

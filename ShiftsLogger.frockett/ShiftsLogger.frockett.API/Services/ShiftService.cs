@@ -90,8 +90,10 @@ public class ShiftService
         };
     }
 
-    public async Task DeleteShiftAsync(int shiftId)
+    public async Task<bool> DeleteShiftAsync(int shiftId)
     {
-        await shiftsRepository.DeleteShiftAsync(shiftId);
+        bool isDeleted = await shiftsRepository.DeleteShiftAsync(shiftId);
+        
+        return isDeleted ? true : false;
     }
 }

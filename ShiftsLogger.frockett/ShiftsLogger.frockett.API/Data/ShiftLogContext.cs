@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShiftsLogger.frockett.API.Models;
+using ShiftsLogger.frockett.API.DTOs;
 
 namespace ShiftsLogger.frockett.API.Data;
 
@@ -27,5 +28,7 @@ public class ShiftLogContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     => options.UseSqlServer(@"Server=Crockett;Database=ShiftsLoggerDB;Trusted_Connection=True;TrustServerCertificate=True");
+
+public DbSet<ShiftsLogger.frockett.API.DTOs.ShiftDto> ShiftDto { get; set; } = default!;
 
 }

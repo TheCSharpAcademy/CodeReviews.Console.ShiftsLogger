@@ -8,6 +8,6 @@ public interface IShiftsRepository
     Task<IEnumerable<Shift>> GetAllShiftsAsync();
     Task<Shift> GetShiftByIdAsync(int shiftId);
     Task<IEnumerable<Shift>> GetShiftsByEmployeeIdAsync(int employeeId);
-    Task DeleteShiftAsync(int shiftId);
+    Task<bool> DeleteShiftAsync(int shiftId);
     Task<Shift> UpdateShiftAsync(Shift shift);
 }
