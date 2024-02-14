@@ -1,4 +1,5 @@
 ﻿using ShiftsLoggerClient.Controllers;
+using ShiftsLoggerClient.Helpers;
 
 namespace ShiftsLoggerClient;
 
@@ -6,7 +7,7 @@ public class ShiftsLoggerClientProgram
 {
     public static void Main()
     {
-        var baseAddress = JsonController.AppSettings();
+        var baseAddress = JsonHelper.AppSettings();
         DataController dataCont;
         if(baseAddress != null)
         {

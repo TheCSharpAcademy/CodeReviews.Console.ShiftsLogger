@@ -4,9 +4,9 @@ using Microsoft.Extensions.Configuration;
 using ShiftsLoggerClient.Models;
 using NewtonJson = Newtonsoft.Json;
 
-namespace ShiftsLoggerClient.Controllers;
+namespace ShiftsLoggerClient.Helpers;
 
-public class JsonController
+public class JsonHelper
 {
     public async static Task<List<T>?> DeserializeResponse<T>(HttpResponseMessage response) where T: class
     {

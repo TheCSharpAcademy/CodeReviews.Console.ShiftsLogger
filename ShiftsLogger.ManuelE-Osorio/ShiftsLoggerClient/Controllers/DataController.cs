@@ -1,5 +1,7 @@
 using ShiftsLoggerClient.Models;
 using ShiftsLoggerClient.UI;
+using ShiftsLoggerClient.Helpers;
+using ShiftsLoggerClient.Services;
 
 namespace ShiftsLoggerClient.Controllers;
 
@@ -12,8 +14,8 @@ public class DataController
     private string? UserName;
     private bool RunUserMenu;
     private bool RunAdminMenu;
-    private readonly EmployeesController Employees;
-    private readonly ShiftsController Shifts;
+    private readonly EmployeesWebService Employees;
+    private readonly ShiftsWebService Shifts;
 
     public DataController(string baseAddress)
     {
@@ -39,7 +41,7 @@ public class DataController
                 var response = await employeeTask;
                 if(response.IsSuccessStatusCode)
                 {
-                    var employee = await JsonController.DeserializeResponse<Employee>(response);
+                    var employee = await JsonHelper.DeserializeResponse<Employee>(response);
                     AdminUser = employee?.FirstOrDefault()?.Admin;
                     UserId = employee?.FirstOrDefault()?.EmployeeId;
                     UserName = employee?.FirstOrDefault()?.Name;
@@ -59,7 +61,7 @@ public class DataController
     public void Main()
     {
         MainUI.WelcomeMessage();
-        JsonController.AppSettings();
+        JsonHelper.AppSettings();
         while(RunMainMenu)
         {
             RunMainMenu = Login().Result;
@@ -146,7 +148,7 @@ public class DataController
             var response = shiftTask.Result;
             if(response.IsSuccessStatusCode)
             {
-                var shiftData = JsonController.DeserializeResponse<ShiftJson>(response);
+                var shiftData = JsonHelper.DeserializeResponse<ShiftJson>(response);
                 MainUI.DisplayList(shiftData.Result?.Select( p => new ShiftDto(p)).ToList());
             }
             else
@@ -182,7 +184,7 @@ public class DataController
     {
         if(!InputController.GetShiftEndConfirmation())
             return;
-        var patchContent = JsonController.CreateShiftPatch(DateTime.UtcNow);
+        var patchContent = JsonHelper.CreateShiftPatch(DateTime.UtcNow);
         var shiftTask = Shifts.PatchShift(UserId, patchContent);
         MainUI.LoadingMessage();
         try
@@ -212,7 +214,7 @@ public class DataController
             var response = employeeTask.Result;
             if(response.IsSuccessStatusCode)
             {
-                var employeeData = JsonController.DeserializeResponse<Employee>(response);
+                var employeeData = JsonHelper.DeserializeResponse<Employee>(response);
                 MainUI.DisplayList(employeeData.Result);
             }
             else
@@ -240,7 +242,7 @@ public class DataController
             var response = employeeTask.Result;
             if(response.IsSuccessStatusCode)
             {
-                var employeeData = JsonController.DeserializeResponse<Employee>(response);
+                var employeeData = JsonHelper.DeserializeResponse<Employee>(response);
                 MainUI.DisplayList(employeeData.Result);
             }
             else

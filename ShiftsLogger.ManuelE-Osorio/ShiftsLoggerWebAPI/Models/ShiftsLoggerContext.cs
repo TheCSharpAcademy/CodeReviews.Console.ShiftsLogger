@@ -12,8 +12,9 @@ public class ShiftsLoggerContext : DbContext
     {
         try
         {
-            Database.OpenConnection();
-            Database.CanConnect();
+            // Database.
+            // // Database.OpenConnection();
+            // Databas
         }
         catch
         {
@@ -25,7 +26,8 @@ public class ShiftsLoggerContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options
         .UseSqlServer(ShiftsLoggerConnectionString,
-        sqlServerOptions => sqlServerOptions.CommandTimeout(5)
+        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(3)
+        // sqlServerOptions => sqlServerOptions.EnableRetryOnFailure(5)
         )
         .LogTo(Console.WriteLine);
 

@@ -2,14 +2,14 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using ShiftsLoggerClient.Models;
 
-namespace ShiftsLoggerClient.Controllers;
+namespace ShiftsLoggerClient.Services;
 
-public class EmployeesController
+public class EmployeesWebService
 {
     public HttpClient Client;
     private readonly Uri ShiftsBaseAdress;
 
-    public EmployeesController(string appUrl)
+    public EmployeesWebService(string appUrl)
     {
         ShiftsBaseAdress = new Uri(appUrl+"/api/Employees/");
         Client = new()
