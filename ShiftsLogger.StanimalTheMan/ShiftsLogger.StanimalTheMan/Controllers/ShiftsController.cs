@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerWebAPI.Models;
+using ShiftsLoggerWebAPI.Services;
 
 namespace ShiftsLoggerWebAPI.Controllers;
 
@@ -8,32 +8,33 @@ namespace ShiftsLoggerWebAPI.Controllers;
 [ApiController]
 public class ShiftsController : ControllerBase
 {
-	private readonly ShiftContext _context;
+	private readonly IShiftService _shiftService;
 
-	public ShiftsController(ShiftContext context)
+	public ShiftsController(IShiftService shiftService)
 	{
-		_context = context;
+		_shiftService = shiftService;
 	}
 
 	// GET: api/Shifts
 	[HttpGet]
 	public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
 	{
-		return await _context.Shifts.ToListAsync();
+		var shifts = await _shiftService.GetAllShiftsAsync();
+		return Ok(shifts);
 	}
 
 	// GET: api/Shifts/5
 	[HttpGet("{id}")]
 	public async Task<ActionResult<Shift>> GetShift(long id)
 	{
-		var shift = await _context.Shifts.FindAsync(id);
+		var shift = await _shiftService.GetShiftByIdAsync(id);
 
 		if (shift == null)
 		{
 			return NotFound();
 		}
 
-		return shift;
+		return Ok(shift);
 	}
 
 	// PUT: api/Shifts/5
@@ -46,22 +47,13 @@ public class ShiftsController : ControllerBase
 			return BadRequest();
 		}
 
-		_context.Entry(shift).State = EntityState.Modified;
-
 		try
 		{
-			await _context.SaveChangesAsync();
+			await _shiftService.UpdateShiftAsync(id, shift);
 		}
-		catch (DbUpdateConcurrencyException)
+		catch (KeyNotFoundException)
 		{
-			if (!ShiftExists(id))
-			{
-				return NotFound();
-			}
-			else
-			{
-				throw;
-			}
+			return NotFound();
 		}
 
 		return NoContent();
@@ -72,30 +64,23 @@ public class ShiftsController : ControllerBase
 	[HttpPost]
 	public async Task<ActionResult<Shift>> PostShift(Shift shift)
 	{
-		_context.Shifts.Add(shift);
-		await _context.SaveChangesAsync();
-
-		return CreatedAtAction("GetShift", new { id = shift.Id }, shift);
+		var createdShift = await _shiftService.CreateShiftAsync(shift);
+		return CreatedAtAction(nameof(GetShift), new { id = createdShift.Id }, createdShift);
 	}
 
 	// DELETE: api/Shifts/5
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteShift(long id)
 	{
-		var shift = await _context.Shifts.FindAsync(id);
-		if (shift == null)
+		try
+		{
+			await _shiftService.DeleteShiftAsync(id);
+			return NoContent();
+		}
+		catch (KeyNotFoundException)
 		{
 			return NotFound();
 		}
-
-		_context.Shifts.Remove(shift);
-		await _context.SaveChangesAsync();
-
-		return NoContent();
-	}
-
-	private bool ShiftExists(long id)
-	{
-		return _context.Shifts.Any(e => e.Id == id);
 	}
 }
+

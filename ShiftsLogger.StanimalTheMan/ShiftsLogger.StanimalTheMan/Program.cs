@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerWebAPI.Models;
+using ShiftsLoggerWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ShiftContext>(options =>
 	options.UseSqlServer(connectionString));
+builder.Services.AddScoped<IShiftService, ShiftService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
