@@ -1,4 +1,6 @@
-﻿using ShiftsLoggerWebAPI.Models;
+﻿using ConsoleTableExt;
+using Newtonsoft.Json;
+using ShiftsLoggerWebAPI.Models;
 using System.Net.Http.Json;
 
 namespace ShiftsLoggerConsoleUI;
@@ -73,7 +75,8 @@ internal static class DataAccess
 
 	internal static async Task DeleteShiftAsync(int id)
 	{
-		using (var httpClient = new HttpClient()){
+		using (var httpClient = new HttpClient())
+		{
 			try
 			{
 				HttpResponseMessage response = await httpClient.DeleteAsync($"https://localhost:7204/api/shifts/{id}");
@@ -108,7 +111,21 @@ internal static class DataAccess
 				{
 					string responseBody = await response.Content.ReadAsStringAsync();
 					Console.WriteLine("Response from API:");
-					Console.WriteLine(responseBody);
+
+					var shifts = JsonConvert.DeserializeObject<List<Shift>>(responseBody);
+
+					if (shifts != null && shifts.Count > 0)
+					{
+						// Visualize response in table format
+						ConsoleTableBuilder
+							.From(shifts)
+							.WithFormat(ConsoleTableBuilderFormat.MarkDown)
+							.ExportAndWriteLine();
+					}
+					else
+					{
+						Console.WriteLine("No shifts found in the response.");
+					}
 				}
 				else
 				{
@@ -136,7 +153,13 @@ internal static class DataAccess
 				{
 					string responseBody = await response.Content.ReadAsStringAsync();
 					Console.WriteLine("Response from API:");
-					Console.WriteLine(responseBody);
+
+					var shift = JsonConvert.DeserializeObject<Shift>(responseBody);
+
+					var table = ConsoleTableBuilder
+						.From(new List<Shift> { shift })
+						.Export();
+					Console.WriteLine(table);
 				}
 				else
 				{
