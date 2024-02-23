@@ -71,6 +71,31 @@ namespace ShiftsLoggerConsoleUI
 			Console.ReadLine();
 		}
 
+		internal static async Task DeleteShiftAsync(int id)
+		{
+			using (var httpClient = new HttpClient()){
+				try
+				{
+					HttpResponseMessage response = await httpClient.DeleteAsync($"https://localhost:7204/api/shifts/{id}");
+					if (response.IsSuccessStatusCode)
+					{
+						Console.WriteLine("Successfully deleted shift");
+					}
+					else
+					{
+						Console.WriteLine("Failed to delete shift");
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Server / API may be down or some other unexpected issue is going on: {ex.Message}");
+				}
+			}
+
+			Console.WriteLine("Press any key to return to main menu");
+			Console.ReadLine();
+		}
+
 		internal static async Task GetAllShiftsAsync()
 		{
 			using (var httpClient = new HttpClient())
@@ -84,24 +109,19 @@ namespace ShiftsLoggerConsoleUI
 						string responseBody = await response.Content.ReadAsStringAsync();
 						Console.WriteLine("Response from API:");
 						Console.WriteLine(responseBody);
-
-						Console.WriteLine("Press any key to return to main menu");
-						Console.ReadLine();
 					}
 					else
 					{
 						Console.WriteLine($"Failed to fetch data. Status code: {response.StatusCode}");
-						Console.WriteLine("Press any key to return to main menu");
-						Console.ReadLine();
 					}
 				}
 				catch (Exception ex)
 				{
 					Console.WriteLine($"Server / API may be down or some other unexpected issue is going on: {ex.Message}");
-					Console.WriteLine("Press any key to return to main menu");
-					Console.ReadLine();
 				}
 			}
+			Console.WriteLine("Press any key to return to main menu");
+			Console.ReadLine();
 		}
 
 		internal static async Task GetShiftByIdAsync(int id)
@@ -117,23 +137,19 @@ namespace ShiftsLoggerConsoleUI
 						string responseBody = await response.Content.ReadAsStringAsync();
 						Console.WriteLine("Response from API:");
 						Console.WriteLine(responseBody);
-						Console.WriteLine("Press any key to return to main menu");
-						Console.ReadLine();
 					}
 					else
 					{
 						Console.WriteLine($"Failed to fetch data. Status code: {response.StatusCode}");
-						Console.WriteLine("Press any key to return to main menu");
-						Console.ReadLine();
 					}
 				}
 				catch (Exception ex)
 				{
 					Console.WriteLine($"Server / API may be down or some other unexpected issue is going on: {ex.Message}");
-					Console.WriteLine("Press any key to return to main menu");
-					Console.ReadLine();
 				}
 			}
+			Console.WriteLine("Press any key to return to main menu");
+			Console.ReadLine();
 		}
 
 		internal static async Task UpdateShiftAsync(int id)

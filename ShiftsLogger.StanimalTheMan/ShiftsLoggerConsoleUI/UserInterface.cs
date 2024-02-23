@@ -33,7 +33,7 @@ internal static class UserInterface
 					int id;
 					Console.WriteLine("Enter an id of the shift you want to fetch info of");
 					while (!Int32.TryParse(Console.ReadLine(), out id)) {
-						Console.WriteLine("Enter an id of the shift you want to fetch info of");
+						Console.WriteLine("Invalid id.  Enter an id of the shift you want to fetch info of");
 					}
 					task = DataAccess.GetShiftByIdAsync(id);
 					task.Wait();
@@ -47,9 +47,18 @@ internal static class UserInterface
 					Console.WriteLine("Select id of shift you want to update:");
 					while (!Int32.TryParse(Console.ReadLine(), out id))
 					{
-						Console.WriteLine("Enter an id of the shift you want to fetch info of");
+						Console.WriteLine("Invalid id.  Enter an id of the shift you want to fetch info of");
 					}
 					task = DataAccess.UpdateShiftAsync(id);
+					task.Wait();
+					break;
+				case MenuOptions.DeleteShift:
+					Console.WriteLine("Select id of shift you want to delete:");
+					while (!Int32.TryParse(Console.ReadLine(), out id))
+					{
+						Console.WriteLine("Invalid id.  Enter an id of the shift you want to delete");
+					}
+					task = DataAccess.DeleteShiftAsync(id);
 					task.Wait();
 					break;
 				case MenuOptions.Quit:
