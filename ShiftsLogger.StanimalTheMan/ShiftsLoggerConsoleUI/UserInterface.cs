@@ -42,6 +42,16 @@ internal static class UserInterface
 					task = DataAccess.CreateShiftAsync();
 					task.Wait();
 					break;
+				case MenuOptions.UpdateShift:
+					// concurrency issue exists when i try to get all shifts for users to view to select shift to update from so omit for now
+					Console.WriteLine("Select id of shift you want to update:");
+					while (!Int32.TryParse(Console.ReadLine(), out id))
+					{
+						Console.WriteLine("Enter an id of the shift you want to fetch info of");
+					}
+					task = DataAccess.UpdateShiftAsync(id);
+					task.Wait();
+					break;
 				case MenuOptions.Quit:
 					Console.WriteLine("Goodbye");
 					isAppRunning = false;

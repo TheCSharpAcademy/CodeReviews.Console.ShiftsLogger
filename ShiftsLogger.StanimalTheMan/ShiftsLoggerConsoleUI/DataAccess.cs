@@ -135,5 +135,73 @@ namespace ShiftsLoggerConsoleUI
 				}
 			}
 		}
+
+		internal static async Task UpdateShiftAsync(int id)
+		{
+			// do I fetch the Task with id?
+			// maybe separate out logic to get all user input later, but this is part of creating a shift so it's here for now
+			Console.WriteLine("Enter type of shift (e.g. night, mid, morning)");
+			string shiftType = Console.ReadLine();
+
+			Console.WriteLine("Enter Start Time of shift: ");
+			var startTimeInfo = Utility.GetDateTimeInput();
+
+			Console.WriteLine("Enter End Time of shift: ");
+			var endTimeInfo = Utility.GetDateTimeInput();
+			while (endTimeInfo.dateTime < startTimeInfo.dateTime)
+			{
+				Console.WriteLine("End Time");
+				endTimeInfo = Utility.GetDateTimeInput();
+			}
+
+			Shift shift = null;
+			TimeSpan duration = Utility.CalculateDuration(endTimeInfo.dateTime, startTimeInfo.dateTime);
+			if (shiftType != "")
+			{
+				shift = new Shift()
+				{
+					Id = id,
+					Type = shiftType,
+					StartTime = startTimeInfo.dateTime,
+					EndTime = endTimeInfo.dateTime,
+					Duration = duration
+				};
+			}
+			else
+			{
+				shift = new Shift()
+				{
+					Id = id,
+					StartTime = startTimeInfo.dateTime,
+					EndTime = endTimeInfo.dateTime,
+					Duration = duration
+				};
+			}
+
+
+			using (var httpClient = new HttpClient())
+			{
+				try
+				{
+					HttpResponseMessage response = await httpClient.PutAsJsonAsync($"https://localhost:7204/api/shifts/{id}", shift);
+
+					if (response.IsSuccessStatusCode)
+					{
+						Console.WriteLine("Shift successfully updated");
+					}
+					else
+					{
+						Console.WriteLine($"Failed to update shift. Status code: {response.StatusCode}");
+					}
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine($"Server / API may be down or some other unexpected issue is going on: {ex.Message}");
+					Console.ReadLine();
+				}
+			}
+			Console.WriteLine("Press any key to return to main menu");
+			Console.ReadLine();
+		}
 	}
 }
