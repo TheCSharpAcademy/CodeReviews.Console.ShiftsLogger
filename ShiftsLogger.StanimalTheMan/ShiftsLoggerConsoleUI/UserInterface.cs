@@ -30,9 +30,16 @@ internal static class UserInterface
 					break;
 				case MenuOptions.ViewShift:
 					// prompt user for id; if that is not acceptable, will make api request to fetch all valid ids
+					int id;
 					Console.WriteLine("Enter an id of the shift you want to fetch info of");
-					int id = Int32.Parse(Console.ReadLine());
+					while (!Int32.TryParse(Console.ReadLine(), out id)) {
+						Console.WriteLine("Enter an id of the shift you want to fetch info of");
+					}
 					task = DataAccess.GetShiftByIdAsync(id);
+					task.Wait();
+					break;
+				case MenuOptions.AddShift:
+					task = DataAccess.CreateShiftAsync();
 					task.Wait();
 					break;
 				case MenuOptions.Quit:
