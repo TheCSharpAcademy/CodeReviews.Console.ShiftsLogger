@@ -20,7 +20,7 @@ internal static class DataAccess
 		var endTimeInfo = Utility.GetDateTimeInput();
 		while (endTimeInfo.dateTime < startTimeInfo.dateTime)
 		{
-			Console.WriteLine("End Time");
+			Console.WriteLine("End time has to be after start time.  Enter End Time of shift:");
 			endTimeInfo = Utility.GetDateTimeInput();
 		}
 
@@ -55,8 +55,8 @@ internal static class DataAccess
 
 				if (response.IsSuccessStatusCode)
 				{
-					var todo = await response.Content.ReadFromJsonAsync<Shift>();
-					Console.WriteLine($"{shift}\n");
+					string responseBody = await response.Content.ReadAsStringAsync();
+					Console.WriteLine($"Scuccessfully created shift:\n {responseBody}");
 				}
 				else
 				{

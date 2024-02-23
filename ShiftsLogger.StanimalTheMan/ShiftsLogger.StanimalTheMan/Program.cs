@@ -11,9 +11,6 @@ builder.Services.AddDbContext<ShiftContext>(options =>
 builder.Services.AddScoped<IShiftService, ShiftService>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -21,8 +18,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 	app.UseDeveloperExceptionPage();
-	//app.UseSwagger();
-	//app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
