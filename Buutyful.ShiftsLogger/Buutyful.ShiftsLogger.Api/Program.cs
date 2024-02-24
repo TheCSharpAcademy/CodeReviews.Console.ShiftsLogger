@@ -1,7 +1,9 @@
 using Buutyful.ShiftsLogger.Api.Data;
+using Buutyful.ShiftsLogger.Api.EndPoints.Worker;
 using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -26,21 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/worker", async (WorkerDataAccess data) =>
-{
-    var workers = await data.GetAsync();
-    return Results.Ok(workers);
-});
-app.MapGet("/worker/{Id}", async (WorkerDataAccess data, Guid id) =>
-{
-    var worker = await data.GetByIdAsync(id);
-    return worker is null ? Results.NotFound() : Results.Ok(worker);
-});
-app.MapPost("/worker", async (WorkerDataAccess data, CreateWorkerRequest workerRequest) =>
-{
-    var worker = await data.AddAsync(workerRequest);
-    return Results.Created("/worker/{Id}", worker);
-});
+app.MapWorkerEndPoints();
+
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -51,8 +40,10 @@ app.UseExceptionHandler(errorApp =>
         context.Response.ContentType = "application/json";
         var response = new
         {
-            title = "Internal Server Error",
-            detail = exception?.Message
+            Status = (int)HttpStatusCode.InternalServerError,
+            Type = "Server Error",
+            Title = "Internal Server Error",
+            Detail = exception?.Message
         };
         var json = JsonSerializer.Serialize(response);
 
