@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buutyful.ShiftsLogger.Ui", "Buutyful.ShiftsLogger.Ui\Buutyful.ShiftsLogger.Ui.csproj", "{53EEA75B-036F-41D5-9B74-91D54B3FE30F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buutyful.ShiftsLogger.Ui", "Buutyful.ShiftsLogger.Ui\Buutyful.ShiftsLogger.Ui.csproj", "{53EEA75B-036F-41D5-9B74-91D54B3FE30F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buutyful.ShiftsLogger.Api", "Buutyful.ShiftsLogger.Api\Buutyful.ShiftsLogger.Api.csproj", "{4D7430CF-2946-4A26-BF78-5967B659EF15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buutyful.ShiftsLogger.Api", "Buutyful.ShiftsLogger.Api\Buutyful.ShiftsLogger.Api.csproj", "{4D7430CF-2946-4A26-BF78-5967B659EF15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buutyful.ShiftsLogger.Domain", "Buutyful.ShiftsLogger.Domain\Buutyful.ShiftsLogger.Domain.csproj", "{225F8E9E-547C-4533-BD34-D1D22BC9AD21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buutyful.ShiftsLogger.Domain", "Buutyful.ShiftsLogger.Domain\Buutyful.ShiftsLogger.Domain.csproj", "{225F8E9E-547C-4533-BD34-D1D22BC9AD21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

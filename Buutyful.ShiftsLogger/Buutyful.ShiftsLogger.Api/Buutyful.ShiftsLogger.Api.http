@@ -4,3 +4,10 @@ GET {{Buutyful.ShiftsLogger.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+POST http://localhost:5151/worker/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "Name": "John Doe",
+  "Role": "Admin"
+}

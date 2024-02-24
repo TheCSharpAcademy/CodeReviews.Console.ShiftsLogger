@@ -1,6 +1,11 @@
 using Buutyful.ShiftsLogger.Api.Data;
+using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
+builder.Services.AddScoped<WorkerDataAccess>();
 
 var app = builder.Build();
 
@@ -20,31 +26,43 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapGet("/worker", async (WorkerDataAccess data) =>
+{
+    var workers = await data.GetAsync();
+    return Results.Ok(workers);
+});
+app.MapGet("/worker/{Id}", async (WorkerDataAccess data, Guid id) =>
+{
+    var worker = await data.GetByIdAsync(id);
+    return worker is null ? Results.NotFound() : Results.Ok(worker);
+});
+app.MapPost("/worker", async (WorkerDataAccess data, CreateWorkerRequest workerRequest) =>
+{
+    var worker = await data.AddAsync(workerRequest);
+    return Results.Created("/worker/{Id}", worker);
+});
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+        var exception = exceptionHandlerPathFeature?.Error;
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        var response = new
+        {
+            title = "Internal Server Error",
+            detail = exception?.Message
+        };
+        var json = JsonSerializer.Serialize(response);
+
+        await context.Response.WriteAsync(json);
+    });
+});
+
+
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

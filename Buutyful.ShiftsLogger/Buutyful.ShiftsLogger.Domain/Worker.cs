@@ -1,6 +1,4 @@
-﻿using System.Security.Principal;
-
-namespace Buutyful.ShiftsLogger.Domain;
+﻿namespace Buutyful.ShiftsLogger.Domain;
 
 public record Worker
 {
@@ -13,6 +11,14 @@ public record Worker
         {
             Id = Guid.NewGuid(),
             Name = string.IsNullOrWhiteSpace(name) ? 
+            throw new ArgumentException("name is empty") : name,
+            Role = role
+        };
+    public static Worker CreateWithId(Guid id, string name, Role role) =>
+        new()
+        {
+            Id = id,
+            Name = string.IsNullOrWhiteSpace(name) ?
             throw new ArgumentException("name is empty") : name,
             Role = role
         };
