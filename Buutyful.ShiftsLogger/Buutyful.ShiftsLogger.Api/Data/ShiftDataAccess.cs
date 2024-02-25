@@ -11,7 +11,7 @@ public class ShiftDataAccess(AppDbContext context)
 
     public async Task<ShiftResponse> AddAsync(CreateShiftRequest shiftRequest)
     {
-        var worker = _context.Workers.FirstOrDefault(w => w.Id == shiftRequest.WorkerId) ??
+        var worker = await _context.Workers.FindAsync(shiftRequest.WorkerId) ??
             throw new ArgumentException("worker not found with given guid");
 
         var shift = Shift.Create(shiftRequest.WorkerId, shiftRequest.ShiftDay, shiftRequest.StartAt, shiftRequest.EndAt);
@@ -32,13 +32,13 @@ public class ShiftDataAccess(AppDbContext context)
     }
     public async Task<ShiftResponse?> GetByIdAsync(Guid shiftId)
     {
-        var shift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == shiftId);
+        var shift = await _context.Shifts.FindAsync(shiftId);
         if (shift is null) return null;
         return shift;
     }
     public async Task<bool> DeleteAsync(Guid shiftId)
     {
-        var shift = _context.Shifts.FirstOrDefault(s => s.Id == shiftId);
+        var shift = await _context.Shifts.FindAsync(shiftId);
         if (shift is null) return false;
         _context.Shifts.Remove(shift);
         var rows = await _context.SaveChangesAsync();
