@@ -1,5 +1,6 @@
 ﻿using Buutyful.ShiftsLogger.Domain;
 using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Buutyful.ShiftsLogger.Api.Data;
@@ -38,14 +39,14 @@ public class WorkerDataAccess(AppDbContext context)
         }
         return false;
     }
-  
-    public async Task<(bool Created,WorkerResponse Worker)> UpsertWorkerAsync(UpsertWorkerRequest upsertWorker)
+
+    public async Task<(bool Created, WorkerResponse Worker)> UpsertWorkerAsync(UpsertWorkerRequest upsertWorker)
     {
         var worker = _context.Workers.AsNoTracking().FirstOrDefault(w => w.Id == upsertWorker.Id);
+        var updatedWorker = Worker.CreateWithId(upsertWorker.Id, upsertWorker.Name, upsertWorker.Role);
 
         if (worker is not null)
         {
-            var updatedWorker = Worker.CreateWithId(upsertWorker.Id, upsertWorker.Name, upsertWorker.Role);
             var entry = _context.Entry(updatedWorker);
             entry.State = EntityState.Modified;
             await _context.SaveChangesAsync();
@@ -54,10 +55,9 @@ public class WorkerDataAccess(AppDbContext context)
         }
         else
         {
-            var newWorker = Worker.Create(upsertWorker.Name, upsertWorker.Role);
-            _context.Workers.Add(newWorker);
+            _context.Workers.Add(updatedWorker);
             await _context.SaveChangesAsync();
-            return (true, newWorker);
+            return (true, updatedWorker);
         }
     }
 
