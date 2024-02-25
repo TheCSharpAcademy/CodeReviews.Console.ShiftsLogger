@@ -1,7 +1,6 @@
 using Buutyful.ShiftsLogger.Api.Data;
 using Buutyful.ShiftsLogger.Api.EndPoints.Shift;
 using Buutyful.ShiftsLogger.Api.EndPoints.Worker;
-using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System.Net;

@@ -1,6 +1,5 @@
 ﻿using Buutyful.ShiftsLogger.Domain;
 using Buutyful.ShiftsLogger.Domain.Contracts.Shift;
-using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -30,6 +29,19 @@ public class ShiftDataAccess(AppDbContext context)
             ShiftResponse res = s;
             return res;
         }).ToList();
-
+    }
+    public async Task<ShiftResponse?> GetByIdAsync(Guid shiftId)
+    {
+        var shift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == shiftId);
+        if (shift is null) return null;
+        return shift;
+    }
+    public async Task<bool> DeleteAsync(Guid shiftId)
+    {
+        var shift = _context.Shifts.FirstOrDefault(s => s.Id == shiftId);
+        if (shift is null) return false;
+        _context.Shifts.Remove(shift);
+        var rows = await _context.SaveChangesAsync();
+        return rows > 0;
     }
 }

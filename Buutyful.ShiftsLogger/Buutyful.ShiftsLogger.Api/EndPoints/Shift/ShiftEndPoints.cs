@@ -19,7 +19,18 @@ public static class ShiftEndPoints
             var shifts = await data.GetAsync();
             return Results.Ok(shifts);
         });
-
+        group.MapGet("{Id}", async (ShiftDataAccess data, Guid Id) =>
+        {
+            var shift = await data.GetByIdAsync(Id);
+            return shift is null ?
+                   Results.NotFound() :
+                   Results.Ok(shift);
+        });
+        group.MapDelete("{Id}", async (ShiftDataAccess data, Guid Id) => 
+        {
+            var res = await data.DeleteAsync(Id);
+            return res ? Results.NoContent() : Results.NotFound();
+        });
 
 
 

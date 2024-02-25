@@ -27,16 +27,18 @@ public class WorkerDataAccess(AppDbContext context)
             new WorkerResponse(worker.Id, worker.Name, worker.Role) :
             null;
     }
-    public async Task Delete(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         var worker = _context.Workers.FirstOrDefault(w => w.Id == id);
         if (worker != null)
         {
             _context.Workers.Remove(worker);
-            await _context.SaveChangesAsync();
+            var res = await _context.SaveChangesAsync();
+            return res > 0;
         }
+        return false;
     }
-    public async Task<WorkerResponse?> UpdateWorker(UpsertWorkerRequest upsertWorker)
+    public async Task<WorkerResponse?> UpdateWorkerAsync(UpsertWorkerRequest upsertWorker)
     {
         var worker = _context.Workers.FirstOrDefault(w => w.Id == upsertWorker.Id);
         if (worker != null)
@@ -47,7 +49,7 @@ public class WorkerDataAccess(AppDbContext context)
         }
         return null;
     }
-    public async Task<WorkerResponse> UpsertWorker(UpsertWorkerRequest upsertWorker)
+    public async Task<WorkerResponse> UpsertWorkerAsync(UpsertWorkerRequest upsertWorker)
     {
         var worker = _context.Workers.FirstOrDefault(w => w.Id == upsertWorker.Id);
 

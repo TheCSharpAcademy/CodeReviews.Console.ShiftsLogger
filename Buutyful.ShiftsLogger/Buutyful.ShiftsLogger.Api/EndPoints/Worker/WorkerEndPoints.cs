@@ -1,7 +1,6 @@
 ﻿using Buutyful.ShiftsLogger.Api.Data;
 using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
-using System.Runtime.CompilerServices;
-
+using Microsoft.AspNetCore.Http.HttpResults;
 namespace Buutyful.ShiftsLogger.Api.EndPoints.Worker;
 
 public static class WorkerEndPoints
@@ -24,6 +23,17 @@ public static class WorkerEndPoints
         {
             var worker = await data.AddAsync(workerRequest);
             return Results.Created($"/worker/{worker.Id}", worker);
+        });
+        group.MapPut("", async (WorkerDataAccess data, UpsertWorkerRequest workerRequest) =>
+        {
+            var worker = await data.UpdateWorkerAsync(workerRequest);
+            return worker is null ? Results.NotFound(workerRequest) : 
+                                    Results.Ok(worker);
+        });
+        group.MapDelete("{Id}", async (WorkerDataAccess data, Guid Id) =>
+        {
+            var res = await data.DeleteAsync(Id);
+            return res ? Results.NoContent() : Results.NotFound();
         });
     }
 }
