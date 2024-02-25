@@ -1,6 +1,6 @@
 ﻿namespace Buutyful.ShiftsLogger.Domain;
 
-public record Shift
+public class Shift
 {
     public Guid Id { get; private set; }
     public Guid WorkerId { get; private set; }

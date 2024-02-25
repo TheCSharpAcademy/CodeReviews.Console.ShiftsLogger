@@ -42,15 +42,13 @@ public class WorkerDataAccess(AppDbContext context)
 
     public async Task<(bool Created, WorkerResponse Worker)> UpsertWorkerAsync(UpsertWorkerRequest upsertWorker)
     {
-        var worker = _context.Workers.AsNoTracking().FirstOrDefault(w => w.Id == upsertWorker.Id);
+        var found = await _context.Workers.AnyAsync(w => w.Id == upsertWorker.Id);
         var updatedWorker = Worker.CreateWithId(upsertWorker.Id, upsertWorker.Name, upsertWorker.Role);
 
-        if (worker is not null)
+        if (found)
         {
-            var entry = _context.Entry(updatedWorker);
-            entry.State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            entry.State = EntityState.Detached;
+           _context.Update(updatedWorker);
+            await _context.SaveChangesAsync();            
             return (false, updatedWorker);
         }
         else
