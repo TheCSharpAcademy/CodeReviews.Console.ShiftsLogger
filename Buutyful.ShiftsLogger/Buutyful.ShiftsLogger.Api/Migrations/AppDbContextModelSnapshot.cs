@@ -46,6 +46,17 @@ namespace Buutyful.ShiftsLogger.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Shifts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("245645c5-baeb-4196-b635-5ebfd418a4a8"),
+                            Duration = new TimeSpan(-288000000002),
+                            EndAt = new DateTime(2024, 2, 26, 0, 4, 4, 877, DateTimeKind.Local).AddTicks(1267),
+                            ShiftDay = new DateTime(2024, 2, 25, 0, 0, 0, 0, DateTimeKind.Local),
+                            StartAt = new DateTime(2024, 2, 25, 16, 4, 4, 877, DateTimeKind.Local).AddTicks(1265),
+                            WorkerId = new Guid("6ce80c50-da19-4035-9e7f-3061f20a17e0")
+                        });
                 });
 
             modelBuilder.Entity("Buutyful.ShiftsLogger.Domain.Worker", b =>
@@ -64,6 +75,26 @@ namespace Buutyful.ShiftsLogger.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Workers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6ce80c50-da19-4035-9e7f-3061f20a17e0"),
+                            Name = "Worker1",
+                            Role = 0
+                        },
+                        new
+                        {
+                            Id = new Guid("1d2fd51b-5537-489b-98c5-4c5095b832e2"),
+                            Name = "Worker2",
+                            Role = 1
+                        },
+                        new
+                        {
+                            Id = new Guid("cf037397-311d-4574-a663-05e1af317da8"),
+                            Name = "Worker3",
+                            Role = 2
+                        });
                 });
 #pragma warning restore 612, 618
         }

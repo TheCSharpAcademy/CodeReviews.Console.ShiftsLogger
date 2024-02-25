@@ -24,11 +24,11 @@ public class ShiftResponseJson
     [JsonPropertyName("endAt")]
     public DateTime EndAT { get; set; }
 
-    [JsonPropertyName("Duration")]
+    [JsonPropertyName("duration")]
     public TimeSpan Duration { get; set; }
 
     public override string ToString()
     {
-        return $"Day: {ShiftDay},\n StartedAt: {StartAt},\n EndedAt: {EndAT},\n Duration: {Duration}\n";
+        return $"Day: {ShiftDay},\nStartedAt: {StartAt},\nEndedAt: {EndAT},\nDuration: {Duration}\n";
     }
 }

@@ -19,6 +19,6 @@ public class WorkerResponseJson
     public Role Role { get; set; }
     public override string ToString()
     {
-        return $"Name: {Name},\n Role: {Role.ToString()}\n";
+        return $"Name: {Name},\nRole: {Role.ToString()}\n";
     }
 }
