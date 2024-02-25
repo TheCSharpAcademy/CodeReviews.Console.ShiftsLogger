@@ -38,33 +38,26 @@ public class WorkerDataAccess(AppDbContext context)
         }
         return false;
     }
-    public async Task<WorkerResponse?> UpdateWorkerAsync(UpsertWorkerRequest upsertWorker)
+  
+    public async Task<(bool Created,WorkerResponse Worker)> UpsertWorkerAsync(UpsertWorkerRequest upsertWorker)
     {
-        var worker = _context.Workers.FirstOrDefault(w => w.Id == upsertWorker.Id);
-        if (worker != null)
-        {
-            worker = Worker.CreateWithId(upsertWorker.Id, upsertWorker.Name, upsertWorker.Role);
-            await _context.SaveChangesAsync();
-            return new WorkerResponse(worker.Id, worker.Name, worker.Role);
-        }
-        return null;
-    }
-    public async Task<WorkerResponse> UpsertWorkerAsync(UpsertWorkerRequest upsertWorker)
-    {
-        var worker = _context.Workers.FirstOrDefault(w => w.Id == upsertWorker.Id);
+        var worker = _context.Workers.AsNoTracking().FirstOrDefault(w => w.Id == upsertWorker.Id);
 
-        if (worker is null)
+        if (worker is not null)
         {
-            worker = Worker.CreateWithId(upsertWorker.Id, upsertWorker.Name, upsertWorker.Role);
+            var updatedWorker = Worker.CreateWithId(upsertWorker.Id, upsertWorker.Name, upsertWorker.Role);
+            var entry = _context.Entry(updatedWorker);
+            entry.State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return new WorkerResponse(worker.Id, worker.Name, worker.Role);
+            entry.State = EntityState.Detached;
+            return (false, updatedWorker);
         }
         else
         {
             var newWorker = Worker.Create(upsertWorker.Name, upsertWorker.Role);
             _context.Workers.Add(newWorker);
             await _context.SaveChangesAsync();
-            return new WorkerResponse(newWorker.Id, newWorker.Name, newWorker.Role);
+            return (true, newWorker);
         }
     }
 

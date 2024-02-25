@@ -26,9 +26,10 @@ public static class WorkerEndPoints
         });
         group.MapPut("", async (WorkerDataAccess data, UpsertWorkerRequest workerRequest) =>
         {
-            var worker = await data.UpdateWorkerAsync(workerRequest);
-            return worker is null ? Results.NotFound(workerRequest) : 
-                                    Results.Ok(worker);
+            var result = await data.UpsertWorkerAsync(workerRequest);
+            return result.Created ? 
+            Results.Created($"/worker/{result.Worker.Id}", result.Worker) :
+            Results.NoContent();
         });
         group.MapDelete("{Id}", async (WorkerDataAccess data, Guid Id) =>
         {
