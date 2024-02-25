@@ -1,7 +1,8 @@
 ﻿namespace Buutyful.ShiftsLogger.Domain.Contracts.Shift;
 
 public record CreateShiftRequest(
-    Worker Worker,
+    Guid WorkerId,
+    DateTime ShiftDay,
     DateTime StartAt,
     DateTime EndAt);
 

@@ -5,6 +5,7 @@ public record Worker
     public Guid Id { get; private set; }
     public string Name { get; private set; } = null!;
     public Role Role { get; private set; }
+
     private Worker() { }
     public static Worker Create(string name, Role role) =>
         new()

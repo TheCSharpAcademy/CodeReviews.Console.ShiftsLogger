@@ -9,6 +9,7 @@ public static class WorkerEndPoints
     public static void MapWorkerEndPoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("api/workers");
+
         group.MapGet("", async (WorkerDataAccess data) =>
         {
             var workers = await data.GetAsync();
@@ -22,7 +23,7 @@ public static class WorkerEndPoints
         group.MapPost("", async (WorkerDataAccess data, CreateWorkerRequest workerRequest) =>
         {
             var worker = await data.AddAsync(workerRequest);
-            return Results.Created("/worker/{Id}", worker);
+            return Results.Created($"/worker/{worker.Id}", worker);
         });
     }
 }

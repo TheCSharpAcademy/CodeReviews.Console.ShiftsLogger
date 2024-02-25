@@ -1,11 +1,12 @@
 using Buutyful.ShiftsLogger.Api.Data;
+using Buutyful.ShiftsLogger.Api.EndPoints.Shift;
 using Buutyful.ShiftsLogger.Api.EndPoints.Worker;
 using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 
 
@@ -18,6 +19,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
 builder.Services.AddScoped<WorkerDataAccess>();
+builder.Services.AddScoped<ShiftDataAccess>();
 
 var app = builder.Build();
 
@@ -29,6 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapWorkerEndPoints();
+app.MapShiftEndPoints();
 
 app.UseExceptionHandler(errorApp =>
 {
