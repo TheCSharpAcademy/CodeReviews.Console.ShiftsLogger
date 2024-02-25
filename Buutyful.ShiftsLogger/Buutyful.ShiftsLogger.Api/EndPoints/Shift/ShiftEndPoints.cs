@@ -32,7 +32,5 @@ public static class ShiftEndPoints
             return res ? Results.NoContent() : Results.NotFound();
         });
 
-
-
     }
 }

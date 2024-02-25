@@ -26,7 +26,7 @@ public record Worker
 }
 public enum Role
 {
-    None,
-    Employee,
-    Manager
+    None = 0,
+    Employee = 1,
+    Manager = 2,
 }

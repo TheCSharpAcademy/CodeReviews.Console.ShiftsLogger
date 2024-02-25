@@ -1,4 +1,5 @@
-﻿using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
+﻿using Buutyful.ShiftsLogger.Domain.Contracts.Shift;
+using Buutyful.ShiftsLogger.Domain.Contracts.WorkerContracts;
 using System.Text.Json;
 
 namespace Buutyful.ShiftsLogger.Ui;
@@ -7,15 +8,29 @@ public class ApiHttpClient
 {
     const string baseUrl = "https://localhost:44331/api/";
     private readonly HttpClient httpClient = new();
-    public async Task<List<WorkerResponse>> GetWorkersAsync()
+    public async Task<List<WorkerResponseJson>> GetWorkersAsync()
     {
         var endPoint = "workers";
         var (status, content) = await SendRequestAsync(endPoint);
         if (status)
         {
-            return JsonSerializer.Deserialize<List<WorkerResponse>>(content) ?? [];
+            return JsonSerializer.Deserialize<List<WorkerResponseJson>>(content) ?? [];
         }
         else 
+        {
+            Console.WriteLine($"{content}");
+            return [];
+        }
+    }
+    public async Task<List<ShiftResponseJson>> GetShiftsAsync()
+    {
+        var endPoint = "shifts";
+        var (status, content) = await SendRequestAsync(endPoint);
+        if (status)
+        {
+            return JsonSerializer.Deserialize<List<ShiftResponseJson>>(content) ?? [];
+        }
+        else
         {
             Console.WriteLine($"{content}");
             return [];
