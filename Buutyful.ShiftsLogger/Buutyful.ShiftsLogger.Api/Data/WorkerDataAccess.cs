@@ -14,7 +14,7 @@ public class WorkerDataAccess(AppDbContext context)
         var worker = Worker.Create(workerRequest.Name, workerRequest.Role);
         await _context.Workers.AddAsync(worker);
         await _context.SaveChangesAsync();
-        return new WorkerResponse(worker.Id, worker.Name, worker.Role);
+        return worker;
     }
     public async Task<List<WorkerResponse>> GetAsync()
     {
@@ -23,15 +23,15 @@ public class WorkerDataAccess(AppDbContext context)
     }
     public async Task<WorkerResponse?> GetByIdAsync(Guid id)
     {
-        var worker = await _context.Workers.FirstOrDefaultAsync(w => w.Id == id);
+        var worker = await _context.Workers.FindAsync(id);
         return worker is not null ?
             new WorkerResponse(worker.Id, worker.Name, worker.Role) :
             null;
     }
     public async Task<bool> DeleteAsync(Guid id)
     {
-        var worker = _context.Workers.FirstOrDefault(w => w.Id == id);
-        if (worker != null)
+        var worker = await _context.Workers.FindAsync(id);
+        if (worker is not null)
         {
             _context.Workers.Remove(worker);
             var res = await _context.SaveChangesAsync();
