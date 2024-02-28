@@ -23,7 +23,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ShiftsLogger API");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
 app.MapGet("/", () => "Hello World!");

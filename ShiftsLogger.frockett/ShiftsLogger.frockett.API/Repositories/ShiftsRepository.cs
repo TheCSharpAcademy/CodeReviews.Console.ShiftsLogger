@@ -21,7 +21,9 @@ public class ShiftsRepository : IShiftsRepository
     }
     public async Task<IEnumerable<Shift>> GetAllShiftsAsync()
     {
-        return await context.Shifts.OrderBy(s => s.StartTime).ToListAsync();
+        return await context.Shifts
+            .Include(s => s.Employee)
+            .OrderBy(s => s.StartTime).ToListAsync();
     }
 
     public async Task<Shift> GetShiftByIdAsync(int shiftId)

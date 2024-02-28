@@ -1,2 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+
+using ShiftsLogger.frockett.UI;
+
+while(true)
+{
+    Menu menu = new Menu();
+    menu.MainMenuHandler();
+}

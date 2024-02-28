@@ -1,7 +1,7 @@
 ﻿
-namespace ShiftsLogger.frockett.API.DTOs;
+namespace ShiftsLogger.frockett.UI.Dtos;
 
-public class EmployeeDto
+internal class EmployeeDto
 {
     public int Id { get; set; }
     public string Name { get; set; }

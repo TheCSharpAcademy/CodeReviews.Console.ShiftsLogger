@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShiftsLogger.frockett.API.Services;
 using ShiftsLogger.frockett.API.DTOs;
 
@@ -46,7 +45,7 @@ public class EmployeeController : ControllerBase
 
     // PUT: api/employees/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeUpdateDto employeeUpdateDto)
+    public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeDto employeeUpdateDto)
     {
         if (id != employeeUpdateDto.Id)
         {
@@ -55,7 +54,7 @@ public class EmployeeController : ControllerBase
 
         try
         {
-            await _employeeService.UpdateEmployeeAsync(employeeUpdateDto);
+            await employeeService.UpdateEmployeeAsync(employeeUpdateDto);
             return NoContent(); // 204 No Content is typically returned when an update operation is successful
         }
         catch (Exception ex)
@@ -66,15 +65,11 @@ public class EmployeeController : ControllerBase
 
     // DELETE: api/employees/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteEmployee(int id)
+    public async Task<IActionResult> DeleteEmployee(int id, [FromBody] EmployeeDto employeeDto)
     {
         try
         {
-            var success = await _employeeService.DeleteEmployeeAsync(id);
-            if (!success)
-            {
-                return NotFound();
-            }
+            await employeeService.DeleteEmployeeAsync(employeeDto);
             return NoContent(); // 204 No Content is a common response for a successful DELETE operation
         }
         catch (Exception ex)
