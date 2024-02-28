@@ -21,7 +21,6 @@ public class ShiftsController : ControllerBase
         try
         {
             var shiftDto = await shiftService.AddShiftAsync(shiftCreateDto);
-            // Assuming AddShiftAsync returns the added shift DTO
             return CreatedAtAction(nameof(GetShiftById), new { id = shiftDto.Id }, shiftDto);
         }
         catch (Exception ex)
@@ -49,6 +48,24 @@ public class ShiftsController : ControllerBase
             return NotFound();
         }
         return Ok(shifts);
+    }
+
+    // PUT: api/shifts/5
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateShift(int id, [FromBody] ShiftDto shiftDto)
+    {
+        if (id != shiftDto.Id)
+        {
+            return BadRequest("Id doesn't match");
+        }
+
+        var result = await shiftService.UpdateShiftAsync(id, shiftDto);
+
+        if (result == null)
+        {
+            return NotFound();
+        }
+        else return NoContent();
     }
 
     [HttpDelete("{id}")]
