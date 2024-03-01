@@ -1,0 +1,3 @@
+﻿using ShiftsLoggerConsoleUI;
+
+UserInterface.ShowMainMenu();
