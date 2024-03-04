@@ -29,8 +29,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapWorkerEndPoints();
-app.MapShiftEndPoints();
 
 app.UseExceptionHandler(errorApp =>
 {
@@ -52,6 +50,8 @@ app.UseExceptionHandler(errorApp =>
         await context.Response.WriteAsync(json);
     });
 });
+app.MapWorkerEndPoints();
+app.MapShiftEndPoints();
 
 
 app.UseHttpsRedirection();
