@@ -24,6 +24,13 @@ public static class WorkerEndPoints
             var worker = await data.AddAsync(workerRequest);
             return Results.Created($"/worker/{worker.Id}", worker);
         });
+        group.MapPatch("", async (WorkerDataAccess data, UpsertWorkerRequest workerRequest) =>
+        {
+            var result = await data.UpdateWorkerAsync(workerRequest);
+            return result.Updated ?            
+            Results.NoContent() :
+            Results.NotFound();
+        });
         group.MapPut("", async (WorkerDataAccess data, UpsertWorkerRequest workerRequest) =>
         {
             var result = await data.UpsertWorkerAsync(workerRequest);

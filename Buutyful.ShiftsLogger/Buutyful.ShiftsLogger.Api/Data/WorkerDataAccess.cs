@@ -39,6 +39,16 @@ public class WorkerDataAccess(AppDbContext context)
         }
         return false;
     }
+    public async Task<(bool Updated, WorkerResponse Worker)> UpdateWorkerAsync(UpsertWorkerRequest upsertWorker)
+    {
+        var updatedWorker = Worker.CreateWithId(upsertWorker.Id, upsertWorker.Name, upsertWorker.Role);
+        var rows = await _context.Workers.Where(w => w.Id == upsertWorker.Id)
+                                          .ExecuteUpdateAsync(set =>
+                                          set.SetProperty(worker => worker.Name, updatedWorker.Name)
+                                          .SetProperty(worker => worker.Role, updatedWorker.Role));
+        return (rows > 0, updatedWorker);
+      
+    }
 
     public async Task<(bool Created, WorkerResponse Worker)> UpsertWorkerAsync(UpsertWorkerRequest upsertWorker)
     {
