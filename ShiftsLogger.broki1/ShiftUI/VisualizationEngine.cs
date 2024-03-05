@@ -59,7 +59,6 @@ internal class VisualizationEngine
 
     private static async Task EmployeeShiftLoggerMenu(Employee employee)
     {
-        var service = new ApiService();
         var exitEmployeeShiftLoggerMenu = false;
 
         while (!exitEmployeeShiftLoggerMenu)
