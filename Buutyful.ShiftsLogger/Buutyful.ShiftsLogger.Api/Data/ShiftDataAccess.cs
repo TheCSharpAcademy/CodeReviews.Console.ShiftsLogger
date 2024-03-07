@@ -1,5 +1,6 @@
 ﻿using Buutyful.ShiftsLogger.Domain;
 using Buutyful.ShiftsLogger.Domain.Contracts.Shift;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -36,12 +37,12 @@ public class ShiftDataAccess(AppDbContext context)
         if (shift is null) return null;
         return shift;
     }
-    public async Task<bool> DeleteAsync(Guid shiftId)
+    public async Task<Results<Ok, NotFound>> DeleteAsync(Guid shiftId)
     {
-        var shift = await _context.Shifts.FindAsync(shiftId);
-        if (shift is null) return false;
-        _context.Shifts.Remove(shift);
-        var rows = await _context.SaveChangesAsync();
-        return rows > 0;
+        var rows = await _context.Shifts.Where(s => s.Id == shiftId)
+                                        .ExecuteDeleteAsync();
+
+        return rows > 0 ? TypedResults.Ok() :
+                          TypedResults.NotFound();        
     }
 }

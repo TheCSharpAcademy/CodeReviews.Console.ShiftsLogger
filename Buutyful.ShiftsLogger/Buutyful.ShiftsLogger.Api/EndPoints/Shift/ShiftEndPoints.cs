@@ -29,7 +29,7 @@ public static class ShiftEndPoints
         group.MapDelete("{Id}", async (ShiftDataAccess data, Guid Id) => 
         {
             var res = await data.DeleteAsync(Id);
-            return res ? Results.NoContent() : Results.NotFound();
+            return res.Result;
         });
 
     }

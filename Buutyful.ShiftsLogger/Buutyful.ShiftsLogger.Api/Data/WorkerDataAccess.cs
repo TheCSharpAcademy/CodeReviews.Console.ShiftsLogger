@@ -28,23 +28,20 @@ public class WorkerDataAccess(AppDbContext context)
             new WorkerResponse(worker.Id, worker.Name, worker.Role) :
             null;
     }
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<Results<Ok, NotFound>> DeleteAsync(Guid id)
     {
-        var worker = await _context.Workers.FindAsync(id);
-        if (worker is not null)
-        {
-            _context.Workers.Remove(worker);
-            var res = await _context.SaveChangesAsync();
-            return res > 0;
-        }
-        return false;
+        var rows = await _context.Workers.Where(s => s.Id == id)
+                                        .ExecuteDeleteAsync();
+
+        return rows > 0 ? TypedResults.Ok() :
+                          TypedResults.NotFound();
     }
     public async Task<(bool Updated, WorkerResponse Worker)> UpdateWorkerAsync(UpsertWorkerRequest upsertWorker)
     {
         var updatedWorker = Worker.CreateWithId(upsertWorker.Id, upsertWorker.Name, upsertWorker.Role);
         var rows = await _context.Workers.Where(w => w.Id == upsertWorker.Id)
-                                          .ExecuteUpdateAsync(set =>
-                                          set.SetProperty(worker => worker.Name, updatedWorker.Name)
+                                          .ExecuteUpdateAsync(set => set
+                                          .SetProperty(worker => worker.Name, updatedWorker.Name)
                                           .SetProperty(worker => worker.Role, updatedWorker.Role));
         return (rows > 0, updatedWorker);
       
