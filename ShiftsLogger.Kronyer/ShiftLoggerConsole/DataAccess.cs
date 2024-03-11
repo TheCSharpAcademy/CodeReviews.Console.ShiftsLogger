@@ -22,7 +22,7 @@ namespace ShiftLoggerConsole
                 var request = new RestRequest("create", Method.Post);
                 string jsonBody = "\"" + name + "\"";
                 request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
-                var response = client.Execute(request);
+                client.Execute(request);
             }
             catch (Exception ex)
             {
