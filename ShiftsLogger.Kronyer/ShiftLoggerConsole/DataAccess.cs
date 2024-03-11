@@ -30,8 +30,6 @@ namespace ShiftLoggerConsole
             }
             finally
             {
-
-
                 UserInterface.RunMenu();
             }
         }
@@ -52,7 +50,7 @@ namespace ShiftLoggerConsole
                 var request = new RestRequest("start", Method.Post);
                 string jsonBody = "\"" + name + "\"";
                 request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
-                var response = client.Execute(request);
+                client.Execute(request);
             }
             catch (Exception ex)
             {
@@ -80,7 +78,7 @@ namespace ShiftLoggerConsole
                 var request = new RestRequest($"end", Method.Post);
                 string jsonBody = "\"" + name + "\"";
                 request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
-                var response = client.Execute(request);
+                client.Execute(request);
             }
             catch (Exception ex)
             {
