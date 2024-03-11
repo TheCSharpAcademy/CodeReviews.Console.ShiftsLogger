@@ -1,0 +1,6 @@
+﻿
+using ShiftLoggerConsole;
+
+UserInterface.RunMenu();
+
+
