@@ -12,6 +12,7 @@ public class ShiftsLoggerWebApi
         try
         {
             dbInitSuccesful = Helpers.DBInit();
+            Helpers.PopulateDB();
         }
         catch(Exception e)
         {

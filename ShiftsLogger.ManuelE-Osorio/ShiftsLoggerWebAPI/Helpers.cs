@@ -22,6 +22,7 @@ public class Helpers
     public static bool DBInit()
     {
         var db = new ShiftsLoggerContext();
+        db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
         return true;
     }
