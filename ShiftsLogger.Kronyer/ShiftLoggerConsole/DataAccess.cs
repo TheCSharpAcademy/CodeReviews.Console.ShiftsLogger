@@ -36,6 +36,15 @@ namespace ShiftLoggerConsole
 
         public static void StartShift()
         {
+            int workers = CountWorkers();
+            if (workers == 0)
+            {
+                Console.WriteLine("There is no worker in Db, please create one first");
+                Console.ReadKey();
+                UserInterface.RunMenu();
+            }
+            AnsiConsole.MarkupLine("Start work:");
+            
             string name = AnsiConsole.Ask<string>("Type the name:").Trim().ToLower();
 
             while (name == null)
@@ -43,11 +52,17 @@ namespace ShiftLoggerConsole
                 Console.WriteLine("Name can't be empty...");
                 name = AnsiConsole.Ask<string>("Type the name:").Trim().ToLower();
             }
+            if (!WorkerExists(name))
+            {
+                Console.WriteLine("This worker is not registered yet, please register...");
+                Console.ReadKey();
+                UserInterface.RunMenu();
+            }
 
             try
             {
                 var client = new RestClient("http://localhost:5259/");
-                var request = new RestRequest("start", Method.Post);
+                var request = new RestRequest("start", Method.Patch);
                 string jsonBody = "\"" + name + "\"";
                 request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
                 client.Execute(request);
@@ -64,6 +79,14 @@ namespace ShiftLoggerConsole
 
         public static void EndShift()
         {
+            int workers = CountWorkers();
+            if (workers == 0)
+            {
+                Console.WriteLine("There is no worker in Db, please create one first");
+                Console.ReadKey();
+                UserInterface.RunMenu();
+            }
+            AnsiConsole.MarkupLine("End work:");
             string name = AnsiConsole.Ask<string>("Type the name:").Trim().ToLower();
 
             while (name == null)
@@ -72,10 +95,17 @@ namespace ShiftLoggerConsole
                 name = AnsiConsole.Ask<string>("Type the name:").Trim().ToLower();
             }
 
+            if (!WorkerExists(name))
+            {
+                Console.WriteLine("This worker is not registered yet, please register...");
+                Console.ReadKey();
+                UserInterface.RunMenu();
+            }
+
             try
             {
                 var client = new RestClient("http://localhost:5259/");
-                var request = new RestRequest($"end", Method.Post);
+                var request = new RestRequest($"end", Method.Patch);
                 string jsonBody = "\"" + name + "\"";
                 request.AddParameter("application/json", jsonBody, ParameterType.RequestBody);
                 client.Execute(request);
@@ -141,6 +171,35 @@ Total hours worked: {(int)worker.TotalHours.TotalHours:D2}:{(int)worker.TotalHou
             }
         }
 
+        internal static bool WorkerExists(string name)
+        {
+            bool exists = false;
+            try
+            {
+                var client = new RestClient("http://localhost:5259/");
+                var request = new RestRequest($"get/{name}", Method.Get);
+                var response = client.Execute(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    string responseJson = response.Content;
+                    var desserialize = JsonConvert.DeserializeObject<Worker>(responseJson);
+                    var worker = desserialize;
+
+                    if (worker != null)
+                    {
+                       exists = true;
+                    }
+                }
+                return exists;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return exists;
+            }
+        }
+
         internal static void ViewAllWorkers()
         {
             try
@@ -178,6 +237,33 @@ Total hours worked: {(int)worker.TotalHours.TotalHours:D2}:{(int)worker.TotalHou
             {
                 UserInterface.RunMenu();
             }
+        }
+
+        internal static int CountWorkers()
+        {
+            int workers = 0;
+            try
+            {
+                var client = new RestClient("http://localhost:5259/");
+                var request = new RestRequest($"getall", Method.Get);
+                var response = client.Execute(request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    string responseJson = response.Content;
+                    var desserialize = JsonConvert.DeserializeObject<List<Worker>>(responseJson);
+
+                    workers = desserialize.Count();
+                }
+                return workers;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return workers;
+
+            }
+            
         }
     }
 }

@@ -13,8 +13,8 @@ namespace WebApplication1.Controllers
         {
             _context = context;
         }
-
-        [HttpPost]
+        //patch para edições pontuais, pouca coisa, nao tudo
+        [HttpPatch]
         [Route("/start")]
         public void BeginWorking([FromBody] string name)
         {
@@ -23,7 +23,7 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
         }
 
-        [HttpPost]
+        [HttpPatch]
         [Route("/end")]
         public void EndWorking([FromBody] string name)
         {
