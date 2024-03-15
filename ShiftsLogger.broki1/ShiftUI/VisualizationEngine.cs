@@ -22,18 +22,25 @@ internal class VisualizationEngine
             switch (mainMenuChoice)
             {
                 case "Current employee":
-                    await VisualizationEngine.CurrentEmployeeMenu();
+                    if (await Helper.EmployeesExist()) await VisualizationEngine.CurrentEmployeeMenu();
                     break;
                 case "New employee":
                     await ApiService.CreateEmployee();
                     break;
                 case "Update employee":
-                    var employeeToUpdate = await Helper.GetEmployeeToUpdate();
-                    await ApiService.UpdateEmployee(employeeToUpdate);
+                    if (await Helper.EmployeesExist())
+                    {
+                        var employeeToUpdate = await Helper.GetEmployeeToUpdate();
+                        await ApiService.UpdateEmployee(employeeToUpdate);
+                    }
                     break;
                 case "Delete employee":
-                    var employeeIdToBeDeleted = await Helper.GetIdOfEmployeeToDelete();
-                    await ApiService.DeleteEmployee(employeeIdToBeDeleted);
+                    if (await Helper.EmployeesExist())
+                    {
+                        var employeeIdToBeDeleted = await Helper.GetIdOfEmployeeToDelete();
+                        var confirmation = AnsiConsole.Confirm("Are you sure you want to delete this employee?");
+                        if (confirmation) await ApiService.DeleteEmployee(employeeIdToBeDeleted);
+                    }
                     break;
                 case "Quit application":
                     endApplication = true;

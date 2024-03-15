@@ -32,4 +32,18 @@ internal class Helper
         var employeeIdToBeDeleted = UserInput.GetEmployeeChoiceById(employeeList);
         return employeeIdToBeDeleted;
     }
+
+    internal static async Task<bool> EmployeesExist()
+    {
+        var employees = await ApiService.GetEmployees();
+
+        if (employees.Count == 0)
+        {
+            await Console.Out.WriteLineAsync("No employees found.\nPress Enter to continue.");
+            Console.ReadLine();
+            return false;
+        }
+
+        return true;
+    }
 }

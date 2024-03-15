@@ -234,12 +234,12 @@ internal class ApiService
 
         if (responseMessage.IsSuccessStatusCode)
         {
-            Console.WriteLine("\nShift deleted successfully, press Enter to continune.");
+            Console.WriteLine("\nEmployee deleted successfully, press Enter to continune.");
             Console.ReadLine();
         }
         else
         {
-            Console.WriteLine("\nShift delete unsuccessful, press Enter to continue.");
+            Console.WriteLine("\nEmployee delete unsuccessful, press Enter to continue.");
             Console.ReadLine();
         }
         client.Dispose();
