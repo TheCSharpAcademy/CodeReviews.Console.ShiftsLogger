@@ -26,7 +26,9 @@ public class EmployeeRepository : IEmployeeRepository
     }
     public async Task<Employee> GetEmployeeByIdAsync(int employeeId)
     {
-        return await context.Employees.FindAsync(employeeId);
+        return await context.Employees
+                            .Include(e => e.Shifts)
+                            .FirstOrDefaultAsync(e => e.Id == employeeId);
     }
     public async Task<Employee> UpdateEmployeeAsync(Employee employee)
     {

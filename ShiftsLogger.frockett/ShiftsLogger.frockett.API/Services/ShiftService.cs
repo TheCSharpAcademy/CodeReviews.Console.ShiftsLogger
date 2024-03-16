@@ -28,7 +28,6 @@ public class ShiftService
             Id = createdShift.Id,
             StartTime = createdShift.StartTime,
             EndTime = createdShift.EndTime,
-            Duration = createdShift.Duration,
             EmployeeId = createdShift.EmployeeId,
             EmployeeName = createdShift.Employee.Name
         };
@@ -43,7 +42,7 @@ public class ShiftService
             Id = shift.Id,
             StartTime = shift.StartTime,
             EndTime = shift.EndTime,
-            Duration = shift.Duration,
+            //Duration = shift.Duration,
             EmployeeId = shift.EmployeeId,
             EmployeeName = shift.Employee.Name
         }).ToList();
@@ -60,7 +59,7 @@ public class ShiftService
             Id = shift.Id,
             StartTime = shift.StartTime,
             EndTime = shift.EndTime,
-            Duration = shift.Duration,
+            //Duration = shift.Duration,
             EmployeeId = shift.EmployeeId,
             EmployeeName = shift.Employee.Name
         }).ToList();
@@ -72,21 +71,22 @@ public class ShiftService
     {
         Shift shift = new Shift
         {
+            Id = shiftId,
             StartTime = shiftDto.StartTime,
             EndTime = shiftDto.EndTime,
             EmployeeId = shiftDto.EmployeeId,
         };
 
-        await shiftsRepository.UpdateShiftAsync(shift);
+        var updatedShift = await shiftsRepository.UpdateShiftAsync(shift);
 
         return new ShiftDto
         {
-            Id = shift.Id,
-            StartTime = shift.StartTime,
-            EndTime = shift.EndTime,
-            Duration = shift.Duration,
-            EmployeeId = shift.EmployeeId,
-            EmployeeName = shift.Employee.Name
+            Id = updatedShift.Id,
+            StartTime = updatedShift.StartTime,
+            EndTime = updatedShift.EndTime,
+            //Duration = updatedShift.Duration,
+            EmployeeId = updatedShift.EmployeeId,
+            EmployeeName = updatedShift.Employee.Name
         };
     }
 

@@ -42,7 +42,9 @@ public class ShiftsRepository : IShiftsRepository
     {
         context.Shifts.Update(shift);
         await context.SaveChangesAsync();
-        return shift;
+        return await context.Shifts
+                            .Include(s => s.Employee)
+                            .FirstOrDefaultAsync(s => s.Id == shift.Id);
     }
     public async Task<bool> DeleteShiftAsync(int shiftId)
     {

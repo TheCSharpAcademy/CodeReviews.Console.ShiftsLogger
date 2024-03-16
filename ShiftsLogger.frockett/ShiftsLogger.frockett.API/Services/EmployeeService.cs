@@ -92,7 +92,6 @@ public class EmployeeService
                 Id = shift.Id,
                 StartTime = shift.StartTime,
                 EndTime = shift.EndTime,
-                Duration = shift.Duration,
                 EmployeeId = shift.EmployeeId,
                 EmployeeName = shift.Employee.Name
             });
