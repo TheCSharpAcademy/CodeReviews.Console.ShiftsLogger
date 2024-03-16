@@ -1,12 +1,21 @@
 ﻿using ShiftsLogger.frockett.UI.UI;
 using Spectre.Console;
+using ShiftsLogger.frockett.UI.Dtos;
 using System.Runtime.CompilerServices;
 
 namespace ShiftsLogger.frockett.UI;
 
-internal class Menu
+public class Menu
 {
-    public void MainMenuHandler()
+    private readonly ApiService apiService;
+    private readonly TableEngine tableEngine;
+    public Menu(ApiService apiService, TableEngine tableEngine)
+    {
+        this.apiService = apiService;
+        this.tableEngine = tableEngine;
+    }
+
+    public async Task MainMenuHandler()
     {
         //var mainMenuOptions = Enum.GetValues(typeof(MainMenuOptions)).Cast<MainMenuOptions>().ToArray();
 
@@ -26,7 +35,7 @@ internal class Menu
         switch (selection)
         {
             case MainMenuOptions.ViewShifts:
-                HandleViewShifts();
+                await HandleViewShifts();
                 break;
             case MainMenuOptions.ViewEmployeeShifts:
                 HandleViewEmployeeShifts();
@@ -55,9 +64,19 @@ internal class Menu
         }
     }
 
-    private void HandleViewShifts()
+    private async Task HandleViewShifts()
     {
-        throw new NotImplementedException();
+        var shiftDtos = await apiService.GetAllShifts();
+        tableEngine.PrintShifts(shiftDtos);
+        PauseForUser();
+        await MainMenuHandler();
+    }
+
+    private void PauseForUser()
+    {
+        AnsiConsole.WriteLine("Press Enter to Continue...");
+        Console.ReadLine();
+        Console.Clear();
     }
 
     private void HandleViewEmployeeShifts()

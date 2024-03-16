@@ -8,7 +8,7 @@ using ShiftsLogger.frockett.UI.Dtos;
 
 namespace ShiftsLogger.frockett.UI;
 
-internal class ApiService
+public class ApiService
 {
     private readonly HttpClient httpClient;
     private readonly string baseUri;
@@ -16,18 +16,16 @@ internal class ApiService
     public ApiService(HttpClient httpClient)
     {
         this.httpClient = httpClient;
-        baseUri = "https://localhost:7127/";
     }
 
-    internal async Task<List<ShiftDto>> GetShiftsList()
+    internal async Task<List<ShiftDto>> GetAllShifts()
     {
-        using HttpClient client = new HttpClient();
-        string url = baseUri;
+        string requestUrl = "shifts";
 
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
         try
         {
-            HttpResponseMessage response = await client.SendAsync(request);
+            HttpResponseMessage response = await httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
@@ -51,7 +49,7 @@ internal class ApiService
 
     internal async Task AddShift(ShiftCreateDto newShift)
     {
-        using HttpClient client = new HttpClient();
+        //using HttpClient client = new HttpClient();
         string url = baseUri;
 
         string newShiftJson = JsonConvert.SerializeObject(newShift);
@@ -59,7 +57,7 @@ internal class ApiService
 
         try
         {
-            var response = await client.PostAsync(url, content);
+            var response = await httpClient.PostAsync(url, content);
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("New shift recorded. Press Enter to continue...");
@@ -83,13 +81,13 @@ internal class ApiService
 
     internal async Task<ShiftDto> GetEmployeeShifts(int id)
     {
-        using HttpClient client = new HttpClient();
+        //using HttpClient client = new HttpClient();
         string url = baseUri + "/" + id;
 
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
         try
         {
-            HttpResponseMessage response = await client.SendAsync(request);
+            HttpResponseMessage response = await httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
@@ -114,13 +112,13 @@ internal class ApiService
 
     internal async Task DeleteShift(int id)
     {
-        using HttpClient client = new HttpClient();
+        //using HttpClient client = new HttpClient();
         string url = baseUri + "/" + id;
 
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
         try
         {
-            HttpResponseMessage response = await client.SendAsync(request);
+            HttpResponseMessage response = await httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
@@ -148,7 +146,7 @@ internal class ApiService
     internal async Task UpdateShift(ShiftDto updateShift)
     {
 
-        using HttpClient client = new HttpClient();
+        //using HttpClient client = new HttpClient();
         string url = baseUri + "/" + updateShift.Id;
 
         string newShiftJson = JsonConvert.SerializeObject(updateShift);
@@ -156,7 +154,7 @@ internal class ApiService
 
         try
         {
-            HttpResponseMessage response = await client.PutAsync(url, content);
+            HttpResponseMessage response = await httpClient.PutAsync(url, content);
 
             if (response.IsSuccessStatusCode)
             {

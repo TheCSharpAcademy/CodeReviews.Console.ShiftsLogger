@@ -2,8 +2,14 @@
 
 using ShiftsLogger.frockett.UI;
 
-while(true)
+
+HttpClient client = new HttpClient()
 {
-    Menu menu = new Menu();
-    menu.MainMenuHandler();
-}
+    BaseAddress = new Uri("https://localhost:7127/api/")
+};
+
+TableEngine tableEngine = new TableEngine();
+ApiService apiService = new ApiService(client);
+Menu menu = new Menu(apiService, tableEngine);
+await menu.MainMenuHandler();
+

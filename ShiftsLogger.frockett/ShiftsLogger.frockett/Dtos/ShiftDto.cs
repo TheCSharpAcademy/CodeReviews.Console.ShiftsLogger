@@ -1,7 +1,7 @@
 ﻿
 namespace ShiftsLogger.frockett.UI.Dtos;
 
-internal class ShiftDto
+public class ShiftDto
 {
     public int Id { get; set; }
     public DateTime StartTime { get; set; }
