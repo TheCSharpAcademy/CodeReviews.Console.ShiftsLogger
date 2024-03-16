@@ -71,9 +71,9 @@ public class EmployeeService
         await employeeRepository.UpdateEmployeeAsync(employee);
     }
 
-    public async Task DeleteEmployeeAsync(EmployeeDto employeeToDelete)
+    public async Task DeleteEmployeeAsync(int Id)
     {
-        await employeeRepository.DeleteEmployeeAsync(employeeToDelete.Id);
+        await employeeRepository.DeleteEmployeeAsync(Id);
     }
 
     private List<ShiftDto> GetShiftDtoList(List<Shift> shifts)

@@ -17,7 +17,9 @@ public class ShiftsRepository : IShiftsRepository
     {
         await context.Shifts.AddAsync(shift);
         await context.SaveChangesAsync();
-        return shift;
+        return await context.Shifts
+                            .Include(s => s.Employee)
+                            .FirstOrDefaultAsync(s => s.Id == shift.Id);
     }
     public async Task<IEnumerable<Shift>> GetAllShiftsAsync()
     {

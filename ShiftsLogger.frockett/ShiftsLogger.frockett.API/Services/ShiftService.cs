@@ -21,16 +21,16 @@ public class ShiftService
             StartTime = shiftCreateDto.StartTime,
             EndTime = shiftCreateDto.EndTime,
         };
-        await shiftsRepository.AddShiftAsync(shift);
+        var createdShift = await shiftsRepository.AddShiftAsync(shift);
 
         return new ShiftDto
         {
-            Id = shift.Id,
-            StartTime = shift.StartTime,
-            EndTime = shift.EndTime,
-            Duration = shift.Duration,
-            EmployeeId = shift.EmployeeId,
-            EmployeeName = shift.Employee.Name
+            Id = createdShift.Id,
+            StartTime = createdShift.StartTime,
+            EndTime = createdShift.EndTime,
+            Duration = createdShift.Duration,
+            EmployeeId = createdShift.EmployeeId,
+            EmployeeName = createdShift.Employee.Name
         };
     }
 

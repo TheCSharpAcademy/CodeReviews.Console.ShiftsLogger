@@ -25,7 +25,6 @@ public class ShiftsController : ControllerBase
         }
         catch (Exception ex)
         {
-            // Handle exceptions appropriately
             return StatusCode(500, ex.Message);
         }
     }

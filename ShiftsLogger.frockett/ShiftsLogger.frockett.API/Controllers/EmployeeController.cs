@@ -20,7 +20,7 @@ public class EmployeeController : ControllerBase
     public async Task<ActionResult<EmployeeDto>> AddEmployee([FromBody] EmployeeCreateDto employeeCreateDto)
     {
         var employeeDto = await employeeService.CreateEmployeeAsync(employeeCreateDto);
-        return CreatedAtAction(nameof(GetEmployeeById), new { id = employeeDto.Id });
+        return CreatedAtAction(nameof(GetEmployeeById), new { id = employeeDto.Id }, employeeDto);
     }
 
     // GET: api/employees
@@ -43,7 +43,7 @@ public class EmployeeController : ControllerBase
         return Ok(employee);
     }
 
-    // PUT: api/employees/5
+    // PUT: api/employee/5
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeDto employeeUpdateDto)
     {
@@ -63,13 +63,13 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    // DELETE: api/employees/5
+    // DELETE: api/employee/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteEmployee(int id, [FromBody] EmployeeDto employeeDto)
+    public async Task<IActionResult> DeleteEmployee(int id)
     {
         try
         {
-            await employeeService.DeleteEmployeeAsync(employeeDto);
+            await employeeService.DeleteEmployeeAsync(id);
             return NoContent(); // 204 No Content is a common response for a successful DELETE operation
         }
         catch (Exception ex)
