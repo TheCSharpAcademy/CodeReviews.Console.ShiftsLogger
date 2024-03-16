@@ -30,7 +30,9 @@ public class ShiftsRepository : IShiftsRepository
 
     public async Task<Shift> GetShiftByIdAsync(int shiftId)
     {
-        return await context.Shifts.FindAsync(shiftId);
+        return await context.Shifts
+                            .Include(s => s.Employee)
+                            .FirstOrDefaultAsync(s => s.Id == shiftId);
     }
     public async Task<IEnumerable<Shift>> GetShiftsByEmployeeIdAsync(int employeeId) 
     { 

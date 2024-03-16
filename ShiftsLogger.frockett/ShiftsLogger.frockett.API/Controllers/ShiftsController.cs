@@ -39,14 +39,14 @@ public class ShiftsController : ControllerBase
 
     // GET: api/shifts/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<IEnumerable<ShiftDto>>> GetShiftById(int id)
+    public async Task<ActionResult<ShiftDto>> GetShiftById(int id)
     {
-        var shifts = await shiftService.GetShiftsByEmployeeIdAsync(id);
-        if (shifts == null)
+        var shift = await shiftService.GetShiftsByIdAsync(id);
+        if (shift == null)
         {
             return NotFound();
         }
-        return Ok(shifts);
+        return Ok(shift);
     }
 
     // PUT: api/shifts/5

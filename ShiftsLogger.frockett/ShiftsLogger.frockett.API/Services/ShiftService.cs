@@ -50,11 +50,11 @@ public class ShiftService
         return shiftDtos;
     }
 
-    public async Task<IEnumerable<ShiftDto>> GetShiftsByEmployeeIdAsync(int employeeId)
+    public async Task<ShiftDto> GetShiftsByIdAsync(int shiftId)
     {
-        var shifts = await shiftsRepository.GetShiftsByEmployeeIdAsync(employeeId);
+        var shift = await shiftsRepository.GetShiftByIdAsync(shiftId);
 
-        var shiftDtos = shifts.Select(shift => new ShiftDto
+        var shiftDto = new ShiftDto
         {
             Id = shift.Id,
             StartTime = shift.StartTime,
@@ -62,9 +62,9 @@ public class ShiftService
             //Duration = shift.Duration,
             EmployeeId = shift.EmployeeId,
             EmployeeName = shift.Employee.Name
-        }).ToList();
+        };
 
-        return shiftDtos;
+        return shiftDto;
     }
 
     public async Task<ShiftDto> UpdateShiftAsync(int shiftId,  ShiftDto shiftDto)
