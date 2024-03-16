@@ -80,6 +80,11 @@ public class EmployeeService
     {
         List<ShiftDto> shiftDtos = new List<ShiftDto>();
 
+        if (shifts == null)
+        {
+            return shiftDtos;
+        }
+
         foreach (Shift shift in shifts)
         {
             shiftDtos.Add(new ShiftDto
