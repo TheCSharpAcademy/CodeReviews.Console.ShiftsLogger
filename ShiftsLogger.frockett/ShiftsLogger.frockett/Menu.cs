@@ -38,7 +38,9 @@ public class Menu
                 await HandleViewShifts();
                 break;
             case MainMenuOptions.ViewEmployeeShifts:
-                HandleViewEmployeeShifts();
+                var employees = await apiService.GetListOfEmployees();
+                var selectedEmployee = tableEngine.SelectEmployeeFromList(employees);
+                await HandleViewEmployeeShifts(selectedEmployee);
                 break;
             case MainMenuOptions.AddShift:
                 HandleAddShift();
@@ -79,9 +81,12 @@ public class Menu
         Console.Clear();
     }
 
-    private void HandleViewEmployeeShifts()
+    private async Task HandleViewEmployeeShifts(EmployeeDto employee)
     {
-        throw new NotImplementedException();
+        // TODO get ID from the user and check that it's valid
+        List<ShiftDto> shiftDtos = await apiService.GetShiftsByEmployeeId(employee.Id);
+        tableEngine.PrintShifts(shiftDtos);
+        PauseForUser();
     }
 
     private void HandleAddShift()

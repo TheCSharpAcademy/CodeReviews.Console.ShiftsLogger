@@ -49,7 +49,6 @@ public class ApiService
 
     internal async Task AddShift(ShiftCreateDto newShift)
     {
-        //using HttpClient client = new HttpClient();
         string url = baseUri;
 
         string newShiftJson = JsonConvert.SerializeObject(newShift);
@@ -178,5 +177,47 @@ public class ApiService
             Console.Clear();
         }
 
+    }
+
+    internal async Task<List<ShiftDto>>? GetShiftsByEmployeeId(int employeeId)
+    {
+        string requestUrl = $"employee/{employeeId}";
+
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+        try
+        {
+            HttpResponseMessage response = await httpClient.SendAsync(request);
+        }
+    }
+
+    internal async Task<List<EmployeeDto>>? GetListOfEmployees()
+    {
+        string requestUrl = "employee";
+
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+        try
+        {
+            HttpResponseMessage response = await httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                var employees = JsonConvert.DeserializeObject<List<EmployeeDto>>(content);
+
+                return employees;
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return null;
+        }
     }
 }

@@ -19,4 +19,23 @@ public class TableEngine
 
         AnsiConsole.Write(table);
     }
+
+    public EmployeeDto SelectEmployeeFromList(List<EmployeeDto> employees)
+    {
+        AnsiConsole.Clear();
+
+        if(!employees.Any())
+        {
+            AnsiConsole.MarkupLine("[red]No Employees Found.[/]");
+            return null;
+        }
+
+        var employeeSelection = new SelectionPrompt<EmployeeDto>();
+        employeeSelection.AddChoices(employees);
+        employeeSelection.Title("Select Employee");
+
+        EmployeeDto selectedEmployee = AnsiConsole.Prompt(employeeSelection);
+
+        return selectedEmployee;
+    }
 }
