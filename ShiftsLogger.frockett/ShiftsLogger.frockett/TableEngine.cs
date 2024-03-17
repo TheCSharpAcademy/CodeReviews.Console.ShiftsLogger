@@ -7,6 +7,13 @@ public class TableEngine
 {
     public void PrintShifts(List<ShiftDto> shifts)
     {
+
+        if(!shifts.Any())
+        {
+            AnsiConsole.MarkupLine("[red]No shifts found[/]");
+            return;
+        }
+
         Table table = new Table();
         table.Alignment(Justify.Center);
         table.Title("Shifts");
@@ -30,11 +37,19 @@ public class TableEngine
             return null;
         }
 
-        var employeeSelection = new SelectionPrompt<EmployeeDto>();
-        employeeSelection.AddChoices(employees);
+        List<string> employeeNames = new();
+        foreach(EmployeeDto employee in employees)
+        {
+            employeeNames.Add(employee.Name);
+        }
+
+        var employeeSelection = new SelectionPrompt<string>();
+        employeeSelection.AddChoices(employeeNames);
         employeeSelection.Title("Select Employee");
 
-        EmployeeDto selectedEmployee = AnsiConsole.Prompt(employeeSelection);
+        string selectedEmployeeName = AnsiConsole.Prompt(employeeSelection);
+
+        EmployeeDto selectedEmployee = employees.FirstOrDefault(e => e.Name == selectedEmployeeName);
 
         return selectedEmployee;
     }

@@ -22,7 +22,10 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
     {
-        return await context.Employees.OrderBy(e => e.Name).ToListAsync();
+        return await context.Employees
+                            .Include(e => e.Shifts)
+                            .OrderBy(e => e.Name)
+                            .ToListAsync();
     }
     public async Task<Employee> GetEmployeeByIdAsync(int employeeId)
     {

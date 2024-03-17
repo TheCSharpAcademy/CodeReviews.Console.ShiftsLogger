@@ -84,9 +84,10 @@ public class Menu
     private async Task HandleViewEmployeeShifts(EmployeeDto employee)
     {
         // TODO get ID from the user and check that it's valid
-        List<ShiftDto> shiftDtos = await apiService.GetShiftsByEmployeeId(employee.Id);
-        tableEngine.PrintShifts(shiftDtos);
+        //List<ShiftDto> shiftDtos = await apiService.GetShiftsByEmployeeId(employee.Id);
+        tableEngine.PrintShifts(employee.Shifts);
         PauseForUser();
+        await MainMenuHandler();
     }
 
     private void HandleAddShift()

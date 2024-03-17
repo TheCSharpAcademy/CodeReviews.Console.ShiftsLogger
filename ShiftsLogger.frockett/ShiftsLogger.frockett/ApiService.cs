@@ -188,6 +188,24 @@ public class ApiService
         try
         {
             HttpResponseMessage response = await httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                var shifts = JsonConvert.DeserializeObject<List<ShiftDto>>(content);
+
+                return shifts;
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+                return null;
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return null;
         }
     }
 
