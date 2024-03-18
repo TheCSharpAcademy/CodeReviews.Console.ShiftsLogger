@@ -9,10 +9,12 @@ public class Menu
 {
     private readonly ApiService apiService;
     private readonly TableEngine tableEngine;
-    public Menu(ApiService apiService, TableEngine tableEngine)
+    private readonly UserInput userInput;
+    public Menu(ApiService apiService, TableEngine tableEngine, UserInput userInput)
     {
         this.apiService = apiService;
         this.tableEngine = tableEngine;
+        this.userInput = userInput;
     }
 
     public async Task MainMenuHandler()
@@ -52,7 +54,7 @@ public class Menu
                 HandleUpdateShift();
                 break;
             case MainMenuOptions.AddEmployee:
-                HandleAddEmplyee();
+                await HandleAddEmplyee();
                 break;
             case MainMenuOptions.DeleteEmployee:
                 HandleDeleteEmployee();
@@ -83,8 +85,6 @@ public class Menu
 
     private async Task HandleViewEmployeeShifts(EmployeeDto employee)
     {
-        // TODO get ID from the user and check that it's valid
-        //List<ShiftDto> shiftDtos = await apiService.GetShiftsByEmployeeId(employee.Id);
         tableEngine.PrintShifts(employee.Shifts);
         PauseForUser();
         await MainMenuHandler();
@@ -105,9 +105,12 @@ public class Menu
         throw new NotImplementedException();
     }
 
-    private void HandleAddEmplyee()
+    private async Task HandleAddEmplyee()
     {
-        throw new NotImplementedException();
+        EmployeeCreateDto newEmployee = userInput.GetNewEmployee();
+        await apiService.AddEmployee(newEmployee);
+        PauseForUser();
+        await MainMenuHandler();
     }
 
     private void HandleDeleteEmployee()

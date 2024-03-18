@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ShiftsLogger.frockett.UI.Dtos;
+using Spectre.Console;
 
 namespace ShiftsLogger.frockett.UI;
 
@@ -236,6 +237,33 @@ public class ApiService
         {
             Console.WriteLine($"Error: {ex.Message}");
             return null;
+        }
+    }
+
+    internal async Task AddEmployee(EmployeeCreateDto newEmployee)
+    {
+        string requestUrl = "employee";
+
+        //string newEmployeeJson = JsonConvert.SerializeObject(newEmployee);
+        //HttpContent content = new StringContent(newEmployeeJson, Encoding.UTF8, "application/json");
+
+        JsonContent content = JsonContent.Create(newEmployee);
+
+        try
+        {
+            var response = await httpClient.PostAsync(requestUrl, content);
+            if (response.IsSuccessStatusCode)
+            {
+                AnsiConsole.WriteLine($"{newEmployee.Name} has been added!");
+            }
+            else
+            {
+                Console.WriteLine($"Failed with status code {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"There was an error: {ex.Message}");
         }
     }
 }
