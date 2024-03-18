@@ -64,8 +64,18 @@ public class Menu
     private async Task<EmployeeDto> GetEmployeeSelection()
     {
         var employees = await apiService.GetListOfEmployees();
-        var selectedEmployee = tableEngine.SelectEmployeeFromList(employees);
-        return selectedEmployee;
+        if (employees.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[Red]You don't have any employees! Go get some![/]");
+            await PauseForUser();
+            return null;
+        }
+        else
+        {
+            var selectedEmployee = tableEngine.SelectEmployeeFromList(employees);
+            return selectedEmployee;
+        }
+
     }
 
     private async Task HandleViewShifts()
