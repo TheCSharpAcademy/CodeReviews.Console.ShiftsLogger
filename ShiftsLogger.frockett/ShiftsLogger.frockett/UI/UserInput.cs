@@ -37,6 +37,11 @@ public class UserInput
 
         return new ShiftCreateDto() { StartTime = shiftStart, EndTime = shiftEnd, EmployeeId = employeeId };
     }
+    public int GetShiftId()
+    {
+        int systemId = AnsiConsole.Ask<int>("Enter the System ID corresponding to the shift you'd like to delete: ");
+        return systemId;
+    }
 
     private DateTime GetDateTime(string prompt)
     {

@@ -61,21 +61,15 @@ public class ApiService
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("New shift recorded. Press Enter to continue...");
-                Console.ReadLine();
-                Console.Clear();
             }
             else
             {
                 Console.WriteLine($"Failed with status code {response.StatusCode}");
-                Console.WriteLine("Press Enter to continue...");
-                Console.Clear();
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"There was an error: {ex.Message}");
-            Console.WriteLine("Press Enter to continue...");
-            Console.Clear();
         }
     }
 
@@ -113,7 +107,7 @@ public class ApiService
     internal async Task DeleteShift(int id)
     {
         //using HttpClient client = new HttpClient();
-        string url = baseUri + "/" + id;
+        string url = $"shifts/{id}";
 
         HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
         try
@@ -123,23 +117,15 @@ public class ApiService
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("Record deleted. Press Enter to continue...");
-                Console.ReadLine();
-                Console.Clear();
             }
             else
             {
                 Console.WriteLine($"Error: {response.StatusCode}");
-                Console.WriteLine("Press Enter to continue...");
-                Console.ReadLine();
-                Console.Clear();
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
-            Console.WriteLine("Press Enter to continue...");
-            Console.ReadLine();
-            Console.Clear();
         }
     }
 

@@ -38,6 +38,7 @@ public class Menu
         {
             case MainMenuOptions.ViewShifts:
                 await HandleViewShifts();
+                await PauseForUser();
                 break;
             case MainMenuOptions.ViewEmployeeShifts:
                 var selectedEmployee = await GetEmployeeSelection();
@@ -48,7 +49,7 @@ public class Menu
                 await HandleAddShift(employeeToAddShift);
                 break;
             case MainMenuOptions.DeleteShift:
-                HandleDeleteShifts();
+                await HandleDeleteShifts();
                 break;
             case MainMenuOptions.UpdateShift:
                 HandleUpdateShift();
@@ -79,21 +80,20 @@ public class Menu
     {
         var shiftDtos = await apiService.GetAllShifts();
         tableEngine.PrintShifts(shiftDtos);
-        PauseForUser();
-        await MainMenuHandler();
     }
 
-    private void PauseForUser()
+    private async Task PauseForUser()
     {
         AnsiConsole.WriteLine("Press Enter to Continue...");
         Console.ReadLine();
         Console.Clear();
+        await MainMenuHandler();
     }
 
     private async Task HandleViewEmployeeShifts(EmployeeDto employee)
     {
         tableEngine.PrintShifts(employee.Shifts);
-        PauseForUser();
+        await PauseForUser();
         await MainMenuHandler();
     }
 
@@ -101,13 +101,17 @@ public class Menu
     {
         var newShift = userInput.GetNewShift(employee.Id);
         await apiService.AddShift(newShift);
-        PauseForUser();
+        await PauseForUser();
         await MainMenuHandler();
     }
 
-    private void HandleDeleteShifts()
+    private async Task HandleDeleteShifts()
     {
-        throw new NotImplementedException();
+        await HandleViewShifts();
+        int shiftId = userInput.GetShiftId();
+        await apiService.DeleteShift(shiftId);
+        await PauseForUser();
+        await MainMenuHandler();
     }
 
     private void HandleUpdateShift()
@@ -119,7 +123,7 @@ public class Menu
     {
         EmployeeCreateDto newEmployee = userInput.GetNewEmployee();
         await apiService.AddEmployee(newEmployee);
-        PauseForUser();
+        await PauseForUser();
         await MainMenuHandler();
     }
 
