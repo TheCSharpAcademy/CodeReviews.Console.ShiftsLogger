@@ -50,14 +50,14 @@ public class ApiService
 
     internal async Task AddShift(ShiftCreateDto newShift)
     {
-        string url = baseUri;
+        string requestUrl = "shifts";
 
         string newShiftJson = JsonConvert.SerializeObject(newShift);
         HttpContent content = new StringContent(newShiftJson, Encoding.UTF8, "application/json");
 
         try
         {
-            var response = await httpClient.PostAsync(url, content);
+            var response = await httpClient.PostAsync(requestUrl, content);
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("New shift recorded. Press Enter to continue...");
