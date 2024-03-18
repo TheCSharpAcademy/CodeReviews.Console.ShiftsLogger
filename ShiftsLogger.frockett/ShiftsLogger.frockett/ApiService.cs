@@ -92,11 +92,11 @@ public class ApiService
         }
     }
 
-    internal async Task UpdateShift(ShiftDto updateShift)
+    internal async Task UpdateShift(ShiftDto updatedShift)
     {
-        string requestUrl = $"shifts/{updateShift.Id}";
+        string requestUrl = $"shifts/{updatedShift.Id}";
 
-        string newShiftJson = JsonConvert.SerializeObject(updateShift);
+        string newShiftJson = JsonConvert.SerializeObject(updatedShift);
         HttpContent content = new StringContent(newShiftJson, Encoding.UTF8, "application/json");
 
         try

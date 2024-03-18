@@ -1,7 +1,6 @@
 ﻿using ShiftsLogger.frockett.UI.UI;
 using Spectre.Console;
 using ShiftsLogger.frockett.UI.Dtos;
-using System.Runtime.CompilerServices;
 
 namespace ShiftsLogger.frockett.UI;
 
