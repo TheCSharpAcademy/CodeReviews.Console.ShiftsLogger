@@ -61,7 +61,7 @@ public class Menu
                 await HandleDeleteEmployee();
                 break;
             case MainMenuOptions.UpdateEmployee:
-                HandleUpdateEmployee();
+                await HandleUpdateEmployee();
                 break;
             case MainMenuOptions.Exit:
                 Environment.Exit(0);
@@ -155,13 +155,11 @@ public class Menu
         await PauseForUser();
     }
 
-    private void HandleUpdateEmployee()
+    private async Task HandleUpdateEmployee()
     {
-        throw new NotImplementedException();
-    }
-
-    private void HandleDisplayEmployees()
-    {
-        throw new NotImplementedException();
+        var selectedEmployee = await GetEmployeeSelection();
+        var updatedEmployee = userInput.GetUpdatedEmployee(selectedEmployee);
+        await apiService.UpdateEmployee(updatedEmployee);
+        await PauseForUser();
     }
 }

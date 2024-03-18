@@ -121,7 +121,6 @@ public class ApiService
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
-
     }
 
     internal async Task<List<ShiftDto>>? GetShiftsByEmployeeId(int employeeId)
@@ -198,7 +197,6 @@ public class ApiService
             {
                 string content = await response.Content.ReadAsStringAsync();
                 var employees = JsonConvert.DeserializeObject<List<EmployeeDto>>(content);
-
                 return employees;
             }
             else
@@ -238,6 +236,31 @@ public class ApiService
         catch (Exception ex)
         {
             Console.WriteLine($"There was an error: {ex.Message}");
+        }
+    }
+    internal async Task UpdateEmployee(EmployeeDto updatedEmployee)
+    {
+        string requestUrl = $"employee/{updatedEmployee.Id}";
+
+        string newShiftJson = JsonConvert.SerializeObject(updatedEmployee);
+        HttpContent content = new StringContent(newShiftJson, Encoding.UTF8, "application/json");
+
+        try
+        {
+            HttpResponseMessage response = await httpClient.PutAsync(requestUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Update Successful. Press Enter to continue...");
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 

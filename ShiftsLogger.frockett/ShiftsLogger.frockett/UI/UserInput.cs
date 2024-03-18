@@ -52,6 +52,14 @@ public class UserInput
 
         return new ShiftDto() { StartTime = shiftStart, EndTime= shiftEnd, Id = shiftId };
     }
+
+    public EmployeeDto GetUpdatedEmployee(EmployeeDto employeeToUpdate)
+    {
+        string name = AnsiConsole.Ask<string>("Enter new name: ");
+
+        employeeToUpdate.Name = name;
+        return employeeToUpdate;
+    }
     public int GetShiftId(string prompt)
     {
         int systemId = AnsiConsole.Ask<int>(prompt);
