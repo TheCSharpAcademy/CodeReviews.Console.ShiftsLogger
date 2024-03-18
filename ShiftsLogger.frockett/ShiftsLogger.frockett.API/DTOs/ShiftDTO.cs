@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
+﻿
 namespace ShiftsLogger.frockett.API.DTOs;
 
 public class ShiftDto

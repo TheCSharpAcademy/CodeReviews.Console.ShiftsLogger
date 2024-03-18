@@ -1,5 +1,4 @@
-﻿
-namespace ShiftsLogger.frockett.UI.Dtos;
+﻿namespace ShiftsLogger.frockett.UI.Dtos;
 
 public class ShiftCreateDto
 {

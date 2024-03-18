@@ -10,6 +10,7 @@ public class Menu
     private readonly ApiService apiService;
     private readonly TableEngine tableEngine;
     private readonly UserInput userInput;
+
     public Menu(ApiService apiService, TableEngine tableEngine, UserInput userInput)
     {
         this.apiService = apiService;
@@ -19,19 +20,11 @@ public class Menu
 
     public async Task MainMenuHandler()
     {
-        //var mainMenuOptions = Enum.GetValues(typeof(MainMenuOptions)).Cast<MainMenuOptions>().ToArray();
-
         var menuSelection = new SelectionPrompt<MainMenuOptions>()
             .Title("Main Menu")
             .AddChoices(Enum.GetValues<MainMenuOptions>())
             .UseConverter(option => option.GetEnumDescription());
-        /*
-        menuSelection.AddChoices(MainMenuOptions.ViewShifts, MainMenuOptions.ViewShifts,
-                                MainMenuOptions.ViewEmployeeShifts, MainMenuOptions.AddShift, 
-                                MainMenuOptions.DeleteShift, MainMenuOptions.UpdateShift,
-                                MainMenuOptions.AddEmployee, MainMenuOptions.DeleteEmployee,
-                                MainMenuOptions.UpdateEmployee, MainMenuOptions.Exit);
-        */
+
         var selection = AnsiConsole.Prompt(menuSelection);
 
         switch (selection)
@@ -151,7 +144,6 @@ public class Menu
         {
             AnsiConsole.WriteLine("Returning to main menu.");
         }
-
         await PauseForUser();
     }
 

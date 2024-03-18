@@ -1,8 +1,5 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ShiftsLogger.frockett.UI.Dtos;
 using Spectre.Console;
@@ -12,7 +9,6 @@ namespace ShiftsLogger.frockett.UI;
 public class ApiService
 {
     private readonly HttpClient httpClient;
-    private readonly string baseUri;
 
     public ApiService(HttpClient httpClient)
     {
@@ -32,18 +28,17 @@ public class ApiService
             {
                 string content = await response.Content.ReadAsStringAsync();
                 var shifts = JsonConvert.DeserializeObject<List<ShiftDto>>(content);
-
                 return shifts;
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                AnsiConsole.WriteLine($"Error: {response.StatusCode}");
                 return null;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.WriteLine($"Error: {ex.Message}");
             return null;
         }
     }
@@ -60,16 +55,16 @@ public class ApiService
             var response = await httpClient.PostAsync(requestUrl, content);
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("New shift recorded. Press Enter to continue...");
+                AnsiConsole.WriteLine("New shift recorded");
             }
             else
             {
-                Console.WriteLine($"Failed with status code {response.StatusCode}");
+                AnsiConsole.WriteLine($"Failed with status code {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"There was an error: {ex.Message}");
+            AnsiConsole.WriteLine($"There was an error: {ex.Message}");
         }
     }
 
@@ -84,16 +79,16 @@ public class ApiService
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("Record deleted. Press Enter to continue...");
+                AnsiConsole.WriteLine("Record deleted.");
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                AnsiConsole.WriteLine($"Error: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.WriteLine($"Error: {ex.Message}");
         }
     }
 
@@ -110,16 +105,16 @@ public class ApiService
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("Update Successful. Press Enter to continue...");
+                AnsiConsole.WriteLine("Update Successful.");
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                AnsiConsole.WriteLine($"Error: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.WriteLine($"Error: {ex.Message}");
         }
     }
 
@@ -142,13 +137,13 @@ public class ApiService
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                AnsiConsole.WriteLine($"Error: {response.StatusCode}");
                 return null;
             }
         }
         catch(Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.WriteLine($"Error: {ex.Message}");
             return null;
         }
     }
@@ -172,13 +167,13 @@ public class ApiService
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                AnsiConsole.WriteLine($"Error: {response.StatusCode}");
                 return null;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.WriteLine($"Error: {ex.Message}");
             return null;
         }
     }
@@ -201,13 +196,13 @@ public class ApiService
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                AnsiConsole.WriteLine($"Error: {response.StatusCode}");
                 return null;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.WriteLine($"Error: {ex.Message}");
             return null;
         }
     }
@@ -216,9 +211,7 @@ public class ApiService
     {
         string requestUrl = "employee";
 
-        //string newEmployeeJson = JsonConvert.SerializeObject(newEmployee);
-        //HttpContent content = new StringContent(newEmployeeJson, Encoding.UTF8, "application/json");
-
+        // Experimenting with different methods, here. I'm not sure which is best.ss
         JsonContent content = JsonContent.Create(newEmployee);
 
         try
@@ -230,12 +223,12 @@ public class ApiService
             }
             else
             {
-                Console.WriteLine($"Failed with status code {response.StatusCode}");
+                AnsiConsole.WriteLine($"Failed with status code {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"There was an error: {ex.Message}");
+            AnsiConsole.WriteLine($"There was an error: {ex.Message}");
         }
     }
     internal async Task UpdateEmployee(EmployeeDto updatedEmployee)
@@ -251,16 +244,16 @@ public class ApiService
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("Update Successful. Press Enter to continue...");
+                AnsiConsole.WriteLine("Update Successful.");
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                AnsiConsole.WriteLine($"Error: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.WriteLine($"Error: {ex.Message}");
         }
     }
 
@@ -275,16 +268,16 @@ public class ApiService
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("Record deleted. Press Enter to continue...");
+                AnsiConsole.WriteLine("Record deleted.");
             }
             else
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                AnsiConsole.WriteLine($"Error: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            AnsiConsole.WriteLine($"Error: {ex.Message}");
         }
     }
 }

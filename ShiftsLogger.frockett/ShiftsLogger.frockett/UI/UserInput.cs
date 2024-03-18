@@ -1,5 +1,4 @@
 ﻿using Spectre.Console;
-using ShiftsLogger.frockett.UI.Helpers;
 using ShiftsLogger.frockett.UI.Dtos;
 using System.Globalization;
 
@@ -7,13 +6,6 @@ namespace ShiftsLogger.frockett.UI.UI;
 
 public class UserInput
 {
-    private readonly InputValidation inputValidation;
-
-    public UserInput(InputValidation inputValidation)
-    {
-        this.inputValidation = inputValidation;
-    }
-
     public EmployeeCreateDto GetNewEmployee()
     {
         string name = AnsiConsole.Ask<string>("Enter employee's name: ");
