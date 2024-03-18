@@ -73,43 +73,11 @@ public class ApiService
         }
     }
 
-    internal async Task<ShiftDto> GetEmployeeShifts(int id)
-    {
-        //using HttpClient client = new HttpClient();
-        string url = baseUri + "/" + id;
-
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
-        try
-        {
-            HttpResponseMessage response = await httpClient.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                string content = await response.Content.ReadAsStringAsync();
-                var shift = JsonConvert.DeserializeObject<ShiftDto>(content);
-
-
-                return shift;
-            }
-            else
-            {
-                Console.WriteLine($"Error: {response.StatusCode}");
-                return null;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-            return null;
-        }
-    }
-
     internal async Task DeleteShift(int id)
     {
-        //using HttpClient client = new HttpClient();
-        string url = $"shifts/{id}";
+        string requestUrl = $"shifts/{id}";
 
-        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, url);
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
         try
         {
             HttpResponseMessage response = await httpClient.SendAsync(request);
@@ -131,37 +99,27 @@ public class ApiService
 
     internal async Task UpdateShift(ShiftDto updateShift)
     {
-
-        //using HttpClient client = new HttpClient();
-        string url = baseUri + "/" + updateShift.Id;
+        string requestUrl = $"shifts/{updateShift.Id}";
 
         string newShiftJson = JsonConvert.SerializeObject(updateShift);
         HttpContent content = new StringContent(newShiftJson, Encoding.UTF8, "application/json");
 
         try
         {
-            HttpResponseMessage response = await httpClient.PutAsync(url, content);
+            HttpResponseMessage response = await httpClient.PutAsync(requestUrl, content);
 
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("Update Successful. Press Enter to continue...");
-                Console.ReadLine();
-                Console.Clear();
             }
             else
             {
                 Console.WriteLine($"Error: {response.StatusCode}");
-                Console.WriteLine("Press Enter to continue...");
-                Console.ReadLine();
-                Console.Clear();
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
-            Console.WriteLine("Press Enter to continue...");
-            Console.ReadLine();
-            Console.Clear();
         }
 
     }
@@ -190,6 +148,36 @@ public class ApiService
             }
         }
         catch(Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return null;
+        }
+    }
+
+    internal async Task<ShiftDto>? GetShiftById(int id)
+    {
+        string requestUrl = $"shifts/{id}";
+
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+
+        try
+        {
+            HttpResponseMessage response = await httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                var shift = JsonConvert.DeserializeObject<ShiftDto>(content);
+
+                return shift;
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+                return null;
+            }
+        }
+        catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
             return null;
@@ -250,6 +238,30 @@ public class ApiService
         catch (Exception ex)
         {
             Console.WriteLine($"There was an error: {ex.Message}");
+        }
+    }
+
+    internal async Task DeleteEmployee(int id)
+    {
+        string requestUrl = $"employee/{id}";
+
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Delete, requestUrl);
+        try
+        {
+            HttpResponseMessage response = await httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Record deleted. Press Enter to continue...");
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 }

@@ -52,13 +52,13 @@ public class Menu
                 await HandleDeleteShifts();
                 break;
             case MainMenuOptions.UpdateShift:
-                HandleUpdateShift();
+                await HandleUpdateShift();
                 break;
             case MainMenuOptions.AddEmployee:
                 await HandleAddEmplyee();
                 break;
             case MainMenuOptions.DeleteEmployee:
-                HandleDeleteEmployee();
+                await HandleDeleteEmployee();
                 break;
             case MainMenuOptions.UpdateEmployee:
                 HandleUpdateEmployee();
@@ -94,7 +94,6 @@ public class Menu
     {
         tableEngine.PrintShifts(employee.Shifts);
         await PauseForUser();
-        await MainMenuHandler();
     }
 
     private async Task HandleAddShift(EmployeeDto employee)
@@ -102,21 +101,35 @@ public class Menu
         var newShift = userInput.GetNewShift(employee.Id);
         await apiService.AddShift(newShift);
         await PauseForUser();
-        await MainMenuHandler();
     }
 
     private async Task HandleDeleteShifts()
     {
         await HandleViewShifts();
-        int shiftId = userInput.GetShiftId();
+        int shiftId = userInput.GetShiftId("Enter the System ID corresponding to the shift you'd like to delete: ");
         await apiService.DeleteShift(shiftId);
         await PauseForUser();
-        await MainMenuHandler();
     }
 
-    private void HandleUpdateShift()
+    private async Task HandleUpdateShift()
     {
-        throw new NotImplementedException();
+        await HandleViewShifts();
+        int shiftId = userInput.GetShiftId("Enter the System ID corresponding to the shift you'd like to update: ");
+        var newShiftData = userInput.GetUpdatedShift(shiftId);
+        var shiftToUpdate = await apiService.GetShiftById(shiftId);
+
+        if(shiftToUpdate != null)
+        {
+            shiftToUpdate.StartTime = newShiftData.StartTime;
+            shiftToUpdate.EndTime = newShiftData.EndTime;
+
+            await apiService.UpdateShift(shiftToUpdate);
+            await PauseForUser();
+        }
+        else
+        {
+            await PauseForUser();
+        }
     }
 
     private async Task HandleAddEmplyee()
@@ -124,12 +137,22 @@ public class Menu
         EmployeeCreateDto newEmployee = userInput.GetNewEmployee();
         await apiService.AddEmployee(newEmployee);
         await PauseForUser();
-        await MainMenuHandler();
     }
 
-    private void HandleDeleteEmployee()
+    private async Task HandleDeleteEmployee()
     {
-        throw new NotImplementedException();
+        EmployeeDto employeeToDelete = await GetEmployeeSelection();
+        
+        if(AnsiConsole.Confirm($"Are you sure you want to delete {employeeToDelete.Name} and all associated shifts?"))
+        {
+            await apiService.DeleteEmployee(employeeToDelete.Id);
+        }
+        else
+        {
+            AnsiConsole.WriteLine("Returning to main menu.");
+        }
+
+        await PauseForUser();
     }
 
     private void HandleUpdateEmployee()

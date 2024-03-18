@@ -37,9 +37,24 @@ public class UserInput
 
         return new ShiftCreateDto() { StartTime = shiftStart, EndTime = shiftEnd, EmployeeId = employeeId };
     }
-    public int GetShiftId()
+
+    public ShiftDto GetUpdatedShift(int shiftId)
     {
-        int systemId = AnsiConsole.Ask<int>("Enter the System ID corresponding to the shift you'd like to delete: ");
+        DateTime shiftStart = GetDateTime("Shift start (format yyyy-MM-dd HH:mm): ");
+        DateTime shiftEnd = GetDateTime("Shift end (format yyyy-MM-dd HH:mm): ");
+
+        if (shiftStart > shiftEnd)
+        {
+            AnsiConsole.MarkupLine("[red]Invalid, shift must start before it ends[/]");
+            shiftStart = GetDateTime("Shift start (format yyyy-MM-dd HH:mm): ");
+            shiftStart = GetDateTime("Shift end (format yyyy-MM-dd HH:mm): ");
+        }
+
+        return new ShiftDto() { StartTime = shiftStart, EndTime= shiftEnd, Id = shiftId };
+    }
+    public int GetShiftId(string prompt)
+    {
+        int systemId = AnsiConsole.Ask<int>(prompt);
         return systemId;
     }
 
