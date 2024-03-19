@@ -22,24 +22,52 @@ internal class VisualizationEngine
             switch (mainMenuChoice)
             {
                 case "Current employee":
-                    if (await Helper.EmployeesExist()) await VisualizationEngine.CurrentEmployeeMenu();
+                    try
+                    {
+                        if (await Helper.EmployeesExist()) await VisualizationEngine.CurrentEmployeeMenu();
+                    }
+                    catch (Exception ex)
+                    {
+                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}");
+                    }
                     break;
                 case "New employee":
-                    await ApiService.CreateEmployee();
+                    try
+                    {
+                        await ApiService.CreateEmployee();
+                    }
+                    catch (Exception ex)
+                    {
+                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}");
+                    }
                     break;
                 case "Update employee":
-                    if (await Helper.EmployeesExist())
+                    try
                     {
-                        var employeeToUpdate = await Helper.GetEmployeeToUpdate();
-                        await ApiService.UpdateEmployee(employeeToUpdate);
+                        if (await Helper.EmployeesExist())
+                        {
+                            var employeeToUpdate = await Helper.GetEmployeeToUpdate();
+                            await ApiService.UpdateEmployee(employeeToUpdate);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}");
                     }
                     break;
                 case "Delete employee":
-                    if (await Helper.EmployeesExist())
+                    try
                     {
-                        var employeeIdToBeDeleted = await Helper.GetIdOfEmployeeToDelete();
-                        var confirmation = AnsiConsole.Confirm("Are you sure you want to delete this employee?");
-                        if (confirmation) await ApiService.DeleteEmployee(employeeIdToBeDeleted);
+                        if (await Helper.EmployeesExist())
+                        {
+                            var employeeIdToBeDeleted = await Helper.GetIdOfEmployeeToDelete();
+                            var confirmation = AnsiConsole.Confirm("Are you sure you want to delete this employee?");
+                            if (confirmation) await ApiService.DeleteEmployee(employeeIdToBeDeleted);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}");
                     }
                     break;
                 case "Quit application":
