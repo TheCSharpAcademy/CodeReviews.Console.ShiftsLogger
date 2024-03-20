@@ -28,7 +28,8 @@ internal class VisualizationEngine
                     }
                     catch (Exception ex)
                     {
-                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}");
+                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}\nPress any key to continue.");
+                        Console.ReadKey();
                     }
                     break;
                 case "New employee":
@@ -38,7 +39,8 @@ internal class VisualizationEngine
                     }
                     catch (Exception ex)
                     {
-                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}");
+                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}\nPress any key to continue.");
+                        Console.ReadKey();
                     }
                     break;
                 case "Update employee":
@@ -52,7 +54,8 @@ internal class VisualizationEngine
                     }
                     catch (Exception ex)
                     {
-                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}");
+                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}\nPress any key to continue.");
+                        Console.ReadKey();
                     }
                     break;
                 case "Delete employee":
@@ -67,7 +70,8 @@ internal class VisualizationEngine
                     }
                     catch (Exception ex)
                     {
-                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}");
+                        await Console.Out.WriteLineAsync($"Unexpected error: {ex.Message}\nPress any key to continue.");
+                        Console.ReadKey();
                     }
                     break;
                 case "Quit application":
