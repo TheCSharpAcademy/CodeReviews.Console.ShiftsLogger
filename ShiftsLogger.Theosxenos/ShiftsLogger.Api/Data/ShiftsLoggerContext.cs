@@ -10,29 +10,31 @@ public class ShiftsLoggerContext(DbContextOptions options) : DbContext(options)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Worker>().HasData(
-        [
-            new Worker
-            {
-                Id = 1,
-                Name = "Henk"
-            },
-            new Worker
-            {
-                Id = 2,
-                Name = "Ingrid"
-            },
-            new Worker
-            {
-                Id = 3,
-                Name = "Jan"
-            },
-            new Worker
-            {
-                Id = 4,
-                Name = "Helena"
-            }
-        ]);
+        modelBuilder.Entity<Worker>().HasData
+        (
+            [
+                new Worker
+                {
+                    Id = 1,
+                    Name = "Henk"
+                },
+                new Worker
+                {
+                    Id = 2,
+                    Name = "Ingrid"
+                },
+                new Worker
+                {
+                    Id = 3,
+                    Name = "Jan"
+                },
+                new Worker
+                {
+                    Id = 4,
+                    Name = "Helena"
+                }
+            ]
+        );
 
         List<Shift> shifts = [];
         var lastId = 1;
@@ -40,6 +42,7 @@ public class ShiftsLoggerContext(DbContextOptions options) : DbContext(options)
         {
             var start = new DateTime(2024, 03, 15, 12, 0, 0);
             for (var day = 0; day < 3; day++)
+            {
                 shifts.AddRange([
                     new Shift
                     {
@@ -66,6 +69,7 @@ public class ShiftsLoggerContext(DbContextOptions options) : DbContext(options)
                         WorkerId = i
                     }
                 ]);
+            }
         }
 
         modelBuilder.Entity<Shift>().HasData(shifts);
