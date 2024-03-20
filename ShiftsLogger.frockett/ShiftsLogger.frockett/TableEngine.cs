@@ -8,7 +8,7 @@ public class TableEngine
     public void PrintShifts(List<ShiftDto> shifts)
     {
 
-        if(!shifts.Any())
+        if(shifts?.Any() != true)
         {
             AnsiConsole.MarkupLine("[red]No shifts found[/]");
             return;
