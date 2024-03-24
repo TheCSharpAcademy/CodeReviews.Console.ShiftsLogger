@@ -20,11 +20,11 @@ public class UserInput
         DateTime shiftStart = GetDateTime("Shift start (format yyyy-MM-dd HH:mm): ");
         DateTime shiftEnd = GetDateTime("Shift end (format yyyy-MM-dd HH:mm): ");
 
-        if (shiftStart > shiftEnd)
+        while (shiftStart > shiftEnd)
         {
             AnsiConsole.MarkupLine("[red]Invalid, shift must start before it ends[/]");
             shiftStart = GetDateTime("Shift start (format yyyy-MM-dd HH:mm): ");
-            shiftStart = GetDateTime("Shift end (format yyyy-MM-dd HH:mm): ");
+            shiftEnd = GetDateTime("Shift end (format yyyy-MM-dd HH:mm): ");
         }
 
         return new ShiftCreateDto() { StartTime = shiftStart, EndTime = shiftEnd, EmployeeId = employeeId };
