@@ -1,0 +1,50 @@
+# Get all shifts
+GET http://localhost:5168/shifts
+###
+
+# Get shift by id
+GET http://localhost:5168/shifts/3
+###
+
+# Get shifts by employee id
+GET http://localhost:5168/shifts/employee/3
+###
+
+# Get running shifts by employee id
+GET http://localhost:5168/shifts/employee/1/running
+###
+
+# Start shift
+POST http://localhost:5168/shifts/start
+content-type: application/json
+
+{
+    "startTime": "2022-03-16T13:45:30.1234567",
+    "employeeId": 3
+}
+###
+
+# End shift
+POST http://localhost:5168/shifts/end
+content-type: application/json
+
+{
+    "endTime": "2022-03-17T13:45:30.1234567",
+    "id": 1
+}
+###
+
+# Update shift
+POST http://localhost:5168/shifts/update
+content-type: application/json
+
+{
+    "id": 1,
+    "startTime": "2023-03-15T09:45:30.1234567",
+    "endTime": "2023-03-15T17:45:30.1234567",
+    "employeeId": 1
+}
+###
+
+# Delete shift by id
+DELETE http://localhost:5168/shifts/2
