@@ -1,14 +1,13 @@
-﻿namespace ShiftLoggerConsole
+﻿namespace ShiftLoggerConsole;
+
+internal class Enums
 {
-    internal class Enums
+    public enum Options
     {
-        public enum Options
-        {
-            RegisterNewWorker,
-            StartShift,
-            EndShift,
-            ViewAllWorkers,
-            ViewWorker
-        }
+        RegisterNewWorker,
+        StartShift,
+        EndShift,
+        ViewAllWorkers,
+        ViewWorker
     }
 }

@@ -1,13 +1,12 @@
 ﻿using WebApplication1.Models;
 
-namespace WebApplication1
+namespace WebApplication1;
+
+public class Services
 {
-    public class Services
+    public static TimeSpan CalculateTime(Worker worker)
     {
-        public static TimeSpan CalculateTime(Worker worker)
-        {
-            TimeSpan workedHours = worker.End - worker.Begin;
-            return workedHours.Duration();
-        }
+        TimeSpan workedHours = worker.End - worker.Begin;
+        return workedHours.Duration();
     }
 }

@@ -1,19 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace WebApplication1.Models
+namespace WebApplication1.Models;
+
+public class WorkerContext : DbContext
 {
-    public class WorkerContext : DbContext
+    public DbSet<Worker> Worker { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        public DbSet<Worker> Worker { get; set; }
+        optionsBuilder.UseSqlServer(@"Server=(LocalDb)\LocalDb;Database=ShiftLogger;Integrated Security=True;");
+    }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=(LocalDb)\LocalDb;Database=ShiftLogger;Integrated Security=True;");
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Worker>().HasIndex(x => x.Name).IsUnique();
-        }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Worker>().HasIndex(x => x.Name).IsUnique();
     }
 }

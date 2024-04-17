@@ -1,5 +1,4 @@
-﻿
-using ShiftLoggerConsole;
+﻿using ShiftLoggerConsole;
 
 UserInterface.RunMenu();
 
