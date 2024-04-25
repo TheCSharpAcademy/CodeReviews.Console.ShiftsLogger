@@ -17,7 +17,8 @@ namespace STUDY.ASP.ShiftLoggerTryThree.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    EmployeeFirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmployeeLastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClockIn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ClockOut = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

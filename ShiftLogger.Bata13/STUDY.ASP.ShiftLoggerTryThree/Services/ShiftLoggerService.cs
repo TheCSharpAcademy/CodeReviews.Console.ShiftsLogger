@@ -37,7 +37,8 @@ namespace STUDY.ASP.ShiftLoggerTryThree.Services
             if (shift is null)
                 return null;
 
-            shift.EmployeeId = request.EmployeeId;
+            shift.EmployeeFirstName = request.EmployeeFirstName;
+            shift.EmployeeLastName = request.EmployeeLastName;
             shift.ClockIn = request.ClockIn;
             shift.ClockOut = request.ClockOut;
 

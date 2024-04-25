@@ -6,7 +6,7 @@ namespace STUDY.ASP.ShiftLoggerTryThree.Controllers
 {
     [ApiController]
 
-    [Route("api/shiftlogger")]
+    [Route("api/[controller]")]
     public class ShiftLoggerController : ControllerBase
     {
         private readonly IShiftLoggerService _shiftLoggerService;

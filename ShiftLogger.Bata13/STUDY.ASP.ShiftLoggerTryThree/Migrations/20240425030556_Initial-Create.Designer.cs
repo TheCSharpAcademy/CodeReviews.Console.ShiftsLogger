@@ -12,7 +12,7 @@ using STUDY.ASP.ShiftLoggerTryThree.Data;
 namespace STUDY.ASP.ShiftLoggerTryThree.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240421222728_Initial-Create")]
+    [Migration("20240425030556_Initial-Create")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -39,8 +39,13 @@ namespace STUDY.ASP.ShiftLoggerTryThree.Migrations
                     b.Property<DateTime>("ClockOut")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
+                    b.Property<string>("EmployeeFirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmployeeLastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
