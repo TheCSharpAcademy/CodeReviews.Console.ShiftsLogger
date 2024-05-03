@@ -1,0 +1,6 @@
+@ShiftLogger.samggannon_HostAddress = http://localhost:5139
+
+GET {{ShiftLogger.samggannon_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
