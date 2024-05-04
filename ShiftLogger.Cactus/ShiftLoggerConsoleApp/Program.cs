@@ -1,5 +1,7 @@
 ﻿using ShiftLoggerConsoleApp;
+using ShiftLoggerConsoleApp.UI;
 using Spectre.Console;
+
 enum MenuOptions
 {
     AddShift,
@@ -12,7 +14,7 @@ enum MenuOptions
 
 public static class Application
 {
-    public static void Main()
+    public static async Task Main()
     {
         bool isAppRunning = true;
         while (isAppRunning)
@@ -37,14 +39,17 @@ public static class Application
                 case MenuOptions.UpdateShift:
                     break;
                 case MenuOptions.ViewShift:
-                    ShiftLoggerService.GetShift();
                     break;
                 case MenuOptions.ViewAllShifts:
+                    var shifts = await ShiftLoggerService.GetShifts();
+                    UserInterface.ShowShifts(shifts);
                     break;
                 case MenuOptions.Quit:
                     isAppRunning = false;
                     break;
             }
+
+            UserInterface.BackToMainMenuPrompt();
         }
     }
 }

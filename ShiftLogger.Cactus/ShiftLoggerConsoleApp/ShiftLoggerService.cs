@@ -4,10 +4,11 @@ namespace ShiftLoggerConsoleApp;
 
 public class ShiftLoggerService
 {
-    public async static void GetShift()
+    public async static Task<List<Shift>> GetShifts()
     {
         using (HttpClient client = new HttpClient())
         {
+            List<Shift> shifts = new List<Shift>();
             try
             {
                 string url = "https://localhost:7256/shiftlogger";
@@ -15,19 +16,15 @@ public class ShiftLoggerService
                 if (response.IsSuccessStatusCode)
                 {
                     var stream = await response.Content.ReadAsStreamAsync();
-                    var shifts = await JsonSerializer.DeserializeAsync<List<Shift>>(stream);
-                    Console.WriteLine("Response:");
-                    Console.WriteLine(shifts);
-                }
-                else
-                {
-                    Console.WriteLine($"Failed to get data. Status code: {response.StatusCode}");
+                    shifts = await JsonSerializer.DeserializeAsync<List<Shift>>(stream);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
+
+            return shifts;
         }
     }
 }
