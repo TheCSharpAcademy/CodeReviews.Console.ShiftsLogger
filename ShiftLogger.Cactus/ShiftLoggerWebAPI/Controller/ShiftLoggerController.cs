@@ -27,7 +27,7 @@ namespace ShiftLogger.Cactus.Controller
         }
 
         // GET: ShiftLogger/5
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<ActionResult<DataModel.ShiftLogger>> GetShiftLogger(long id)
         {
             if (_context.ShiftLoggers == null)
@@ -42,6 +42,25 @@ namespace ShiftLogger.Cactus.Controller
             }
 
             return shiftLogger;
+        }
+
+        // GET: ShiftLogger/employeeName
+        [HttpGet("name/{employeeName}")]
+        public async Task<ActionResult<IEnumerable<DataModel.ShiftLogger>>> GetShiftLogger(string employeeName)
+        {
+            if (_context.ShiftLoggers == null)
+            {
+                return NotFound();
+            }
+
+            var shiftLoggers = await _context.ShiftLoggers.Where(x => x.EmployeeName == employeeName).ToListAsync();
+
+            if (shiftLoggers == null)
+            {
+                return NotFound();
+            }
+
+            return shiftLoggers;
         }
 
         // POST: ShiftLogger

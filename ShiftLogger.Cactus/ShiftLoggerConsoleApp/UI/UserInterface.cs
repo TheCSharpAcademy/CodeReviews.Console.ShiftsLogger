@@ -6,6 +6,8 @@ public class UserInterface
 {
     public static void ShowShifts(List<Shift> shifts)
     {
+        if (shifts is null || shifts.Count == 0) return;
+
         var table = new Table();
         table.AddColumn("Id");
         table.AddColumn("EmplyeeName");
@@ -30,6 +32,8 @@ public class UserInterface
 
     public static void ShowShift(Shift shift)
     {
+        if (shift == null) return;
+
         var panel = new Panel($@"ShiftId: {shift.Id}  EmployeeName: {shift.EmployeeName}  
                     ShiftDate: {shift.ShiftDate}  ShiftStartTime: {shift.ShiftStartTime}
                     ShiftEndTime: {shift.ShiftEndTime}  TotalHoursWorked: {shift.TotalHoursWorked}"

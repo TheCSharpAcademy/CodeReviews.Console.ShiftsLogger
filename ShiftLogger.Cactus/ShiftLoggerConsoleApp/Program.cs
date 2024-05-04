@@ -39,17 +39,17 @@ public static class Application
                 case MenuOptions.UpdateShift:
                     break;
                 case MenuOptions.ViewShift:
+                    var shifts = await ShiftLoggerService.GetShiftByName();
+                    UserInterface.ShowShifts(shifts);
                     break;
                 case MenuOptions.ViewAllShifts:
-                    var shifts = await ShiftLoggerService.GetShifts();
+                    shifts = await ShiftLoggerService.GetShifts();
                     UserInterface.ShowShifts(shifts);
                     break;
                 case MenuOptions.Quit:
                     isAppRunning = false;
                     break;
             }
-
-            UserInterface.BackToMainMenuPrompt();
         }
     }
 }
