@@ -6,7 +6,7 @@ public record class Shift(
     [property: JsonPropertyName("EmployeeName")] string EmployeeName,
     [property: JsonPropertyName("ShiftDate")] DateTime ShiftDate,
     [property: JsonPropertyName("ShiftStartTime")] TimeSpan ShiftStartTime,
-    [property: JsonPropertyName("ShiftStartTime")] TimeSpan ShiftEndTime,
+    [property: JsonPropertyName("ShiftEndTime")] TimeSpan ShiftEndTime,
     [property: JsonPropertyName("TotalHoursWorked")] double TotalHoursWorked)
 {
 }
