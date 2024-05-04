@@ -34,11 +34,8 @@ public class UserInterface
     {
         if (shift == null) return;
 
-        var panel = new Panel($@"ShiftId: {shift.Id}  EmployeeName: {shift.EmployeeName}  
-                    ShiftDate: {shift.ShiftDate}  ShiftStartTime: {shift.ShiftStartTime}
-                    ShiftEndTime: {shift.ShiftEndTime}  TotalHoursWorked: {shift.TotalHoursWorked}"
-                    );
-        panel.Header = new PanelHeader("Contact Info");
+        var panel = new Panel($@"ShiftId: {shift.Id}  EmployeeName: {shift.EmployeeName} ShiftDate: {shift.ShiftDate}  ShiftStartTime: {shift.ShiftStartTime} ShiftEndTime: {shift.ShiftEndTime}  TotalHoursWorked: {shift.TotalHoursWorked}");
+        panel.Header = new PanelHeader("Shift Info");
         panel.Padding = new Padding(2, 2, 2, 2);
 
         AnsiConsole.Write(panel);

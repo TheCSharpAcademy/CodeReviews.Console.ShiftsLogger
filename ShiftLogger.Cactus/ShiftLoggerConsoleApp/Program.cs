@@ -6,7 +6,6 @@ enum MenuOptions
 {
     AddShift,
     DeleteShift,
-    UpdateShift,
     ViewShift,
     ViewAllShifts,
     Quit
@@ -25,7 +24,6 @@ public static class Application
             .AddChoices(
                 MenuOptions.AddShift,
                 MenuOptions.DeleteShift,
-                MenuOptions.UpdateShift,
                 MenuOptions.ViewAllShifts,
                 MenuOptions.ViewShift,
                 MenuOptions.Quit));
@@ -33,10 +31,10 @@ public static class Application
             switch (option)
             {
                 case MenuOptions.AddShift:
+                    var addedShift = await ShiftLoggerService.AddNewShift();
+                    UserInterface.ShowShift(addedShift);
                     break;
                 case MenuOptions.DeleteShift:
-                    break;
-                case MenuOptions.UpdateShift:
                     break;
                 case MenuOptions.ViewShift:
                     var shifts = await ShiftLoggerService.GetShiftByName();
