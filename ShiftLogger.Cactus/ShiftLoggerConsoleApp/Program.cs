@@ -35,6 +35,8 @@ public static class Application
                     UserInterface.ShowShift(addedShift);
                     break;
                 case MenuOptions.DeleteShift:
+                    var deletedShifts = await ShiftLoggerService.DeleteShift();
+                    UserInterface.ShowShifts(deletedShifts);
                     break;
                 case MenuOptions.ViewShift:
                     var shifts = await ShiftLoggerService.GetShiftByName();

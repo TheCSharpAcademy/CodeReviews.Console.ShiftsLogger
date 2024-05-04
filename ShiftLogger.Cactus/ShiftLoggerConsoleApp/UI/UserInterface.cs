@@ -6,7 +6,11 @@ public class UserInterface
 {
     public static void ShowShifts(List<Shift> shifts)
     {
-        if (shifts is null || shifts.Count == 0) return;
+        if (shifts is null || shifts.Count == 0)
+        {
+            BackToMainMenuPrompt();
+            return;
+        }
 
         var table = new Table();
         table.AddColumn("Id");
@@ -32,7 +36,11 @@ public class UserInterface
 
     public static void ShowShift(Shift shift)
     {
-        if (shift == null) return;
+        if (shift == null)
+        {
+            BackToMainMenuPrompt();
+            return;
+        }
 
         var panel = new Panel($@"ShiftId: {shift.Id}  EmployeeName: {shift.EmployeeName} ShiftDate: {shift.ShiftDate}  ShiftStartTime: {shift.ShiftStartTime} ShiftEndTime: {shift.ShiftEndTime}  TotalHoursWorked: {shift.TotalHoursWorked}");
         panel.Header = new PanelHeader("Shift Info");

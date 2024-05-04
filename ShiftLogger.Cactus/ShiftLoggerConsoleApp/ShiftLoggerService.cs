@@ -34,25 +34,33 @@ public class ShiftLoggerService
     {
         using (HttpClient client = new HttpClient())
         {
-            List<Shift> shifts = new List<Shift>();
+            List<Shift> selectedShifts = new List<Shift>();
             try
             {
-                var name = AnsiConsole.Ask<string>("Empolyee's name:");
+                var shifts = await GetShifts();
 
-                string url = $"https://localhost:7256/shiftlogger/name/{name}";
-                HttpResponseMessage response = await client.GetAsync(url);
-                if (response.IsSuccessStatusCode)
+                if (shifts is null || shifts.Count <= 0)
                 {
-                    var stream = await response.Content.ReadAsStreamAsync();
-                    shifts = await JsonSerializer.DeserializeAsync<List<Shift>>(stream);
+                    Console.WriteLine("No Shift.");
+                    return selectedShifts;
                 }
+
+                List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
+
+                var selectedName = AnsiConsole.Prompt(
+                    new SelectionPrompt<String>()
+                        .Title("What would you like to view?")
+                        .AddChoices(uniqueNames));
+
+                selectedShifts = shifts.Where(shift => shift.EmployeeName.Equals(selectedName)).ToList();
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
 
-            return shifts;
+            return selectedShifts;
         }
     }
 
@@ -156,6 +164,46 @@ public class ShiftLoggerService
             return true;
         }
         return false;
+    }
+
+    public async static Task<List<Shift>> DeleteShift()
+    {
+        var deletedShifts = new List<Shift>();
+        using (HttpClient client = new HttpClient())
+        {
+            try
+            {
+                var shifts = await GetShifts();
+
+                if (shifts is null || shifts.Count <= 0)
+                {
+                    Console.WriteLine("No Shift.");
+                    return deletedShifts;
+                }
+
+                List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
+
+                var selectedName = AnsiConsole.Prompt(
+                    new SelectionPrompt<String>()
+                        .Title("What would you like to delete?")
+                        .AddChoices(uniqueNames));
+
+                string url = $"https://localhost:7256/shiftlogger/{selectedName}";
+                HttpResponseMessage response = await client.DeleteAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("DELETE request successful.");
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    deletedShifts = await JsonSerializer.DeserializeAsync<List<Shift>>(stream);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+        return deletedShifts;
     }
 }
 

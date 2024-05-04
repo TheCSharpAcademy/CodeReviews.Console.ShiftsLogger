@@ -26,7 +26,7 @@ namespace ShiftLogger.Cactus.Controller
             return await _context.ShiftLoggers.ToListAsync();
         }
 
-        // GET: ShiftLogger/5
+        // GET: ShiftLogger/id/5
         [HttpGet("id/{id}")]
         public async Task<ActionResult<DataModel.ShiftLogger>> GetShiftLogger(long id)
         {
@@ -44,7 +44,7 @@ namespace ShiftLogger.Cactus.Controller
             return shiftLogger;
         }
 
-        // GET: ShiftLogger/employeeName
+        // GET: ShiftLogger/name/employeeName
         [HttpGet("name/{employeeName}")]
         public async Task<ActionResult<IEnumerable<DataModel.ShiftLogger>>> GetShiftLogger(string employeeName)
         {
@@ -77,24 +77,21 @@ namespace ShiftLogger.Cactus.Controller
             return CreatedAtAction(nameof(GetShiftLogger), new { id = shiftLogger.Id }, shiftLogger);
         }
 
-        // DELETE: ShiftLogger/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteShiftLogger(long id)
+        // DELETE: ShiftLogger/name
+        [HttpDelete("{name}")]
+        public async Task<IActionResult> DeleteShiftLoggersByName(string name)
         {
-            if (_context.ShiftLoggers == null)
-            {
-                return NotFound();
-            }
-            var todoItem = await _context.ShiftLoggers.FindAsync(id);
-            if (todoItem == null)
+            var shiftLoggers = await _context.ShiftLoggers.Where(x => x.EmployeeName == name).ToListAsync();
+
+            if (shiftLoggers == null || !shiftLoggers.Any())
             {
                 return NotFound();
             }
 
-            _context.ShiftLoggers.Remove(todoItem);
+            _context.ShiftLoggers.RemoveRange(shiftLoggers);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(shiftLoggers);
         }
     }
 }
