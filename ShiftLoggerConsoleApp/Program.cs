@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using ShiftLoggerConsoleApp;
+using Spectre.Console;
 enum MenuOptions
 {
     AddShift,
@@ -36,6 +37,7 @@ public static class Application
                 case MenuOptions.UpdateShift:
                     break;
                 case MenuOptions.ViewShift:
+                    ShiftLoggerService.GetShift();
                     break;
                 case MenuOptions.ViewAllShifts:
                     break;
