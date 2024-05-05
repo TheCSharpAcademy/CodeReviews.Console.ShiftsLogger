@@ -93,5 +93,40 @@ namespace ShiftLogger.Cactus.Controller
 
             return Ok(shiftLoggers);
         }
+
+        // PUT: ShiftLogger/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTodoItem(long id, DataModel.ShiftLogger shiftLogger)
+        {
+            if (id != shiftLogger.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(shiftLogger).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ShiftLoggerExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok(shiftLogger);
+        }
+
+        private bool ShiftLoggerExists(long id)
+        {
+            return (_context.ShiftLoggers?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
     }
 }
