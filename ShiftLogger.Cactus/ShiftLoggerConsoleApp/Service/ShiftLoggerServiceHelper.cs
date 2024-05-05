@@ -75,7 +75,7 @@ public static class ShiftLoggerServiceHelper
 
         var selectedName = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Please choose the empolyee you like to update?")
+                .Title("Please choose the empolyee you like to operate?")
                 .AddChoices(uniqueNames));
 
         return selectedName;
