@@ -8,6 +8,7 @@ enum MenuOptions
     DeleteShift,
     ViewShift,
     ViewAllShifts,
+    UpdateShift,
     Quit
 }
 
@@ -23,9 +24,10 @@ public static class Application
             .Title("What would you like to do?")
             .AddChoices(
                 MenuOptions.AddShift,
-                MenuOptions.DeleteShift,
                 MenuOptions.ViewAllShifts,
                 MenuOptions.ViewShift,
+                MenuOptions.UpdateShift,
+                MenuOptions.DeleteShift,
                 MenuOptions.Quit));
 
             switch (option)
@@ -45,6 +47,10 @@ public static class Application
                 case MenuOptions.ViewAllShifts:
                     shifts = await ShiftLoggerService.GetShifts();
                     UserInterface.ShowShifts(shifts);
+                    break;
+                case MenuOptions.UpdateShift:
+                    var updatedShift = await ShiftLoggerService.UpdateShift();
+                    UserInterface.ShowShift(updatedShift);
                     break;
                 case MenuOptions.Quit:
                     isAppRunning = false;

@@ -28,10 +28,6 @@ public class UserInterface
         }
 
         AnsiConsole.Write(table);
-
-        Console.WriteLine("Press any key to go back to Main Menu");
-        Console.ReadLine();
-        Console.Clear();
     }
 
     public static void ShowShift(Shift shift)
