@@ -42,7 +42,6 @@ public class ShiftLoggerService
 
                 if (shifts is null || shifts.Count <= 0)
                 {
-                    Console.WriteLine("No Shift.");
                     return selectedShifts;
                 }
 
@@ -80,6 +79,7 @@ public class ShiftLoggerService
 
                 if (response.IsSuccessStatusCode)
                 {
+                    Console.WriteLine("ADD successfully.");
                     var stream = await response.Content.ReadAsStreamAsync();
                     addedShift = await JsonSerializer.DeserializeAsync<Shift>(stream);
                 }
@@ -112,8 +112,11 @@ public class ShiftLoggerService
     private static object InputShift()
     {
         var name = AnsiConsole.Ask<string>("Empolyee's name:");
+        Console.WriteLine("Plase type date");
         DateTime date = GetValidDate();
+        Console.WriteLine("Plase type start time");
         TimeSpan startTime = GetValidTime();
+        Console.WriteLine("Plase type end time");
         TimeSpan endTime = GetValidEndTime(startTime);
         var shift = new { EmployeeName = name, ShiftDate = date, ShiftStartTime = startTime, ShiftEndTime = endTime };
         return shift;
@@ -149,7 +152,6 @@ public class ShiftLoggerService
 
                 if (shifts is null || shifts.Count <= 0)
                 {
-                    Console.WriteLine("No Shift.");
                     return deletedShifts;
                 }
 
@@ -164,7 +166,7 @@ public class ShiftLoggerService
                 HttpResponseMessage response = await client.DeleteAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("DELETE request successful.");
+                    Console.WriteLine("DELETE successfully.");
                     var stream = await response.Content.ReadAsStreamAsync();
                     deletedShifts = await JsonSerializer.DeserializeAsync<List<Shift>>(stream);
                 }
@@ -189,7 +191,6 @@ public class ShiftLoggerService
 
                 if (shifts is null || shifts.Count <= 0)
                 {
-                    Console.WriteLine("No Shift.");
                     return updatedShfit;
                 }
 
@@ -227,6 +228,7 @@ public class ShiftLoggerService
 
                 if (response.IsSuccessStatusCode)
                 {
+                    Console.WriteLine("UPDATE successfully");
                     var stream = await response.Content.ReadAsStreamAsync();
                     updatedShfit = await JsonSerializer.DeserializeAsync<Shift>(stream);
                 }

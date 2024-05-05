@@ -8,11 +8,12 @@ public class UserInterface
     {
         if (shifts is null || shifts.Count == 0)
         {
-            BackToMainMenuPrompt();
+            Console.WriteLine("No Shift.");
             return;
         }
 
         var table = new Table();
+        table.Title("Shifts Info");
         table.AddColumn("Id");
         table.AddColumn("EmplyeeName");
         table.AddColumn("ShiftDate");
@@ -22,9 +23,9 @@ public class UserInterface
 
         foreach (Shift shift in shifts)
         {
-            table.AddRow(shift.Id.ToString(), shift.EmployeeName, shift.ShiftDate.ToString(),
+            table.AddRow(shift.Id.ToString(), shift.EmployeeName, shift.ShiftDate.ToShortDateString(),
                 shift.ShiftStartTime.ToString(), shift.ShiftEndTime.ToString(),
-                shift.TotalHoursWorked.ToString());
+                $"{(int)shift.TotalHoursWorked}h");
         }
 
         AnsiConsole.Write(table);
@@ -34,17 +35,18 @@ public class UserInterface
     {
         if (shift == null)
         {
-            BackToMainMenuPrompt();
+            Console.WriteLine("No Shift.");
             return;
         }
 
-        var panel = new Panel($@"ShiftId: {shift.Id}  EmployeeName: {shift.EmployeeName} ShiftDate: {shift.ShiftDate}  ShiftStartTime: {shift.ShiftStartTime} ShiftEndTime: {shift.ShiftEndTime}  TotalHoursWorked: {shift.TotalHoursWorked}");
-        panel.Header = new PanelHeader("Shift Info");
-        panel.Padding = new Padding(2, 2, 2, 2);
+        var panel = new Panel($"{shift.EmployeeName}: {shift.ShiftDate.ToShortDateString()} " +
+                                $"{shift.ShiftStartTime} - {shift.ShiftEndTime} {(int)shift.TotalHoursWorked}h")
+            .Header("[bold]Employee Shift Info[/]")
+            .BorderColor(Color.Blue);
+
+        panel.Padding(2, 2, 2, 2);
 
         AnsiConsole.Write(panel);
-
-        BackToMainMenuPrompt();
     }
 
     public static void BackToMainMenuPrompt()

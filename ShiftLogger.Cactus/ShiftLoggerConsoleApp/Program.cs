@@ -35,22 +35,27 @@ public static class Application
                 case MenuOptions.AddShift:
                     var addedShift = await ShiftLoggerService.AddNewShift();
                     UserInterface.ShowShift(addedShift);
+                    UserInterface.BackToMainMenuPrompt();
                     break;
                 case MenuOptions.DeleteShift:
                     var deletedShifts = await ShiftLoggerService.DeleteShift();
                     UserInterface.ShowShifts(deletedShifts);
+                    UserInterface.BackToMainMenuPrompt();
                     break;
                 case MenuOptions.ViewShift:
                     var shifts = await ShiftLoggerService.GetShiftByName();
                     UserInterface.ShowShifts(shifts);
+                    UserInterface.BackToMainMenuPrompt();
                     break;
                 case MenuOptions.ViewAllShifts:
                     shifts = await ShiftLoggerService.GetShifts();
                     UserInterface.ShowShifts(shifts);
+                    UserInterface.BackToMainMenuPrompt();
                     break;
                 case MenuOptions.UpdateShift:
                     var updatedShift = await ShiftLoggerService.UpdateShift();
                     UserInterface.ShowShift(updatedShift);
+                    UserInterface.BackToMainMenuPrompt();
                     break;
                 case MenuOptions.Quit:
                     isAppRunning = false;
