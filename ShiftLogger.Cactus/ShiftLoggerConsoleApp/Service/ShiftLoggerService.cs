@@ -46,13 +46,7 @@ public class ShiftLoggerService
                     return selectedShifts;
                 }
 
-                List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
-
-                var selectedName = AnsiConsole.Prompt(
-                    new SelectionPrompt<string>()
-                        .Title("What would you like to view?")
-                        .AddChoices(uniqueNames));
-
+                var selectedName = ShiftLoggerServiceHelper.SelectEmpolyeeName(shifts);
                 selectedShifts = shifts.Where(shift => shift.EmployeeName.Equals(selectedName)).ToList();
 
             }
@@ -75,6 +69,7 @@ public class ShiftLoggerService
                 var shift = ShiftLoggerServiceHelper.InputShift();
                 string jsonContent = await ShiftLoggerServiceHelper.GetJson(shift);
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
                 string url = "https://localhost:7256/shiftlogger";
                 HttpResponseMessage response = await client.PostAsync(url, content);
 
@@ -113,15 +108,11 @@ public class ShiftLoggerService
                     return deletedShifts;
                 }
 
-                List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
-
-                var selectedName = AnsiConsole.Prompt(
-                    new SelectionPrompt<string>()
-                        .Title("What would you like to delete?")
-                        .AddChoices(uniqueNames));
+                var selectedName = ShiftLoggerServiceHelper.SelectEmpolyeeName(shifts);
 
                 string url = $"https://localhost:7256/shiftlogger/{selectedName}";
                 HttpResponseMessage response = await client.DeleteAsync(url);
+
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine("DELETE successfully.");
@@ -152,12 +143,8 @@ public class ShiftLoggerService
                     return updatedShfit;
                 }
 
-                List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
-
-                var selectedName = AnsiConsole.Prompt(
-                    new SelectionPrompt<string>()
-                        .Title("Please choose the empolyee you like to update?")
-                        .AddChoices(uniqueNames));
+                // select empolyee name
+                string selectedName = ShiftLoggerServiceHelper.SelectEmpolyeeName(shifts);
 
                 var shiftsByName = shifts
                     .GroupBy(s => s.EmployeeName)
@@ -165,8 +152,8 @@ public class ShiftLoggerService
 
                 UserInterface.ShowShifts(shiftsByName[selectedName]);
 
+                // select shift to be updated
                 var ids = shiftsByName[selectedName].Select(shift => shift.Id.ToString()).ToList();
-
                 var selectedId = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Please choose the shift id you like to update?")
@@ -174,13 +161,15 @@ public class ShiftLoggerService
 
                 var selectedShift = shiftsByName[selectedName].Where(shift => shift.Id == int.Parse(selectedId)).ToList()[0];
 
+                // update date and time
                 var shiftDate = AnsiConsole.Confirm("Update Shift Date?") ? ShiftLoggerServiceHelper.GetValidDate() : selectedShift.ShiftDate;
                 var shiftStartTime = AnsiConsole.Confirm("Update Shift START Time?") ? ShiftLoggerServiceHelper.GetValidTime() : selectedShift.ShiftStartTime;
                 var shiftEndTime = AnsiConsole.Confirm("Update Shift END Time?") ? ShiftLoggerServiceHelper.GetValidEndTime(shiftStartTime) : selectedShift.ShiftEndTime;
-
                 var shift = new { Id = selectedId, EmployeeName = selectedName, ShiftDate = shiftDate, ShiftStartTime = shiftStartTime, ShiftEndTime = shiftEndTime };
+
                 string jsonContent = await ShiftLoggerServiceHelper.GetJson(shift);
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
                 string url = $"https://localhost:7256/shiftlogger/{selectedId}";
                 HttpResponseMessage response = await client.PutAsync(url, content);
 

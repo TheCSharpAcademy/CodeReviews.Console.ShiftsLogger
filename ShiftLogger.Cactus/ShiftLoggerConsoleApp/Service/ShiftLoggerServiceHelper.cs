@@ -1,4 +1,5 @@
-﻿using ShiftLoggerConsoleApp.Util;
+﻿using ShiftLoggerConsoleApp.Data;
+using ShiftLoggerConsoleApp.Util;
 using Spectre.Console;
 using System.Text.Json;
 
@@ -66,5 +67,17 @@ public static class ShiftLoggerServiceHelper
             using var reader = new StreamReader(stream);
             return await reader.ReadToEndAsync();
         }
+    }
+
+    public static string SelectEmpolyeeName(List<Shift> shifts)
+    {
+        List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
+
+        var selectedName = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Please choose the empolyee you like to update?")
+                .AddChoices(uniqueNames));
+
+        return selectedName;
     }
 }
