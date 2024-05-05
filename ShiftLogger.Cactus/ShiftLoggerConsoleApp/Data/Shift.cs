@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ShiftLoggerConsoleApp;
+namespace ShiftLoggerConsoleApp.Data;
 public record Shift(
     [property: JsonPropertyName("id")] int Id,
     [property: JsonPropertyName("employeeName")] string EmployeeName,

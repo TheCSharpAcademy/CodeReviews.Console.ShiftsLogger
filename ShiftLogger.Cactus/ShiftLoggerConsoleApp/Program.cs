@@ -1,4 +1,4 @@
-﻿using ShiftLoggerConsoleApp;
+﻿using ShiftLoggerConsoleApp.Service;
 using ShiftLoggerConsoleApp.UI;
 using Spectre.Console;
 

@@ -1,9 +1,10 @@
-﻿using ShiftLoggerConsoleApp.UI;
+﻿using ShiftLoggerConsoleApp.Data;
+using ShiftLoggerConsoleApp.UI;
 using Spectre.Console;
 using System.Text;
 using System.Text.Json;
 
-namespace ShiftLoggerConsoleApp;
+namespace ShiftLoggerConsoleApp.Service;
 
 public class ShiftLoggerService
 {
@@ -48,7 +49,7 @@ public class ShiftLoggerService
                 List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
 
                 var selectedName = AnsiConsole.Prompt(
-                    new SelectionPrompt<String>()
+                    new SelectionPrompt<string>()
                         .Title("What would you like to view?")
                         .AddChoices(uniqueNames));
 
@@ -71,8 +72,8 @@ public class ShiftLoggerService
         {
             try
             {
-                var shift = InputShift();
-                string jsonContent = await GetJson(shift);
+                var shift = ShiftLoggerServiceHelper.InputShift();
+                string jsonContent = await ShiftLoggerServiceHelper.GetJson(shift);
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 string url = "https://localhost:7256/shiftlogger";
                 HttpResponseMessage response = await client.PostAsync(url, content);
@@ -98,49 +99,6 @@ public class ShiftLoggerService
         return addedShift;
     }
 
-    private static async Task<string> GetJson(object shift)
-    {
-        using (var stream = new MemoryStream())
-        {
-            await JsonSerializer.SerializeAsync(stream, shift, shift.GetType());
-            stream.Position = 0;
-            using var reader = new StreamReader(stream);
-            return await reader.ReadToEndAsync();
-        }
-    }
-
-    private static object InputShift()
-    {
-        var name = AnsiConsole.Ask<string>("Empolyee's name:");
-        Console.WriteLine("Plase type date");
-        DateTime date = GetValidDate();
-        Console.WriteLine("Plase type start time");
-        TimeSpan startTime = GetValidTime();
-        Console.WriteLine("Plase type end time");
-        TimeSpan endTime = GetValidEndTime(startTime);
-        var shift = new { EmployeeName = name, ShiftDate = date, ShiftStartTime = startTime, ShiftEndTime = endTime };
-        return shift;
-    }
-
-    static bool IsValidDate(string dateStr, out DateTime date)
-    {
-
-        if (DateTime.TryParseExact(dateStr, "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out date))
-        {
-            return true;
-        }
-        return false;
-    }
-
-    static bool IsValidTime(string timeString, out TimeSpan timeSpan)
-    {
-        if (TimeSpan.TryParseExact(timeString, "hh\\:mm\\:ss", null, out timeSpan))
-        {
-            return true;
-        }
-        return false;
-    }
-
     public async static Task<List<Shift>> DeleteShift()
     {
         var deletedShifts = new List<Shift>();
@@ -158,7 +116,7 @@ public class ShiftLoggerService
                 List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
 
                 var selectedName = AnsiConsole.Prompt(
-                    new SelectionPrompt<String>()
+                    new SelectionPrompt<string>()
                         .Title("What would you like to delete?")
                         .AddChoices(uniqueNames));
 
@@ -197,7 +155,7 @@ public class ShiftLoggerService
                 List<string> uniqueNames = shifts.Select(shift => shift.EmployeeName).Distinct().ToList();
 
                 var selectedName = AnsiConsole.Prompt(
-                    new SelectionPrompt<String>()
+                    new SelectionPrompt<string>()
                         .Title("Please choose the empolyee you like to update?")
                         .AddChoices(uniqueNames));
 
@@ -210,18 +168,18 @@ public class ShiftLoggerService
                 var ids = shiftsByName[selectedName].Select(shift => shift.Id.ToString()).ToList();
 
                 var selectedId = AnsiConsole.Prompt(
-                    new SelectionPrompt<String>()
+                    new SelectionPrompt<string>()
                         .Title("Please choose the shift id you like to update?")
                         .AddChoices(ids));
 
                 var selectedShift = shiftsByName[selectedName].Where(shift => shift.Id == int.Parse(selectedId)).ToList()[0];
 
-                var shiftDate = AnsiConsole.Confirm("Update Shift Date?") ? GetValidDate() : selectedShift.ShiftDate;
-                var shiftStartTime = AnsiConsole.Confirm("Update Shift START Time?") ? GetValidTime() : selectedShift.ShiftStartTime;
-                var shiftEndTime = AnsiConsole.Confirm("Update Shift END Time?") ? GetValidEndTime(shiftStartTime) : selectedShift.ShiftEndTime;
+                var shiftDate = AnsiConsole.Confirm("Update Shift Date?") ? ShiftLoggerServiceHelper.GetValidDate() : selectedShift.ShiftDate;
+                var shiftStartTime = AnsiConsole.Confirm("Update Shift START Time?") ? ShiftLoggerServiceHelper.GetValidTime() : selectedShift.ShiftStartTime;
+                var shiftEndTime = AnsiConsole.Confirm("Update Shift END Time?") ? ShiftLoggerServiceHelper.GetValidEndTime(shiftStartTime) : selectedShift.ShiftEndTime;
 
                 var shift = new { Id = selectedId, EmployeeName = selectedName, ShiftDate = shiftDate, ShiftStartTime = shiftStartTime, ShiftEndTime = shiftEndTime };
-                string jsonContent = await GetJson(shift);
+                string jsonContent = await ShiftLoggerServiceHelper.GetJson(shift);
                 StringContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 string url = $"https://localhost:7256/shiftlogger/{selectedId}";
                 HttpResponseMessage response = await client.PutAsync(url, content);
@@ -240,44 +198,6 @@ public class ShiftLoggerService
         }
 
         return updatedShfit;
-    }
-
-    private static TimeSpan GetValidEndTime(TimeSpan startTime)
-    {
-        TimeSpan endTime = GetValidTime();
-        while (endTime < startTime)
-        {
-            Console.WriteLine($"End time should late than start time {startTime}.");
-            var endTimeStr = AnsiConsole.Ask<string>("End time (format: hh:mm:ss): ");
-            while (!IsValidTime(endTimeStr, out endTime))
-            {
-                endTimeStr = AnsiConsole.Ask<string>("End time (format: hh:mm:ss): ");
-            }
-        }
-        return endTime;
-    }
-
-    private static TimeSpan GetValidTime()
-    {
-        var timeStr = AnsiConsole.Ask<string>("Shift time (format: hh:mm:ss): ");
-        TimeSpan time;
-        while (!IsValidTime(timeStr, out time))
-        {
-            timeStr = AnsiConsole.Ask<string>("Shift time (format: hh:mm:ss): ");
-        }
-        return time;
-    }
-
-    private static DateTime GetValidDate()
-    {
-        var dateStr = AnsiConsole.Ask<string>("Shift date (format: yyyy-MM-dd):");
-        DateTime date;
-        while (!IsValidDate(dateStr, out date))
-        {
-            dateStr = AnsiConsole.Ask<string>("Shift date (format: yyyy-MM-dd):");
-        }
-
-        return date;
     }
 }
 

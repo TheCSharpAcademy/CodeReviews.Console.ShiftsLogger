@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using ShiftLoggerConsoleApp.Data;
+using Spectre.Console;
 
 namespace ShiftLoggerConsoleApp.UI;
 
