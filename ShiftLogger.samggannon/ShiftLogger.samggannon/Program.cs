@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using ShiftLogger.samggannon.DataContext;
+using ShiftLogger.samggannon.Models;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);

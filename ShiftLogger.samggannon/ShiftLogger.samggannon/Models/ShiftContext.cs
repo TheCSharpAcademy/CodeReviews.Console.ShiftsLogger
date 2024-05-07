@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShiftLogger.samggannon.Models;
 using System.Configuration;
 
-namespace ShiftLogger.samggannon.DataContext;
+namespace ShiftLogger.samggannon.Models;
 
-public class ShiftContext :  DbContext
+public class ShiftContext : DbContext
 {
     private readonly IConfiguration _configuration;
 
