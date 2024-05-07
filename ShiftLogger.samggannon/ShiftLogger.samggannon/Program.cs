@@ -1,11 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using ShiftLogger.samggannon.DataContext;
+using System.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ShiftContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DataConnection")));
 
 var app = builder.Build();
 
