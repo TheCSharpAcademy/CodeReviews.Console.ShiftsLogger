@@ -1,11 +1,10 @@
-﻿namespace ShiftLogger.samggannon.Models
+﻿namespace ShiftLogger.samggannon.Models;
+
+public class WorkShift
 {
-    public class WorkShift
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime ClockIn { get; set; }
-        public DateTime ClockOut { get; set; }
-        public string Duration { get; set; }
-    }
+    public int Id { get; set; }
+    public int WorkerId { get; set; }
+    public DateTime ClockIn { get; set; }
+    public DateTime ClockOut { get; set; }
+    public string Duration { get; set; }
 }

@@ -5,7 +5,7 @@ public class Enums
     public enum MenuOptions
     {
         AddShift,
-        ShowShift,
+        ShowAllShifts,
         ShowShiftById,
         EditShiftById,
         DeleteShiftById,
