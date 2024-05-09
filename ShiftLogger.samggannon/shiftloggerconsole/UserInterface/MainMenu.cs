@@ -19,7 +19,6 @@ internal static class MainMenu
                 .AddChoices(
                     MenuOptions.AddShift,
                     MenuOptions.ShowAllShifts,
-                    MenuOptions.ShowShiftById,
                     MenuOptions.EditShiftById,
                     MenuOptions.DeleteShiftById,
                     MenuOptions.Quit
@@ -33,14 +32,11 @@ internal static class MainMenu
                 case MenuOptions.ShowAllShifts:
                     ShiftLoggerService.GetAllShifts();
                     break;
-                case MenuOptions.ShowShiftById:
-                    DoSomething();
-                    break;
                 case MenuOptions.EditShiftById:
-                    DoSomething();
+                    ShiftLoggerService.EditShift();
                     break;
                 case MenuOptions.DeleteShiftById:
-                    DoSomething();
+                    ShiftLoggerService.DeleteShiftById();
                     break;
                 case MenuOptions.Quit:
                     appIsRunning = false;
@@ -49,10 +45,5 @@ internal static class MainMenu
 
             }
         }
-    }
-
-    private static void DoSomething()
-    {
-        throw new NotImplementedException();
     }
 }

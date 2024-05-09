@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore.Update.Internal;
+using Newtonsoft.Json;
 using ShiftLogger.samggannon.Models;
 using shiftloggerconsole.Models;
 using shiftloggerconsole.UserInterface;
+using Spectre.Console;
 
 namespace shiftloggerconsole.Services;
 
@@ -15,7 +17,7 @@ internal class ShiftLoggerService
     {
         _httpClient = new HttpClient();
         _apiBaseUrl = "https://localhost:7205/";
-        _endPointUrl = "api/WorkShifts";
+        _endPointUrl = "api/WorkShifts/";
     }
 
     // AddShift
@@ -42,12 +44,12 @@ internal class ShiftLoggerService
         {
             var responseData = await response.Content.ReadAsStringAsync();
             var createdShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-            InformUser(true, $"New shift was created: WorkerId: {createdShift.WorkerId}" + Environment.NewLine + $"Clock In Time: {createdShift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {createdShift.ClockOut}");
+            Utilities.Utilities.InformUser(true, $"New shift was created: WorkerId: {createdShift.WorkerId}" + Environment.NewLine + $"Clock In Time: {createdShift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {createdShift.ClockOut}");
 
         }
         else
         {
-            InformUser(false, "Failed to create shift");
+            Utilities.Utilities.InformUser(false, "Failed to create shift");
         }
     }
 
@@ -69,38 +71,153 @@ internal class ShiftLoggerService
                 }
                 else
                 {
-                    InformUser(false, $"Failed to retrieve shifts. Status code : {response.StatusCode}");
+                    Utilities.Utilities.InformUser(false, $"Failed to retrieve shifts. Status code : {response.StatusCode}");
                 }
             }
         }
         catch (Exception ex)
         {
-            InformUser(false, $"An error occurred: {ex.Message}");
+            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
         }
 
         Visualization.ShowTable(shifts);
-    }
 
-
-
-    private static void InformUser(bool isSuccessStatusCode, string infoMessage)
-    {
-        Console.Clear();
-        if (isSuccessStatusCode)
-        {
-            Console.WriteLine(infoMessage);
-        }
-        else
-        {
-            Console.WriteLine(infoMessage);
-        }
-
-        Console.WriteLine("Press [enter] to go back");
-
+        Console.WriteLine("Press [enter] to continue");
         Utilities.Utilities.ConfirmKey();
     }
 
+    internal static void DeleteShiftById()
+    {
+        GetAllShifts();
 
+        Console.WriteLine("\nPlease select the id of the shift you wish to delete");
+        var shiftId = Console.ReadLine();
+
+        Shift shift = new Shift();
+
+        try
+        {
+
+            HttpResponseMessage response = _httpClient.GetAsync(_apiBaseUrl + _endPointUrl + shiftId).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseData = response.Content.ReadAsStringAsync().Result;
+                shift = JsonConvert.DeserializeObject<Shift>(responseData);
+            }
+            else
+            {
+                Utilities.Utilities.InformUser(false, "Please ensure the Id of the shift is valid and try again");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
+        }
+
+        Visualization.ShowRow(shift);
+    }
+
+    #region Edit Shift
+    internal static void EditShift()
+    {
+        GetAllShifts();
+
+        Console.WriteLine("\nPlease select the id of the shift you wish to edit");
+        var shiftId = Console.ReadLine();
+
+        Shift shift = new Shift();
+
+        try
+        {
+
+            HttpResponseMessage response = _httpClient.GetAsync(_apiBaseUrl + _endPointUrl + shiftId).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseData = response.Content.ReadAsStringAsync().Result;
+                shift = JsonConvert.DeserializeObject<Shift>(responseData);
+            }
+            else
+            {
+                Utilities.Utilities.InformUser(false, "Please ensure the Id of the shift is valid and try again");
+                MainMenu.ShowMenu();
+            }
+            
+        }
+        catch (Exception ex)
+        {
+            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
+        }
+
+        Visualization.ShowRow(shift);
+        ConfirmEdit(shift, "edit");
+    }
+
+    private static void ConfirmEdit(Shift? shift, string? editMethod)
+    {
+        var isConfirmed = AnsiConsole.Confirm($"Is this the record you wish to {editMethod}?");
+        if (isConfirmed)
+        {
+            if(editMethod == "edit")
+            {
+                shift.ClockIn = PunchIn();
+                shift.ClockOut = PunchOut();
+                shift.Duration = CalculateTime(shift.ClockIn, shift.ClockOut);
+
+                UpdateShift(shift);
+            }
+
+            if(editMethod == "delete")
+            {
+                DeleteShift(shift);
+            }
+        }
+
+    }
+
+    private static void DeleteShift(Shift? shift)
+    {
+        var serializedShift = JsonConvert.SerializeObject(shift);
+        //var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
+        var response = _httpClient.DeleteAsync(_apiBaseUrl + _endPointUrl + shift.Id).Result;
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseData = response.Content.ReadAsStringAsync().Result;
+            var updatedShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
+            Utilities.Utilities.InformUser(true, $"New shift was deleted: shift Id: {shift.Id}");
+
+        }
+        else
+        {
+            Utilities.Utilities.InformUser(false, "Failed to delete shift");
+        }
+    }
+
+    private static void UpdateShift(Shift shift)
+    {
+        var serializedShift = JsonConvert.SerializeObject(shift);
+        var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
+        var response = _httpClient.PutAsync(_apiBaseUrl + _endPointUrl + shift.Id, content).Result;
+
+        if (response.IsSuccessStatusCode)
+        {
+            //var responseData = response.Content.ReadAsStringAsync().Result;
+            //var updatedShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
+            Utilities.Utilities.InformUser(true, $"Shift was updated: WorkerId: {shift.WorkerId}" + Environment.NewLine + $"Clock In Time: {shift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {shift.ClockOut}");
+
+        }
+        else
+        {
+            Utilities.Utilities.InformUser(false, "Failed to create shift");
+        }
+    }
+
+    #endregion
+
+    #region Property Helpers
     private static int GetRandomWorkerId()
     {
         int[] workerId = { 123456, 789012, 345678, 901234, 567890 };
@@ -112,22 +229,43 @@ internal class ShiftLoggerService
         return workerId[randomIndex];
     }
 
-    private string CalculateTime(DateTime clockIn, DateTime clockOut)
+    private static DateTime PunchIn()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Please enter the clock-in date and time (format: yyyy-MM-dd HH:mm:ss):");
+        while (true)
+        {
+            if (DateTime.TryParseExact(Console.ReadLine(), "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime result))
+            {
+                return result;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter the date and time in the format yyyy-MM-dd HH:mm:ss");
+            }
+        }
     }
 
-    private DateTime PunchOut()
+    private static DateTime PunchOut()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("Please enter the clock-out date and time (format: yyyy-MM-dd HH:mm:ss):");
+        while (true)
+        {
+            if (DateTime.TryParseExact(Console.ReadLine(), "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime result))
+            {
+                return result;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter the date and time in the format yyyy-MM-dd HH:mm:ss");
+            }
+        }
     }
 
-    private DateTime PunchIn()
+    private static string CalculateTime(DateTime clockIn, DateTime clockOut)
     {
-        throw new NotImplementedException();
+        TimeSpan duration = clockOut - clockIn;
+        return duration.ToString(@"hh\:mm\:ss");
     }
-    //ShowAllShifts,
-    //ShowShiftById,
-    //EditShiftById,
-    //DeleteShiftById,
+
+    #endregion
 }

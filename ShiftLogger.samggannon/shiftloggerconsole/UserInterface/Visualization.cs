@@ -5,11 +5,38 @@ namespace shiftloggerconsole.UserInterface;
 
 internal class Visualization
 {
+    internal static void ShowRow(Shift? shift)
+    {
+        Console.Clear();
+        if(shift.Id != 0)
+        {
+            var table = new Table();
+            table.AddColumn("Shift Id");
+            table.AddColumn("Worker Id");
+            table.AddColumn("Clock In Time");
+            table.AddColumn("Clock Out Time");
+            table.AddColumn("Shift Duration");
+
+            table.AddRow(
+                shift.Id.ToString(),
+                shift.WorkerId.ToString(),
+                shift.ClockIn.ToString(),
+                shift.ClockOut.ToString(),
+                shift.Duration
+                );
+        }
+        else
+        {
+            Utilities.Utilities.InformUser(false, "Not a valid Id.");
+        }
+        
+    }
+
     internal static void ShowTable(List<Shift>? shifts)
     {
         Console.Clear();
         var table = new Table();
-        table.AddColumn("Shhift Id");
+        table.AddColumn("Shift Id");
         table.AddColumn("Worker Id");
         table.AddColumn("Clock In Time");
         table.AddColumn("Clock Out Time");
@@ -22,13 +49,10 @@ internal class Visualization
                 shift.WorkerId.ToString(),
                 shift.ClockIn.ToString(),
                 shift.ClockOut.ToString(),
-                "8:00:00"
+                shift.Duration
                 );
         }
 
         AnsiConsole.Write(table);
-        Console.WriteLine("Press [enter] to continue");
-
-        Utilities.Utilities.ConfirmKey();
     }
 }
