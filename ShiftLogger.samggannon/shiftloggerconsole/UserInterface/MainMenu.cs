@@ -31,7 +31,7 @@ internal static class MainMenu
                     ShiftLoggerService.InsertShiftAsync();
                     break;
                 case MenuOptions.ShowAllShifts:
-                    DoSomething();
+                    ShiftLoggerService.GetAllShifts();
                     break;
                 case MenuOptions.ShowShiftById:
                     DoSomething();
