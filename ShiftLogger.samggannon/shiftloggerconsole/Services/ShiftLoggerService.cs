@@ -13,7 +13,7 @@ internal class ShiftLoggerService
     private readonly string _apiBaseUrl;
     private readonly string _endPointUrl;
 
-    public ShiftLoggerService(HttpClient httpClient, string apiBaseUrl, string endPointUrl)
+    public ShiftLoggerService(HttpClient httpClient, string? apiBaseUrl, string? endPointUrl)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _apiBaseUrl = apiBaseUrl ?? throw new ArgumentNullException(nameof(apiBaseUrl));
@@ -42,9 +42,9 @@ internal class ShiftLoggerService
             {
                 var responseData = await response.Content.ReadAsStringAsync();
                 var createdShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-                InformUser($"New shift was created: WorkerId: {createdShift.WorkerId}\n" +
-                       $"Clock In Time: {createdShift.ClockIn}\n" +
-                       $"Clock Out Time: {createdShift.ClockOut}");
+                InformUser($"New shift was created: WorkerId: {createdShift?.WorkerId}\n" +
+                       $"Clock In Time: {createdShift?.ClockIn}\n" +
+                       $"Clock Out Time: {createdShift?.ClockOut}");
             }
         }
         catch (Exception ex)
@@ -79,7 +79,7 @@ internal class ShiftLoggerService
         Console.Clear();
         Console.WriteLine("Retreveing records. Please wait...");
 
-        List<Shift> shifts = new List<Shift>();
+        List<Shift>? shifts = new List<Shift>();
 
         try
         {
@@ -103,11 +103,11 @@ internal class ShiftLoggerService
 
     internal async Task EditShift()
     {
-        GetAllShifts();
+        await GetAllShifts();
 
         var shiftId = UserInput.GetShiftIdInput();
 
-        Shift shift = new Shift();
+        Shift? shift = new Shift();
 
         try
         {
@@ -130,10 +130,10 @@ internal class ShiftLoggerService
         }
 
         Visualization.ShowRow(shift);
-        ConfirmEdit(shift, "edit");
+        await ConfirmEdit(shift, "edit");
     }
 
-    private void ConfirmEdit(Shift? shift, string? editMethod)
+    private async Task ConfirmEdit(Shift? shift, string? editMethod)
     {
         var isConfirmed = AnsiConsole.Confirm($"Is this the record you wish to {editMethod}?");
         if (isConfirmed)
@@ -144,12 +144,12 @@ internal class ShiftLoggerService
                 shift.ClockOut = UserInput.GetPunchOut();
                 shift.Duration = CalculateTime(shift.ClockIn, shift.ClockOut);
 
-                UpdateShift(shift);
+                await UpdateShift(shift);
             }
 
             if (editMethod == "delete")
             {
-                DeleteShift(shift);
+                await DeleteShift(shift);
             }
         }
     }
@@ -160,7 +160,7 @@ internal class ShiftLoggerService
 
         var shiftId = UserInput.GetShiftIdInput();
 
-        Shift shift = new Shift();
+        Shift? shift = new Shift();
 
         try
         {
@@ -183,19 +183,19 @@ internal class ShiftLoggerService
         }
 
         Visualization.ShowRow(shift);
-        ConfirmEdit(shift, "delete");
+        await ConfirmEdit(shift, "delete");
     }
 
     private async Task DeleteShift(Shift? shift)
     {
-        Console.WriteLine($"Deleting shift with Shiftd; {shift.Id}");
+        Console.WriteLine($"Deleting shift with Shiftd; {shift?.Id}");
         try
         {
-            var response = await _httpClient.DeleteAsync(_apiBaseUrl + _endPointUrl + shift.Id);
+            var response = await _httpClient.DeleteAsync(_apiBaseUrl + _endPointUrl + shift?.Id);
 
             if (response.IsSuccessStatusCode)
             {
-                InformUser($"Shift was deleted: shift Id: {shift.Id}");
+                InformUser($"Shift was deleted: shift Id: {shift?.Id}");
             }
         }
         catch (Exception ex)
