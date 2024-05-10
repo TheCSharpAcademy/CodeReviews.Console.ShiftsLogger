@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Update.Internal;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ShiftLogger.samggannon.Models;
 using shiftloggerconsole.Models;
 using shiftloggerconsole.UserInterface;
 using Spectre.Console;
+using static shiftloggerconsole.Helpers.Helpers;
 
 namespace shiftloggerconsole.Services;
 
@@ -20,7 +20,6 @@ internal class ShiftLoggerService
         _endPointUrl = endPointUrl ?? throw new ArgumentNullException(nameof(endPointUrl));
     }
 
-    // AddShift
     public async Task InsertShiftAsync()
     {
         ///<summary>
@@ -43,14 +42,14 @@ internal class ShiftLoggerService
             {
                 var responseData = await response.Content.ReadAsStringAsync();
                 var createdShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-                Utilities.Utilities.InformUser($"New shift was created: WorkerId: {createdShift.WorkerId}\n" +
+                InformUser($"New shift was created: WorkerId: {createdShift.WorkerId}\n" +
                        $"Clock In Time: {createdShift.ClockIn}\n" +
                        $"Clock Out Time: {createdShift.ClockOut}");
             }
         }
         catch (Exception ex)
         {
-            Utilities.Utilities.InformUser($"An error occurred: {ex.Message}");
+            InformUser($"An error occurred: {ex.Message}");
         }
     }
 
@@ -72,79 +71,62 @@ internal class ShiftLoggerService
         Random rand = new Random();
         int randomIndex = rand.Next(0, workerId.Length);
 
-
         return workerId[randomIndex];
     }
 
-    public void GetAllShifts()
+    public async Task GetAllShifts()
     {
         Console.Clear();
+        Console.WriteLine("Retreveing records. Please wait...");
+
         List<Shift> shifts = new List<Shift>();
 
         try
         {
-
-            HttpResponseMessage response = _httpClient.GetAsync(_apiBaseUrl + _endPointUrl).Result;
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiBaseUrl + _endPointUrl);
 
             if (response.IsSuccessStatusCode)
             {
-                string responseData = response.Content.ReadAsStringAsync().Result;
+                string responseData = await response.Content.ReadAsStringAsync();
                 shifts = JsonConvert.DeserializeObject<List<Shift>>(responseData);
+                Visualization.ShowTable(shifts);
             }
-            else
-            {
-                Utilities.Utilities.InformUser($"Failed to retrieve shifts. Status code : {response.StatusCode}");
-            }
-            
         }
         catch (Exception ex)
         {
-            Utilities.Utilities.InformUser($"An error occurred: {ex.Message}");
+            InformUser($"An error occurred: {ex.Message}");
         }
 
-        Visualization.ShowTable(shifts);
-
         Console.WriteLine("Press [enter] to continue");
-        Utilities.Utilities.ConfirmKey();
+        ConfirmKey();
     }
 
-    #region Edit Shift
-    internal void EditShift()
+    internal async Task EditShift()
     {
         GetAllShifts();
 
-        Console.WriteLine("\nPlease select the id of the shift you wish to edit");
-        var selectedId = Console.ReadLine();
-        var shiftId = 0;
-
-        while (!Int32.TryParse(selectedId, out shiftId))
-        {
-            Console.WriteLine("please enter a shift id. it must be a number");
-            selectedId = Console.ReadLine();
-        }
+        var shiftId = UserInput.GetShiftIdInput();
 
         Shift shift = new Shift();
 
         try
         {
-
-            HttpResponseMessage response = _httpClient.GetAsync(_apiBaseUrl + _endPointUrl + shiftId).Result;
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiBaseUrl + _endPointUrl + shiftId);
 
             if (response.IsSuccessStatusCode)
             {
-                string responseData = response.Content.ReadAsStringAsync().Result;
+                string responseData = await response.Content.ReadAsStringAsync();
                 shift = JsonConvert.DeserializeObject<Shift>(responseData);
             }
             else
             {
-                Utilities.Utilities.InformUser("Please ensure the Id of the shift is valid and try again");
+                InformUser("Please ensure the Id of the shift is valid and try again");
                 return;
             }
-            
         }
         catch (Exception ex)
         {
-            Utilities.Utilities.InformUser($"An error occurred: {ex.Message}");
+            InformUser($"An error occurred: {ex.Message}");
         }
 
         Visualization.ShowRow(shift);
@@ -156,133 +138,89 @@ internal class ShiftLoggerService
         var isConfirmed = AnsiConsole.Confirm($"Is this the record you wish to {editMethod}?");
         if (isConfirmed)
         {
-            if(editMethod == "edit")
+            if (editMethod == "edit")
             {
-                shift.ClockIn = PunchIn();
-                shift.ClockOut = PunchOut();
+                shift.ClockIn = UserInput.GetPunchIn();
+                shift.ClockOut = UserInput.GetPunchOut();
                 shift.Duration = CalculateTime(shift.ClockIn, shift.ClockOut);
 
                 UpdateShift(shift);
             }
 
-            if(editMethod == "delete")
+            if (editMethod == "delete")
             {
                 DeleteShift(shift);
             }
         }
-
     }
 
-    internal void DeleteShiftById()
+    internal async Task DeleteShiftById()
     {
-        GetAllShifts();
+        await GetAllShifts();
 
-        Console.WriteLine("\nPlease select the id of the shift you wish to delete and then press [enter]");
-        var selectedShift = Console.ReadLine();
-        var shiftId = 0;
-
-        while (!Int32.TryParse(selectedShift, out shiftId))
-        {
-            Console.WriteLine("please enter a shift id. it must be a number");
-            selectedShift = Console.ReadLine();
-        }
+        var shiftId = UserInput.GetShiftIdInput();
 
         Shift shift = new Shift();
 
         try
         {
-            HttpResponseMessage response = _httpClient.GetAsync(_apiBaseUrl + _endPointUrl + shiftId).Result;
+            HttpResponseMessage response = await _httpClient.GetAsync(_apiBaseUrl + _endPointUrl + shiftId);
 
             if (response.IsSuccessStatusCode)
             {
-                string responseData = response.Content.ReadAsStringAsync().Result;
+                string responseData = await response.Content.ReadAsStringAsync();
                 shift = JsonConvert.DeserializeObject<Shift>(responseData);
             }
             else
             {
-                Utilities.Utilities.InformUser("Please ensure the Id of the shift is valid and try again");
+                InformUser("Please ensure the Id of the shift is valid and try again");
             }
 
         }
         catch (Exception ex)
         {
-            Utilities.Utilities.InformUser($"An error occurred: {ex.Message}");
+            InformUser($"An error occurred: {ex.Message}");
         }
 
         Visualization.ShowRow(shift);
         ConfirmEdit(shift, "delete");
     }
 
-    private void DeleteShift(Shift? shift)
+    private async Task DeleteShift(Shift? shift)
     {
-        // var serializedShift = JsonConvert.SerializeObject(shift);
-        // var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
-        var response = _httpClient.DeleteAsync(_apiBaseUrl + _endPointUrl + shift.Id).Result;
-
-        if (response.IsSuccessStatusCode)
+        Console.WriteLine($"Deleting shift with Shiftd; {shift.Id}");
+        try
         {
-            //var responseData = response.Content.ReadAsStringAsync().Result;
-            //var updatedShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-            Utilities.Utilities.InformUser($"Shift was deleted: shift Id: {shift.Id}");
+            var response = await _httpClient.DeleteAsync(_apiBaseUrl + _endPointUrl + shift.Id);
 
+            if (response.IsSuccessStatusCode)
+            {
+                InformUser($"Shift was deleted: shift Id: {shift.Id}");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Utilities.Utilities.InformUser("Failed to delete shift");
+            InformUser($"Failed to delete shift:\n {ex.Message}");
         }
     }
 
-    private void UpdateShift(Shift shift)
+    private async Task UpdateShift(Shift shift)
     {
-        var serializedShift = JsonConvert.SerializeObject(shift);
-        var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
-        var response = _httpClient.PutAsync(_apiBaseUrl + _endPointUrl + shift.Id, content).Result;
-
-        if (response.IsSuccessStatusCode)
+        Console.WriteLine($"Updating shift with ShiftId: {shift.Id} ");
+        try
         {
-            //var responseData = response.Content.ReadAsStringAsync().Result;
-            //var updatedShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-            Utilities.Utilities.InformUser($"Shift was updated: WorkerId: {shift.WorkerId}" + Environment.NewLine + $"Clock In Time: {shift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {shift.ClockOut}");
+            var serializedShift = JsonConvert.SerializeObject(shift);
+            var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(_apiBaseUrl + _endPointUrl + shift.Id, content);
 
-        }
-        else
-        {
-            Utilities.Utilities.InformUser("Failed to create shift");
-        }
-    }
-
-    #endregion
-
-    #region Property Helpers
-    private static DateTime PunchIn()
-    {
-        Console.WriteLine("Please enter the clock-in date and time (format: yyyy-MM-dd HH:mm:ss):");
-        while (true)
-        {
-            if (DateTime.TryParseExact(Console.ReadLine(), "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime result))
+            if (response.IsSuccessStatusCode)
             {
-                return result;
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter the date and time in the format yyyy-MM-dd HH:mm:ss");
+                InformUser($"Shift was updated: WorkerId: {shift.WorkerId}" + Environment.NewLine + $"Clock In Time: {shift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {shift.ClockOut}");
             }
         }
-    }
-
-    private static DateTime PunchOut()
-    {
-        Console.WriteLine("Please enter the clock-out date and time (format: yyyy-MM-dd HH:mm:ss):");
-        while (true)
+        catch (Exception ex)
         {
-            if (DateTime.TryParseExact(Console.ReadLine(), "yyyy-MM-dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime result))
-            {
-                return result;
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter the date and time in the format yyyy-MM-dd HH:mm:ss");
-            }
+            InformUser($"Failed to create shift:\n {ex.Message}");
         }
     }
 
@@ -291,6 +229,4 @@ internal class ShiftLoggerService
         TimeSpan duration = clockOut - clockIn;
         return duration.ToString(@"hh\:mm\:ss");
     }
-
-    #endregion
 }

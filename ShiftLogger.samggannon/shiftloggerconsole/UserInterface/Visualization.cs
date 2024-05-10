@@ -1,4 +1,5 @@
 ﻿using shiftloggerconsole.Models;
+using static shiftloggerconsole.Helpers.Helpers;
 using Spectre.Console;
 
 namespace shiftloggerconsole.UserInterface;
@@ -27,7 +28,7 @@ internal class Visualization
         }
         else
         {
-            Utilities.Utilities.InformUser("Not a valid Id.");
+            InformUser("Not a valid Id.");
         }
         
     }

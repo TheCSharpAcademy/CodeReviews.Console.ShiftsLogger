@@ -1,7 +1,7 @@
-﻿using Spectre.Console;
-using shiftloggerconsole.UserInterface;
+﻿using shiftloggerconsole.Services;
+using Spectre.Console;
+using static shiftloggerconsole.Helpers.Helpers;
 using static shiftloggerconsole.UserInterface.Enums;
-using shiftloggerconsole.Services;
 
 namespace shiftloggerconsole.UserInterface;
 
@@ -16,7 +16,7 @@ internal static class MainMenu
         var shiftLoggerService = new ShiftLoggerService(httpClientFactory.CreateClient("ShiftLoggerApi"), apiBaseUrl, endPointUrl);
 
         var appIsRunning = true;
-        while(appIsRunning)
+        while (appIsRunning)
         {
             Console.Clear();
             var option = AnsiConsole.Prompt(
@@ -27,6 +27,7 @@ internal static class MainMenu
                     MenuOptions.ShowAllShifts,
                     MenuOptions.EditShiftById,
                     MenuOptions.DeleteShiftById,
+                    MenuOptions.DevelopersDisclaimer,
                     MenuOptions.Quit
                     ));
 
@@ -36,13 +37,16 @@ internal static class MainMenu
                     await shiftLoggerService.InsertShiftAsync();
                     break;
                 case MenuOptions.ShowAllShifts:
-                    shiftLoggerService.GetAllShifts();
+                    await shiftLoggerService.GetAllShifts();
                     break;
                 case MenuOptions.EditShiftById:
-                    shiftLoggerService.EditShift();
+                    await shiftLoggerService.EditShift();
                     break;
                 case MenuOptions.DeleteShiftById:
-                    shiftLoggerService.DeleteShiftById();
+                    await shiftLoggerService.DeleteShiftById();
+                    break;
+                case MenuOptions.DevelopersDisclaimer:
+                    DevelopersNote();
                     break;
                 case MenuOptions.Quit:
                     appIsRunning = false;
