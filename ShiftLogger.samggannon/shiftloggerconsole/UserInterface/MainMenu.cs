@@ -7,7 +7,7 @@ namespace shiftloggerconsole.UserInterface;
 
 internal static class MainMenu
 {
-    internal static void ShowMenu()
+    internal static async Task ShowMenu()
     {
         var appIsRunning = true;
         while(appIsRunning)
@@ -27,7 +27,7 @@ internal static class MainMenu
             switch (option)
             {
                 case MenuOptions.AddShift:
-                    ShiftLoggerService.InsertShiftAsync();
+                    await ShiftLoggerService.InsertShiftAsync();
                     break;
                 case MenuOptions.ShowAllShifts:
                     ShiftLoggerService.GetAllShifts();

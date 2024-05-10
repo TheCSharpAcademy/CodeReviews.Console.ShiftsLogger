@@ -28,6 +28,9 @@ internal class ShiftLoggerService
         /// A standard american work shift is 8 hours,
         /// For simplicity, we will insert an 8 hour shift for a random generic employee and allow for changes later
         ///</summary>
+
+        Console.WriteLine("inserting record. Please wait...");
+
         var shift = new WorkShift
         {
             WorkerId = GetRandomWorkerId(),
@@ -38,19 +41,28 @@ internal class ShiftLoggerService
 
         var serializedShift = JsonConvert.SerializeObject(shift);
         var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync(_apiBaseUrl + _endPointUrl, content);
 
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var responseData = await response.Content.ReadAsStringAsync();
-            var createdShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-            Utilities.Utilities.InformUser(true, $"New shift was created: WorkerId: {createdShift.WorkerId}" + Environment.NewLine + $"Clock In Time: {createdShift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {createdShift.ClockOut}");
+            var response = _httpClient.PostAsync(_apiBaseUrl + _endPointUrl, content).Result;
 
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = response.Content.ReadAsStringAsync().Result;
+                var createdShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
+                Utilities.Utilities.InformUser(true, $"New shift was created: WorkerId: {createdShift.WorkerId}" + Environment.NewLine + $"Clock In Time: {createdShift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {createdShift.ClockOut}");
+
+            }
+            else
+            {
+                Utilities.Utilities.InformUser(false, "Failed to create shift");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Utilities.Utilities.InformUser(false, "Failed to create shift");
+            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
         }
+
     }
 
     public static void GetAllShifts()
@@ -60,20 +72,19 @@ internal class ShiftLoggerService
 
         try
         {
-            using (var httpClient = new HttpClient())
-            {
-                HttpResponseMessage response = httpClient.GetAsync(_apiBaseUrl + _endPointUrl).Result;
 
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseData = response.Content.ReadAsStringAsync().Result;
-                    shifts = JsonConvert.DeserializeObject<List<Shift>>(responseData);
-                }
-                else
-                {
-                    Utilities.Utilities.InformUser(false, $"Failed to retrieve shifts. Status code : {response.StatusCode}");
-                }
+            HttpResponseMessage response = _httpClient.GetAsync(_apiBaseUrl + _endPointUrl).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseData = response.Content.ReadAsStringAsync().Result;
+                shifts = JsonConvert.DeserializeObject<List<Shift>>(responseData);
             }
+            else
+            {
+                Utilities.Utilities.InformUser(false, $"Failed to retrieve shifts. Status code : {response.StatusCode}");
+            }
+            
         }
         catch (Exception ex)
         {
@@ -86,46 +97,20 @@ internal class ShiftLoggerService
         Utilities.Utilities.ConfirmKey();
     }
 
-    internal static void DeleteShiftById()
-    {
-        GetAllShifts();
-
-        Console.WriteLine("\nPlease select the id of the shift you wish to delete");
-        var shiftId = Console.ReadLine();
-
-        Shift shift = new Shift();
-
-        try
-        {
-
-            HttpResponseMessage response = _httpClient.GetAsync(_apiBaseUrl + _endPointUrl + shiftId).Result;
-
-            if (response.IsSuccessStatusCode)
-            {
-                string responseData = response.Content.ReadAsStringAsync().Result;
-                shift = JsonConvert.DeserializeObject<Shift>(responseData);
-            }
-            else
-            {
-                Utilities.Utilities.InformUser(false, "Please ensure the Id of the shift is valid and try again");
-            }
-
-        }
-        catch (Exception ex)
-        {
-            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
-        }
-
-        Visualization.ShowRow(shift);
-    }
-
     #region Edit Shift
     internal static void EditShift()
     {
         GetAllShifts();
 
         Console.WriteLine("\nPlease select the id of the shift you wish to edit");
-        var shiftId = Console.ReadLine();
+        var selectedId = Console.ReadLine();
+        var shiftId = 0;
+
+        while (!Int32.TryParse(selectedId, out shiftId))
+        {
+            Console.WriteLine("please enter a shift id. it must be a number");
+            selectedId = Console.ReadLine();
+        }
 
         Shift shift = new Shift();
 
@@ -177,17 +162,57 @@ internal class ShiftLoggerService
 
     }
 
+    internal static void DeleteShiftById()
+    {
+        GetAllShifts();
+
+        Console.WriteLine("\nPlease select the id of the shift you wish to delete and then press [enter]");
+        var selectedShift = Console.ReadLine();
+        var shiftId = 0;
+
+        while (!Int32.TryParse(selectedShift, out shiftId))
+        {
+            Console.WriteLine("please enter a shift id. it must be a number");
+            selectedId = Console.ReadLine();
+        }
+
+        Shift shift = new Shift();
+
+        try
+        {
+            HttpResponseMessage response = _httpClient.GetAsync(_apiBaseUrl + _endPointUrl + shiftId).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseData = response.Content.ReadAsStringAsync().Result;
+                shift = JsonConvert.DeserializeObject<Shift>(responseData);
+            }
+            else
+            {
+                Utilities.Utilities.InformUser(false, "Please ensure the Id of the shift is valid and try again");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
+        }
+
+        Visualization.ShowRow(shift);
+        ConfirmEdit(shift, "delete");
+    }
+
     private static void DeleteShift(Shift? shift)
     {
-        var serializedShift = JsonConvert.SerializeObject(shift);
-        //var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
+        // var serializedShift = JsonConvert.SerializeObject(shift);
+        // var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
         var response = _httpClient.DeleteAsync(_apiBaseUrl + _endPointUrl + shift.Id).Result;
 
         if (response.IsSuccessStatusCode)
         {
-            var responseData = response.Content.ReadAsStringAsync().Result;
-            var updatedShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-            Utilities.Utilities.InformUser(true, $"New shift was deleted: shift Id: {shift.Id}");
+            //var responseData = response.Content.ReadAsStringAsync().Result;
+            //var updatedShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
+            Utilities.Utilities.InformUser(true, $"Shift was deleted: shift Id: {shift.Id}");
 
         }
         else
