@@ -12,19 +12,11 @@ internal class Utilities
         } while (keyPress.Key != ConsoleKey.Enter);
     }
 
-    internal static void InformUser(bool isSuccessStatusCode, string infoMessage)
+    internal static void InformUser(string infoMessage)
     {
         Console.Clear();
-        if (isSuccessStatusCode)
-        {
-            Console.WriteLine(infoMessage);
-        }
-        else
-        {
-            Console.WriteLine(infoMessage);
-        }
-
-        Console.WriteLine("Press [enter] to go back");
+        Console.WriteLine(infoMessage);
+        Console.WriteLine("\nPress [enter] to go back");
 
         ConfirmKey();
     }

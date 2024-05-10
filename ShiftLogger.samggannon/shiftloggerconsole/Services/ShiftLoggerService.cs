@@ -31,38 +31,49 @@ internal class ShiftLoggerService
 
         Console.WriteLine("inserting record. Please wait...");
 
-        var shift = new WorkShift
-        {
-            WorkerId = GetRandomWorkerId(),
-            ClockIn = DateTime.Now,
-            ClockOut = DateTime.Now.AddHours(8),
-            Duration = "8:00:00" // represent in time format
-        };
-
-        var serializedShift = JsonConvert.SerializeObject(shift);
-        var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
+        var shift = GenerateRandomShift();
 
         try
         {
-            var response = _httpClient.PostAsync(_apiBaseUrl + _endPointUrl, content).Result;
+            var serializedShift = JsonConvert.SerializeObject(shift);
+            var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(_apiBaseUrl + _endPointUrl, content);
 
             if (response.IsSuccessStatusCode)
             {
-                var responseData = response.Content.ReadAsStringAsync().Result;
+                var responseData = await response.Content.ReadAsStringAsync();
                 var createdShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-                Utilities.Utilities.InformUser(true, $"New shift was created: WorkerId: {createdShift.WorkerId}" + Environment.NewLine + $"Clock In Time: {createdShift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {createdShift.ClockOut}");
-
-            }
-            else
-            {
-                Utilities.Utilities.InformUser(false, "Failed to create shift");
+                Utilities.Utilities.InformUser($"New shift was created: WorkerId: {createdShift.WorkerId}\n" +
+                       $"Clock In Time: {createdShift.ClockIn}\n" +
+                       $"Clock Out Time: {createdShift.ClockOut}");
             }
         }
         catch (Exception ex)
         {
-            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
+            Utilities.Utilities.InformUser($"An error occurred: {ex.Message}");
         }
+    }
 
+    private Shift GenerateRandomShift()
+    {
+        return new Shift
+        {
+            WorkerId = GetRandomWorkerId(),
+            ClockIn = DateTime.Now,
+            ClockOut = DateTime.Now.AddHours(8),
+            Duration = TimeSpan.FromHours(8).ToString(@"hh\:mm\:ss")
+        };
+    }
+
+    private static int GetRandomWorkerId()
+    {
+        int[] workerId = { 123456, 789012, 345678, 901234, 567890 };
+
+        Random rand = new Random();
+        int randomIndex = rand.Next(0, workerId.Length);
+
+
+        return workerId[randomIndex];
     }
 
     public void GetAllShifts()
@@ -82,13 +93,13 @@ internal class ShiftLoggerService
             }
             else
             {
-                Utilities.Utilities.InformUser(false, $"Failed to retrieve shifts. Status code : {response.StatusCode}");
+                Utilities.Utilities.InformUser($"Failed to retrieve shifts. Status code : {response.StatusCode}");
             }
             
         }
         catch (Exception ex)
         {
-            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
+            Utilities.Utilities.InformUser($"An error occurred: {ex.Message}");
         }
 
         Visualization.ShowTable(shifts);
@@ -126,14 +137,14 @@ internal class ShiftLoggerService
             }
             else
             {
-                Utilities.Utilities.InformUser(false, "Please ensure the Id of the shift is valid and try again");
+                Utilities.Utilities.InformUser("Please ensure the Id of the shift is valid and try again");
                 return;
             }
             
         }
         catch (Exception ex)
         {
-            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
+            Utilities.Utilities.InformUser($"An error occurred: {ex.Message}");
         }
 
         Visualization.ShowRow(shift);
@@ -189,13 +200,13 @@ internal class ShiftLoggerService
             }
             else
             {
-                Utilities.Utilities.InformUser(false, "Please ensure the Id of the shift is valid and try again");
+                Utilities.Utilities.InformUser("Please ensure the Id of the shift is valid and try again");
             }
 
         }
         catch (Exception ex)
         {
-            Utilities.Utilities.InformUser(false, $"An error occurred: {ex.Message}");
+            Utilities.Utilities.InformUser($"An error occurred: {ex.Message}");
         }
 
         Visualization.ShowRow(shift);
@@ -212,12 +223,12 @@ internal class ShiftLoggerService
         {
             //var responseData = response.Content.ReadAsStringAsync().Result;
             //var updatedShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-            Utilities.Utilities.InformUser(true, $"Shift was deleted: shift Id: {shift.Id}");
+            Utilities.Utilities.InformUser($"Shift was deleted: shift Id: {shift.Id}");
 
         }
         else
         {
-            Utilities.Utilities.InformUser(false, "Failed to delete shift");
+            Utilities.Utilities.InformUser("Failed to delete shift");
         }
     }
 
@@ -231,29 +242,18 @@ internal class ShiftLoggerService
         {
             //var responseData = response.Content.ReadAsStringAsync().Result;
             //var updatedShift = JsonConvert.DeserializeObject<WorkShift>(responseData);
-            Utilities.Utilities.InformUser(true, $"Shift was updated: WorkerId: {shift.WorkerId}" + Environment.NewLine + $"Clock In Time: {shift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {shift.ClockOut}");
+            Utilities.Utilities.InformUser($"Shift was updated: WorkerId: {shift.WorkerId}" + Environment.NewLine + $"Clock In Time: {shift.ClockIn}" + Environment.NewLine + $"Clock Out Time: {shift.ClockOut}");
 
         }
         else
         {
-            Utilities.Utilities.InformUser(false, "Failed to create shift");
+            Utilities.Utilities.InformUser("Failed to create shift");
         }
     }
 
     #endregion
 
     #region Property Helpers
-    private static int GetRandomWorkerId()
-    {
-        int[] workerId = { 123456, 789012, 345678, 901234, 567890 };
-
-        Random rand = new Random();
-        int randomIndex = rand.Next(0, workerId.Length);
-
-
-        return workerId[randomIndex];
-    }
-
     private static DateTime PunchIn()
     {
         Console.WriteLine("Please enter the clock-in date and time (format: yyyy-MM-dd HH:mm:ss):");

@@ -27,7 +27,7 @@ internal class Visualization
         }
         else
         {
-            Utilities.Utilities.InformUser(false, "Not a valid Id.");
+            Utilities.Utilities.InformUser("Not a valid Id.");
         }
         
     }
