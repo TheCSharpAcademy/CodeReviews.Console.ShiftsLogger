@@ -7,8 +7,14 @@ namespace shiftloggerconsole.UserInterface;
 
 internal static class MainMenu
 {
-    internal static async Task ShowMenu()
+    internal static async Task ShowMenu(IHttpClientFactory httpClientFactory, Microsoft.Extensions.Configuration.IConfigurationRoot? config)
     {
+        var httpClient = httpClientFactory.CreateClient();
+        string? apiBaseUrl = config["ApiSettings:BaseUrl"];
+        string? endPointUrl = config["ApiSettings:EndpointUrl"];
+
+        var shiftLoggerService = new ShiftLoggerService(httpClientFactory.CreateClient("ShiftLoggerApi"), apiBaseUrl, endPointUrl);
+
         var appIsRunning = true;
         while(appIsRunning)
         {
@@ -27,16 +33,16 @@ internal static class MainMenu
             switch (option)
             {
                 case MenuOptions.AddShift:
-                    await ShiftLoggerService.InsertShiftAsync();
+                    await shiftLoggerService.InsertShiftAsync();
                     break;
                 case MenuOptions.ShowAllShifts:
-                    ShiftLoggerService.GetAllShifts();
+                    shiftLoggerService.GetAllShifts();
                     break;
                 case MenuOptions.EditShiftById:
-                    ShiftLoggerService.EditShift();
+                    shiftLoggerService.EditShift();
                     break;
                 case MenuOptions.DeleteShiftById:
-                    ShiftLoggerService.DeleteShiftById();
+                    shiftLoggerService.DeleteShiftById();
                     break;
                 case MenuOptions.Quit:
                     appIsRunning = false;

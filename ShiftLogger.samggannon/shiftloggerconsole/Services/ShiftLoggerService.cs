@@ -9,19 +9,19 @@ namespace shiftloggerconsole.Services;
 
 internal class ShiftLoggerService
 {
-    private static readonly HttpClient _httpClient;
-    private static readonly string _apiBaseUrl;
-    private static readonly string _endPointUrl;
+    private readonly HttpClient _httpClient;
+    private readonly string _apiBaseUrl;
+    private readonly string _endPointUrl;
 
-    static ShiftLoggerService()
+    public ShiftLoggerService(HttpClient httpClient, string apiBaseUrl, string endPointUrl)
     {
-        _httpClient = new HttpClient();
-        _apiBaseUrl = "https://localhost:7205/";
-        _endPointUrl = "api/WorkShifts/";
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        _apiBaseUrl = apiBaseUrl ?? throw new ArgumentNullException(nameof(apiBaseUrl));
+        _endPointUrl = endPointUrl ?? throw new ArgumentNullException(nameof(endPointUrl));
     }
 
     // AddShift
-    public static async Task InsertShiftAsync()
+    public async Task InsertShiftAsync()
     {
         ///<summary>
         /// For brevivty, we will generate a random WorkerId,
@@ -65,7 +65,7 @@ internal class ShiftLoggerService
 
     }
 
-    public static void GetAllShifts()
+    public void GetAllShifts()
     {
         Console.Clear();
         List<Shift> shifts = new List<Shift>();
@@ -98,7 +98,7 @@ internal class ShiftLoggerService
     }
 
     #region Edit Shift
-    internal static void EditShift()
+    internal void EditShift()
     {
         GetAllShifts();
 
@@ -127,7 +127,7 @@ internal class ShiftLoggerService
             else
             {
                 Utilities.Utilities.InformUser(false, "Please ensure the Id of the shift is valid and try again");
-                MainMenu.ShowMenu();
+                return;
             }
             
         }
@@ -140,7 +140,7 @@ internal class ShiftLoggerService
         ConfirmEdit(shift, "edit");
     }
 
-    private static void ConfirmEdit(Shift? shift, string? editMethod)
+    private void ConfirmEdit(Shift? shift, string? editMethod)
     {
         var isConfirmed = AnsiConsole.Confirm($"Is this the record you wish to {editMethod}?");
         if (isConfirmed)
@@ -162,7 +162,7 @@ internal class ShiftLoggerService
 
     }
 
-    internal static void DeleteShiftById()
+    internal void DeleteShiftById()
     {
         GetAllShifts();
 
@@ -173,7 +173,7 @@ internal class ShiftLoggerService
         while (!Int32.TryParse(selectedShift, out shiftId))
         {
             Console.WriteLine("please enter a shift id. it must be a number");
-            selectedId = Console.ReadLine();
+            selectedShift = Console.ReadLine();
         }
 
         Shift shift = new Shift();
@@ -202,7 +202,7 @@ internal class ShiftLoggerService
         ConfirmEdit(shift, "delete");
     }
 
-    private static void DeleteShift(Shift? shift)
+    private void DeleteShift(Shift? shift)
     {
         // var serializedShift = JsonConvert.SerializeObject(shift);
         // var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
@@ -221,7 +221,7 @@ internal class ShiftLoggerService
         }
     }
 
-    private static void UpdateShift(Shift shift)
+    private void UpdateShift(Shift shift)
     {
         var serializedShift = JsonConvert.SerializeObject(shift);
         var content = new StringContent(serializedShift, System.Text.Encoding.UTF8, "application/json");
