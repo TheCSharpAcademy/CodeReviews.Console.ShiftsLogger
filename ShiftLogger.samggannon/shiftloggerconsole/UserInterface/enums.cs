@@ -9,6 +9,7 @@ public class Enums
         ShowShiftById,
         EditShiftById,
         DeleteShiftById,
-        Quit
+        Quit,
+        DevelopersDisclaimer
     }
 }

@@ -9,7 +9,6 @@ internal static class MainMenu
 {
     internal static async Task ShowMenu(IHttpClientFactory httpClientFactory, Microsoft.Extensions.Configuration.IConfigurationRoot? config)
     {
-        var httpClient = httpClientFactory.CreateClient();
         string? apiBaseUrl = config["ApiSettings:BaseUrl"];
         string? endPointUrl = config["ApiSettings:EndpointUrl"];
 
