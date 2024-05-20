@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "shiftloggerconsole": {
+      "commandName": "Project",
+      "workingDirectory": "$(ProjectDir)"
+    }
+  }
+}
