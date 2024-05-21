@@ -4,7 +4,6 @@ using shiftloggerconsole.Services;
 using shiftloggerconsole.UserInterface;
 
 var basePath = Directory.GetCurrentDirectory();
-// var configFile = "App.config";
 
 // Read configuration file
 var config = new ConfigurationBuilder()
