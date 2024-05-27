@@ -3,29 +3,6 @@ using Spectre.Console;
 namespace ShiftsLoggerUI;
 public class Validation
 {
-    internal static DateTime[] ValidateDates(string startTime, string endTime)
-    {
-        string format = "HH:mm";
-        DateTime parsedStartTime;
-        DateTime parsedEndTime;
-        var parsed = DateTime.TryParseExact(startTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedStartTime);
-        while (parsed == false)
-        {
-            Console.WriteLine("Invalid starting time.");
-            startTime = AnsiConsole.Ask<string>("Enter the time you started your shift(format: 3:40 PM/AM): ");
-            parsed = DateTime.TryParseExact(startTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedStartTime);
-        }
-        parsed = DateTime.TryParseExact(endTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedEndTime);
-        while (parsed == false)
-        {
-            Console.WriteLine("Invalid ending time.");
-            startTime = AnsiConsole.Ask<string>("Enter the time you ended your shift(format: 3:40 PM/AM): ");
-            parsed = DateTime.TryParseExact(startTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedEndTime);
-        }
-        DateTime[] validTimes = [parsedStartTime, parsedEndTime];
-        return validTimes;
-    }
-
     internal static bool ValidateId(string userInput)
     {
         List<ShiftModel> shifts = Service.SendGetRequest(1);
@@ -65,15 +42,16 @@ public class Validation
         return parsedStartTime;
     }
 
-    internal static DateTime ValidateEndTime(string endTime)
+    internal static DateTime ValidateEndTime(string endTime, DateTime startTime)
     {
         string format = "HH:mm";
         var parsed = DateTime.TryParseExact(endTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedEndTime);
-        while (parsed == false)
+        while (parsed == false || parsedEndTime < startTime)
         {
             Console.WriteLine("Invalid starting time.");
             endTime = AnsiConsole.Ask<string>("Enter the time you ended your shift(format: 3:40 PM/AM): ");
             parsed = DateTime.TryParseExact(endTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedEndTime);
+            
         }
         return parsedEndTime;
     }

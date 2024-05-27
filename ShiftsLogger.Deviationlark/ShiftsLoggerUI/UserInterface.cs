@@ -37,18 +37,15 @@ public class UserInterface
     internal static async void EnterShift()
     {
         var date = DateTime.Now.Date;
-        Console.WriteLine("Type 0 to go back to main menu.");
-        var startTime = AnsiConsole.Ask<string>("Enter the time you started your shift(format: HH:mm): ");
-        if (startTime == "0") MainMenu();
-        var endTime = AnsiConsole.Ask<string>("Enter the time you ended your shift(format: HH:mm): ");
-        DateTime[] times = Validation.ValidateDates(startTime, endTime);
-        var duration = times[1] - times[0];
+        var startTime = GetStartTime();
+        var endTime = GetEndTime(startTime);
+        var duration = endTime - startTime;
 
         ShiftModel shiftModel = new()
         {
             date = date,
-            startTime = times[0],
-            endTime = times[1],
+            startTime = startTime,
+            endTime = endTime,
             duration = duration
         };
         await Service.SendPostRequest(shiftModel);
@@ -89,7 +86,7 @@ public class UserInterface
         : shifts[int.Parse(userInput) - 1].startTime;
 
         var endTime = AnsiConsole.Confirm("Update endTime?")
-        ? GetEndTime()
+        ? GetEndTime(startTime)
         : shifts[int.Parse(userInput) - 1].endTime;
 
         var duration = endTime - startTime;
@@ -105,16 +102,18 @@ public class UserInterface
         await Service.SendPutRequest(id, shiftModel);
     }
 
-    private static DateTime GetEndTime()
+    private static DateTime GetEndTime(DateTime startTime)
     {
         var endTime = AnsiConsole.Ask<string>("Enter the time you ended your shift(format: HH:mm): ");
-        var parsedTime = Validation.ValidateEndTime(endTime);
+        var parsedTime = Validation.ValidateEndTime(endTime, startTime);
         return parsedTime;
     }
 
     private static DateTime GetStartTime()
     {
+        Console.WriteLine("Type 0 to go back to main menu.");
         var startTime = AnsiConsole.Ask<string>("Enter the time you started your shift(format: HH:mm): ");
+        if (startTime == "0") MainMenu();
         var parsedTime = Validation.ValidateStartTime(startTime);
         return parsedTime;
     }
