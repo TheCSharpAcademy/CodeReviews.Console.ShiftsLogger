@@ -1,5 +1,3 @@
-using Newtonsoft.Json;
-
 namespace ShiftsLoggerUI;
 
 public class ShiftModel

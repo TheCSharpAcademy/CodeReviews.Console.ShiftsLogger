@@ -1,6 +1,4 @@
-﻿using Spectre.Console.Rendering;
-
-namespace ShiftsLoggerUI;
+﻿namespace ShiftsLoggerUI;
 
 public class Program
 {

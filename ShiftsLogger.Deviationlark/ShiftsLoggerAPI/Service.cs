@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using ShiftsLogger.Controllers;
 
 namespace ShiftsLogger;
 public class Service

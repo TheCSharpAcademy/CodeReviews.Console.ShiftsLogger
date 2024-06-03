@@ -1,6 +1,4 @@
-using System.Text.Json.Nodes;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace ShiftsLoggerUI
@@ -84,7 +82,6 @@ namespace ShiftsLoggerUI
             var client = new RestClient("http://localhost:5280/api/");
             var request = new RestRequest($"Shifts/{id}", Method.Put);
             request.AddParameter("application/json", json, ParameterType.RequestBody);
-            File.WriteAllText("output.json", json);
             try
             {
                 var response = client.ExecuteAsync(request);
