@@ -13,32 +13,33 @@ namespace ShiftsLogger.Controllers
     [ApiController]
     public class ShiftsController : ControllerBase
     {
-        private readonly ShiftsContext _context;
+        private readonly Service _service;
 
-        public ShiftsController(ShiftsContext context)
+        public ShiftsController(Service service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/Shifts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ShiftModel>>> GetShifts()
         {
-            return await _context.Shifts.ToListAsync();
+            var shifts = await _service.GetShiftsAsync();
+            return Ok(shifts);
         }
 
         // GET: api/Shifts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ShiftModel>> GetShiftModel(long id)
         {
-            var shiftModel = await _context.Shifts.FindAsync(id);
+            var shiftModel = await _service.GetShiftAsync(id);
 
             if (shiftModel == null)
             {
                 return NotFound();
             }
 
-            return shiftModel;
+            return Ok(shiftModel);
         }
 
         // PUT: api/Shifts/5
@@ -46,27 +47,9 @@ namespace ShiftsLogger.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutShiftModel(long id, ShiftModel shiftModel)
         {
-            if (id != shiftModel.Id)
+            if (!await _service.PutShiftAsync(id, shiftModel))
             {
                 return BadRequest();
-            }
-
-            _context.Entry(shiftModel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ShiftModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
 
             return NoContent();
@@ -77,31 +60,21 @@ namespace ShiftsLogger.Controllers
         [HttpPost]
         public async Task<ActionResult<ShiftModel>> PostShiftModel(ShiftModel shiftModel)
         {
-            _context.Shifts.Add(shiftModel);
-            await _context.SaveChangesAsync();
+            var createdShift = await _service.CreateShiftAsync(shiftModel);
 
-            return CreatedAtAction(nameof(PostShiftModel), new { id = shiftModel.Id }, shiftModel);
+            return CreatedAtAction(nameof(PostShiftModel), new { id = createdShift.Id }, createdShift);
         }
 
         // DELETE: api/Shifts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShiftModel(long id)
         {
-            var shiftModel = await _context.Shifts.FindAsync(id);
-            if (shiftModel == null)
+            if (!await _service.DeleteShiftAsync(id))
             {
                 return NotFound();
             }
 
-            _context.Shifts.Remove(shiftModel);
-            await _context.SaveChangesAsync();
-
             return NoContent();
-        }
-
-        private bool ShiftModelExists(long id)
-        {
-            return _context.Shifts.Any(e => e.Id == id);
         }
     }
 }

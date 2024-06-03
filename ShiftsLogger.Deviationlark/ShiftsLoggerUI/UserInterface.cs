@@ -89,6 +89,8 @@ public class UserInterface
         ? GetEndTime(startTime)
         : shifts[int.Parse(userInput) - 1].endTime;
 
+
+
         var duration = endTime - startTime;
 
         ShiftModel shiftModel = new()
@@ -99,7 +101,14 @@ public class UserInterface
             endTime = endTime,
             duration = duration
         };
-        await Service.SendPutRequest(id, shiftModel);
+        if (endTime < startTime)
+        {
+            Console.WriteLine("You entered a starting time that is after the ending time.");
+            var update = AnsiConsole.Confirm("Do you want to start over with the update of the shift?");
+            if (update == true) UpdateShift();
+            else await Service.SendPutRequest(id, shiftModel);
+        }
+        else await Service.SendPutRequest(id, shiftModel);
     }
 
     private static DateTime GetEndTime(DateTime startTime)
