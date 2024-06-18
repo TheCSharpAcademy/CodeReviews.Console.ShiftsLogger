@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using ShiftsLoggerApi.DataAccess;
 
 namespace ShiftsLoggerApi;
@@ -12,12 +13,13 @@ public class Program
         // Add services to the container.
 
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        
+        // Configure DbContext with the connection string from appsettings.json
+        builder.Services.AddDbContext<ShiftContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+        
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-        
-        builder.Services.AddDbContext<ShiftContext>(opt =>
-            opt.UseSqlServer("Default"));
 
         var app = builder.Build();
 
