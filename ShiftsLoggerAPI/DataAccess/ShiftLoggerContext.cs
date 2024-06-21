@@ -26,7 +26,8 @@ namespace ShiftsLoggerAPI.DataAccess
             modelBuilder.Entity<Shift>()
                 .HasOne(e => e.Employee)
                 .WithMany(s => s.Shifts)
-                .HasForeignKey(e => e.EmployeeId);
+                .HasForeignKey(e => e.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Employee>().HasData(
                 new Employee { Id = 1, Name = "John Doe", DateOfBirth = new DateTime(1980, 1, 1), PhoneNumber = "123-456-7890", EmailAddress = "johndoe@example.com" },

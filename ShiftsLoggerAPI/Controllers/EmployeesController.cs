@@ -46,7 +46,6 @@ namespace ShiftsLoggerAPI.Controllers
                 return BadRequest();
             }
 
-            // TODO look into: DbUpdateConcurrencyException + EntityState.Modified;
             _service.UpdateEmployee(employee);
 
             return NoContent();
@@ -55,9 +54,15 @@ namespace ShiftsLoggerAPI.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> PostEmployee([FromBody] Employee employee)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _service.AddEmployee(employee);
+
             return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
 

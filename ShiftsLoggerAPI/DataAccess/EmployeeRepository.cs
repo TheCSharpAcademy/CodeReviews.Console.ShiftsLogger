@@ -25,11 +25,11 @@ namespace ShiftsLoggerAPI.DataAccess
             _context.SaveChanges();
         }
 
-        public Employee GetEmployee(int id)
+        public Employee? GetEmployee(int id)
         {
             return _context.Employees
                 .Include(e => e.Shifts)
-                .First(e => e.Id == id);
+                .FirstOrDefault(e => e.Id == id);
         }
 
         public List<Employee> GetEmployees()
@@ -41,6 +41,7 @@ namespace ShiftsLoggerAPI.DataAccess
 
         public void UpdateEmployee(Employee employee)
         {
+            _context.Entry(employee).State = EntityState.Modified;
             _context.Update(employee);
             _context.SaveChanges();
         }
