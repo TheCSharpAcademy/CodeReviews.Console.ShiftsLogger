@@ -17,14 +17,14 @@ namespace ShiftsLoggerAPI.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public ActionResult<IEnumerable<Employee>> GetEmployees()
         {
             return _service.GetEmployees();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(int id)
+        public ActionResult<Employee> GetEmployee(int id)
         {
             var employee = _service.GetEmployee(id);
 
@@ -39,7 +39,7 @@ namespace ShiftsLoggerAPI.Controllers
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, [FromBody] Employee employee)
+        public IActionResult PutEmployee(int id, [FromBody] Employee employee)
         {
             if (!ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace ShiftsLoggerAPI.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee([FromBody] Employee employee)
+        public ActionResult<Employee> PostEmployee([FromBody] Employee employee)
         {
             if (!ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace ShiftsLoggerAPI.Controllers
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public IActionResult DeleteEmployee(int id)
         {
             var employee = _service.GetEmployee(id);
             if (employee == null)
