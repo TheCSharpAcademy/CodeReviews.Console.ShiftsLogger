@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
+﻿using SharedLibrary.Extensions;
 using SharedLibrary.Models;
+using SharedLibrary.Validations;
 using ShiftsLoggerAPI.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShiftsLoggerAPI.Services
 {
@@ -17,6 +17,7 @@ namespace ShiftsLoggerAPI.Services
 
         public void AddEmployee(Employee employee)
         {
+            EmployeeValidation.Validate(employee);
             _employeeRepository.AddEmployee(employee);
         }
 
@@ -25,11 +26,12 @@ namespace ShiftsLoggerAPI.Services
             if (EmployeeExists(id))
             {
                 var employee = GetEmployee(id);
+                EmployeeValidation.Validate(employee);
                 _employeeRepository.DeleteEmployee(employee);
             }
         }
 
-        public Employee? GetEmployee(int id)
+        public Employee GetEmployee(int id)
         {
             var employee = _employeeRepository.GetEmployee(id);
 
@@ -43,6 +45,8 @@ namespace ShiftsLoggerAPI.Services
 
         public void UpdateEmployee(Employee employee)
         {
+            EmployeeValidation.Validate(employee);
+
             if (EmployeeExists(employee.Id))
             {
                 _employeeRepository.UpdateEmployee(employee);

@@ -25,11 +25,11 @@ namespace ShiftsLoggerAPI.DataAccess
             _context.SaveChanges();
         }
 
-        public Employee? GetEmployee(int id)
+        public Employee GetEmployee(int id)
         {
             return _context.Employees
                 .Include(e => e.Shifts)
-                .FirstOrDefault(e => e.Id == id);
+                .FirstOrDefault(e => e.Id == id)!;
         }
 
         public List<Employee> GetEmployees()

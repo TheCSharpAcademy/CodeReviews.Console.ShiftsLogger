@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SharedLibrary.Models;
+using SharedLibrary.Validations;
 
 namespace ShiftsLoggerAPI.Controllers
 {
@@ -27,7 +28,7 @@ namespace ShiftsLoggerAPI.Controllers
         {
             var employee = _service.GetEmployee(id);
 
-            if (employee == null)
+            if (employee is null)
             {
                 return NotFound();
             }
@@ -38,15 +39,25 @@ namespace ShiftsLoggerAPI.Controllers
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(int id, Employee employee)
+        public async Task<IActionResult> PutEmployee(int id, [FromBody] Employee employee)
         {
-            var e = _service.GetEmployee(id);
-            if (id != employee.Id || e is null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            _service.UpdateEmployee(employee);
+            try
+            {
+                _service.UpdateEmployee(employee);
+            }
+            catch (EmployeeValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An unexpected error occurred while processing your request.");
+            }
 
             return NoContent();
         }
@@ -61,7 +72,18 @@ namespace ShiftsLoggerAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            _service.AddEmployee(employee);
+            try
+            {
+                _service.AddEmployee(employee);
+            }
+            catch (EmployeeValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An unexpected error occurred while processing your request.");
+            }
 
             return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
@@ -76,7 +98,18 @@ namespace ShiftsLoggerAPI.Controllers
                 return NotFound();
             }
 
-            _service.DeleteEmployee(id);
+            try
+            {
+                _service.DeleteEmployee(id);
+            }
+            catch (EmployeeValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "An unexpected error occurred while processing your request.");
+            }
 
             return NoContent();
         }
