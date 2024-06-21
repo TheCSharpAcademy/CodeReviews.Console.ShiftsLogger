@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shiftlogger.UI", "Shiftlogger.UI.csproj", "{070496A4-3A89-4C49-B81E-320E2FB7B3D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{070496A4-3A89-4C49-B81E-320E2FB7B3D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{070496A4-3A89-4C49-B81E-320E2FB7B3D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{070496A4-3A89-4C49-B81E-320E2FB7B3D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{070496A4-3A89-4C49-B81E-320E2FB7B3D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {113D1925-F90B-4628-8682-50785350B6A9}
+	EndGlobalSection
+EndGlobal
