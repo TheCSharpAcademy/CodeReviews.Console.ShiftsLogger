@@ -1,6 +1,0 @@
-@Shiftlogger.javedkhan2k2_HostAddress = http://localhost:5269
-
-GET {{Shiftlogger.javedkhan2k2_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

@@ -10,6 +10,11 @@ internal class ShiftService
 
     internal async Task<List<ShiftReqestDto>?> GetAllShifts()
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return null;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);
@@ -48,6 +53,11 @@ internal class ShiftService
 
     internal async Task<ShiftReqestDto?> GetShiftById(int id)
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return null;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);
@@ -87,6 +97,11 @@ internal class ShiftService
 
     internal async Task<ShiftReqestDto?> PostShift(ShiftNewDto shift)
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return null;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);
@@ -127,6 +142,11 @@ internal class ShiftService
 
     internal async Task<bool> PutShift(int id, ShiftDto shift)
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return false;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);
@@ -162,6 +182,11 @@ internal class ShiftService
 
     internal async Task<bool> DeleteShift(int id)
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return false;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);
@@ -189,6 +214,31 @@ internal class ShiftService
         {
             Console.Clear();
             Console.WriteLine("An error occurred while trying to fetch shifts.");
+            Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+    public async Task<bool> IsApiRunning()
+    {
+        try
+        {
+            var client = new RestClient(ApiBaseUrl);
+            var request = new RestRequest("health");
+            var response = await client.ExecuteAsync(request);
+            return response.IsSuccessStatusCode;
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.Clear();
+            Console.WriteLine("Network error while trying to check API status.");
+            Console.WriteLine(httpEx.Message);
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Console.Clear();
+            Console.WriteLine("An error occurred while trying to check API status.");
             Console.WriteLine(ex.Message);
             return false;
         }

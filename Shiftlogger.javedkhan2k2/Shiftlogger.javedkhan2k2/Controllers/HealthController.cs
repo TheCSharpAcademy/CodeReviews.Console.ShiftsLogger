@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Shiftlogger.javedkhan2k2.Controllers

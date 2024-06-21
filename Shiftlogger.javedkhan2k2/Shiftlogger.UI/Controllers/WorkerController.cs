@@ -18,8 +18,12 @@ internal class WorkerController
         if (workers != null)
         {
             VisualizationEngine.DisplayWorkers(workers, "Showing All Workers");
+            VisualizationEngine.DisplayContinueMessage();
         }
-        VisualizationEngine.DisplayContinueMessage();
+        else
+        {
+             VisualizationEngine.DisplayFailureMessage("There is no workers or the API is not running");
+        }
     }
 
     internal async Task AddWorker()
@@ -44,6 +48,11 @@ internal class WorkerController
     internal async Task UpdateWorker()
     {
         var workers = await GetAllWorkers();
+        if(workers == null)
+        {
+            VisualizationEngine.DisplayFailureMessage("If the API is running then there is no Worker Found.");
+            return;
+        }
         VisualizationEngine.DisplayWorkers(workers, "All Workers");
         var workerId = UserInput.GetIntInput();
         if(workerId == 0)
@@ -77,6 +86,11 @@ internal class WorkerController
     internal async Task DeleteWorker()
     {
         var workers = await GetAllWorkers();
+        if(workers == null)
+        {
+            VisualizationEngine.DisplayFailureMessage("If the API is running then there is no Worker Found.");
+            return;
+        }
         VisualizationEngine.DisplayWorkers(workers, "All Workers");
         var workerId = UserInput.GetIntInput();
         if(workerId == 0)

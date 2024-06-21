@@ -51,6 +51,11 @@ internal class WorkerService
 
     internal async Task<WorkerRequestDto?> GetWorkerById(int id)
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return null;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);
@@ -83,6 +88,11 @@ internal class WorkerService
 
     internal async Task<WorkerRequestDto?> AddWorker(WorkerNewDto worker)
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return null;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);
@@ -124,6 +134,11 @@ internal class WorkerService
 
     internal async Task<bool> PutWorker(int id, WorkerDto worker)
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return false;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);
@@ -159,6 +174,11 @@ internal class WorkerService
 
     internal async Task<bool> DeleteWorker(int id)
     {
+        if (!await IsApiRunning())
+        {
+            Console.WriteLine("API is not running.");
+            return false;
+        }
         try
         {
             var client = new RestClient(ApiBaseUrl);

@@ -20,17 +20,22 @@ internal class ShiftController
         if (shifts != null)
         {
             VisualizationEngine.DisplayShifts(shifts, "Showing All Shifts");
+            VisualizationEngine.DisplayContinueMessage();
         }
         else
         {
-            VisualizationEngine.DisplaySuccessMessage("There is no shifts");
+            VisualizationEngine.DisplayFailureMessage("There is no shifts or the API is not running");
         }
-        VisualizationEngine.DisplayContinueMessage();
     }
 
     internal async Task AddShift()
     {
         var workers = await _workerService.GetWorkers();
+        if(workers == null)
+        {
+            VisualizationEngine.DisplayFailureMessage("If the API is running then there is no Worker Found.");
+            return;
+        }
         VisualizationEngine.DisplayWorkers(workers, "All Workers");
         var workerId = UserInput.GetIntInput();
         if(workerId == 0)
@@ -69,8 +74,7 @@ internal class ShiftController
         var shifts = await GetAllShifts();
         if(shifts == null)
         {
-            VisualizationEngine.DisplaySuccessMessage("There is no shifts");
-            VisualizationEngine.DisplayContinueMessage();
+            VisualizationEngine.DisplayFailureMessage("There is no shifts or the API is not running");
             return;
         }
         VisualizationEngine.DisplayShifts(shifts, "Showing All Shifts");
@@ -115,8 +119,7 @@ internal class ShiftController
         var shifts = await GetAllShifts();
         if(shifts == null)
         {
-            VisualizationEngine.DisplaySuccessMessage("There is no shifts");
-            VisualizationEngine.DisplayContinueMessage();
+            VisualizationEngine.DisplayFailureMessage("There is no shifts or the API is not running");
             return;
         }
         VisualizationEngine.DisplayShifts(shifts, "Showing All Shifts");

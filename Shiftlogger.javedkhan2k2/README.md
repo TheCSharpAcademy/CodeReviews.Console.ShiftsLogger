@@ -28,7 +28,9 @@ application set the ConnectionStrings:DefaultConnection
 in the Shiftlogger.javedkhan2k2 Project.  
 e.g. dotnet user-secrets ConnectionStrings:DefaultConnection
 = Server=localhost;Database=Shiftlogger;
-User Id=YourUserID;Password=YourPassword;TrustServerCertificate=True;
+User Id=YourUserID;Password=YourPassword;TrustServerCertificate=True;  
+First run the Shiftlogger.javedkhan2k2 Project. This act as the API.  
+Now run the Shiftlogger.UI to interact with the APIs.
 
 ## Application Usage
 
