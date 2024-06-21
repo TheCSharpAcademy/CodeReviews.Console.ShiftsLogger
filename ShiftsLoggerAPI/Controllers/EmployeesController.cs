@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SharedLibrary.Models;
-using ShiftsLoggerAPI.DataAccess;
 
 namespace ShiftsLoggerAPI.Controllers
 {
@@ -9,25 +7,25 @@ namespace ShiftsLoggerAPI.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly ShiftLoggerContext _context;
+        private readonly IEmployeeService _service;
 
-        public EmployeesController(ShiftLoggerContext context)
+        public EmployeesController(IEmployeeService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/Employees
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            return await _context.Employees.ToListAsync();
+            return _service.GetEmployees();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = _service.GetEmployee(id);
 
             if (employee == null)
             {
@@ -42,28 +40,14 @@ namespace ShiftsLoggerAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployee(int id, Employee employee)
         {
-            if (id != employee.Id)
+            var e = _service.GetEmployee(id);
+            if (id != employee.Id || e is null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(employee).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            // TODO look into: DbUpdateConcurrencyException + EntityState.Modified;
+            _service.UpdateEmployee(employee);
 
             return NoContent();
         }
@@ -73,9 +57,7 @@ namespace ShiftsLoggerAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
-
+            _service.AddEmployee(employee);
             return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
 
@@ -83,21 +65,15 @@ namespace ShiftsLoggerAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = _service.GetEmployee(id);
             if (employee == null)
             {
                 return NotFound();
             }
 
-            _context.Employees.Remove(employee);
-            await _context.SaveChangesAsync();
+            _service.DeleteEmployee(id);
 
             return NoContent();
-        }
-
-        private bool EmployeeExists(int id)
-        {
-            return _context.Employees.Any(e => e.Id == id);
         }
     }
 }

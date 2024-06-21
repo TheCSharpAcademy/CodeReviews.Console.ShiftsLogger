@@ -1,8 +1,12 @@
 using ShiftsLoggerAPI.DataAccess;
+using ShiftsLoggerAPI.Interfaces;
+using ShiftsLoggerAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ShiftLoggerContext>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

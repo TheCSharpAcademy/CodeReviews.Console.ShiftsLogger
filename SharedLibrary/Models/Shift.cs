@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace SharedLibrary.Models
 {
@@ -16,6 +16,8 @@ namespace SharedLibrary.Models
 
         public int EmployeeId { get; set; }
 
+        // Navigation property
+        [JsonIgnore]
         public Employee Employee { get; set; }
     }
 }
