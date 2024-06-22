@@ -22,21 +22,40 @@ namespace ShiftsLoggerApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ShiftModel>>> GetShiftModels()
         {
-            return await _context.ShiftModels.ToListAsync();
+            try
+            {
+                var shifts = await _context.ShiftModels.ToListAsync();
+                if (shifts == null || !shifts.Any())
+                {
+                    return NotFound("No shifts found.");
+                }
+                return Ok(shifts);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving shifts.");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         // GET: api/Shift/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ShiftModel>> GetShiftModel(int id)
         {
-            var shiftModel = await _context.ShiftModels.FindAsync(id);
-
-            if (shiftModel == null)
+            try
             {
-                return NotFound();
+                var shiftModel = await _context.ShiftModels.FindAsync(id);
+                if (shiftModel == null)
+                {
+                    return NotFound($"Shift with ID {id} not found.");
+                }
+                return Ok(shiftModel);
             }
-
-            return shiftModel;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"An error occurred while retrieving shift with ID {id}.");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         // PUT: api/Shift/5
@@ -45,7 +64,12 @@ namespace ShiftsLoggerApi.Controllers
         {
             if (id != shiftModel.Id)
             {
-                return BadRequest();
+                return BadRequest("Shift ID mismatch.");
+            }
+
+            if (!ShiftModelExists(id))
+            {
+                return NotFound($"Shift with ID {id} not found.");
             }
 
             _context.Entry(shiftModel).State = EntityState.Modified;
@@ -53,20 +77,18 @@ namespace ShiftsLoggerApi.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                return NoContent();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ShiftModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                _logger.LogError("Concurrency exception occurred while updating shift.");
+                return StatusCode(500, "Internal server error");
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating the shift.");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         // POST: api/Shift
@@ -75,7 +97,7 @@ namespace ShiftsLoggerApi.Controllers
         {
             try
             {
-                if (shiftModel.EndOfShift.HasValue && shiftModel.EndOfShift.Value < shiftModel.StartOfShift)
+                if (shiftModel.EndOfShift < shiftModel.StartOfShift)
                 {
                     return BadRequest("End shift cannot be earlier than start shift.");
                 }
@@ -96,16 +118,24 @@ namespace ShiftsLoggerApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShiftModel(int id)
         {
-            var shiftModel = await _context.ShiftModels.FindAsync(id);
-            if (shiftModel == null)
+            try
             {
-                return NotFound();
+                var shiftModel = await _context.ShiftModels.FindAsync(id);
+                if (shiftModel == null)
+                {
+                    return NotFound($"Shift with ID {id} not found.");
+                }
+
+                _context.ShiftModels.Remove(shiftModel);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
             }
-
-            _context.ShiftModels.Remove(shiftModel);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting the shift.");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         private bool ShiftModelExists(int id)

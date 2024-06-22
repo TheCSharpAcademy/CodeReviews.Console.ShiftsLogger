@@ -24,17 +24,33 @@ namespace ShiftsLoggerUi.Services
         {
             try
             {
-                var shifts = await _client.GetFromJsonAsync<ShiftModel[]>("Shift");
-                if (shifts != null && shifts.Length > 0)
+                var response = await _client.GetAsync("Shift");
+                if (response.IsSuccessStatusCode)
                 {
-                    foreach (var shift in shifts)
+                    var shifts = await response.Content.ReadFromJsonAsync<ShiftModel[]>();
+                    if (shifts != null && shifts.Length > 0)
                     {
-                        AnsiConsole.MarkupLine($"Id: [green]{shift.Id}[/], Start: [blue]{shift.StartOfShift}[/], End: [blue]{shift.EndOfShift}[/], Duration: [blue]{shift.ShiftDuration}[/], EmployeeName: [blue]{shift.EmployeeName}[/]");
+                        foreach (var shift in shifts)
+                        {
+                            AnsiConsole.MarkupLine($"Id: [green]{shift.Id}[/], Start: [blue]{shift.StartOfShift}[/], End: [blue]{shift.EndOfShift}[/], Duration: [blue]{shift.ShiftDuration}[/], EmployeeName: [blue]{shift.EmployeeName}[/]");
+                        }
+                    }
+                    else
+                    {
+                        AnsiConsole.MarkupLine("[yellow]No shifts found.[/]");
                     }
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("[yellow]No shifts found.[/]");
+                    AnsiConsole.MarkupLine($"[red]Error: Failed to retrieve shifts. Status code: {response.StatusCode}[/]");
+                }
+            }
+            catch (HttpRequestException httpRequestException)
+            {
+                AnsiConsole.MarkupLine($"[red]HTTP Request Error:[/] {httpRequestException.Message}");
+                if (httpRequestException.InnerException != null)
+                {
+                    AnsiConsole.MarkupLine($"[red]Inner Exception:[/] {httpRequestException.InnerException.Message}");
                 }
             }
             catch (Exception ex)
@@ -42,6 +58,7 @@ namespace ShiftsLoggerUi.Services
                 AnsiConsole.MarkupLine($"[red]Error:[/] {ex.Message}");
             }
         }
+
 
         /// <summary>
         /// Starts a new shift by asking the user for confirmation and capturing the start time and employee name.
@@ -82,6 +99,7 @@ namespace ShiftsLoggerUi.Services
             }
         }
 
+        /// <summary>
         /// Ends the specified shift by setting the end time and updating it in the database.
         /// </summary>
         /// <returns>A Task representing the asynchronous operation.</returns>
@@ -126,6 +144,23 @@ namespace ShiftsLoggerUi.Services
             try
             {
                 var id = AnsiConsole.Ask<int>("Enter Shift Id to update:");
+
+                // Check if the shift exists before updating
+                var response = await _client.GetAsync($"Shift/{id}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        AnsiConsole.MarkupLine("[red]Shift not found.[/]");
+                    }
+                    else
+                    {
+                        AnsiConsole.MarkupLine($"[red]Error fetching shift: {response.ReasonPhrase}[/]");
+                    }
+                    return;
+                }
+
+                var existingShift = await response.Content.ReadFromJsonAsync<ShiftModel>();
                 var startShift = AnsiConsole.Ask<DateTime>("Enter new start shift time (yyyy-MM-dd HH:mm:ss):");
                 var endShift = AnsiConsole.Ask<DateTime>("Enter new end shift time (yyyy-MM-dd HH:mm:ss):");
                 var employeeName = AnsiConsole.Ask<string>("Enter Employee Name:");
@@ -167,6 +202,21 @@ namespace ShiftsLoggerUi.Services
             try
             {
                 var id = AnsiConsole.Ask<int>("Enter Shift Id to delete:");
+
+                // Check if the shift exists before deleting
+                var response = await _client.GetAsync($"Shift/{id}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    {
+                        AnsiConsole.MarkupLine("[red]Shift not found.[/]");
+                    }
+                    else
+                    {
+                        AnsiConsole.MarkupLine($"[red]Error fetching shift: {response.ReasonPhrase}[/]");
+                    }
+                    return;
+                }
 
                 await _client.DeleteAsync($"Shift/{id}");
                 AnsiConsole.MarkupLine("Shift deleted successfully.");
