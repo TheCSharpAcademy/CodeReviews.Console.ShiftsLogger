@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ShiftsLoggerApi.DataAccess;
+using ShiftsLoggerApi.Services;
 
 namespace ShiftsLoggerApi;
 
@@ -17,6 +18,7 @@ public class Program
         // Configure DbContext with the connection string from appsettings.json
         builder.Services.AddDbContext<ShiftContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+        builder.Services.AddScoped<IShiftService, ShiftService>();
         
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
