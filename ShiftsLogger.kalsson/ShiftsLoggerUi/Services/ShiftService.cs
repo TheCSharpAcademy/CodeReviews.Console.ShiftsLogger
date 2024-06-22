@@ -1,7 +1,4 @@
-using System;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 using ShiftsLoggerApi.Models;
 using Spectre.Console;
 
@@ -82,7 +79,8 @@ namespace ShiftsLoggerUi.Services
                     response.EnsureSuccessStatusCode();
 
                     var createdShift = await response.Content.ReadFromJsonAsync<ShiftModel>();
-                    AnsiConsole.MarkupLine($"Shift started with Id: [green]{createdShift.Id}[/]");
+                    if (createdShift != null)
+                        AnsiConsole.MarkupLine($"Shift started with Id: [green]{createdShift.Id}[/]");
                 }
             }
             catch (HttpRequestException httpRequestException)

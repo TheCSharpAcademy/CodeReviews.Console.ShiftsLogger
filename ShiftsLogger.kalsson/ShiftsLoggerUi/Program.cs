@@ -5,8 +5,8 @@ namespace ShiftsLoggerUi
 {
     class Program
     {
-        private static readonly HttpClient client = new HttpClient { BaseAddress = new Uri("https://localhost:44310/api/") };
-        private static readonly ShiftService shiftService = new ShiftService(client);
+        private static readonly HttpClient Client = new HttpClient { BaseAddress = new Uri("https://localhost:44310/api/") };
+        private static readonly ShiftService ShiftService = new ShiftService(Client);
 
         static async Task Main(string[] args)
         {
@@ -21,19 +21,19 @@ namespace ShiftsLoggerUi
                 switch (choice)
                 {
                     case "List Shifts":
-                        await shiftService.ListShifts();
+                        await ShiftService.ListShifts();
                         break;
                     case "Start Shift":
-                        await shiftService.StartShift();
+                        await ShiftService.StartShift();
                         break;
                     case "End Shift":
-                        await shiftService.EndShift();
+                        await ShiftService.EndShift();
                         break;
                     case "Update Shift":
-                        await shiftService.UpdateShift();
+                        await ShiftService.UpdateShift();
                         break;
                     case "Delete Shift":
-                        await shiftService.DeleteShift();
+                        await ShiftService.DeleteShift();
                         break;
                     case "Exit":
                         return;
