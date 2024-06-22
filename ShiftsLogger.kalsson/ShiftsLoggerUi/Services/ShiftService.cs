@@ -16,6 +16,10 @@ namespace ShiftsLoggerUi.Services
             _client = client;
         }
 
+        /// <summary>
+        /// Retrieves and displays a list of shifts.
+        /// </summary>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task ListShifts()
         {
             try
@@ -39,6 +43,11 @@ namespace ShiftsLoggerUi.Services
             }
         }
 
+        /// <summary>
+        /// Starts a new shift by asking the user for confirmation and capturing the start time and employee name.
+        /// It then sends a POST request to the server to create the shift and displays the ID of the created shift.
+        /// </summary>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task StartShift()
         {
             try
@@ -73,6 +82,9 @@ namespace ShiftsLoggerUi.Services
             }
         }
 
+        /// Ends the specified shift by setting the end time and updating it in the database.
+        /// </summary>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task EndShift()
         {
             try
@@ -105,6 +117,10 @@ namespace ShiftsLoggerUi.Services
             }
         }
 
+        /// <summary>
+        /// Updates a shift with new start and end times and employee name.
+        /// </summary>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task UpdateShift()
         {
             try
@@ -139,6 +155,13 @@ namespace ShiftsLoggerUi.Services
             }
         }
 
+        /// <summary>
+        /// Deletes a shift by asking the user to enter the Shift ID to delete.
+        /// It sends a DELETE request to the server to delete the shift with the specified ID.
+        /// If the request is successful, it displays a message indicating that the shift has been deleted.
+        /// If an error occurs during the request, it displays an error message.
+        /// </summary>
+        /// <returns>A Task representing the asynchronous operation.</returns>
         public async Task DeleteShift()
         {
             try
