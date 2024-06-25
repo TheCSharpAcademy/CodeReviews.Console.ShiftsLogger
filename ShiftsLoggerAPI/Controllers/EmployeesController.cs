@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SharedLibrary.Models;
+using SharedLibrary.DTOs;
 using SharedLibrary.Validations;
 
 namespace ShiftsLoggerAPI.Controllers
@@ -17,14 +17,14 @@ namespace ShiftsLoggerAPI.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public ActionResult<IEnumerable<Employee>> GetAllEmployees()
+        public ActionResult<IEnumerable<EmployeeDto>> GetAllEmployees()
         {
             return _service.GetAllEmployees();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public ActionResult<Employee> GetEmployee(int id)
+        public ActionResult<EmployeeDto> GetEmployee(int id)
         {
             var employee = _service.GetEmployee(id);
 
@@ -39,7 +39,7 @@ namespace ShiftsLoggerAPI.Controllers
         // PUT: api/Employees/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public ActionResult UpdateEmployee(int id, [FromBody] Employee employee)
+        public ActionResult UpdateEmployee([FromBody] UpdateEmployeeDto employee, int id)
         {
             if (!ModelState.IsValid)
             {
@@ -48,7 +48,7 @@ namespace ShiftsLoggerAPI.Controllers
 
             try
             {
-                _service.UpdateEmployee(employee);
+                _service.UpdateEmployee(employee, id);
             }
             catch (EmployeeValidationException ex)
             {
@@ -65,7 +65,7 @@ namespace ShiftsLoggerAPI.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Employee> CreateEmployee([FromBody] Employee employee)
+        public ActionResult<CreateEmployeeDto> CreateEmployee([FromBody] CreateEmployeeDto employee)
         {
             if (!ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace ShiftsLoggerAPI.Controllers
                 return StatusCode(500, "An unexpected error occurred while processing your request.");
             }
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            return Ok();
         }
 
         // DELETE: api/Employees/5

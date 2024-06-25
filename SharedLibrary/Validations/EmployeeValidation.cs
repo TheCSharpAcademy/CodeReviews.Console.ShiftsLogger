@@ -1,6 +1,5 @@
-﻿using SharedLibrary.Extensions;
-using SharedLibrary.Models;
-using System.Net.Http.Headers;
+﻿using SharedLibrary.DTOs;
+using SharedLibrary.Extensions;
 
 namespace SharedLibrary.Validations;
 
@@ -13,15 +12,14 @@ public class EmployeeValidationException : Exception
 
 public static class EmployeeValidation
 {
-    public static void Validate(Employee employee)
+    public static void Validate(EmployeeDto employee)
     {
-        var age = employee.DateOfBirth.CalculateAge();
-        if (age < 18)
+        if (employee.Age < 18)
         {
             throw new EmployeeValidationException("Employee must be at least 18 years of age");
         }
 
-        if (age > 65)
+        if (employee.Age > 65)
         {
             throw new EmployeeValidationException("Employee should not be older than 65.");
         }

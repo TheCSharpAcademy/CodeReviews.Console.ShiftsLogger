@@ -1,10 +1,10 @@
-﻿using SharedLibrary.Models;
+﻿using SharedLibrary.DTOs;
 
 public interface IEmployeeService
 {
-    List<Employee> GetAllEmployees();
-    Employee GetEmployee(int id);
-    void CreateEmployee(Employee employee);
-    void UpdateEmployee(Employee employee);
+    List<EmployeeDto> GetAllEmployees();
+    EmployeeDto GetEmployee(int id);
+    void CreateEmployee(CreateEmployeeDto employee);
+    void UpdateEmployee(UpdateEmployeeDto employee, int id);
     void DeleteEmployee(int id);
 }

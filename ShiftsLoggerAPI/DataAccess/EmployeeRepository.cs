@@ -41,6 +41,7 @@ namespace ShiftsLoggerAPI.DataAccess
 
         public void Update(Employee employee)
         {
+            _context.Attach(employee);
             _context.Entry(employee).State = EntityState.Modified;
             _context.Update(employee);
             _context.SaveChanges();

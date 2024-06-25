@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SharedLibrary.Models;
+using SharedLibrary.DTOs;
 using SharedLibrary.Validations;
 using ShiftsLoggerAPI.Interfaces;
 
@@ -18,14 +18,14 @@ namespace ShiftsLoggerAPI.Controllers
 
         // GET: api/Shifts
         [HttpGet]
-        public ActionResult<IEnumerable<Shift>> GetAllShifts()
+        public ActionResult<IEnumerable<ShiftDto>> GetAllShifts()
         {
             return _service.GetAllShifts();
         }
 
         // GET: api/Shifts/5
         [HttpGet("{id}")]
-        public ActionResult<Shift> GetShift(int id)
+        public ActionResult<ShiftDto> GetShift(int id)
         {
             var shift = _service.GetShift(id);
 
@@ -40,7 +40,7 @@ namespace ShiftsLoggerAPI.Controllers
         // PUT: api/Shifts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public ActionResult UpdateShift([FromBody] Shift shift)
+        public ActionResult UpdateShift([FromBody] UpdateShiftDto shift)
         {
             if (!ModelState.IsValid)
             {
@@ -65,7 +65,7 @@ namespace ShiftsLoggerAPI.Controllers
         // POST: api/Shifts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Shift> CreateShift([FromBody] Shift shift)
+        public ActionResult<CreateShiftDto> CreateShift([FromBody] CreateShiftDto shift)
         {
             if (!ModelState.IsValid)
             {
@@ -75,7 +75,7 @@ namespace ShiftsLoggerAPI.Controllers
             try
             {
                 _service.CreateShift(shift);
-                return CreatedAtAction("GetShift", new { id = shift.Id }, shift);
+                return CreatedAtAction("GetShift", shift);
             }
             catch (ShiftValidationException ex)
             {

@@ -1,4 +1,6 @@
-﻿using SharedLibrary.Models;
+﻿using AutoMapper;
+using SharedLibrary.DTOs;
+using SharedLibrary.Models;
 using SharedLibrary.Validations;
 using ShiftsLoggerAPI.Interfaces;
 
@@ -8,44 +10,47 @@ namespace ShiftsLoggerAPI.Services
     {
         private IShiftRepository _repository;
         private IEmployeeService _employeeService;
+        private IMapper _mapper;
 
-        public ShiftService(IShiftRepository repository)
+        public ShiftService(IShiftRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
-        public Shift CreateShift(Shift shift)
+        public CreateShiftDto CreateShift(CreateShiftDto shift)
         {
-            ValidateShift(shift);
-            _repository.Create(shift);
+            var domain = _mapper.Map<Shift>(shift);
+            ValidateShift(domain);
+            _repository.Create(domain);
             return shift;
-
         }
 
-        public bool DeleteShift(Shift shift)
+        public bool DeleteShift(ShiftDto shift)
         {
-            _repository.Delete(shift);
+            _repository.Delete(_mapper.Map<Shift>(shift));
             return true;
         }
 
-        public List<Shift> GetAllShifts()
+        public List<ShiftDto> GetAllShifts()
         {
-            return _repository.GetAll();
+            return _mapper.Map<List<ShiftDto>>(_repository.GetAll());
         }
 
-        public Shift GetShift(int id)
+        public ShiftDto GetShift(int id)
         {
             if (_repository.GetById(id) is not null)
             {
-                return _repository.GetById(id);
+                return _mapper.Map<ShiftDto>(_repository.GetById(id));
             }
             return null!;
         }
 
-        public Shift UpdateShift(Shift shift)
+        public UpdateShiftDto UpdateShift(UpdateShiftDto shift)
         {
-            ValidateShift(shift);
-            _repository.Update(shift);
+            var domain = _mapper.Map<Shift>(shift);
+            ValidateShift(domain);
+            _repository.Update(domain);
             return shift;
         }
 
