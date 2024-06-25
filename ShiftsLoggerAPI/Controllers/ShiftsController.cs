@@ -1,45 +1,46 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SharedLibrary.Models;
 using SharedLibrary.Validations;
+using ShiftsLoggerAPI.Interfaces;
 
 namespace ShiftsLoggerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeesController : ControllerBase
+    public class ShiftsController : ControllerBase
     {
-        private readonly IEmployeeService _service;
+        private readonly IShiftService _service;
 
-        public EmployeesController(IEmployeeService service)
+        public ShiftsController(IShiftService service)
         {
             _service = service;
         }
 
-        // GET: api/Employees
+        // GET: api/Shifts
         [HttpGet]
-        public ActionResult<IEnumerable<Employee>> GetAllEmployees()
+        public ActionResult<IEnumerable<Shift>> GetAllShifts()
         {
-            return _service.GetAllEmployees();
+            return _service.GetAllShifts();
         }
 
-        // GET: api/Employees/5
+        // GET: api/Shifts/5
         [HttpGet("{id}")]
-        public ActionResult<Employee> GetEmployee(int id)
+        public ActionResult<Shift> GetShift(int id)
         {
-            var employee = _service.GetEmployee(id);
+            var shift = _service.GetShift(id);
 
-            if (employee is null)
+            if (shift == null)
             {
                 return NotFound();
             }
 
-            return employee;
+            return shift;
         }
 
-        // PUT: api/Employees/5
+        // PUT: api/Shifts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public ActionResult UpdateEmployee(int id, [FromBody] Employee employee)
+        public ActionResult UpdateShift([FromBody] Shift shift)
         {
             if (!ModelState.IsValid)
             {
@@ -48,9 +49,10 @@ namespace ShiftsLoggerAPI.Controllers
 
             try
             {
-                _service.UpdateEmployee(employee);
+                _service.UpdateShift(shift);
+                return NoContent();
             }
-            catch (EmployeeValidationException ex)
+            catch (ShiftValidationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -58,14 +60,12 @@ namespace ShiftsLoggerAPI.Controllers
             {
                 return StatusCode(500, "An unexpected error occurred while processing your request.");
             }
-
-            return NoContent();
         }
 
-        // POST: api/Employees
+        // POST: api/Shifts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Employee> CreateEmployee([FromBody] Employee employee)
+        public ActionResult<Shift> CreateShift([FromBody] Shift shift)
         {
             if (!ModelState.IsValid)
             {
@@ -74,9 +74,10 @@ namespace ShiftsLoggerAPI.Controllers
 
             try
             {
-                _service.CreateEmployee(employee);
+                _service.CreateShift(shift);
+                return CreatedAtAction("GetShift", new { id = shift.Id }, shift);
             }
-            catch (EmployeeValidationException ex)
+            catch (ShiftValidationException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -84,32 +85,19 @@ namespace ShiftsLoggerAPI.Controllers
             {
                 return StatusCode(500, "An unexpected error occurred while processing your request.");
             }
-
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
 
-        // DELETE: api/Employees/5
+        // DELETE: api/Shifts/5
         [HttpDelete("{id}")]
-        public ActionResult DeleteEmployee(int id)
+        public ActionResult DeleteShift(int id)
         {
-            var employee = _service.GetEmployee(id);
-            if (employee == null)
+            var shift = _service.GetShift(id);
+            if (shift == null)
             {
                 return NotFound();
             }
 
-            try
-            {
-                _service.DeleteEmployee(id);
-            }
-            catch (EmployeeValidationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "An unexpected error occurred while processing your request.");
-            }
+            _service.DeleteShift(shift);
 
             return NoContent();
         }

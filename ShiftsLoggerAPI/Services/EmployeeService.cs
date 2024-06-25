@@ -1,8 +1,6 @@
-﻿using SharedLibrary.Extensions;
-using SharedLibrary.Models;
+﻿using SharedLibrary.Models;
 using SharedLibrary.Validations;
 using ShiftsLoggerAPI.Interfaces;
-using System.ComponentModel.DataAnnotations;
 
 namespace ShiftsLoggerAPI.Services
 {
@@ -15,10 +13,10 @@ namespace ShiftsLoggerAPI.Services
             _employeeRepository = employeeRepository;
         }
 
-        public void AddEmployee(Employee employee)
+        public void CreateEmployee(Employee employee)
         {
             EmployeeValidation.Validate(employee);
-            _employeeRepository.AddEmployee(employee);
+            _employeeRepository.Create(employee);
         }
 
         public void DeleteEmployee(int id)
@@ -27,20 +25,20 @@ namespace ShiftsLoggerAPI.Services
             {
                 var employee = GetEmployee(id);
                 EmployeeValidation.Validate(employee);
-                _employeeRepository.DeleteEmployee(employee);
+                _employeeRepository.Delete(employee);
             }
         }
 
         public Employee GetEmployee(int id)
         {
-            var employee = _employeeRepository.GetEmployee(id);
+            var employee = _employeeRepository.GetById(id);
 
             return employee;
         }
 
-        public List<Employee> GetEmployees()
+        public List<Employee> GetAllEmployees()
         {
-            return _employeeRepository.GetEmployees();
+            return _employeeRepository.GetAll();
         }
 
         public void UpdateEmployee(Employee employee)
@@ -49,7 +47,7 @@ namespace ShiftsLoggerAPI.Services
 
             if (EmployeeExists(employee.Id))
             {
-                _employeeRepository.UpdateEmployee(employee);
+                _employeeRepository.Update(employee);
             }
         }
 

@@ -2,9 +2,9 @@
 
 public interface IEmployeeService
 {
-    List<Employee> GetEmployees();
+    List<Employee> GetAllEmployees();
     Employee GetEmployee(int id);
-    void AddEmployee(Employee employee);
+    void CreateEmployee(Employee employee);
     void UpdateEmployee(Employee employee);
     void DeleteEmployee(int id);
 }

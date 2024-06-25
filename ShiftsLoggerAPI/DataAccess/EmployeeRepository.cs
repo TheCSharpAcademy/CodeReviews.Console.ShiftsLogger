@@ -13,33 +13,33 @@ namespace ShiftsLoggerAPI.DataAccess
             _context = context;
         }
 
-        public void AddEmployee(Employee employee)
+        public void Create(Employee employee)
         {
             _context.Add(employee);
             _context.SaveChanges();
         }
 
-        public void DeleteEmployee(Employee employee)
+        public void Delete(Employee employee)
         {
             _context.Remove(employee);
             _context.SaveChanges();
         }
 
-        public Employee GetEmployee(int id)
+        public Employee GetById(int id)
         {
             return _context.Employees
                 .Include(e => e.Shifts)
                 .FirstOrDefault(e => e.Id == id)!;
         }
 
-        public List<Employee> GetEmployees()
+        public List<Employee> GetAll()
         {
             return _context.Employees
                 .Include(e => e.Shifts)
                 .ToList();
         }
 
-        public void UpdateEmployee(Employee employee)
+        public void Update(Employee employee)
         {
             _context.Entry(employee).State = EntityState.Modified;
             _context.Update(employee);
