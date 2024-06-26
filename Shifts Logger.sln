@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftsLoggerAPI", "ShiftsLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{03753D5B-65BA-4F96-84F3-35F1EA92C385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftLoggerUI", "ShiftLoggerUI\ShiftLoggerUI.csproj", "{BAC54E43-5D21-4B93-807D-94F81E6C4948}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftLoggerUI", "ShiftLoggerUI\ShiftLoggerUI.csproj", "{BAC54E43-5D21-4B93-807D-94F81E6C4948}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
