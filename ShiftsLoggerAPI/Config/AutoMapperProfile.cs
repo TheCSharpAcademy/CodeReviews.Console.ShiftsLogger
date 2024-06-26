@@ -37,6 +37,7 @@ namespace ShiftsLoggerAPI.Config
 
             CreateMap<CreateShiftDto, Shift>();
             CreateMap<UpdateShiftDto, Shift>();
+            CreateMap<ShiftDto, Shift>();
         }
     }
 }

@@ -40,7 +40,7 @@ namespace ShiftsLoggerAPI.Controllers
         // PUT: api/Shifts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public ActionResult UpdateShift([FromBody] UpdateShiftDto shift)
+        public ActionResult UpdateShift([FromBody] UpdateShiftDto shift, int id)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +49,7 @@ namespace ShiftsLoggerAPI.Controllers
 
             try
             {
-                _service.UpdateShift(shift);
+                _service.UpdateShift(shift, id);
                 return NoContent();
             }
             catch (ShiftValidationException ex)
@@ -75,7 +75,7 @@ namespace ShiftsLoggerAPI.Controllers
             try
             {
                 _service.CreateShift(shift);
-                return CreatedAtAction("GetShift", shift);
+                return Ok();
             }
             catch (ShiftValidationException ex)
             {

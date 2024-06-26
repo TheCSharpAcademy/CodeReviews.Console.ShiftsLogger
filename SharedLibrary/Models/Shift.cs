@@ -16,7 +16,6 @@ namespace SharedLibrary.Models
 
         public int EmployeeId { get; set; }
 
-        // Navigation property
         [JsonIgnore]
         public Employee Employee { get; set; }
     }

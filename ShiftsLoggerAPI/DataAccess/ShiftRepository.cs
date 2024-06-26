@@ -37,6 +37,8 @@ namespace ShiftsLoggerAPI.DataAccess
 
         public void Update(Shift shift)
         {
+            _context.Attach(shift);
+            _context.Entry(shift).State = EntityState.Modified;
             _context.Update(shift);
             _context.SaveChanges();
         }

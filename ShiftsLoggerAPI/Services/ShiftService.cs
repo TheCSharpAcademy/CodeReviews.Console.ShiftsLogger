@@ -12,10 +12,11 @@ namespace ShiftsLoggerAPI.Services
         private IEmployeeService _employeeService;
         private IMapper _mapper;
 
-        public ShiftService(IShiftRepository repository, IMapper mapper)
+        public ShiftService(IShiftRepository repository, IMapper mapper, IEmployeeService employeeService)
         {
             _repository = repository;
             _mapper = mapper;
+            _employeeService = employeeService;
         }
 
         public CreateShiftDto CreateShift(CreateShiftDto shift)
@@ -28,7 +29,8 @@ namespace ShiftsLoggerAPI.Services
 
         public bool DeleteShift(ShiftDto shift)
         {
-            _repository.Delete(_mapper.Map<Shift>(shift));
+            var result = _repository.GetById(_mapper.Map<Shift>(shift).Id);
+            _repository.Delete(result);
             return true;
         }
 
@@ -46,11 +48,12 @@ namespace ShiftsLoggerAPI.Services
             return null!;
         }
 
-        public UpdateShiftDto UpdateShift(UpdateShiftDto shift)
+        public UpdateShiftDto UpdateShift(UpdateShiftDto shift, int Id)
         {
-            var domain = _mapper.Map<Shift>(shift);
-            ValidateShift(domain);
-            _repository.Update(domain);
+            var result = _repository.GetById(Id);
+            _mapper.Map(shift, result);
+            ValidateShift(result);
+            _repository.Update(result);
             return shift;
         }
 
