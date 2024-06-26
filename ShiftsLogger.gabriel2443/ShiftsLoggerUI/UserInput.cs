@@ -60,7 +60,7 @@ public class UserInput
         {
             Console.WriteLine("Invalid date time");
             startDate = Console.ReadLine();
-        };
+        }
 
         Console.WriteLine("Please enter the end date in the HH:mm format");
         var endDate = Console.ReadLine();
@@ -74,7 +74,7 @@ public class UserInput
         {
             Console.WriteLine("Invalid date time");
             endDate = Console.ReadLine();
-        };
+        }
 
         shift.FullName = name;
         shift.StartTime = DateTime.Parse(startDate);
