@@ -1,6 +1,7 @@
 using ShiftsLoggerAPI.DataAccess;
 using ShiftsLoggerAPI.Interfaces;
 using ShiftsLoggerAPI.Services;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,15 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.CustomOperationIds(apiDesc =>
+    {
+        return apiDesc.TryGetMethodInfo(out MethodInfo methodInfo)
+        ? methodInfo.Name
+        : null;
+    });
+});
 
 var app = builder.Build();
 
