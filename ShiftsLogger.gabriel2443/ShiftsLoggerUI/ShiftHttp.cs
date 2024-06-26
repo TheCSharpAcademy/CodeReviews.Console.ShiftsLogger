@@ -76,7 +76,7 @@ public static class ShiftHttp
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.Message}");
-            throw;
+
         }
     }
 }

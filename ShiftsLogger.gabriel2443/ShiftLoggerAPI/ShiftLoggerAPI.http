@@ -1,6 +1,0 @@
-@ShiftLoggerAPI_HostAddress = http://localhost:5198
-
-GET {{ShiftLoggerAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

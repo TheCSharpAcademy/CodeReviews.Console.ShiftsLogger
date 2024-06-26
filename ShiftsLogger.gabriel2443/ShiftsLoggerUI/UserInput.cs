@@ -87,7 +87,7 @@ public class UserInput
     {
         Console.Clear();
         var shifts = await ShiftHttp.GetShifts();
-
+        if (shifts.Count == 0) Console.WriteLine("No shifts available");
         foreach (var shift in shifts)
         {
             Console.WriteLine($"{shift.Id}. Name-{shift.FullName} \t Start Date:{shift.StartTime.ToString("MM-dd-yyyy HH:mm:ss")} \t End Date:{shift.EndTime.ToString("MM-dd-yyyy HH:mm:ss")} \t Duration {shift.Duration.TotalHours} hours \n");
@@ -97,7 +97,13 @@ public class UserInput
     private async Task UpdateShift()
     {
         Console.Clear();
+        var shifts = await ShiftHttp.GetShifts();
         await ShowShifts();
+        if (shifts.Count == 0)
+        {
+            Console.WriteLine("No shifts available");
+            return;
+        }
         Console.WriteLine("Please enter the number of shift you want to update");
         var shiftId = Console.ReadLine();
 
