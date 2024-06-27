@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerApi;
+using ShiftsLoggerApi.Shifts.Models;
+using ShiftsLoggerApi.Util;
 
 namespace ShiftsLoggerApi.Shifts
 {
@@ -13,25 +17,37 @@ namespace ShiftsLoggerApi.Shifts
     [ApiController]
     public class ShiftsController : ControllerBase
     {
-        private readonly ShiftsLoggerContext _context;
+        private readonly ShiftsLoggerContext Db;
+        private readonly ShiftsService ShiftsService;
 
-        public ShiftsController(ShiftsLoggerContext context)
+        public ShiftsController(ShiftsLoggerContext dbContext, ShiftsService shiftsService)
         {
-            _context = context;
+            Db = dbContext;
+            ShiftsService = shiftsService;
         }
 
-        // GET: api/Shifts
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
         {
-            return await _context.Shifts.ToListAsync();
+            return await Db.Shifts.ToListAsync();
         }
 
-        // GET: api/Shifts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Shift>> GetShift(int id)
+        public async Task<ActionResult<ShiftDto>> GetShift(int id)
         {
-            var shift = await _context.Shifts.FindAsync(id);
+            var shift = await Db.Shifts
+                .Where(s => s.ShiftId == id)
+                .Where(s => s.Employee != null)
+                .Select(s =>
+                    new ShiftDto(
+                        s.ShiftId,
+                        s.StartTime,
+                        s.EndTime,
+                        s.Employee == null ? null :
+                            new Employees.Models.EmployeeDto(s.Employee!.EmployeeId, s.Employee.Name, null)
+                    )
+                )
+                .FirstOrDefaultAsync();
 
             if (shift == null)
             {
@@ -41,67 +57,66 @@ namespace ShiftsLoggerApi.Shifts
             return shift;
         }
 
-        // PUT: api/Shifts/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutShift(int id, Shift shift)
+        public async Task<ActionResult<Shift>> PutShift(int id, ShiftUpdateDto shiftUpdateDto)
         {
-            if (id != shift.ShiftId)
+            if (id != shiftUpdateDto.ShiftId)
             {
-                return BadRequest();
+                return BadRequest(
+                    new Error(
+                        ErrorType.BusinessRuleValidation,
+                        "Param ID does not match payload ID"
+                    )
+                );
             }
 
-            _context.Entry(shift).State = EntityState.Modified;
+            var (updatedShift, error) = await ShiftsService.UpdateShift(shiftUpdateDto);
 
-            try
+            if (error == null && updatedShift != null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ShiftExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return updatedShift;
             }
 
-            return NoContent();
+            return error?.Type switch
+            {
+                Util.ErrorType.BusinessRuleValidation => BadRequest(error),
+                Util.ErrorType.DatabaseNotFound => NotFound(),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, error)
+            };
+
         }
 
-        // POST: api/Shifts
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Shift>> PostShift(Shift shift)
+        public async Task<ActionResult<Shift>> PostShift(ShiftCreateDto shiftCreateDto)
         {
-            _context.Shifts.Add(shift);
-            await _context.SaveChangesAsync();
+            var (createdShift, error) = await ShiftsService.CreateShift(shiftCreateDto);
 
-            return CreatedAtAction("GetShift", new { id = shift.ShiftId }, shift);
+            if (error == null && createdShift != null)
+            {
+                return CreatedAtAction("GetShift", new { id = createdShift.ShiftId }, createdShift);
+            }
+
+            if (error?.Type == Util.ErrorType.BusinessRuleValidation)
+            {
+                return BadRequest(error);
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, error?.Message);
         }
 
-        // DELETE: api/Shifts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShift(int id)
         {
-            var shift = await _context.Shifts.FindAsync(id);
+            var shift = await Db.Shifts.FindAsync(id);
             if (shift == null)
             {
                 return NotFound();
             }
 
-            _context.Shifts.Remove(shift);
-            await _context.SaveChangesAsync();
+            Db.Shifts.Remove(shift);
+            await Db.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool ShiftExists(int id)
-        {
-            return _context.Shifts.Any(e => e.ShiftId == id);
         }
     }
 }

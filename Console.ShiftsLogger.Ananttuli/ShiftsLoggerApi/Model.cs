@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using ShiftsLoggerApi.Shifts;
-using ShiftsLoggerApi.Employees;
 using ShiftsLoggerApi.Database;
+using ShiftsLoggerApi.Shifts.Models;
+using ShiftsLoggerApi.Employees.Models;
 
 namespace ShiftsLoggerApi;
 

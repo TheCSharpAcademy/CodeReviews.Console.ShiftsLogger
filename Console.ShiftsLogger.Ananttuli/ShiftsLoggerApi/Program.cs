@@ -1,3 +1,6 @@
+using ShiftsLoggerApi.Employees;
+using ShiftsLoggerApi.Shifts;
+
 namespace ShiftsLoggerApi;
 
 public class Program
@@ -7,15 +10,17 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers();
+
+        builder.Services.AddScoped(typeof(ShiftsService));
+        builder.Services.AddScoped(typeof(EmployeesService));
+
         builder.Services.AddDbContext<ShiftsLoggerContext>();
 
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
