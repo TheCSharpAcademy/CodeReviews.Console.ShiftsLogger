@@ -1,0 +1,44 @@
+# Shifts Logger
+Full stack employee shift logging application.
+
+## Features
+- Create/Edit/View employees
+- Create/Edit/View work shifts for employees
+
+## Run locally
+>Note: If any configuration is changed, 
+the respective app must be restarted for the config to apply.
+
+> Even though HTTPS should be used, for the ease
+of running this locally the instructions below
+will start an HTTP server.
+
+### 1. Run the API server (backend)
+#### Pre-requisites & Notes
+- SQL server local DB must be installed and running
+- Configure DB connection details in `ShiftsLoggerApi/appsettings.json` if you want
+(default settings should be fine)
+
+#### Steps
+1. `cd <Repo_root>/ShiftsLoggerApi`
+2. `dotnet run`
+3. Server should start running at `http://localhost:5026`
+    - Configurable via `ShiftsLoggerApi/Properties/launchSettings.json` if needed
+
+#### 2. Start the console app (frontend)
+#### Pre-requisites & Notes
+- API endpoint configurable in `Program/appsettings.json` if desired.
+(default endpoint settings should be fine)
+
+#### Steps
+1. `cd <Repo_root>/Program`
+2. `dotnet run`
+
+## Tech Stack
+
+### ShiftLoggerApi (Backend)
+- C# ASP.NET core Web API (Controllers)
+- EF Core ORM (Code-first)
+
+### Program (Frontend)
+- C# console app

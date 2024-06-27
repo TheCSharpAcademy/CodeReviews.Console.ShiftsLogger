@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ShiftsLoggerApi.Employees.Models;
 using ShiftsLoggerApi.Shifts.Models;
 using ShiftsLoggerApi.Util;
 
@@ -15,23 +16,14 @@ public class ShiftsService
 
     public async Task<Result<Shift>> CreateShift(ShiftCreateDto shiftCreateDto)
     {
-        if (shiftCreateDto.StartTime > shiftCreateDto.EndTime)
-        {
-            return Result<Shift>.Fail(
-                new Error(
-                    ErrorType.BusinessRuleValidation,
-                    "Shift StartTime must be before EndTime"
-                )
-            );
-        }
+        var (_, validationError) = ValidateShiftTimes(
+            shiftCreateDto.StartTime,
+            shiftCreateDto.EndTime
+        );
 
-        var overlappingResult = CheckShiftOverlapping(shiftCreateDto.StartTime, shiftCreateDto.EndTime);
-
-        if (overlappingResult.Error != null)
+        if (validationError != null)
         {
-            return Result<Shift>.Fail(
-                overlappingResult.Error
-            );
+            return Result<Shift>.Fail(validationError);
         }
 
         var shiftToCreate = new Shift
@@ -48,31 +40,68 @@ public class ShiftsService
         return await FindById(shiftToCreate.ShiftId);
     }
 
-    public async Task<Result<Shift>> UpdateShift(ShiftUpdateDto shiftUpdateDto)
+    public async Task<Result<List<ShiftDto>>> GetShifts()
     {
+        List<ShiftDto>? shifts = await GetShiftsQuery().ToListAsync();
+
+        if (shifts != null)
+        {
+            return Result<List<ShiftDto>>.Success(shifts);
+        }
+
+        return Result<List<ShiftDto>>.Fail(
+            new Error(ErrorType.DatabaseNotFound, "Could not get shifts")
+        );
+    }
+
+    public async Task<Result<ShiftDto>> GetShift(int id)
+    {
+        var shiftsQuery = GetShiftsQuery(id);
+
+        var employee = await shiftsQuery
+            .FirstOrDefaultAsync();
+
+        if (employee == null)
+        {
+            return Result<ShiftDto>.Fail(
+                new Error(
+                    ErrorType.DatabaseNotFound,
+                    "Employee not found"
+                )
+            );
+        }
+
+        return Result<ShiftDto>.Success(employee);
+    }
+
+
+    public async Task<Result<Shift>> UpdateShift(int id, ShiftUpdateDto shiftUpdateDto)
+    {
+        if (id != shiftUpdateDto.ShiftId)
+        {
+            return Result<Shift>.Fail(
+                new Error(
+                    ErrorType.BusinessRuleValidation,
+                    "Param ID does not match payload ID"
+                )
+            );
+        }
+
         var (existingShift, shiftFetchError) = await FindById(shiftUpdateDto.ShiftId);
+
         if (shiftFetchError != null || existingShift == null)
         {
             return Result<Shift>.Fail(shiftFetchError);
         }
 
-        if (shiftUpdateDto.StartTime > shiftUpdateDto.EndTime)
-        {
-            return Result<Shift>.Fail(
-                new Error(
-                    ErrorType.BusinessRuleValidation,
-                    "Shift StartTime must be before EndTime"
-                )
-            );
-        }
+        var (_, validationError) = ValidateShiftTimes(
+            shiftUpdateDto.StartTime,
+            shiftUpdateDto.EndTime
+        );
 
-        var overlappingResult = CheckShiftOverlapping(shiftUpdateDto.StartTime, shiftUpdateDto.EndTime);
-
-        if (overlappingResult.Error != null)
+        if (validationError != null)
         {
-            return Result<Shift>.Fail(
-                overlappingResult.Error
-            );
+            return Result<Shift>.Fail(validationError);
         }
 
         existingShift.StartTime = shiftUpdateDto.StartTime;
@@ -85,8 +114,53 @@ public class ShiftsService
         return await FindById(existingShift.ShiftId);
     }
 
-    public Result<bool> CheckShiftOverlapping(DateTime start, DateTime end)
+    public async Task<Result<int?>> DeleteShift(int id)
     {
+        var (shift, error) = await FindById(id);
+
+        if (error != null || shift == null)
+        {
+            return Result<int?>.Fail(error);
+        }
+
+        Db.Shifts.Remove(shift);
+        await Db.SaveChangesAsync();
+
+        return Result<int?>.Success(id);
+    }
+
+    private IQueryable<ShiftDto> GetShiftsQuery(int? shiftId = null)
+    {
+        return Db.Shifts
+            .Where(s => shiftId != null ? s.ShiftId == shiftId : true)
+            .Where(s => s.Employee != null)
+            .Select(s =>
+                new ShiftDto(
+                    s.ShiftId,
+                    s.StartTime,
+                    s.EndTime,
+                    s.Employee == null ? null :
+                        new EmployeeDto(
+                            s.Employee!.EmployeeId,
+                            s.Employee.Name,
+                            null
+                        )
+                )
+        );
+    }
+
+    public Result<bool> ValidateShiftTimes(DateTime start, DateTime end)
+    {
+        if (start > end)
+        {
+            return Result<bool>.Fail(
+                new Error(
+                    ErrorType.BusinessRuleValidation,
+                    "Shift StartTime must be before EndTime"
+                )
+            );
+        }
+
         var numOverlappingShifts = Db.Shifts.Count(
             Shift.IsShiftTimeOverlapping(start, end)
         );
@@ -104,7 +178,7 @@ public class ShiftsService
         return Result<bool>.Success(true);
     }
 
-    public async Task<Result<Shift>> FindById(int id)
+    private async Task<Result<Shift>> FindById(int id)
     {
         var shift = await Db.Shifts.FindAsync(id);
 

@@ -13,9 +13,12 @@ public class ShiftsLoggerContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         ConnectionManager.Init();
+
         optionsBuilder.UseSqlServer(
-            ConnectionManager.GetConnectionString(ConfigManager.Database["Name"])
-        );
+                ConnectionManager.GetConnectionString(
+                    ConfigManager.Database["Name"]
+                )
+            );
     }
 }
 

@@ -1,88 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Web;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ShiftsLoggerApi;
+using ShiftsLoggerApi.Controllers;
 using ShiftsLoggerApi.Shifts.Models;
-using ShiftsLoggerApi.Util;
 
 namespace ShiftsLoggerApi.Shifts
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ShiftsController : ControllerBase
+    public class ShiftsController : CustomController
     {
-        private readonly ShiftsLoggerContext Db;
         private readonly ShiftsService ShiftsService;
 
-        public ShiftsController(ShiftsLoggerContext dbContext, ShiftsService shiftsService)
+        public ShiftsController(ShiftsService shiftsService)
         {
-            Db = dbContext;
             ShiftsService = shiftsService;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
         {
-            return await Db.Shifts.ToListAsync();
+            var (shifts, error) = await ShiftsService.GetShifts();
+
+            if (error == null && shifts != null)
+            {
+                return Ok(shifts);
+            }
+
+            return this.ErrorResponse(error);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ShiftDto>> GetShift(int id)
         {
-            var shift = await Db.Shifts
-                .Where(s => s.ShiftId == id)
-                .Where(s => s.Employee != null)
-                .Select(s =>
-                    new ShiftDto(
-                        s.ShiftId,
-                        s.StartTime,
-                        s.EndTime,
-                        s.Employee == null ? null :
-                            new Employees.Models.EmployeeDto(s.Employee!.EmployeeId, s.Employee.Name, null)
-                    )
-                )
-                .FirstOrDefaultAsync();
+            var (shift, error) = await ShiftsService.GetShift(id);
 
-            if (shift == null)
+            if (error == null && shift != null)
             {
-                return NotFound();
+                return Ok(shift);
             }
 
-            return shift;
+            return this.ErrorResponse(error);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<Shift>> PutShift(int id, ShiftUpdateDto shiftUpdateDto)
         {
-            if (id != shiftUpdateDto.ShiftId)
-            {
-                return BadRequest(
-                    new Error(
-                        ErrorType.BusinessRuleValidation,
-                        "Param ID does not match payload ID"
-                    )
-                );
-            }
-
-            var (updatedShift, error) = await ShiftsService.UpdateShift(shiftUpdateDto);
+            var (updatedShift, error) = await ShiftsService.UpdateShift(id, shiftUpdateDto);
 
             if (error == null && updatedShift != null)
             {
-                return updatedShift;
+                return Ok(updatedShift);
             }
 
-            return error?.Type switch
-            {
-                Util.ErrorType.BusinessRuleValidation => BadRequest(error),
-                Util.ErrorType.DatabaseNotFound => NotFound(),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, error)
-            };
+            return this.ErrorResponse(error);
 
         }
 
@@ -96,27 +65,20 @@ namespace ShiftsLoggerApi.Shifts
                 return CreatedAtAction("GetShift", new { id = createdShift.ShiftId }, createdShift);
             }
 
-            if (error?.Type == Util.ErrorType.BusinessRuleValidation)
-            {
-                return BadRequest(error);
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError, error?.Message);
+            return this.ErrorResponse(error);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShift(int id)
         {
-            var shift = await Db.Shifts.FindAsync(id);
-            if (shift == null)
+            var (deletedId, error) = await ShiftsService.DeleteShift(id);
+
+            if (error == null && deletedId != null)
             {
-                return NotFound();
+                return Ok(deletedId);
             }
 
-            Db.Shifts.Remove(shift);
-            await Db.SaveChangesAsync();
-
-            return NoContent();
+            return this.ErrorResponse(error);
         }
     }
 }

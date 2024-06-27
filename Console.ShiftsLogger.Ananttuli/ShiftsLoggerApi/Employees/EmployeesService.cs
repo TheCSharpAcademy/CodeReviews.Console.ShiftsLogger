@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerApi.Employees.Models;
+using ShiftsLoggerApi.Shifts.Models;
 using ShiftsLoggerApi.Util;
 
 namespace ShiftsLoggerApi.Employees;
@@ -13,21 +14,18 @@ public class EmployeesService
         Db = dbContext;
     }
 
-    public async Task<Result<Employee>> CreateEmployee(EmployeeCreateDto employeeUpsertDto)
+    public async Task<Result<Employee>> CreateEmployee(EmployeeCreateDto employeeCreateDto)
     {
-        if (!IsValidName(employeeUpsertDto.Name))
+        var (_, nameValidationError) = ValidateName(employeeCreateDto.Name);
+
+        if (nameValidationError != null)
         {
-            return Result<Employee>.Fail(
-                new Error(
-                    ErrorType.BusinessRuleValidation,
-                    "Employee name must not be empty"
-                )
-            );
+            return Result<Employee>.Fail(nameValidationError);
         }
 
         var employeeToCreate = new Employee
         {
-            Name = employeeUpsertDto.Name
+            Name = employeeCreateDto.Name
         };
 
         Db.Employees.Add(employeeToCreate);
@@ -37,22 +35,85 @@ public class EmployeesService
         return await FindById(employeeToCreate.EmployeeId);
     }
 
-    public async Task<Result<Employee>> UpdateEmployee(EmployeeUpdateDto employeeUpdateDto)
+    private IQueryable<EmployeeDto> GetEmployeesQuery(int? id = null)
     {
-        var (existingEmployee, employeeFetchError) = await FindById(employeeUpdateDto.EmployeeId);
-        if (employeeFetchError != null || existingEmployee == null)
+        return Db.Employees
+            .Where(e => id == null ? true : e.EmployeeId == id)
+            .Select(e =>
+                new EmployeeDto(
+                    e.EmployeeId,
+                    e.Name,
+                    e.Shifts.Select(s =>
+                        new ShiftDto(
+                            s.ShiftId,
+                            s.StartTime,
+                            s.EndTime,
+                            null
+                        )
+                    ).ToList()
+                )
+            );
+    }
+
+    public async Task<Result<List<EmployeeDto>>> GetEmployees()
+    {
+        List<EmployeeDto>? employees = await GetEmployeesQuery().ToListAsync();
+
+        if (employees != null)
         {
-            return Result<Employee>.Fail(employeeFetchError);
+            return Result<List<EmployeeDto>>.Success(employees);
         }
 
-        if (!IsValidName(employeeUpdateDto.Name))
+        return Result<List<EmployeeDto>>.Fail(
+            new Error(ErrorType.DatabaseNotFound, "Could not get employees")
+        );
+    }
+
+    public async Task<Result<EmployeeDto>> GetEmployee(int id)
+    {
+        var employeesQuery = GetEmployeesQuery(id);
+
+        var employee = await employeesQuery
+            .FirstOrDefaultAsync();
+
+        if (employee == null)
+        {
+            return Result<EmployeeDto>.Fail(
+                new Error(
+                    ErrorType.DatabaseNotFound,
+                    "Employee not found"
+                )
+            );
+        }
+
+        return Result<EmployeeDto>.Success(employee);
+    }
+
+    public async Task<Result<Employee>> UpdateEmployee(int id, EmployeeUpdateDto employeeUpdateDto)
+    {
+        if (id != employeeUpdateDto.EmployeeId)
         {
             return Result<Employee>.Fail(
                 new Error(
                     ErrorType.BusinessRuleValidation,
-                    "Employee name must not be empty"
+                    "Param ID does not match payload ID"
                 )
             );
+        }
+
+        var (_, nameValidationError) = ValidateName(employeeUpdateDto.Name);
+
+        if (nameValidationError != null)
+        {
+            return Result<Employee>.Fail(nameValidationError);
+        }
+
+        var (existingEmployee, employeeFetchError) =
+            await FindById(employeeUpdateDto.EmployeeId);
+
+        if (employeeFetchError != null || existingEmployee == null)
+        {
+            return Result<Employee>.Fail(employeeFetchError);
         }
 
         existingEmployee.Name = employeeUpdateDto.Name;
@@ -62,23 +123,47 @@ public class EmployeesService
         return Result<Employee>.Success(existingEmployee);
     }
 
-    public bool IsValidName(string? Name)
+    public async Task<Result<int?>> DeleteEmployee(int id)
     {
-        return Name?.Trim().Length > 0;
+        var (employee, error) = await FindById(id);
+
+        if (error != null || employee == null)
+        {
+            return Result<int?>.Fail(error);
+        }
+
+        Db.Employees.Remove(employee);
+
+        await Db.SaveChangesAsync();
+
+        return Result<int?>.Success(id);
     }
 
-    public async Task<Result<Employee>> FindById(int id)
+    private static Result<bool> ValidateName(string? Name)
     {
-        var shift = await Db.Employees.FindAsync(id);
+        var isValid = Name?.Trim().Length > 0;
 
-        if (shift == null)
+        return isValid ? Result<bool>.Success(true) :
+            Result<bool>.Fail(
+                new Error(
+                    ErrorType.BusinessRuleValidation,
+                    "Employee name must not be empty"
+                )
+            );
+    }
+
+    private async Task<Result<Employee>> FindById(int id)
+    {
+        var employee = await Db.Employees.FindAsync(id);
+
+        if (employee == null)
         {
             return Result<Employee>.Fail(new Error(
                 ErrorType.DatabaseNotFound,
-                "Could not find shift"
+                "Could not find employee"
             ));
         }
 
-        return Result<Employee>.Success(shift);
+        return Result<Employee>.Success(employee);
     }
 }
