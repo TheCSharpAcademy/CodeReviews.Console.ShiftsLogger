@@ -21,6 +21,7 @@ will start an HTTP server.
 
 #### Steps
 1. `cd <Repo_root>/ShiftsLoggerApi`
+2. `dotnet ef database update` to apply database migrations
 2. `dotnet run`
 3. Server should start running at `http://localhost:5026`
     - Configurable via `ShiftsLoggerApi/Properties/launchSettings.json` if needed

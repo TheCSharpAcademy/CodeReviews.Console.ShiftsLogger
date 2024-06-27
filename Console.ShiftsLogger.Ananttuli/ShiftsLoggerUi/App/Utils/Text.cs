@@ -1,4 +1,4 @@
-namespace Program.Utils;
+namespace ShiftsLoggerUi.App.Utils;
 
 public class Text
 {

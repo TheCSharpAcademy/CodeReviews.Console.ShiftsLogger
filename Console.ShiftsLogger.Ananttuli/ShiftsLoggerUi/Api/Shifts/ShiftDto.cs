@@ -4,7 +4,7 @@ using ShiftsLoggerUi.Api.Employees;
 namespace ShiftsLoggerUi.Api.Shifts;
 
 public record class ShiftDto(
-    [property: JsonPropertyName("shiftId")] string ShiftId,
+    [property: JsonPropertyName("shiftId")] int ShiftId,
     [property: JsonPropertyName("startTime")] DateTime StartTime,
     [property: JsonPropertyName("endTime")] DateTime EndTime,
     [property: JsonPropertyName("employee")] EmployeeDto Employee,

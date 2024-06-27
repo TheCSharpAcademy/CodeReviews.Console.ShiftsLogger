@@ -1,3 +1,4 @@
+using ShiftsLoggerUi.Api;
 using ShiftsLoggerUi.Api.Employees;
 using ShiftsLoggerUi.App.Utils;
 using Spectre.Console;
@@ -6,15 +7,64 @@ namespace ShiftsLoggerUi.App;
 
 public class EmployeesController
 {
-    public static EmployeeDto? SelectEmployee(List<EmployeeDto> employees)
+    public EmployeesApi EmployeesApi { get; set; }
+    ShiftsController ShiftsController { get; set; }
+    public EmployeeCardController EmployeeCardController { get; set; }
+
+    public EmployeesController(EmployeesApi employeesApi, ShiftsController shiftsController)
     {
-        var backButton = new EmployeeDto("", ConsoleUtil.MenuBackButtonText, []);
+        EmployeesApi = employeesApi;
+        ShiftsController = shiftsController;
+        EmployeeCardController = new EmployeeCardController(EmployeesApi, ShiftsController);
+    }
+    public async Task ManageEmployees()
+    {
+        while (true)
+        {
+            var (success, employees) = await EmployeesApi.GetEmployees();
+
+            if (!success || employees == null)
+            {
+                App.Utils.Text.Error("Could not fetch");
+                ConsoleUtil.PressAnyKeyToClear(
+                    "Press any key to go back"
+                );
+                return;
+            }
+
+            var selectedEmployee = await SelectEmployee(employees);
+
+            if (selectedEmployee == null)
+            {
+                break;
+            }
+
+            await EmployeeCardController.ShowEmployeeCard(selectedEmployee);
+        }
+    }
+
+    public async Task<EmployeeDto?> SelectEmployee(List<EmployeeDto> employees)
+    {
+        var backButton = new EmployeeDto(-1, ConsoleUtil.MenuBackButtonText, []);
+        var newEmployeeButton = new EmployeeDto(-2, "[green]Create new employee[/]", []);
 
         var selectedEmployee = AnsiConsole.Prompt(
             new SelectionPrompt<EmployeeDto>()
-                .Title("\nE M P L O Y E E S")
+                .Title("E M P L O Y E E S")
+                .UseConverter(item =>
+                {
+                    var isBackButton = backButton.Equals(item);
+                    var isNewButton = newEmployeeButton.Equals(item);
+
+                    var idCol = isBackButton ? "[red]<-[/]" :
+                        isNewButton ? "[red]+[/]" :
+                        item.EmployeeId.ToString();
+
+                    return $"{idCol}    {item.Name}";
+                })
                 .AddChoices([
                     backButton,
+                    newEmployeeButton,
                     ..employees
                 ])
                 .EnableSearch()
@@ -28,76 +78,34 @@ public class EmployeesController
             return null;
         }
 
+        if (selectedEmployee.Equals(newEmployeeButton))
+        {
+            return await CreateEmployee();
+        }
+
         return selectedEmployee;
     }
 
-    public static void PrintEmployeeInfo(EmployeeDto employee)
+
+    public async Task<EmployeeDto?> CreateEmployee()
     {
-        List<string> shifts = new();
+        var name = AnsiConsole.Prompt(
+            new TextPrompt<string>("Full name? ")
+        );
 
-        shifts.Add($"Start time     End time     Duration");
+        var result = await EmployeesApi.CreateEmployee(new EmployeeCreateDto(name));
+        var createdEmployee = result.Data;
 
-        foreach (var shift in employee.Shifts)
+        if (result.Success && createdEmployee != null)
         {
-            shifts.Add($"{shift.StartTime.ToShortTimeString()}     {shift.EndTime.ToShortTimeString()}     {shift.Duration.Hours}h {shift.Duration.Minutes}m");
+            AnsiConsole.MarkupLine(
+                $"Employee [green] ID {result?.Data?.EmployeeId} created[/]");
+            return createdEmployee;
         }
-
-        var table = new Table();
-
-        table.AddColumns(["Employee ID", "Name", "Shifts"]);
-
-        table.AddRow([
-            employee.EmployeeId.ToString(),
-            employee.Name,
-            string.Join("\n", shifts)
-        ]);
-
-        AnsiConsole.Write(table);
+        else
+        {
+            AnsiConsole.MarkupLine($"{result?.Message ?? "Error"}");
+            return null;
+        }
     }
-
-
-    //     public static CategoryDto? SelectEmployee(List<CategoryDto> categories)
-    //     {
-    //         var backButton = new CategoryDto(Utils.ConsoleUtil.MenuBackButtonText);
-
-    //         var selectedCategory = AnsiConsole.Prompt(
-    //             new SelectionPrompt<CategoryDto>()
-    //                 .Title("\nCATEGORIES")
-    //                 .AddChoices([
-    //                     backButton,
-    //                     ..categories
-    //                 ])
-    //                 .EnableSearch()
-    //         );
-
-    //         if (
-    //             selectedCategory == null ||
-    //             selectedCategory.Equals(backButton)
-    //         )
-    //         {
-    //             return null;
-    //         }
-
-    //         return selectedCategory;
-    //     }
-
-    //     public static DrinkFilterListItemDto? SelectDrinkFromCategory(CategoryDto category, List<DrinkFilterListItemDto> drinksInCategory)
-    //     {
-    //         var selectedDrink = AnsiConsole.Prompt(
-    //             new SelectionPrompt<DrinkFilterListItemDto>()
-    //                 .Title($"\n{category.StrCategory}   -   DRINKS\n")
-    //                 .AddChoices([
-    //                     new DrinkFilterListItemDto("", Utils.ConsoleUtil.MenuBackButtonText),
-    //                     ..drinksInCategory
-    //                 ])
-    //                 .EnableSearch()
-    //         );
-
-    //         if (selectedDrink == null || selectedDrink.IdDrink.Equals(""))
-    //         {
-    //             return null;
-    //         }
-
-    //         return selectedDrink;
-    //     }
 }

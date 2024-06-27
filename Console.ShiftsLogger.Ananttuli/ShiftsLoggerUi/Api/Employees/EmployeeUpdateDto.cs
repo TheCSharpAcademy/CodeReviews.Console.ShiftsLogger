@@ -3,9 +3,8 @@ using ShiftsLoggerUi.Api.Shifts;
 
 namespace ShiftsLoggerUi.Api.Employees;
 
-public record class EmployeeDto(
+public record class EmployeeUpdateDto(
     [property: JsonPropertyName("employeeId")] int EmployeeId,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("shifts")] List<ShiftDto> Shifts
+    [property: JsonPropertyName("name")] string Name
 )
 { }
