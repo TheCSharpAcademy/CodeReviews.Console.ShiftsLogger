@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using ShiftsLoggerApi.Util;
 
-namespace ShiftsLoggerApi.Controllers;
+namespace ShiftsLoggerApi.Common;
 
 public class CustomController : ControllerBase
 {
+    [NonAction]
     public ActionResult ErrorResponse(Error? error)
     {
         return error?.Type switch

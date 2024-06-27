@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ShiftsLoggerApi.Controllers;
+using ShiftsLoggerApi.Common;
 using ShiftsLoggerApi.Employees.Models;
 
 namespace ShiftsLoggerApi.Employees
