@@ -39,8 +39,7 @@ public class ShiftCardController
                     (
                         latestShift.ShiftId,
                         latestShift.StartTime,
-                        latestShift.EndTime,
-                        latestShift.Duration
+                        latestShift.EndTime
                     )
                 )
             );

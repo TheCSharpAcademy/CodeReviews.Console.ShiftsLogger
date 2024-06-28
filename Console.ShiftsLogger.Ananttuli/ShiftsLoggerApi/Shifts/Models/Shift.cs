@@ -12,15 +12,6 @@ public class Shift
 
     public Employee? Employee { get; set; }
 
-    [NotMapped]
-    public TimeSpan Duration
-    {
-        get
-        {
-            return EndTime.Subtract(StartTime);
-        }
-    }
-
     public static Func<Shift, bool> IsShiftTimeOverlapping(DateTime start, DateTime end)
     {
         return (Shift s) =>

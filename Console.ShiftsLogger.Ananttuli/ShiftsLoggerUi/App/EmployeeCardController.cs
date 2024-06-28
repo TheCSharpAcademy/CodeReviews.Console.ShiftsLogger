@@ -151,8 +151,7 @@ public class EmployeeCardController(EmployeesApi EmployeesApi, ShiftsController 
                 new EmployeeCoreDto(
                     employeeWithDetails.EmployeeId,
                     employeeWithDetails.Name
-                ),
-                s.Duration
+                )
             )
         ).ToList() ?? [];
     }
