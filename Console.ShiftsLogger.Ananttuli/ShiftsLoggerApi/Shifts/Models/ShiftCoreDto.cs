@@ -1,24 +1,19 @@
-using ShiftsLoggerApi.Employees.Models;
-
 namespace ShiftsLoggerApi.Shifts.Models;
 
-public class ShiftDto
+public class ShiftCoreDto
 {
     public int ShiftId { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public EmployeeCoreDto Employee { get; set; }
 
-    public ShiftDto(
+    public ShiftCoreDto(
         int shiftId,
         DateTime startTime,
-        DateTime endTime,
-        EmployeeCoreDto employee
+        DateTime endTime
     )
     {
         ShiftId = shiftId;
         StartTime = startTime;
         EndTime = endTime;
-        Employee = employee;
     }
 }

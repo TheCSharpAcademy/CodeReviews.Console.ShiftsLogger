@@ -14,16 +14,18 @@ public class ShiftsService
         Db = dbContext;
     }
 
-    public async Task<Result<Shift>> CreateShift(ShiftCreateDto shiftCreateDto)
+    public async Task<Result<ShiftDto>> CreateShift(ShiftCreateDto shiftCreateDto)
     {
         var (_, validationError) = ValidateShiftTimes(
             shiftCreateDto.StartTime,
-            shiftCreateDto.EndTime
+            shiftCreateDto.EndTime,
+            shiftCreateDto.EmployeeId,
+            null
         );
 
         if (validationError != null)
         {
-            return Result<Shift>.Fail(validationError);
+            return Result<ShiftDto>.Fail(validationError);
         }
 
         var shiftToCreate = new Shift
@@ -37,7 +39,7 @@ public class ShiftsService
 
         await Db.SaveChangesAsync();
 
-        return await FindById(shiftToCreate.ShiftId);
+        return await FindDtoById(shiftToCreate.ShiftId);
     }
 
     public async Task<Result<List<ShiftDto>>> GetShifts()
@@ -75,11 +77,11 @@ public class ShiftsService
     }
 
 
-    public async Task<Result<Shift>> UpdateShift(int id, ShiftUpdateDto shiftUpdateDto)
+    public async Task<Result<ShiftDto>> UpdateShift(int id, ShiftUpdateDto shiftUpdateDto)
     {
         if (id != shiftUpdateDto.ShiftId)
         {
-            return Result<Shift>.Fail(
+            return Result<ShiftDto>.Fail(
                 new Error(
                     ErrorType.BusinessRuleValidation,
                     "Param ID does not match payload ID"
@@ -91,17 +93,19 @@ public class ShiftsService
 
         if (shiftFetchError != null || existingShift == null)
         {
-            return Result<Shift>.Fail(shiftFetchError);
+            return Result<ShiftDto>.Fail(shiftFetchError);
         }
 
         var (_, validationError) = ValidateShiftTimes(
             shiftUpdateDto.StartTime,
-            shiftUpdateDto.EndTime
+            shiftUpdateDto.EndTime,
+            existingShift.EmployeeId,
+            existingShift.ShiftId
         );
 
         if (validationError != null)
         {
-            return Result<Shift>.Fail(validationError);
+            return Result<ShiftDto>.Fail(validationError);
         }
 
         existingShift.StartTime = shiftUpdateDto.StartTime;
@@ -111,7 +115,7 @@ public class ShiftsService
 
         await Db.SaveChangesAsync();
 
-        return await FindById(existingShift.ShiftId);
+        return await FindDtoById(id);
     }
 
     public async Task<Result<int?>> DeleteShift(int id)
@@ -133,23 +137,22 @@ public class ShiftsService
     {
         return Db.Shifts
             .Where(s => shiftId != null ? s.ShiftId == shiftId : true)
+            .Include(s => s.Employee)
             .Where(s => s.Employee != null)
             .Select(s =>
                 new ShiftDto(
                     s.ShiftId,
                     s.StartTime,
                     s.EndTime,
-                    s.Employee == null ? null :
-                        new EmployeeDto(
-                            s.Employee!.EmployeeId,
-                            s.Employee.Name,
-                            null
-                        )
+                    new EmployeeCoreDto(
+                        s.Employee!.EmployeeId,
+                        s.Employee.Name
+                    )
                 )
         );
     }
 
-    public Result<bool> ValidateShiftTimes(DateTime start, DateTime end)
+    public Result<bool> ValidateShiftTimes(DateTime start, DateTime end, int employeeId, int? ignoreShiftId)
     {
         if (start > end)
         {
@@ -161,9 +164,13 @@ public class ShiftsService
             );
         }
 
-        var numOverlappingShifts = Db.Shifts.Count(
-            Shift.IsShiftTimeOverlapping(start, end)
-        );
+        var numOverlappingShifts = Db.Shifts
+            .Where(s => s.EmployeeId == employeeId)
+            .Where(s =>
+                ignoreShiftId == null || s.ShiftId != ignoreShiftId)
+            .Count(
+                Shift.IsShiftTimeOverlapping(start, end)
+            );
 
         if (numOverlappingShifts > 0)
         {
@@ -180,7 +187,10 @@ public class ShiftsService
 
     private async Task<Result<Shift>> FindById(int id)
     {
-        var shift = await Db.Shifts.FindAsync(id);
+        var shift = await Db.Shifts
+            .Where(s => s.ShiftId == id)
+            .Include(s => s.Employee)
+            .FirstOrDefaultAsync();
 
         if (shift == null)
         {
@@ -191,5 +201,17 @@ public class ShiftsService
         }
 
         return Result<Shift>.Success(shift);
+    }
+
+    private async Task<Result<ShiftDto>> FindDtoById(int id)
+    {
+        var (shift, error) = await FindById(id);
+
+        if (shift == null)
+        {
+            return Result<ShiftDto>.Fail(error);
+        }
+
+        return Result<ShiftDto>.Success(ShiftMapping.ToDto(shift));
     }
 }

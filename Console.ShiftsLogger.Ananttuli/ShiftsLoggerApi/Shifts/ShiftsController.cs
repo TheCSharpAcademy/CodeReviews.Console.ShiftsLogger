@@ -16,7 +16,7 @@ namespace ShiftsLoggerApi.Shifts
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
+        public async Task<ActionResult<IEnumerable<ShiftDto>>> GetShifts()
         {
             var (shifts, error) = await ShiftsService.GetShifts();
 
@@ -42,7 +42,7 @@ namespace ShiftsLoggerApi.Shifts
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Shift>> PutShift(int id, ShiftUpdateDto shiftUpdateDto)
+        public async Task<ActionResult<ShiftDto>> PutShift(int id, ShiftUpdateDto shiftUpdateDto)
         {
             var (updatedShift, error) = await ShiftsService.UpdateShift(id, shiftUpdateDto);
 
@@ -56,7 +56,7 @@ namespace ShiftsLoggerApi.Shifts
         }
 
         [HttpPost]
-        public async Task<ActionResult<Shift>> PostShift(ShiftCreateDto shiftCreateDto)
+        public async Task<ActionResult<ShiftDto>> PostShift(ShiftCreateDto shiftCreateDto)
         {
             var (createdShift, error) = await ShiftsService.CreateShift(shiftCreateDto);
 

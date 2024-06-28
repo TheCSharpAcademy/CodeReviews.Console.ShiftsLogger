@@ -14,6 +14,8 @@ public class EmployeeCardController(EmployeesApi EmployeesApi, ShiftsController 
 
         while (keepCardOpen)
         {
+            Console.Clear();
+
             var (_, employeeWithDetails) = await EmployeesApi.GetEmployee(employeeItem.EmployeeId);
 
             var employee = employeeWithDetails ?? employeeItem;
@@ -91,10 +93,7 @@ public class EmployeeCardController(EmployeesApi EmployeesApi, ShiftsController 
                 await ShiftsController.CreateShift(employee.EmployeeId);
                 break;
             case manageShiftsForEmployee:
-                await ShiftsController.ManageShifts(employee.Shifts, async () =>
-                {
-                    return await FetchEmployeeShifts(employee.EmployeeId);
-                });
+                await ManageEmployeeShifts(employee);
                 break;
             default:
                 return false;
@@ -102,6 +101,17 @@ public class EmployeeCardController(EmployeesApi EmployeesApi, ShiftsController 
 
         ConsoleUtil.PressAnyKeyToClear();
         return true;
+    }
+
+    public async Task ManageEmployeeShifts(EmployeeDto employee)
+    {
+        var keepManageMenuOpen = true;
+
+        do
+        {
+            var latestShifts = await FetchEmployeeShiftDtos(employee.EmployeeId);
+            keepManageMenuOpen = await ShiftsController.ManageShifts(latestShifts);
+        } while (keepManageMenuOpen);
     }
 
     public async Task UpdateEmployee(EmployeeDto employee)
@@ -132,9 +142,18 @@ public class EmployeeCardController(EmployeesApi EmployeesApi, ShiftsController 
         );
     }
 
-    private async Task<List<ShiftDto>> FetchEmployeeShifts(int employeeId)
+    private async Task<List<ShiftDto>> FetchEmployeeShiftDtos(int employeeId)
     {
         var (_, employeeWithDetails) = await EmployeesApi.GetEmployee(employeeId);
-        return employeeWithDetails?.Shifts ?? [];
+        return employeeWithDetails?.Shifts.Select(s =>
+            new ShiftDto(
+                s.ShiftId, s.StartTime, s.EndTime,
+                new EmployeeCoreDto(
+                    employeeWithDetails.EmployeeId,
+                    employeeWithDetails.Name
+                ),
+                s.Duration
+            )
+        ).ToList() ?? [];
     }
 }

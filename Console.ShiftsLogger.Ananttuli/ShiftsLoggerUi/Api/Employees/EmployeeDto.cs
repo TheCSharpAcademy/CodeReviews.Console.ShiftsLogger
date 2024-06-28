@@ -6,6 +6,6 @@ namespace ShiftsLoggerUi.Api.Employees;
 public record class EmployeeDto(
     [property: JsonPropertyName("employeeId")] int EmployeeId,
     [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("shifts")] List<ShiftDto> Shifts
+    [property: JsonPropertyName("shifts")] List<ShiftCoreDto> Shifts
 )
 { }

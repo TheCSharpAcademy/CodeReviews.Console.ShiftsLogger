@@ -14,13 +14,13 @@ public class EmployeesService
         Db = dbContext;
     }
 
-    public async Task<Result<Employee>> CreateEmployee(EmployeeCreateDto employeeCreateDto)
+    public async Task<Result<EmployeeDto>> CreateEmployee(EmployeeCreateDto employeeCreateDto)
     {
         var (_, nameValidationError) = ValidateName(employeeCreateDto.Name);
 
         if (nameValidationError != null)
         {
-            return Result<Employee>.Fail(nameValidationError);
+            return Result<EmployeeDto>.Fail(nameValidationError);
         }
 
         var employeeToCreate = new Employee
@@ -32,7 +32,7 @@ public class EmployeesService
 
         await Db.SaveChangesAsync();
 
-        return await FindById(employeeToCreate.EmployeeId);
+        return await FindDtoById(employeeToCreate.EmployeeId);
     }
 
     private IQueryable<EmployeeDto> GetEmployeesQuery(int? id = null)
@@ -44,11 +44,10 @@ public class EmployeesService
                     e.EmployeeId,
                     e.Name,
                     e.Shifts.Select(s =>
-                        new ShiftDto(
+                        new ShiftCoreDto(
                             s.ShiftId,
                             s.StartTime,
-                            s.EndTime,
-                            null
+                            s.EndTime
                         )
                     ).ToList()
                 )
@@ -89,11 +88,11 @@ public class EmployeesService
         return Result<EmployeeDto>.Success(employee);
     }
 
-    public async Task<Result<Employee>> UpdateEmployee(int id, EmployeeUpdateDto employeeUpdateDto)
+    public async Task<Result<EmployeeDto>> UpdateEmployee(int id, EmployeeUpdateDto employeeUpdateDto)
     {
         if (id != employeeUpdateDto.EmployeeId)
         {
-            return Result<Employee>.Fail(
+            return Result<EmployeeDto>.Fail(
                 new Error(
                     ErrorType.BusinessRuleValidation,
                     "Param ID does not match payload ID"
@@ -105,7 +104,7 @@ public class EmployeesService
 
         if (nameValidationError != null)
         {
-            return Result<Employee>.Fail(nameValidationError);
+            return Result<EmployeeDto>.Fail(nameValidationError);
         }
 
         var (existingEmployee, employeeFetchError) =
@@ -113,14 +112,14 @@ public class EmployeesService
 
         if (employeeFetchError != null || existingEmployee == null)
         {
-            return Result<Employee>.Fail(employeeFetchError);
+            return Result<EmployeeDto>.Fail(employeeFetchError);
         }
 
         existingEmployee.Name = employeeUpdateDto.Name;
         Db.Entry(existingEmployee).State = EntityState.Modified;
         await Db.SaveChangesAsync();
 
-        return Result<Employee>.Success(existingEmployee);
+        return await FindDtoById(id);
     }
 
     public async Task<Result<int?>> DeleteEmployee(int id)
@@ -165,5 +164,17 @@ public class EmployeesService
         }
 
         return Result<Employee>.Success(employee);
+    }
+
+    private async Task<Result<EmployeeDto>> FindDtoById(int id)
+    {
+        var (employee, error) = await FindById(id);
+
+        if (employee == null)
+        {
+            return Result<EmployeeDto>.Fail(error);
+        }
+
+        return Result<EmployeeDto>.Success(EmployeeMapping.ToDto(employee));
     }
 }

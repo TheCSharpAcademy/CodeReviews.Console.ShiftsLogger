@@ -20,15 +20,34 @@ public class ShiftCardController
 
         while (keepCardOpen)
         {
+            Console.Clear();
+
+            var (_, latestShift) = await ShiftsApi.GetShift(shift.ShiftId);
+
+            if (latestShift == null)
+            {
+                AnsiConsole.WriteLine(Utils.Text.Error("Could not load shift"));
+                return;
+            }
+
             var shiftsTable = new Table();
 
             shiftsTable.AddColumns(["Start time", "End time", "Duration"]);
 
-            shiftsTable.AddRow(GetShiftRow(shift));
+            shiftsTable.AddRow(GetShiftRow(
+                new ShiftCoreDto
+                    (
+                        latestShift.ShiftId,
+                        latestShift.StartTime,
+                        latestShift.EndTime,
+                        latestShift.Duration
+                    )
+                )
+            );
 
             AnsiConsole.Write(shiftsTable);
 
-            keepCardOpen = await ShowShiftCardOps(shift);
+            keepCardOpen = await ShowShiftCardOps(latestShift);
         }
     }
 
@@ -56,7 +75,8 @@ public class ShiftCardController
                 await UpdateShift(shift.ShiftId);
                 break;
             case deleteShift:
-                await DeletedShift(shift.ShiftId);
+                Console.Clear();
+                await DeleteShift(shift.ShiftId);
                 return false;
             default:
                 Console.Clear();
@@ -87,7 +107,7 @@ public class ShiftCardController
             AnsiConsole.MarkupLine($"{result?.Message ?? "Error"}");
         }
     }
-    private async Task DeletedShift(int id)
+    private async Task DeleteShift(int id)
     {
         var deleteResult = await ShiftsApi.DeleteShift(id);
         AnsiConsole.MarkupLine(deleteResult.Success ?
@@ -96,7 +116,7 @@ public class ShiftCardController
         );
     }
 
-    public static string[] GetShiftRow(ShiftDto shift)
+    public static string[] GetShiftRow(ShiftCoreDto shift)
     {
         return [
             shift.StartTime.ToString(),

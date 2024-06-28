@@ -27,6 +27,25 @@ public class ShiftsApi(Client httpClient)
         }
     }
 
+    public async Task<Response<ShiftDto?>> GetShift(int shiftId)
+    {
+        try
+        {
+            var endpoint = ReqUtil.AssertNonNull(ConfigManager.ApiRoutes()["SHIFTS"]);
+
+            await using Stream stream = await HttpClient.client.GetStreamAsync($"{endpoint}/{shiftId}");
+
+            var shift = await JsonSerializer
+                .DeserializeAsync<ShiftDto>(stream);
+
+            return new Response<ShiftDto?>(shift != null, shift ?? null);
+        }
+        catch
+        {
+            return new Response<ShiftDto?>(false, null, "Could not fetch shift");
+        }
+    }
+
     public async Task<Response<ShiftDto?>> CreateShift(ShiftCreateDto shift)
     {
         try

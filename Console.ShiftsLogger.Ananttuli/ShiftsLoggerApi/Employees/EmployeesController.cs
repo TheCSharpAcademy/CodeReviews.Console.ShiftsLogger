@@ -18,7 +18,7 @@ namespace ShiftsLoggerApi.Employees
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployees()
         {
             var (employees, error) = await EmployeesService.GetEmployees();
 
@@ -44,7 +44,7 @@ namespace ShiftsLoggerApi.Employees
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Employee>> PutEmployee(int id, EmployeeUpdateDto employeeUpdateDto)
+        public async Task<ActionResult<EmployeeDto>> PutEmployee(int id, EmployeeUpdateDto employeeUpdateDto)
         {
             var (updatedEmployee, error) = await EmployeesService.UpdateEmployee(id, employeeUpdateDto);
 
@@ -57,7 +57,7 @@ namespace ShiftsLoggerApi.Employees
         }
 
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(EmployeeCreateDto employeeCreateDto)
+        public async Task<ActionResult<EmployeeDto>> PostEmployee(EmployeeCreateDto employeeCreateDto)
         {
             var (createdEmployee, error) = await EmployeesService.CreateEmployee(employeeCreateDto);
 

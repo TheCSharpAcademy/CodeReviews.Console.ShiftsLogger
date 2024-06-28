@@ -19,30 +19,48 @@ public class ShiftsController
         this.ShiftCardController = new ShiftCardController(shiftsApi);
     }
 
-    public async Task<bool> ManageShifts(
-        List<ShiftDto> initialShifts,
-        Func<Task<List<ShiftDto>>> refetchShiftDelegate
-    )
+    public async Task ManageAllShifts()
     {
-        var shifts = initialShifts;
+        var keepManageMenuOpen = true;
 
-        while (true)
+        while (keepManageMenuOpen)
         {
-            var selectedShift = SelectShift(shifts);
+            var (success, shifts) = await ShiftsApi.GetShifts();
 
-            if (selectedShift == null)
+            if (!success || shifts == null)
             {
-                return false;
+                return;
             }
 
-            await ShiftCardController.OpenShiftCard(selectedShift);
-            shifts = await refetchShiftDelegate();
+            keepManageMenuOpen = await ManageShifts(shifts);
         }
+    }
+
+    public async Task<bool> ManageShifts(
+        List<ShiftDto> shifts
+    )
+    {
+        var selectedShift = SelectShift(shifts);
+
+        if (selectedShift == null)
+        {
+            return false;
+        }
+
+        await ShiftCardController.OpenShiftCard(selectedShift);
+
+        return true;
     }
 
     public ShiftDto? SelectShift(List<ShiftDto> shifts)
     {
-        var backButton = new ShiftDto(-1, DateTime.Now, DateTime.Now, null!, TimeSpan.Zero);
+        var backButton = new ShiftDto(
+            -1,
+            DateTime.Now,
+            DateTime.Now,
+            new Api.Employees.EmployeeCoreDto(-1, ""),
+            TimeSpan.Zero
+        );
 
         var selectedShift = AnsiConsole.Prompt(
             new SelectionPrompt<ShiftDto>()
@@ -60,7 +78,8 @@ public class ShiftsController
                         item.ShiftId.ToString(),
                         item.StartTime.ToString(),
                         item.EndTime.ToString(),
-                        Time.Duration(item.StartTime, item.EndTime)
+                        Time.Duration(item.StartTime, item.EndTime),
+                        item.Employee.Name
                     ];
 
                     return string.Join("    ", parts.Select(p => $"{p,-5}"));
