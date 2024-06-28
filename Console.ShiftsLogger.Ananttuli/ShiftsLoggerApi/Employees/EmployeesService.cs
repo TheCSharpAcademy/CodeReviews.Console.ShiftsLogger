@@ -72,8 +72,7 @@ public class EmployeesService
     {
         var employeesQuery = GetEmployeesQuery(id);
 
-        var employee = await employeesQuery
-            .FirstOrDefaultAsync();
+        var employee = await employeesQuery.FirstOrDefaultAsync();
 
         if (employee == null)
         {

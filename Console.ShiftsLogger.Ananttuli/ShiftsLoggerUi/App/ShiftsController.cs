@@ -58,8 +58,7 @@ public class ShiftsController
             -1,
             DateTime.Now,
             DateTime.Now,
-            new Api.Employees.EmployeeCoreDto(-1, ""),
-            TimeSpan.Zero
+            new Api.Employees.EmployeeCoreDto(-1, "")
         );
 
         var selectedShift = AnsiConsole.Prompt(

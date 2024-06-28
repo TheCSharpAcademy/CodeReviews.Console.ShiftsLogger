@@ -4,8 +4,6 @@ namespace ShiftsLoggerUi.App.Utils;
 
 public class ConsoleUtil
 {
-    public const string MenuBackButtonText = "[red]Back[/]";
-
     public static ConsoleKeyInfo PressAnyKeyToClear(string message = "Press any key to continue")
     {
         AnsiConsole.MarkupLine(message);
@@ -14,5 +12,4 @@ public class ConsoleUtil
 
         return key;
     }
-
 }

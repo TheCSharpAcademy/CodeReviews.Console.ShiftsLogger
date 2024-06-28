@@ -15,10 +15,10 @@ public class ShiftsLoggerContext : DbContext
         ConnectionManager.Init();
 
         optionsBuilder.UseSqlServer(
-                ConnectionManager.GetConnectionString(
-                    ConfigManager.Database["Name"]
-                )
-            );
+            ConnectionManager.GetConnectionString(
+                ConfigManager.Database["Name"]
+            )
+        );
     }
 }
 

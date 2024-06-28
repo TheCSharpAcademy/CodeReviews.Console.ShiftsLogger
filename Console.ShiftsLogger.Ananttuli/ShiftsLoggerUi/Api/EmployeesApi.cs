@@ -52,14 +52,12 @@ public class EmployeesApi(Client httpClient)
         try
         {
             var endpoint = ReqUtil.AssertNonNull(ConfigManager.ApiRoutes()["EMPLOYEES"]);
-
             var response = await HttpClient.client.PostAsJsonAsync(endpoint, employee);
+            var (_, apiErrorMessage) = await ApiErrorResponse.ExtractErrorFromResponse(response);
 
-            var apiError = await ApiErrorResponse.ExtractErrorFromResponse(response);
-
-            if (apiError.Data != null)
+            if (apiErrorMessage != null)
             {
-                return new Response<EmployeeDto?>(false, null, apiError.Data);
+                return new Response<EmployeeDto?>(false, null, apiErrorMessage);
             }
 
             var createdEmployee = await response.Content.ReadFromJsonAsync<EmployeeDto>();
@@ -80,11 +78,11 @@ public class EmployeesApi(Client httpClient)
 
             var response = await HttpClient.client.PutAsJsonAsync($"{endpoint}/{employee.EmployeeId}", employee);
 
-            var apiError = await ApiErrorResponse.ExtractErrorFromResponse(response);
+            var (_, apiErrorMessage) = await ApiErrorResponse.ExtractErrorFromResponse(response);
 
-            if (apiError.Data != null)
+            if (apiErrorMessage != null)
             {
-                return new Response<EmployeeDto?>(false, null, apiError.Data);
+                return new Response<EmployeeDto?>(false, null, apiErrorMessage);
             }
 
             var updatedEmployee = await response.Content.ReadFromJsonAsync<EmployeeDto>();
@@ -105,11 +103,11 @@ public class EmployeesApi(Client httpClient)
 
             var response = await HttpClient.client.DeleteAsync($"{endpoint}/{id}");
 
-            var apiError = await ApiErrorResponse.ExtractErrorFromResponse(response);
+            var (_, apiErrorMessage) = await ApiErrorResponse.ExtractErrorFromResponse(response);
 
-            if (apiError?.Data != null)
+            if (apiErrorMessage != null)
             {
-                return new Response<bool>(false, false, apiError.Data);
+                return new Response<bool>(false, false, apiErrorMessage);
             }
 
             return new Response<bool>(true, true);

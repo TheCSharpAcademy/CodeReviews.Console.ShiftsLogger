@@ -45,7 +45,7 @@ public class EmployeesController
 
     public async Task<EmployeeDto?> SelectEmployee(List<EmployeeDto> employees)
     {
-        var backButton = new EmployeeDto(-1, ConsoleUtil.MenuBackButtonText, []);
+        var backButton = new EmployeeDto(-1, "[red]Back[/]", []);
         var newEmployeeButton = new EmployeeDto(-2, "[green]Create new employee[/]", []);
 
         var selectedEmployee = AnsiConsole.Prompt(

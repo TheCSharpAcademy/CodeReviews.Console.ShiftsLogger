@@ -31,9 +31,7 @@ public class ConfigManager
     {
         get
         {
-
             return Config.GetSection("Database");
-
         }
     }
 }

@@ -54,11 +54,11 @@ public class ShiftsApi(Client httpClient)
 
             var response = await HttpClient.client.PostAsJsonAsync(endpoint, shift);
 
-            var apiError = await ApiErrorResponse.ExtractErrorFromResponse(response);
+            var (_, apiErrorMessage) = await ApiErrorResponse.ExtractErrorFromResponse(response);
 
-            if (apiError.Data != null)
+            if (apiErrorMessage != null)
             {
-                return new Response<ShiftDto?>(false, null, apiError.Data);
+                return new Response<ShiftDto?>(false, null, apiErrorMessage);
             }
 
             var createdShift = await response.Content.ReadFromJsonAsync<ShiftDto>();
@@ -79,11 +79,11 @@ public class ShiftsApi(Client httpClient)
 
             var response = await HttpClient.client.PutAsJsonAsync($"{endpoint}/{shift.ShiftId}", shift);
 
-            var apiError = await ApiErrorResponse.ExtractErrorFromResponse(response);
+            var (_, apiErrorMessage) = await ApiErrorResponse.ExtractErrorFromResponse(response);
 
-            if (apiError.Data != null)
+            if (apiErrorMessage != null)
             {
-                return new Response<ShiftDto?>(false, null, apiError.Data);
+                return new Response<ShiftDto?>(false, null, apiErrorMessage);
             }
 
             var updatedShift = await response.Content.ReadFromJsonAsync<ShiftDto>();
@@ -104,11 +104,11 @@ public class ShiftsApi(Client httpClient)
 
             var response = await HttpClient.client.DeleteAsync($"{endpoint}/{id}");
 
-            var apiError = await ApiErrorResponse.ExtractErrorFromResponse(response);
+            var (_, apiErrorMessage) = await ApiErrorResponse.ExtractErrorFromResponse(response);
 
-            if (apiError?.Data != null)
+            if (apiErrorMessage != null)
             {
-                return new Response<bool>(false, false, apiError.Data);
+                return new Response<bool>(false, false, apiErrorMessage);
             }
 
             return new Response<bool>(true, true);
