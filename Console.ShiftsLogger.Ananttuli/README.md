@@ -38,12 +38,12 @@ Full stack employee shift logging application.
 
 #### Pre-requisites & notes to run console app
 
-- API endpoint configurable in `Program/appsettings.json` if desired.
+- API endpoint configurable in `ShiftsLoggerUi/appsettings.json` if desired.
   (default endpoint settings should be fine)
 
 #### Steps to run console app
 
-1. `cd <Repo_root>/Program`
+1. `cd <Repo_root>/ShiftsLoggerUi`
 2. `dotnet run`
 
 ## Tech Stack
@@ -53,6 +53,6 @@ Full stack employee shift logging application.
 - C# ASP.NET core Web API (Controllers)
 - EF Core ORM (Code-first)
 
-### Program (Frontend)
+### ShiftsLoggerUi (Frontend)
 
 - C# console app
