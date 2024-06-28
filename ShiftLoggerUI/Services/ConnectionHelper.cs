@@ -1,6 +1,8 @@
-﻿using ShiftLoggerUI;
+﻿namespace ShiftLoggerUI.Services;
 
-public class ConnectionHelper
+using ShiftLoggerUI;
+
+internal class ConnectionHelper
 {
     private readonly APIClient _client;
 

@@ -1,16 +1,25 @@
-﻿using ShiftLoggerUI;
+﻿namespace ShiftLoggerUI.Core;
 
-public class App
+using ShiftLoggerUI;
+using ShiftLoggerUI.Enums;
+using ShiftLoggerUI.Services;
+using ShiftLoggerUI.UI;
+
+internal class App
 {
     private readonly APIClient _client;
     private readonly ConnectionHelper _connectionHelper;
+    private readonly UserInputManager _userInputManager;
+    private readonly EmployeeService _employeeService;
     private bool _isRunning = true;
 
-    public App(string baseUrl)
+    public App(string baseUrl) // TODO move baseUrl over to configmanager?
     {
         var httpClient = new HttpClient();
         _client = new APIClient(baseUrl, httpClient);
         _connectionHelper = new ConnectionHelper(_client);
+        _userInputManager = new UserInputManager();
+        _employeeService = new EmployeeService(_client);
     }
 
     public async Task Run()
@@ -31,10 +40,37 @@ public class App
 
     private async Task HandleUserInteractionAsync()
     {
-        // Menu options here... (enums) [including exit]
-        // Use UserInputManager to handle user interactions
-        // Use service classes for API client operations
-        // return _isRunning = false for exit..
+        var choice = _userInputManager.GetMenuOption();
+        switch (choice)
+        {
+            case MenuOptions.GetAllEmployers:
+                var employeList = await _employeeService.GetAllEmployers();
+                _userInputManager.DisplayAllEmployees(employeList);
+                break;
+            case MenuOptions.GetEmployee:
+                break;
+            case MenuOptions.CreateEmployee:
+                break;
+            case MenuOptions.UpdateEmployee:
+                break;
+            case MenuOptions.DeleteEmployee:
+                break;
+            case MenuOptions.GetAllShifts:
+                break;
+            case MenuOptions.GetShift:
+                break;
+            case MenuOptions.CreateShift:
+                break;
+            case MenuOptions.UpdateShift:
+                break;
+            case MenuOptions.DeleteShift:
+                break;
+            case MenuOptions.Exit:
+                _isRunning = false;
+                break;
+        }
+
+
     }
 
     private async Task HandleConnectionFailureAsync()
