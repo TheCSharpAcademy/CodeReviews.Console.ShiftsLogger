@@ -1,5 +1,6 @@
 ﻿namespace ShiftLoggerUI.Core;
 
+using Ardalis.Result;
 using ShiftLoggerUI;
 using ShiftLoggerUI.Enums;
 using ShiftLoggerUI.Services;
@@ -44,10 +45,38 @@ internal class App
         switch (choice)
         {
             case MenuOptions.GetAllEmployers:
-                var employeList = await _employeeService.GetAllEmployers();
-                _userInputManager.DisplayAllEmployees(employeList);
+                var getAllEmployersResult = await _employeeService.GetAllEmployers();
+                if (getAllEmployersResult.IsSuccess)
+                {
+                    _userInputManager.DisplayAllEmployees(getAllEmployersResult.Value);
+                }
+                else
+                {
+                    _userInputManager.Error(getAllEmployersResult.Errors.FirstOrDefault()!);
+                }
                 break;
+
             case MenuOptions.GetEmployee:
+                while (true)
+                {
+                    var id = _userInputManager.GetId();
+                    var getEmployerResult = await _employeeService.GetEmployer(id);
+
+                    if (getEmployerResult.IsSuccess)
+                    {
+                        _userInputManager.DisplayEmployee(getEmployerResult.Value);
+                        break;
+                    }
+
+                    string errorMessage = getEmployerResult.IsNotFound()
+                        ? "This id does not exist. Status code: 404"
+                        : getEmployerResult.Errors.FirstOrDefault() ?? "An unknown error occurred";
+
+                    _userInputManager.Error(errorMessage);
+
+                    if (!_userInputManager.Retry())
+                        return;
+                }
                 break;
             case MenuOptions.CreateEmployee:
                 break;
