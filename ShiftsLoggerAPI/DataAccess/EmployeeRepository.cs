@@ -4,14 +4,9 @@ using ShiftsLoggerAPI.Interfaces;
 
 namespace ShiftsLoggerAPI.DataAccess
 {
-    public class EmployeeRepository : IEmployeeRepository, IDisposable
+    public class EmployeeRepository(ShiftLoggerContext context) : IEmployeeRepository, IDisposable
     {
-        private ShiftLoggerContext _context;
-
-        public EmployeeRepository(ShiftLoggerContext context)
-        {
-            _context = context;
-        }
+        private readonly ShiftLoggerContext _context = context;
 
         public void Create(Employee employee)
         {
@@ -34,9 +29,7 @@ namespace ShiftsLoggerAPI.DataAccess
 
         public List<Employee> GetAll()
         {
-            return _context.Employees
-                .Include(e => e.Shifts)
-                .ToList();
+            return [.. _context.Employees.Include(e => e.Shifts)];
         }
 
         public void Update(Employee employee)

@@ -3,14 +3,9 @@ using SharedLibrary.Models;
 
 namespace ShiftsLoggerAPI.DataAccess
 {
-    public class ShiftLoggerContext : DbContext
+    public class ShiftLoggerContext(IConfiguration configuration) : DbContext
     {
-        private readonly IConfiguration _configuration;
-
-        public ShiftLoggerContext(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Shift> Shifts { get; set; }

@@ -1,6 +1,5 @@
 ﻿using SharedLibrary.DTOs;
 using System.Text.RegularExpressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SharedLibrary.Validations;
 

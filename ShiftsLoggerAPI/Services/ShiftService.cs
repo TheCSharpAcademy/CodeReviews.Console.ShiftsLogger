@@ -6,18 +6,11 @@ using ShiftsLoggerAPI.Interfaces;
 
 namespace ShiftsLoggerAPI.Services
 {
-    public class ShiftService : IShiftService
+    public class ShiftService(IShiftRepository repository, IMapper mapper, IEmployeeService employeeService) : IShiftService
     {
-        private IShiftRepository _repository;
-        private IEmployeeService _employeeService;
-        private IMapper _mapper;
-
-        public ShiftService(IShiftRepository repository, IMapper mapper, IEmployeeService employeeService)
-        {
-            _repository = repository;
-            _mapper = mapper;
-            _employeeService = employeeService;
-        }
+        private readonly IShiftRepository _repository = repository;
+        private readonly IEmployeeService _employeeService = employeeService;
+        private readonly IMapper _mapper = mapper;
 
         public CreateShiftDto CreateShift(CreateShiftDto shift)
         {

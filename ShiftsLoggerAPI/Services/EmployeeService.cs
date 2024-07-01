@@ -6,16 +6,10 @@ using ShiftsLoggerAPI.Interfaces;
 
 namespace ShiftsLoggerAPI.Services
 {
-    public class EmployeeService : IEmployeeService
+    public class EmployeeService(IEmployeeRepository employeeRepository, IMapper mapper) : IEmployeeService
     {
-        private IEmployeeRepository _employeeRepository;
-        private IMapper _mapper;
-
-        public EmployeeService(IEmployeeRepository employeeRepository, IMapper mapper)
-        {
-            _employeeRepository = employeeRepository;
-            _mapper = mapper;
-        }
+        private readonly IEmployeeRepository _employeeRepository = employeeRepository;
+        private readonly IMapper _mapper = mapper;
 
         public void CreateEmployee(CreateEmployeeDto employee)
         {

@@ -4,14 +4,9 @@ using ShiftsLoggerAPI.Interfaces;
 
 namespace ShiftsLoggerAPI.DataAccess
 {
-    public class ShiftRepository : IShiftRepository, IDisposable
+    public class ShiftRepository(ShiftLoggerContext context) : IShiftRepository, IDisposable
     {
-        private ShiftLoggerContext _context;
-
-        public ShiftRepository(ShiftLoggerContext context)
-        {
-            _context = context;
-        }
+        private readonly ShiftLoggerContext _context = context;
 
         public void Create(Shift shift)
         {
@@ -27,12 +22,12 @@ namespace ShiftsLoggerAPI.DataAccess
 
         public List<Shift> GetAll()
         {
-            return _context.Shifts.Include(x => x.Employee).ToList();
+            return [.. _context.Shifts.Include(x => x.Employee)];
         }
 
-        public Shift? GetById(int id)
+        public Shift GetById(int id)
         {
-            return _context.Shifts.Include(x => x.Employee).Where(x => x.Id == id).FirstOrDefault();
+            return _context.Shifts.Include(x => x.Employee).Where(x => x.Id == id).FirstOrDefault()!;
         }
 
         public void Update(Shift shift)

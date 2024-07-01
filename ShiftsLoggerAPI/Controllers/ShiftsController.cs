@@ -7,14 +7,9 @@ namespace ShiftsLoggerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ShiftsController : ControllerBase
+    public class ShiftsController(IShiftService service) : ControllerBase
     {
-        private readonly IShiftService _service;
-
-        public ShiftsController(IShiftService service)
-        {
-            _service = service;
-        }
+        private readonly IShiftService _service = service;
 
         // GET: api/Shifts
         [HttpGet]

@@ -7,7 +7,7 @@ internal class EmployeeService(APIClient client)
 {
     readonly APIClient _client = client;
 
-    public async Task<Result<ICollection<EmployeeDto>>> GetAllEmployes()
+    public async Task<Result<ICollection<EmployeeDto>>> GetAllEmployees()
     {
         try
         {
@@ -40,7 +40,20 @@ internal class EmployeeService(APIClient client)
     {
         try
         {
-            var apiResponse = await _client.CreateEmployeeAsync(createEmployeeDto);
+            await _client.CreateEmployeeAsync(createEmployeeDto);
+            return Result.Success();
+        }
+        catch (ApiException ex)
+        {
+            return Result.Error(ex.Message);
+        }
+    }
+
+    public async Task<Result<UpdateEmployeeDto>> UpdateEmployer(int Id, UpdateEmployeeDto updateEmployeeDto)
+    {
+        try
+        {
+            await _client.UpdateEmployeeAsync(Id, updateEmployeeDto);
             return Result.Success();
         }
         catch (ApiException ex)

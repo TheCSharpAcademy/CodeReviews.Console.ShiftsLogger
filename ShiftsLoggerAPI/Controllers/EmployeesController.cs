@@ -6,14 +6,9 @@ namespace ShiftsLoggerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EmployeesController : ControllerBase
+    public class EmployeesController(IEmployeeService service) : ControllerBase
     {
-        private readonly IEmployeeService _service;
-
-        public EmployeesController(IEmployeeService service)
-        {
-            _service = service;
-        }
+        private readonly IEmployeeService _service = service;
 
         // GET: api/Employees
         [HttpGet]
@@ -59,7 +54,7 @@ namespace ShiftsLoggerAPI.Controllers
                 return StatusCode(500, "An unexpected error occurred while processing your request.");
             }
 
-            return NoContent();
+            return Ok(employee);
         }
 
         // POST: api/Employees

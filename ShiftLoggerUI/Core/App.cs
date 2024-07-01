@@ -43,39 +43,11 @@ internal class App
         switch (choice)
         {
             case MenuOptions.GetAllEmployes:
-                var getAllEmployesResult = await _employeeService.GetAllEmployes();
-                if (getAllEmployesResult.IsSuccess)
-                {
-                    UserInputManager.DisplayAllEmployees(getAllEmployesResult.Value);
-                }
-                else
-                {
-                    UserInputManager.Error(getAllEmployesResult.Errors.FirstOrDefault()!);
-                }
+                await GetAllEmployes();
                 break;
 
             case MenuOptions.GetEmployee:
-                while (true)
-                {
-                    var id = UserInputManager.GetId();
-                    var getEmployerResult = await _employeeService.GetEmployer(id);
-
-                    if (getEmployerResult.IsSuccess)
-                    {
-                        UserInputManager.DisplayEmployee(getEmployerResult.Value);
-                        break;
-                    }
-
-                    string errorMessage = getEmployerResult.IsNotFound()
-                        ? "This id does not exist. Status code: 404"
-                        : getEmployerResult.Errors.FirstOrDefault() 
-                        ?? "An unknown error occurred";
-
-                    UserInputManager.Error(errorMessage);
-
-                    if (!UserInputManager.Retry())
-                        return;
-                }
+                await GetEmployeeById();
                 break;
             case MenuOptions.CreateEmployee:
                 var employee = UserInputManager.CreateEmployee();
@@ -88,6 +60,17 @@ internal class App
 
                 break;
             case MenuOptions.UpdateEmployee:
+                var updateId = await GetEmployeeById();
+                if (updateId == 0) break;
+
+                var updatedBody = UserInputManager.UpdateEmployee();
+                var updateEmployerResult = await _employeeService.UpdateEmployer(updateId, updatedBody);
+
+                if (!updateEmployerResult.IsSuccess)
+                {
+                     UserInputManager.Error(updateEmployerResult.Errors.First());
+                }
+
                 break;
             case MenuOptions.DeleteEmployee:
                 break;
@@ -106,7 +89,42 @@ internal class App
                 break;
         }
 
+        async Task GetAllEmployes()
+        {
+            var getAllEmployesResult = await _employeeService.GetAllEmployees();
+            if (getAllEmployesResult.IsSuccess)
+            {
+                UserInputManager.DisplayAllEmployees(getAllEmployesResult.Value);
+            }
+            else
+            {
+                UserInputManager.Error(getAllEmployesResult.Errors.FirstOrDefault()!);
+            }
+        }
+    }
 
+    private async Task<int> GetEmployeeById()
+    {
+        while (true)
+        {
+            var getEmployerResult = await _employeeService.GetEmployer(UserInputManager.GetId());
+
+            if (getEmployerResult.IsSuccess)
+            {
+                UserInputManager.DisplayEmployee(getEmployerResult.Value);
+                return getEmployerResult.Value.Id;
+            }
+
+            string errorMessage = getEmployerResult.IsNotFound()
+                ? "This id does not exist. Status code: 404"
+                : getEmployerResult.Errors.FirstOrDefault()
+                ?? "An unknown error occurred";
+
+            UserInputManager.Error(errorMessage);
+
+            if (!UserInputManager.Retry())
+                return 0;
+        }
     }
 
     private static async Task HandleConnectionFailureAsync()

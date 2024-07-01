@@ -2,11 +2,8 @@
 
 namespace SharedLibrary.Validations;
 
-public class ShiftValidationException : Exception
+public class ShiftValidationException(string? message) : Exception(message)
 {
-    public ShiftValidationException(string? message) : base(message)
-    {
-    }
 }
 
 public static class ShiftValidation

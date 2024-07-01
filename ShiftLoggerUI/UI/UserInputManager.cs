@@ -2,7 +2,6 @@
 
 using ShiftLoggerUI.Enums;
 using Spectre.Console;
-using System.Net.Mail;
 
 internal static class UserInputManager
 {
@@ -97,18 +96,37 @@ internal static class UserInputManager
         return AnsiConsole.Ask<bool>("Would you like to try again <True/False?");
     }
 
-    public static CreateEmployeeDto CreateEmployee()
+    private static (string name, DateTime dob, string number, string email) CollectEmployeeInfo()
     {
         var name = AnsiConsole.Ask<string>("Name:");
-
         var date = GetDOB();
         var dob = new DateTime(day: date.Day, month: date.Month, year: date.Year);
-
         var number = AnsiConsole.Ask<string>("Phone Number:");
         var email = AnsiConsole.Ask<string>("E-Mail:");
-        
+
+        return (name, dob, number, email);
+    }
+
+    public static CreateEmployeeDto CreateEmployee()
+    {
+        var (name, dob, number, email) = CollectEmployeeInfo();
 
         var employee = new CreateEmployeeDto
+        {
+            Name = name,
+            DateOfBirth = dob,
+            PhoneNumber = number,
+            EmailAddress = email
+        };
+
+        return employee;
+    }
+
+    public static UpdateEmployeeDto UpdateEmployee()
+    {
+        var (name, dob, number, email) = CollectEmployeeInfo();
+
+        var employee = new UpdateEmployeeDto
         {
             Name = name,
             DateOfBirth = dob,

@@ -2,14 +2,9 @@
 
 using ShiftLoggerUI;
 
-internal class ConnectionHelper
+internal class ConnectionHelper(APIClient client)
 {
-    private readonly APIClient _client;
-
-    public ConnectionHelper(APIClient client)
-    {
-        _client = client;
-    }
+    private readonly APIClient _client = client;
 
     public async Task<bool> CheckConnectionAsync(int retries)
     {
