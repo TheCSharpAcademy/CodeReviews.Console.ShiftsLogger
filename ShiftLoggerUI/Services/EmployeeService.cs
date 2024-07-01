@@ -60,5 +60,21 @@ internal class EmployeeService(APIClient client)
         {
             return Result.Error(ex.Message);
         }
+
     }
+
+    public async Task<Result> DeleteEmployer(int Id)
+    {
+        try
+        {
+            await _client.DeleteEmployeeAsync(Id);
+            return Result.Success();
+        }
+        catch (ApiException ex)
+        {
+            return Result.Error(ex.Message);
+        }
+    }
+
+
 }

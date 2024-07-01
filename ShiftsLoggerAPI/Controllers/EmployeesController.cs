@@ -106,7 +106,7 @@ namespace ShiftsLoggerAPI.Controllers
                 return StatusCode(500, "An unexpected error occurred while processing your request.");
             }
 
-            return NoContent();
+            return Ok(id);
         }
     }
 }

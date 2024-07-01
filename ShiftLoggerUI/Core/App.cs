@@ -73,6 +73,15 @@ internal class App
 
                 break;
             case MenuOptions.DeleteEmployee:
+                var deleteId = await GetEmployeeById();
+                if (deleteId == 0) break;
+
+                var deleteResult = await _employeeService.DeleteEmployer(deleteId);
+
+                if (!deleteResult.IsSuccess)
+                {
+                     UserInputManager.Error(deleteResult.Errors.First());
+                }
                 break;
             case MenuOptions.GetAllShifts:
                 break;
