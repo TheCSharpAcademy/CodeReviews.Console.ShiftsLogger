@@ -3,16 +3,11 @@ using SharedLibrary.Validations;
 
 namespace ShiftLoggerUI.Services;
 
-internal class EmployeeService
+internal class EmployeeService(APIClient client)
 {
-    private APIClient _client;
+    readonly APIClient _client = client;
 
-    public EmployeeService(APIClient client)
-    {
-        _client = client;
-    }
-
-    public async Task<Result<ICollection<EmployeeDto>>> GetAllEmployers()
+    public async Task<Result<ICollection<EmployeeDto>>> GetAllEmployes()
     {
         try
         {
@@ -39,5 +34,18 @@ internal class EmployeeService
             return Result.Error(ex.Message);
         }
 
+    }
+
+    public async Task<Result<CreateEmployeeDto>> CreateEmployer(CreateEmployeeDto createEmployeeDto)
+    {
+        try
+        {
+            var apiResponse = await _client.CreateEmployeeAsync(createEmployeeDto);
+            return Result.Success();
+        }
+        catch (ApiException ex)
+        {
+            return Result.Error(ex.Message);
+        }
     }
 }

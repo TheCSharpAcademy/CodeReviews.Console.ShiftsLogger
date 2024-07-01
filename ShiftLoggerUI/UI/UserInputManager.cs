@@ -2,10 +2,11 @@
 
 using ShiftLoggerUI.Enums;
 using Spectre.Console;
+using System.Net.Mail;
 
-internal class UserInputManager
+internal static class UserInputManager
 {
-    public void Header()
+    private static void Header()
     {
         AnsiConsole.Clear();
         AnsiConsole.Write(
@@ -14,7 +15,7 @@ internal class UserInputManager
                 .Color(Color.Aqua));
     }
 
-    public MenuOptions GetMenuOption()
+    public static MenuOptions GetMenuOption()
     {
         Header();
         return AnsiConsole.Prompt(new SelectionPrompt<MenuOptions>()
@@ -23,7 +24,7 @@ internal class UserInputManager
         .PageSize(15));
     }
 
-    public void DisplayAllEmployees(ICollection<EmployeeDto> employees)
+    public static void DisplayAllEmployees(ICollection<EmployeeDto> employees)
     {
         Header();
 
@@ -58,7 +59,7 @@ internal class UserInputManager
         Console.ReadKey(true);
     }
 
-    public void DisplayEmployee(EmployeeDto employee)
+    public static void DisplayEmployee(EmployeeDto employee)
     {
         Header();
 
@@ -80,9 +81,9 @@ internal class UserInputManager
         Console.ReadKey(true);
     }
 
-    public int GetId() => AnsiConsole.Ask<int>("Type an ID:");
+    public static int GetId() => AnsiConsole.Ask<int>("Type an ID:");
 
-    public void Error(string error)
+    public static void Error(string error)
     {
         Header();
         Console.Beep();
@@ -91,9 +92,41 @@ internal class UserInputManager
         Console.ReadKey(true);
     }
 
-    public bool Retry()
+    public static bool Retry()
     {
         return AnsiConsole.Ask<bool>("Would you like to try again <True/False?");
+    }
+
+    public static CreateEmployeeDto CreateEmployee()
+    {
+        var name = AnsiConsole.Ask<string>("Name:");
+
+        var date = GetDOB();
+        var dob = new DateTime(day: date.Day, month: date.Month, year: date.Year);
+
+        var number = AnsiConsole.Ask<string>("Phone Number:");
+        var email = AnsiConsole.Ask<string>("E-Mail:");
+        
+
+        var employee = new CreateEmployeeDto
+        {
+            Name = name,
+            DateOfBirth = dob,
+            PhoneNumber = number,
+            EmailAddress = email
+        };
+
+        return employee;
+    }
+
+    private static DateOnly GetDOB()
+    {
+        DateOnly date;
+        do
+        {
+            date = AnsiConsole.Ask<DateOnly>("Date of Birth? (mm-dd-yyyy)");
+        } while (!AnsiConsole.Confirm($"Is {date.Month}-{date.Day}-{date.Year} (mm/dd/yyyy) correct?"));
+        return date;
     }
 }
 

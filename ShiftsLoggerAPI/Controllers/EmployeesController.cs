@@ -85,7 +85,7 @@ namespace ShiftsLoggerAPI.Controllers
                 return StatusCode(500, "An unexpected error occurred while processing your request.");
             }
 
-            return Ok();
+            return Ok(employee);
         }
 
         // DELETE: api/Employees/5

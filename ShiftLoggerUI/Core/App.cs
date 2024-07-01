@@ -10,7 +10,6 @@ internal class App
 {
     private readonly APIClient _client;
     private readonly ConnectionHelper _connectionHelper;
-    private readonly UserInputManager _userInputManager;
     private readonly EmployeeService _employeeService;
     private bool _isRunning = true;
 
@@ -19,7 +18,6 @@ internal class App
         var httpClient = new HttpClient();
         _client = new APIClient(baseUrl, httpClient);
         _connectionHelper = new ConnectionHelper(_client);
-        _userInputManager = new UserInputManager();
         _employeeService = new EmployeeService(_client);
     }
 
@@ -41,44 +39,53 @@ internal class App
 
     private async Task HandleUserInteractionAsync()
     {
-        var choice = _userInputManager.GetMenuOption();
+        var choice = UserInputManager.GetMenuOption();
         switch (choice)
         {
-            case MenuOptions.GetAllEmployers:
-                var getAllEmployersResult = await _employeeService.GetAllEmployers();
-                if (getAllEmployersResult.IsSuccess)
+            case MenuOptions.GetAllEmployes:
+                var getAllEmployesResult = await _employeeService.GetAllEmployes();
+                if (getAllEmployesResult.IsSuccess)
                 {
-                    _userInputManager.DisplayAllEmployees(getAllEmployersResult.Value);
+                    UserInputManager.DisplayAllEmployees(getAllEmployesResult.Value);
                 }
                 else
                 {
-                    _userInputManager.Error(getAllEmployersResult.Errors.FirstOrDefault()!);
+                    UserInputManager.Error(getAllEmployesResult.Errors.FirstOrDefault()!);
                 }
                 break;
 
             case MenuOptions.GetEmployee:
                 while (true)
                 {
-                    var id = _userInputManager.GetId();
+                    var id = UserInputManager.GetId();
                     var getEmployerResult = await _employeeService.GetEmployer(id);
 
                     if (getEmployerResult.IsSuccess)
                     {
-                        _userInputManager.DisplayEmployee(getEmployerResult.Value);
+                        UserInputManager.DisplayEmployee(getEmployerResult.Value);
                         break;
                     }
 
                     string errorMessage = getEmployerResult.IsNotFound()
                         ? "This id does not exist. Status code: 404"
-                        : getEmployerResult.Errors.FirstOrDefault() ?? "An unknown error occurred";
+                        : getEmployerResult.Errors.FirstOrDefault() 
+                        ?? "An unknown error occurred";
 
-                    _userInputManager.Error(errorMessage);
+                    UserInputManager.Error(errorMessage);
 
-                    if (!_userInputManager.Retry())
+                    if (!UserInputManager.Retry())
                         return;
                 }
                 break;
             case MenuOptions.CreateEmployee:
+                var employee = UserInputManager.CreateEmployee();
+                var createEmployerResult = await _employeeService.CreateEmployer(employee);
+
+                if (!createEmployerResult.IsSuccess)
+                {
+                     UserInputManager.Error(createEmployerResult.Errors.First());
+                }
+
                 break;
             case MenuOptions.UpdateEmployee:
                 break;
@@ -102,7 +109,7 @@ internal class App
 
     }
 
-    private async Task HandleConnectionFailureAsync()
+    private static async Task HandleConnectionFailureAsync()
     {
         await Console.Out.WriteLineAsync("Could not connect. Application will close on next key press.");
         Console.ReadLine();
