@@ -1,6 +1,7 @@
 ﻿namespace ShiftLoggerUI.Core;
 
 using Ardalis.Result;
+using SharedLibrary.Models;
 using ShiftLoggerUI;
 using ShiftLoggerUI.Enums;
 using ShiftLoggerUI.Services;
@@ -126,10 +127,19 @@ internal class App
                 }
                 break;
             case MenuOptions.ShiftByEmployee:
-                // 1. Retrieve employee id
-                // 2. Fetch all shifts
-                // 3. Filter shifts for the specific employee
-                // 4. Display employee's shifts
+                var employeeIdRes = _employeeService.GetEmployee(UserInputManager.GetId()).Result;
+
+                if (employeeIdRes.IsSuccess)
+                {
+                    var shifts = await _shiftService.GetAllShifts();
+                    var filterShifts = shifts.Value.Where(x => x.EmployeeId == employeeIdRes.Value.Id).ToList();
+                    UserInputManager.DisplayAllShifts(filterShifts);
+                }
+                else
+                {
+                    UserInputManager.Error(employeeIdRes.Errors.First());
+                }
+
                 break;
             case MenuOptions.Exit:
                 _isRunning = false;
