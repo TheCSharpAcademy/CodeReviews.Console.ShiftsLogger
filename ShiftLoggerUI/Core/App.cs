@@ -15,7 +15,7 @@ internal class App
     private readonly ShiftService _shiftService;
     private bool _isRunning = true;
 
-    public App(string baseUrl) // TODO move baseUrl over to configmanager?
+    public App(string baseUrl)
     {
         var httpClient = new HttpClient();
         _client = new APIClient(baseUrl, httpClient);
@@ -145,8 +145,6 @@ internal class App
                 _isRunning = false;
                 break;
         }
-
-
     }
 
     private async Task GetAllEmployes()
