@@ -80,6 +80,71 @@ internal static class UserInputManager
         Console.ReadKey(true);
     }
 
+    public static void DisplayAllShifts(ICollection<ShiftDto> shifts)
+    {
+        Header();
+
+        var table = new Table();
+        table.Border(TableBorder.Rounded);
+        table.Expand();
+        table.BorderColor(Color.DarkTurquoise);
+
+        table.AddColumn(new TableColumn("[bold]Id[/]").Centered());
+        table.AddColumn(new TableColumn("[bold]EmployeeId[/]"));
+        table.AddColumn(new TableColumn("[bold]StartTime[/]").Centered());
+        table.AddColumn(new TableColumn("[bold]EndTime[/]"));
+        table.AddColumn(new TableColumn("[bold]Duration[/]"));
+
+        bool isAlternate = false;
+        foreach (var item in shifts)
+        {
+            var rowColor = isAlternate ? "grey" : "white";
+            table.AddRow(
+                $"[{rowColor}]{item.Id}[/]",
+                $"[{rowColor}]{item.EmployeeId}[/]",
+                $"[{rowColor}]{item.StartTime}[/]",
+                $"[{rowColor}]{item.EndTime}[/]",
+                $"[{rowColor}]{item.Duration}[/]"
+            );
+            isAlternate = !isAlternate;
+        }
+
+        AnsiConsole.Write(table);
+
+        AnsiConsole.MarkupLine("\n[italic]Press any key to continue...[/]");
+        Console.ReadKey(true);
+    }
+
+    public static void DisplayShift(ShiftDto shift)
+    {
+        Header();
+
+        var table = new Table();
+        table.Border(TableBorder.Rounded);
+        table.Expand();
+        table.BorderColor(Color.DarkTurquoise);
+
+        table.AddColumn(new TableColumn("[bold]Id[/]").Centered());
+        table.AddColumn(new TableColumn("[bold]EmployeeId[/]"));
+        table.AddColumn(new TableColumn("[bold]StartTime[/]").Centered());
+        table.AddColumn(new TableColumn("[bold]EndTime[/]"));
+        table.AddColumn(new TableColumn("[bold]Duration[/]"));
+
+        var rowColor = "grey";
+        table.AddRow(
+            $"[{rowColor}]{shift.Id}[/]",
+            $"[{rowColor}]{shift.EmployeeId}[/]",
+            $"[{rowColor}]{shift.StartTime}[/]",
+            $"[{rowColor}]{shift.EndTime}[/]",
+            $"[{rowColor}]{shift.Duration}[/]"
+        );
+
+        AnsiConsole.Write(table);
+
+        AnsiConsole.MarkupLine("\n[italic]Press any key to continue...[/]");
+        Console.ReadKey(true);
+    }
+
     public static int GetId() => AnsiConsole.Ask<int>("Type an ID:");
 
     public static void Error(string error)

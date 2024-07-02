@@ -472,6 +472,11 @@
           "endTime": {
             "type": "string",
             "format": "date-time"
+          },
+          "duration": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
           }
         },
         "additionalProperties": false

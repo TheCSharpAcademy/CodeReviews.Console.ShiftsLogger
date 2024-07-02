@@ -11,6 +11,7 @@ internal class App
     private readonly APIClient _client;
     private readonly ConnectionHelper _connectionHelper;
     private readonly EmployeeService _employeeService;
+    private readonly ShiftService _shiftService;
     private bool _isRunning = true;
 
     public App(string baseUrl) // TODO move baseUrl over to configmanager?
@@ -19,6 +20,7 @@ internal class App
         _client = new APIClient(baseUrl, httpClient);
         _connectionHelper = new ConnectionHelper(_client);
         _employeeService = new EmployeeService(_client);
+        _shiftService = new ShiftService(_client);
     }
 
     public async Task Run()
@@ -55,7 +57,7 @@ internal class App
 
                 if (!createEmployerResult.IsSuccess)
                 {
-                     UserInputManager.Error(createEmployerResult.Errors.First());
+                    UserInputManager.Error(createEmployerResult.Errors.First());
                 }
 
                 break;
@@ -68,7 +70,7 @@ internal class App
 
                 if (!updateEmployerResult.IsSuccess)
                 {
-                     UserInputManager.Error(updateEmployerResult.Errors.First());
+                    UserInputManager.Error(updateEmployerResult.Errors.First());
                 }
 
                 break;
@@ -80,12 +82,14 @@ internal class App
 
                 if (!deleteResult.IsSuccess)
                 {
-                     UserInputManager.Error(deleteResult.Errors.First());
+                    UserInputManager.Error(deleteResult.Errors.First());
                 }
                 break;
             case MenuOptions.GetAllShifts:
+                await GetAllShifts();
                 break;
             case MenuOptions.GetShift:
+                await GetShiftById();
                 break;
             case MenuOptions.CreateShift:
                 break;
@@ -93,22 +97,25 @@ internal class App
                 break;
             case MenuOptions.DeleteShift:
                 break;
+            // GET ALL SHIFTS BY EMPLOYEE
             case MenuOptions.Exit:
                 _isRunning = false;
                 break;
         }
 
-        async Task GetAllEmployes()
+
+    }
+
+    private async Task GetAllEmployes()
+    {
+        var result = await _employeeService.GetAllEmployees();
+        if (result.IsSuccess)
         {
-            var getAllEmployesResult = await _employeeService.GetAllEmployees();
-            if (getAllEmployesResult.IsSuccess)
-            {
-                UserInputManager.DisplayAllEmployees(getAllEmployesResult.Value);
-            }
-            else
-            {
-                UserInputManager.Error(getAllEmployesResult.Errors.FirstOrDefault()!);
-            }
+            UserInputManager.DisplayAllEmployees(result.Value);
+        }
+        else
+        {
+            UserInputManager.Error(result.Errors.FirstOrDefault()!);
         }
     }
 
@@ -116,17 +123,54 @@ internal class App
     {
         while (true)
         {
-            var getEmployerResult = await _employeeService.GetEmployer(UserInputManager.GetId());
+            var result = await _employeeService.GetEmployer(UserInputManager.GetId());
 
-            if (getEmployerResult.IsSuccess)
+            if (result.IsSuccess)
             {
-                UserInputManager.DisplayEmployee(getEmployerResult.Value);
-                return getEmployerResult.Value.Id;
+                UserInputManager.DisplayEmployee(result.Value);
+                return result.Value.Id;
             }
 
-            string errorMessage = getEmployerResult.IsNotFound()
+            string errorMessage = result.IsNotFound()
                 ? "This id does not exist. Status code: 404"
-                : getEmployerResult.Errors.FirstOrDefault()
+                : result.Errors.FirstOrDefault()
+                ?? "An unknown error occurred";
+
+            UserInputManager.Error(errorMessage);
+
+            if (!UserInputManager.Retry())
+                return 0;
+        }
+    }
+
+    private async Task GetAllShifts()
+    {
+        var result = await _shiftService.GetAllShifts();
+        if (result.IsSuccess)
+        {
+            UserInputManager.DisplayAllShifts(result.Value);
+        }
+        else
+        {
+            UserInputManager.Error(result.Errors.FirstOrDefault()!);
+        }
+    }
+
+    private async Task<int> GetShiftById()
+    {
+        while (true)
+        {
+            var result = await _shiftService.GetShift(UserInputManager.GetId());
+
+            if (result.IsSuccess)
+            {
+                UserInputManager.DisplayShift(result.Value);
+                return result.Value.Id;
+            }
+
+            string errorMessage = result.IsNotFound()
+                ? "This id does not exist. Status code: 404"
+                : result.Errors.FirstOrDefault()
                 ?? "An unknown error occurred";
 
             UserInputManager.Error(errorMessage);
