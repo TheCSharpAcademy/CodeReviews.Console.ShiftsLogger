@@ -202,6 +202,28 @@ internal static class UserInputManager
         return employee;
     }
 
+    private static (DateTime StartTime, DateTime EndTime) CollectShiftInfo()
+    {
+        var StartTime = AnsiConsole.Ask<DateTime>("Start Time? (mm-dd-yyyy HH:mm:ss)");
+        var EndTime = AnsiConsole.Ask<DateTime>("End Time? (mm-dd-yyyy HH:mm:ss)");
+
+        return (StartTime, EndTime);
+    }
+
+    public static CreateShiftDto CreateShift(int employeeId)
+    {
+        var (startTime, endTime) = CollectShiftInfo();
+
+        var shift = new CreateShiftDto
+        {
+            EmployeeId = employeeId,
+            StartTime = startTime,
+            EndTime = endTime
+        };
+
+        return shift;
+    }
+
     private static DateOnly GetDOB()
     {
         DateOnly date;

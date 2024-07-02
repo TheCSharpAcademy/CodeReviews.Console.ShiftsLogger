@@ -70,7 +70,7 @@ namespace ShiftsLoggerAPI.Controllers
             try
             {
                 _service.CreateShift(shift);
-                return Ok();
+                return Ok(shift);
             }
             catch (ShiftValidationException ex)
             {

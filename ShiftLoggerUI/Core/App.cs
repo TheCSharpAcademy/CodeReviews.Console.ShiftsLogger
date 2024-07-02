@@ -92,6 +92,15 @@ internal class App
                 await GetShiftById();
                 break;
             case MenuOptions.CreateShift:
+                var employerId = await GetEmployeeById();
+                var newShift = UserInputManager.CreateShift(employerId);
+                var newShiftResult = await _shiftService.CreateEmployer(newShift);
+
+                if (!newShiftResult.IsSuccess)
+                {
+                    UserInputManager.Error(newShiftResult.Errors.First());
+                }
+
                 break;
             case MenuOptions.UpdateShift:
                 break;

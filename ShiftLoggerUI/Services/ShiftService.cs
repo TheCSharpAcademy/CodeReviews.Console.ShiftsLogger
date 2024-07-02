@@ -35,4 +35,17 @@ internal class ShiftService(APIClient client)
         }
 
     }
+
+    public async Task<Result<CreateShiftDto>> CreateEmployer(CreateShiftDto createShiftDto)
+    {
+        try
+        {
+            await _client.CreateShiftAsync(createShiftDto);
+            return Result.Success();
+        }
+        catch (ApiException ex)
+        {
+            return Result.Error(ex.Message);
+        }
+    }
 }
