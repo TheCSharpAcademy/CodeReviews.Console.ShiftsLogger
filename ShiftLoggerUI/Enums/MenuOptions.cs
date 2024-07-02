@@ -3,7 +3,7 @@
 internal enum MenuOptions
 {
     GetAllEmployes, GetEmployee, CreateEmployee, UpdateEmployee, DeleteEmployee,
-    GetAllShifts, GetShift, CreateShift, UpdateShift, DeleteShift,
+    GetAllShifts, GetShift, CreateShift, UpdateShift, DeleteShift, ShiftByEmployee,
     Exit
 }
 

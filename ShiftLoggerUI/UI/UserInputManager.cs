@@ -1,5 +1,6 @@
 ﻿namespace ShiftLoggerUI.UI;
 
+using SharedLibrary.Models;
 using ShiftLoggerUI.Enums;
 using Spectre.Console;
 
@@ -208,6 +209,19 @@ internal static class UserInputManager
         var EndTime = AnsiConsole.Ask<DateTime>("End Time? (mm-dd-yyyy HH:mm:ss)");
 
         return (StartTime, EndTime);
+    }
+
+    public static UpdateShiftDto UpdateShift()
+    {
+        var (startTime, endTime) = CollectShiftInfo();
+
+        var shift = new UpdateShiftDto
+        {
+            StartTime = startTime,
+            EndTime = endTime
+        };
+
+        return shift;
     }
 
     public static CreateShiftDto CreateShift(int employeeId)

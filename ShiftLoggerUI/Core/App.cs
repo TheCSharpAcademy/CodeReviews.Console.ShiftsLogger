@@ -53,7 +53,7 @@ internal class App
                 break;
             case MenuOptions.CreateEmployee:
                 var employee = UserInputManager.CreateEmployee();
-                var createEmployerResult = await _employeeService.CreateEmployer(employee);
+                var createEmployerResult = await _employeeService.CreateEmployee(employee);
 
                 if (!createEmployerResult.IsSuccess)
                 {
@@ -66,7 +66,7 @@ internal class App
                 if (updateId == 0) break;
 
                 var updatedBody = UserInputManager.UpdateEmployee();
-                var updateEmployerResult = await _employeeService.UpdateEmployer(updateId, updatedBody);
+                var updateEmployerResult = await _employeeService.UpdateEmployee(updateId, updatedBody);
 
                 if (!updateEmployerResult.IsSuccess)
                 {
@@ -78,7 +78,7 @@ internal class App
                 var deleteId = await GetEmployeeById();
                 if (deleteId == 0) break;
 
-                var deleteResult = await _employeeService.DeleteEmployer(deleteId);
+                var deleteResult = await _employeeService.DeleteEmploye(deleteId);
 
                 if (!deleteResult.IsSuccess)
                 {
@@ -103,10 +103,34 @@ internal class App
 
                 break;
             case MenuOptions.UpdateShift:
+                var shiftUpdateId = await GetShiftById();
+                if (shiftUpdateId == 0) break;
+
+                var shiftUpdateBody = UserInputManager.UpdateShift();
+                var updateShiftResult = await _shiftService.UpdateShift(shiftUpdateId, shiftUpdateBody);
+
+                if (!updateShiftResult.IsSuccess)
+                {
+                    UserInputManager.Error(updateShiftResult.Errors.First());
+                }
                 break;
             case MenuOptions.DeleteShift:
+                var shiftDeleteId = await GetShiftById();
+                if (shiftDeleteId == 0) break;
+
+                var shiftDeleteResult = await _shiftService.DeleteShift(shiftDeleteId);
+
+                if (!shiftDeleteResult.IsSuccess)
+                {
+                    UserInputManager.Error(shiftDeleteResult.Errors.First());
+                }
                 break;
-            // GET ALL SHIFTS BY EMPLOYEE
+            case MenuOptions.ShiftByEmployee:
+                // 1. Retrieve employee id
+                // 2. Fetch all shifts
+                // 3. Filter shifts for the specific employee
+                // 4. Display employee's shifts
+                break;
             case MenuOptions.Exit:
                 _isRunning = false;
                 break;
@@ -132,7 +156,7 @@ internal class App
     {
         while (true)
         {
-            var result = await _employeeService.GetEmployer(UserInputManager.GetId());
+            var result = await _employeeService.GetEmployee(UserInputManager.GetId());
 
             if (result.IsSuccess)
             {

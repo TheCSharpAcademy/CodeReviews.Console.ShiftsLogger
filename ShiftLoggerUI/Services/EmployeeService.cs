@@ -19,7 +19,7 @@ internal class EmployeeService(APIClient client)
         }
     }
 
-    public async Task<Result<EmployeeDto>> GetEmployer(int id)
+    public async Task<Result<EmployeeDto>> GetEmployee(int id)
     {
         try
         {
@@ -36,7 +36,7 @@ internal class EmployeeService(APIClient client)
 
     }
 
-    public async Task<Result<CreateEmployeeDto>> CreateEmployer(CreateEmployeeDto createEmployeeDto)
+    public async Task<Result<CreateEmployeeDto>> CreateEmployee(CreateEmployeeDto createEmployeeDto)
     {
         try
         {
@@ -49,7 +49,7 @@ internal class EmployeeService(APIClient client)
         }
     }
 
-    public async Task<Result<UpdateEmployeeDto>> UpdateEmployer(int Id, UpdateEmployeeDto updateEmployeeDto)
+    public async Task<Result<UpdateEmployeeDto>> UpdateEmployee(int Id, UpdateEmployeeDto updateEmployeeDto)
     {
         try
         {
@@ -63,7 +63,7 @@ internal class EmployeeService(APIClient client)
 
     }
 
-    public async Task<Result> DeleteEmployer(int Id)
+    public async Task<Result> DeleteEmploye(int Id)
     {
         try
         {

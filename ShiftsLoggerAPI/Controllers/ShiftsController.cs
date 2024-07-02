@@ -45,7 +45,7 @@ namespace ShiftsLoggerAPI.Controllers
             try
             {
                 _service.UpdateShift(shift, id);
-                return NoContent();
+                return Ok(shift);
             }
             catch (ShiftValidationException ex)
             {
@@ -94,7 +94,7 @@ namespace ShiftsLoggerAPI.Controllers
 
             _service.DeleteShift(shift);
 
-            return NoContent();
+            return Ok(shift);
         }
     }
 }

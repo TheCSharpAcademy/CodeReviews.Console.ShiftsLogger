@@ -48,4 +48,30 @@ internal class ShiftService(APIClient client)
             return Result.Error(ex.Message);
         }
     }
+
+    public async Task<Result<UpdateShiftDto>> UpdateShift(int Id, UpdateShiftDto updateShiftDto)
+    {
+        try
+        {
+            await _client.UpdateShiftAsync(Id, updateShiftDto);
+            return Result.Success();
+        }
+        catch (ApiException ex)
+        {
+            return Result.Error(ex.Message);
+        }
+    }
+
+    public async Task<Result> DeleteShift(int Id)
+    {
+        try
+        {
+            await _client.DeleteShiftAsync(Id);
+            return Result.Success();
+        }
+        catch (ApiException ex)
+        {
+            return Result.Error(ex.Message);
+        }
+    }
 }
