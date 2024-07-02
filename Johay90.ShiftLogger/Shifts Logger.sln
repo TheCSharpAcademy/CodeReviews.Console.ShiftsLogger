@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftsLoggerAPI", "ShiftsLoggerAPI\ShiftsLoggerAPI.csproj", "{00FB6DC1-ABF7-463F-BD13-B4A68E34AA49}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{03753D5B-65BA-4F96-84F3-35F1EA92C385}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShiftLoggerUI", "ShiftLoggerUI\ShiftLoggerUI.csproj", "{BAC54E43-5D21-4B93-807D-94F81E6C4948}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{244D7295-BAA2-48F9-9D50-180798E228FB}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00FB6DC1-ABF7-463F-BD13-B4A68E34AA49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00FB6DC1-ABF7-463F-BD13-B4A68E34AA49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00FB6DC1-ABF7-463F-BD13-B4A68E34AA49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00FB6DC1-ABF7-463F-BD13-B4A68E34AA49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03753D5B-65BA-4F96-84F3-35F1EA92C385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03753D5B-65BA-4F96-84F3-35F1EA92C385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03753D5B-65BA-4F96-84F3-35F1EA92C385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03753D5B-65BA-4F96-84F3-35F1EA92C385}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAC54E43-5D21-4B93-807D-94F81E6C4948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAC54E43-5D21-4B93-807D-94F81E6C4948}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAC54E43-5D21-4B93-807D-94F81E6C4948}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAC54E43-5D21-4B93-807D-94F81E6C4948}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B4B207AE-45A0-4E18-982F-C2B4E368B728}
+	EndGlobalSection
+EndGlobal
