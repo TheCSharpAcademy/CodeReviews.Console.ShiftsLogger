@@ -1,70 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ShiftLoggerAPI.Data;
 using ShiftLoggerAPI.Models;
+using ShiftLoggerAPI.Services;
 
 namespace ShiftLoggerAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/shifts")]
 [ApiController]
 public class ShiftsController : ControllerBase
 {
-    private readonly DataContext _context;
+    private readonly IShiftService _shiftService;
 
-    public ShiftsController(DataContext context)
+    public ShiftsController(IShiftService shiftService)
     {
-        _context = context;
+        _shiftService = shiftService;
     }
 
     [HttpPost]
     public async Task<ActionResult<Shift>> PostShift(Shift shift)
     {
-        shift.Duration = shift.EndTime - shift.StartTime;
-        _context.Shifts.Add(shift);
-        await _context.SaveChangesAsync();
-        return NoContent();
+        await _shiftService.CreateShift(shift);
+        return CreatedAtAction(nameof(GetShiftById), new { id = shift.Id }, shift);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllShifts()
     {
-        var shifts = await _context.Shifts.ToListAsync();
+        var shifts = await _shiftService.GetShifts();
         return Ok(shifts);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetShiftById(int id)
     {
-        var shift = await _context.Shifts.FindAsync(id);
-        if (shift == null) return NotFound("Shift not found");
+        var shift = await _shiftService.GetShiftById(id);
         return Ok(shift);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> PutShifts(int id, Shift updatedShift)
     {
-        var shiftDb = await _context.Shifts.FindAsync(id);
-        if (id != updatedShift.Id) return BadRequest("Shift id does not exist.");
-
-        if (shiftDb == null) return NotFound("Shift not found");
-
-        shiftDb.FullName = updatedShift.FullName;
-        shiftDb.StartTime = updatedShift.StartTime;
-        shiftDb.EndTime = updatedShift.EndTime;
-        shiftDb.Duration = updatedShift.EndTime - updatedShift.StartTime;
-        await _context.SaveChangesAsync();
-
+        await _shiftService.UpdateShift(id, updatedShift);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShift(int id)
     {
-        var shiftDb = await _context.Shifts.FindAsync(id);
-        if (shiftDb == null) return NotFound("Shift not found");
-
-        _context.Shifts.Remove(shiftDb);
-        await _context.SaveChangesAsync();
+        if (id <= 0) return BadRequest();
+        await _shiftService.DeleteShift(id);
         return NoContent();
     }
 }

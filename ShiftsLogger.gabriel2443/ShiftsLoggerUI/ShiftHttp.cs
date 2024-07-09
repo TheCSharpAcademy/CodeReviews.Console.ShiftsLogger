@@ -11,7 +11,7 @@ public static class ShiftHttp
     internal static async Task<List<Shift>> GetShifts()
 
     {
-        string url = "https://localhost:7189/api/Shifts";
+        string url = "https://localhost:7189/api/shifts";
         try
         {
             HttpResponseMessage res = await client.GetAsync(url);
@@ -48,7 +48,7 @@ public static class ShiftHttp
 
     internal static async Task UpdateShift(Shift shift)
     {
-        string url = $"https://localhost:7189/api/Shifts/{shift.Id}";
+        string url = $"https://localhost:7189/api/shifts/{shift.Id}";
 
         try
         {
@@ -69,14 +69,13 @@ public static class ShiftHttp
     {
         try
         {
-            string url = $"https://localhost:7189/api/Shifts/{id}";
+            string url = $"https://localhost:7189/api/shifts/{id}";
             HttpResponseMessage res = await client.DeleteAsync(url);
             res.EnsureSuccessStatusCode();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"{ex.Message}");
-
         }
     }
 }
