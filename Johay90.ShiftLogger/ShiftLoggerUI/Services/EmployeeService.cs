@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using SharedLibrary.DTOs;
 using SharedLibrary.Validations;
 
 namespace ShiftLoggerUI.Services;
@@ -13,7 +14,7 @@ internal class EmployeeService(APIClient client)
         {
             return Result.Success<ICollection<EmployeeDto>>(await _client.GetAllEmployeesAsync());
         }
-        catch (ApiException ex)
+        catch (HttpRequestException ex)
         {
             return Result.Error(ex.Message);
         }
@@ -25,7 +26,7 @@ internal class EmployeeService(APIClient client)
         {
             return Result.Success(await _client.GetEmployeeAsync(id));
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
             return Result.NotFound(ex.Message);
         }
@@ -43,7 +44,7 @@ internal class EmployeeService(APIClient client)
             await _client.CreateEmployeeAsync(createEmployeeDto);
             return Result.Success();
         }
-        catch (ApiException ex)
+        catch (HttpRequestException ex)
         {
             return Result.Error(ex.Message);
         }
@@ -56,7 +57,7 @@ internal class EmployeeService(APIClient client)
             await _client.UpdateEmployeeAsync(Id, updateEmployeeDto);
             return Result.Success();
         }
-        catch (ApiException ex)
+        catch (HttpRequestException ex)
         {
             return Result.Error(ex.Message);
         }
@@ -70,7 +71,7 @@ internal class EmployeeService(APIClient client)
             await _client.DeleteEmployeeAsync(Id);
             return Result.Success();
         }
-        catch (ApiException ex)
+        catch (HttpRequestException ex)
         {
             return Result.Error(ex.Message);
         }

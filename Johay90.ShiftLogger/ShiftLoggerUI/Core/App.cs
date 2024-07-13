@@ -1,8 +1,6 @@
 ﻿namespace ShiftLoggerUI.Core;
 
 using Ardalis.Result;
-using SharedLibrary.Models;
-using ShiftLoggerUI;
 using ShiftLoggerUI.Enums;
 using ShiftLoggerUI.Services;
 using ShiftLoggerUI.UI;

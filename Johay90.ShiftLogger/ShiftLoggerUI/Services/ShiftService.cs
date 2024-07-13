@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using SharedLibrary.DTOs;
 using SharedLibrary.Validations;
 
 namespace ShiftLoggerUI.Services;
@@ -13,7 +14,7 @@ internal class ShiftService(APIClient client)
         {
             return Result.Success<ICollection<ShiftDto>>(await _client.GetAllShiftsAsync());
         }
-        catch (ApiException ex)
+        catch (HttpRequestException ex)
         {
             return Result.Error(ex.Message);
         }
@@ -25,7 +26,7 @@ internal class ShiftService(APIClient client)
         {
             return Result.Success(await _client.GetShiftAsync(id));
         }
-        catch (ApiException ex) when (ex.StatusCode == 404)
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
             return Result.NotFound(ex.Message);
         }
@@ -43,7 +44,7 @@ internal class ShiftService(APIClient client)
             await _client.CreateShiftAsync(createShiftDto);
             return Result.Success();
         }
-        catch (ApiException ex)
+        catch (HttpRequestException ex)
         {
             return Result.Error(ex.Message);
         }
@@ -56,7 +57,7 @@ internal class ShiftService(APIClient client)
             await _client.UpdateShiftAsync(Id, updateShiftDto);
             return Result.Success();
         }
-        catch (ApiException ex)
+        catch (HttpRequestException ex)
         {
             return Result.Error(ex.Message);
         }
@@ -69,7 +70,7 @@ internal class ShiftService(APIClient client)
             await _client.DeleteShiftAsync(Id);
             return Result.Success();
         }
-        catch (ApiException ex)
+        catch (HttpRequestException ex)
         {
             return Result.Error(ex.Message);
         }

@@ -1,5 +1,6 @@
 ﻿namespace ShiftLoggerUI.UI;
 
+using SharedLibrary.DTOs;
 using SharedLibrary.Models;
 using ShiftLoggerUI.Enums;
 using Spectre.Console;
