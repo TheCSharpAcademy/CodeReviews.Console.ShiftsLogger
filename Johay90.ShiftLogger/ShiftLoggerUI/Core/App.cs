@@ -40,6 +40,7 @@ internal class App
 
     private async Task HandleUserInteractionAsync()
     {
+        Visualization.Header();
         var choice = UserInputManager.GetMenuOption();
         switch (choice)
         {
@@ -56,7 +57,7 @@ internal class App
 
                 if (!createEmployerResult.IsSuccess)
                 {
-                    UserInputManager.Error(createEmployerResult.Errors.First());
+                    Visualization.Error(createEmployerResult.Errors.First());
                 }
 
                 break;
@@ -69,7 +70,7 @@ internal class App
 
                 if (!updateEmployerResult.IsSuccess)
                 {
-                    UserInputManager.Error(updateEmployerResult.Errors.First());
+                    Visualization.Error(updateEmployerResult.Errors.First());
                 }
 
                 break;
@@ -81,7 +82,7 @@ internal class App
 
                 if (!deleteResult.IsSuccess)
                 {
-                    UserInputManager.Error(deleteResult.Errors.First());
+                    Visualization.Error(deleteResult.Errors.First());
                 }
                 break;
             case MenuOptions.GetAllShifts:
@@ -97,7 +98,7 @@ internal class App
 
                 if (!newShiftResult.IsSuccess)
                 {
-                    UserInputManager.Error(newShiftResult.Errors.First());
+                    Visualization.Error(newShiftResult.Errors.First());
                 }
 
                 break;
@@ -110,7 +111,7 @@ internal class App
 
                 if (!updateShiftResult.IsSuccess)
                 {
-                    UserInputManager.Error(updateShiftResult.Errors.First());
+                    Visualization.Error(updateShiftResult.Errors.First());
                 }
                 break;
             case MenuOptions.DeleteShift:
@@ -121,7 +122,7 @@ internal class App
 
                 if (!shiftDeleteResult.IsSuccess)
                 {
-                    UserInputManager.Error(shiftDeleteResult.Errors.First());
+                    Visualization.Error(shiftDeleteResult.Errors.First());
                 }
                 break;
             case MenuOptions.ShiftByEmployee:
@@ -131,11 +132,11 @@ internal class App
                 {
                     var shifts = await _shiftService.GetAllShifts();
                     var filterShifts = shifts.Value.Where(x => x.EmployeeId == employeeIdRes.Value.Id).ToList();
-                    UserInputManager.DisplayAllShifts(filterShifts);
+                    Visualization.DisplayAllShifts(filterShifts);
                 }
                 else
                 {
-                    UserInputManager.Error(employeeIdRes.Errors.First());
+                    Visualization.Error(employeeIdRes.Errors.First());
                 }
 
                 break;
@@ -150,11 +151,11 @@ internal class App
         var result = await _employeeService.GetAllEmployees();
         if (result.IsSuccess)
         {
-            UserInputManager.DisplayAllEmployees(result.Value);
+            Visualization.DisplayAllEmployees(result.Value);
         }
         else
         {
-            UserInputManager.Error(result.Errors.FirstOrDefault()!);
+            Visualization.Error(result.Errors.FirstOrDefault()!);
         }
     }
 
@@ -166,7 +167,7 @@ internal class App
 
             if (result.IsSuccess)
             {
-                UserInputManager.DisplayEmployee(result.Value);
+                Visualization.DisplayEmployee(result.Value);
                 return result.Value.Id;
             }
 
@@ -175,7 +176,7 @@ internal class App
                 : result.Errors.FirstOrDefault()
                 ?? "An unknown error occurred";
 
-            UserInputManager.Error(errorMessage);
+            Visualization.Error(errorMessage);
 
             if (!UserInputManager.Retry())
                 return 0;
@@ -187,11 +188,11 @@ internal class App
         var result = await _shiftService.GetAllShifts();
         if (result.IsSuccess)
         {
-            UserInputManager.DisplayAllShifts(result.Value);
+            Visualization.DisplayAllShifts(result.Value);
         }
         else
         {
-            UserInputManager.Error(result.Errors.FirstOrDefault()!);
+            Visualization.Error(result.Errors.FirstOrDefault()!);
         }
     }
 
@@ -203,7 +204,7 @@ internal class App
 
             if (result.IsSuccess)
             {
-                UserInputManager.DisplayShift(result.Value);
+                Visualization.DisplayShift(result.Value);
                 return result.Value.Id;
             }
 
@@ -212,7 +213,7 @@ internal class App
                 : result.Errors.FirstOrDefault()
                 ?? "An unknown error occurred";
 
-            UserInputManager.Error(errorMessage);
+            Visualization.Error(errorMessage);
 
             if (!UserInputManager.Retry())
                 return 0;
