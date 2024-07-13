@@ -1,6 +1,7 @@
 ﻿using SharedLibrary.DTOs;
 using ShiftLoggerUI.Enums;
 using Spectre.Console;
+using System.Globalization;
 
 namespace ShiftLoggerUI.UI
 {
@@ -66,8 +67,8 @@ namespace ShiftLoggerUI.UI
 
             do
             {
-                startTime = AnsiConsole.Ask<DateTime>("Start Time? (mm-dd-yyyy HH:mm:ss)");
-                endTime = AnsiConsole.Ask<DateTime>("End Time? (mm-dd-yyyy HH:mm:ss)");
+                startTime = GetValidDateTime("Start Time? (mm-dd-yyyy HH:mm:ss)");
+                endTime = GetValidDateTime("End Time? (mm-dd-yyyy HH:mm:ss)");
 
                 shiftLength = endTime - startTime;
                 isValid = true;
@@ -129,6 +130,24 @@ namespace ShiftLoggerUI.UI
                 date = AnsiConsole.Ask<DateOnly>("Date of Birth? (mm-dd-yyyy)");
             } while (!AnsiConsole.Confirm($"Is {date.Month}-{date.Day}-{date.Year} (mm/dd/yyyy) correct?"));
             return date;
+        }
+
+        private static DateTime GetValidDateTime(string prompt)
+        {
+            DateTime result;
+            bool isValid;
+            do
+            {
+                string input = AnsiConsole.Ask<string>(prompt);
+                isValid = DateTime.TryParseExact(input, "MM-dd-yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
+
+                if (!isValid)
+                {
+                    AnsiConsole.MarkupLine("[red]Error: Invalid date/time format. Please use MM-dd-yyyy HH:mm:ss[/]");
+                }
+            } while (!isValid);
+
+            return result;
         }
     }
 }
