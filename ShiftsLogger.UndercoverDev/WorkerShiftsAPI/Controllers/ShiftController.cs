@@ -4,7 +4,7 @@ using WorkerShiftsAPI.Models;
 
 namespace WorkerShiftsAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/shifts")]
     [ApiController]
     public class ShiftController : ControllerBase
     {
@@ -75,7 +75,7 @@ namespace WorkerShiftsAPI.Controllers
             _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetShift", new { id = shift.ShiftId }, shift);
+            return CreatedAtAction(nameof(GetShift), new { id = shift.ShiftId }, shift);
         }
 
         // DELETE: api/Shift/5
