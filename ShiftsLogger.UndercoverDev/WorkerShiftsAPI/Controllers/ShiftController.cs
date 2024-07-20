@@ -72,6 +72,7 @@ namespace WorkerShiftsAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Shift>> PostShift(Shift shift)
         {
+            _context.Entry(shift.Worker).State = EntityState.Unchanged;
             _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
 

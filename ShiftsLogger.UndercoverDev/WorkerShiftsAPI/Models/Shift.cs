@@ -12,6 +12,6 @@ namespace WorkerShiftsAPI.Models
         public DateTime EndTime { get; set; }
         public int WorkerId { get; set; }
         [ForeignKey(nameof(WorkerId))]
-        public Worker? Worker { get; set; }
+        public Worker Worker { get; set; }
     }
 }

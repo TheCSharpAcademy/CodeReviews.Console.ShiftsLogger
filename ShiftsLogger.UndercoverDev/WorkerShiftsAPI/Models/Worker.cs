@@ -6,7 +6,7 @@ namespace WorkerShiftsAPI.Models
     {
         public int WorkerId { get; set; }
         [Required]
-        public string? Name { get; set; }
-        public ICollection<Shift>? Shifts { get; set; }
+        public string Name { get; set; }
+        public ICollection<Shift> Shifts { get; set; }
     }
 }
