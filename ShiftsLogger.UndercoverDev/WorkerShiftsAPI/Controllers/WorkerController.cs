@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WorkerShiftsAPI.DTOs;
 using WorkerShiftsAPI.Models;
 
 namespace WorkerShiftsAPI.Controllers
@@ -15,36 +16,66 @@ namespace WorkerShiftsAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Worker
+        // GET: api/workers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Worker>>> GetWorkers()
+        public async Task<ActionResult<IEnumerable<WorkerDTO>>> GetWorkers()
         {
-            return await _context.Workers.ToListAsync();
+            var workers = await _context.Workers.Include(w => w.Shifts).ToListAsync();
+            var workerDTOs = workers.Select(worker => new WorkerDTO
+            {
+                WorkerId = worker.WorkerId,
+                Name = worker.Name,
+                Shifts = worker.Shifts?.Select(ShiftController.ShiftToDTO).ToList() ?? []
+            }).ToList();
+
+            return workerDTOs;
         }
 
-        // GET: api/Worker/5
+        // GET: api/workers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Worker>> GetWorker(int id)
+        public async Task<ActionResult<WorkerDTO>> GetWorker(int id)
         {
-            var worker = await _context.Workers.FindAsync(id);
+            var worker = await _context.Workers
+                .Include(w => w.Shifts)
+                .FirstOrDefaultAsync(w => w.WorkerId == id);
 
             if (worker == null)
             {
                 return NotFound();
             }
 
-            return worker;
+            var workerDTO = new WorkerDTO
+            {
+                WorkerId = worker.WorkerId,
+                Name = worker.Name,
+                Shifts = worker.Shifts?.Select(ShiftController.ShiftToDTO).ToList() ?? []
+            };
+
+            return workerDTO;
         }
 
-        // PUT: api/Worker/5
+        // PUT: api/workers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutWorker(int id, Worker worker)
+        public async Task<IActionResult> PutWorker(int id, WorkerDTO workerDTO)
         {
-            if (id != worker.WorkerId)
+            if (id != workerDTO.WorkerId)
             {
                 return BadRequest();
             }
+
+            var worker = new Worker
+            {
+                WorkerId = workerDTO.WorkerId,
+                Name = workerDTO.Name,
+                Shifts = workerDTO.Shifts?.Select(shiftDTO => new Shift
+                {
+                    ShiftId = shiftDTO.ShiftId,
+                    StartTime = shiftDTO.StartTime,
+                    EndTime = shiftDTO.EndTime,
+                    WorkerId = shiftDTO.WorkerId
+                }).ToList() ?? []
+            };
 
             _context.Entry(worker).State = EntityState.Modified;
 
@@ -67,18 +98,31 @@ namespace WorkerShiftsAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Worker
+        // POST: api/workers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Worker>> PostWorker(Worker worker)
+        public async Task<ActionResult<WorkerDTO>> PostWorker(WorkerDTO workerDTO)
         {
+            var worker = new Worker
+            {
+                Name = workerDTO.Name,
+                Shifts = workerDTO.Shifts?.Select(shiftDTO => new Shift
+                {
+                    StartTime = shiftDTO.StartTime,
+                    EndTime = shiftDTO.EndTime,
+                    WorkerId = shiftDTO.WorkerId
+                }).ToList() ?? []
+            };
+
             _context.Workers.Add(worker);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetWorker), new { id = worker.WorkerId }, worker);
+            workerDTO.WorkerId = worker.WorkerId;
+
+            return CreatedAtAction(nameof(GetWorker), new { id = workerDTO.WorkerId }, WorkerToDTO(worker));
         }
 
-        // DELETE: api/Worker/5
+        // DELETE: api/workers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorker(int id)
         {
@@ -98,5 +142,12 @@ namespace WorkerShiftsAPI.Controllers
         {
             return _context.Workers.Any(e => e.WorkerId == id);
         }
+
+        private static WorkerDTO WorkerToDTO(Worker worker) =>
+        new()
+        {
+            WorkerId = worker.WorkerId,
+            Name = worker.Name
+        };
     }
 }
