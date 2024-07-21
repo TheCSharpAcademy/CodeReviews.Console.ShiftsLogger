@@ -70,7 +70,7 @@ namespace WorkerShiftsAPI.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException) when (!ShiftExists(id))
+            catch (DbUpdateConcurrencyException)
             {
                 if (!ShiftExists(id))
                 {
@@ -133,7 +133,7 @@ namespace WorkerShiftsAPI.Controllers
             return _context.Shifts.Any(e => e.ShiftId == id);
         }
 
-        internal static ShiftDTO ShiftToDTO(Shift shift) =>
+        public static ShiftDTO ShiftToDTO(Shift shift) =>
         new()
         {
             ShiftId = shift.ShiftId,
