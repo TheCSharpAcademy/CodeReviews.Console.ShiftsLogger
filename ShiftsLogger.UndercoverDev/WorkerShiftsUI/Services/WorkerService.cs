@@ -45,9 +45,32 @@ namespace WorkerShiftsUI.Services
             }
         }
 
-        public async Task UpdateWorker(int id, Worker worker)
+        public async Task UpdateWorker()
         {
-            await _apiService.UpdateWorkerAsync(id, worker);
+            var workers = await _apiService.GetWorkersAsync();
+            if (workers.Count == 0 || workers == null)
+            {
+                AnsiConsole.MarkupLine("[bold][red]No workers found.[/][/]");
+                return;
+            }
+
+            var selectedWorker = UserInteraction.GetWorkerOptionInput(workers);
+            if (selectedWorker == null || selectedWorker.Name == "Back")
+            {
+                return;
+            }
+
+            selectedWorker.Name = AnsiConsole.Confirm("Update name?") ?
+                AnsiConsole.Ask<string>("Enter new worker name: ") : selectedWorker.Name;
+            while (string.IsNullOrWhiteSpace(selectedWorker.Name))
+            {
+                AnsiConsole.MarkupLine("[bold][red]Please enter a valid name[/][/]");
+                selectedWorker.Name = AnsiConsole.Ask<string>("Enter new worker name: ");
+            }
+
+            await _apiService.UpdateWorkerAsync(selectedWorker.WorkerId, selectedWorker);
+
+            AnsiConsole.MarkupLine($"[bold][green]{selectedWorker.Name} updated.[/][/]");
         }
 
         public async Task DeleteWorker()
@@ -56,7 +79,7 @@ namespace WorkerShiftsUI.Services
 
             if (workers.Count == 0 || workers == null)
             {
-                AnsiConsole.MarkupLine("[bold][red]No workers found.[/]");
+                AnsiConsole.MarkupLine("[bold][red]No workers found.[/][/]");
                 return;
             }
             
@@ -66,7 +89,7 @@ namespace WorkerShiftsUI.Services
             {
                 return;
             }
-            
+
             await _apiService.DeleteWorkerAsync(selectedWorker.WorkerId);
 
             AnsiConsole.MarkupLine($"[bold][green]{selectedWorker.Name} deleted.[/][/]");

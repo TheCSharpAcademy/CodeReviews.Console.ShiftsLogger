@@ -5,6 +5,6 @@ public interface IWorkerService
 {
     public Task ViewWorkers();
     public Task AddWorker(Worker worker);
-    public Task UpdateWorker(int id, Worker worker);
+    public Task UpdateWorker();
     public Task DeleteWorker();
 }
