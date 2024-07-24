@@ -82,6 +82,22 @@ public static class UserInteraction
         return worker;
     }
 
+    internal static Worker GetWorkerOptionInput(List<Worker> workers)
+    {
+        workers.Insert(0, new Worker { Name = "Back" });
+        
+        var workerSelector = new SelectionPrompt<Worker>
+        {
+            Title = "[bold][blue]Select a worker to delete[/][/]",
+        };
+        workerSelector.AddChoices(workers);
+        workerSelector.UseConverter(worker => worker?.Name?? "Unknown");
+
+        var workerSelected = AnsiConsole.Prompt(workerSelector);
+
+        return workerSelected;
+    }
+
     private static Shift GetShiftDetails()
     {
         var now = DateTime.Now;
