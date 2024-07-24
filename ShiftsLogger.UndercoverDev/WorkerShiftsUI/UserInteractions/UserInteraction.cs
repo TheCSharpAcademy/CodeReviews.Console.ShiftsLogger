@@ -88,7 +88,7 @@ public static class UserInteraction
         
         var workerSelector = new SelectionPrompt<Worker>
         {
-            Title = "[bold][blue]Select a worker to delete[/][/]",
+            Title = "[bold][blue]Select a worker[/][/]",
         };
         workerSelector.AddChoices(workers);
         workerSelector.UseConverter(worker => worker?.Name?? "Unknown");

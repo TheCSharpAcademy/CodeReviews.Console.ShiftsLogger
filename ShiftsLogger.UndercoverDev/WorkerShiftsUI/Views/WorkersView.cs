@@ -40,9 +40,9 @@ public class WorkersView : IWorkersView
                     Worker worker = UserInteraction.GetWorkerDetails();
                     await _workerService!.AddWorker(worker);
                     break;
-                // case "Update Worker":
-                //     await _workerService!.UpdateWorker();
-                //     break;
+                case "Update Worker":
+                    await _workerService!.UpdateWorker();
+                    break;
                 case "Delete Worker":
                     await _workerService!.DeleteWorker();
                     break;
