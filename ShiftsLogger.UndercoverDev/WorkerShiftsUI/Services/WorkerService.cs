@@ -1,4 +1,5 @@
 
+using Spectre.Console;
 using WorkerShiftsUI.Models;
 using WorkerShiftsUI.UserInteractions;
 using WorkerShiftsUI.Views;
@@ -17,18 +18,22 @@ namespace WorkerShiftsUI.Services
         public async Task ViewWorkers()
         {
             var workers = await _apiService.GetWorkersAsync();
-            UserInteraction.ShowWorkers(workers);
-        }
 
-        public async Task ViewWorker(int id)
-        {
-            var worker = await _apiService.GetWorkerAsync(id);
+            if (workers == null)
+            {
+                AnsiConsole.MarkupLine("[bold][red]No workers found.[/]");
+                return;
+            }
+            else
+            {
+                UserInteraction.ShowWorkers(workers);
+            }
         }
 
         public async Task AddWorker(Worker worker)
         {
-            var newWorker = await _apiService.CreateWorkerAsync(worker);
-
+            var createdWorker = await _apiService.CreateWorkerAsync(worker);
+            AnsiConsole.MarkupLine($"[bold][green]Worker created with ID: {createdWorker.WorkerId}[/][/]");
         }
 
         public async Task UpdateWorker(int id, Worker worker)
