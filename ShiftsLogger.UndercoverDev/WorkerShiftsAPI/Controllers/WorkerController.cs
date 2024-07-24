@@ -50,6 +50,7 @@ public class WorkerController : ControllerBase
     // GET: api/workers/5
     [HttpGet("{id}")]
     public async Task<ActionResult<WorkerDTO>> GetWorker(int id)
+
     {
         var worker = await _context.Workers
             .Include(w => w.Shifts)
