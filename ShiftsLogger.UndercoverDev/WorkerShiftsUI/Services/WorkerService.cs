@@ -33,7 +33,16 @@ namespace WorkerShiftsUI.Services
         public async Task AddWorker(Worker worker)
         {
             var createdWorker = await _apiService.CreateWorkerAsync(worker);
-            AnsiConsole.MarkupLine($"[bold][green]Worker created with ID: {createdWorker.WorkerId}[/][/]");
+
+            if (createdWorker == null)
+            {
+                AnsiConsole.MarkupLine("[bold][red]Failed to create worker.[/]");
+                return;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[bold][green]{createdWorker.Name} created with ID: {createdWorker.WorkerId}[/][/]");
+            }
         }
 
         public async Task UpdateWorker(int id, Worker worker)
