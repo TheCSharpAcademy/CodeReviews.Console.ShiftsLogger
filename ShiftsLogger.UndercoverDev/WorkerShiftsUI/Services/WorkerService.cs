@@ -17,11 +17,12 @@ namespace WorkerShiftsUI.Services
 
         public async Task ViewWorkers()
         {
+            Console.Clear();
             var workers = await _apiService.GetWorkersAsync();
 
-            if (workers == null)
+            if (workers == null || workers.Count == 0)
             {
-                AnsiConsole.MarkupLine("[bold][red]No workers found.[/]");
+                AnsiConsole.MarkupLine("[bold][red]No workers found.[/][/]");
                 return;
             }
             else
@@ -30,17 +31,19 @@ namespace WorkerShiftsUI.Services
             }
         }
 
-        public async Task AddWorker(Worker worker)
+        public async Task AddWorker()
         {
+            var worker = UserInteraction.GetWorkerDetails();
             var createdWorker = await _apiService.CreateWorkerAsync(worker);
 
             if (createdWorker == null)
             {
-                AnsiConsole.MarkupLine("[bold][red]Failed to create worker.[/]");
+                AnsiConsole.MarkupLine("[bold][red]Failed to create worker.[/][/]");
                 return;
             }
             else
             {
+                Console.Clear();
                 AnsiConsole.MarkupLine($"[bold][green]{createdWorker.Name} created with ID: {createdWorker.WorkerId}[/][/]");
             }
         }
@@ -70,11 +73,13 @@ namespace WorkerShiftsUI.Services
 
             await _apiService.UpdateWorkerAsync(selectedWorker.WorkerId, selectedWorker);
 
+            Console.Clear();
             AnsiConsole.MarkupLine($"[bold][green]{selectedWorker.Name} updated.[/][/]");
         }
 
         public async Task DeleteWorker()
         {
+            Console.Clear();
             var workers = await _apiService.GetWorkersAsync();
 
             if (workers.Count == 0 || workers == null)

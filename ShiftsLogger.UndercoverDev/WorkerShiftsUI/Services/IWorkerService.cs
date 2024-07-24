@@ -4,7 +4,7 @@ namespace WorkerShiftsUI.Services;
 public interface IWorkerService
 {
     public Task ViewWorkers();
-    public Task AddWorker(Worker worker);
+    public Task AddWorker();
     public Task UpdateWorker();
     public Task DeleteWorker();
 }
