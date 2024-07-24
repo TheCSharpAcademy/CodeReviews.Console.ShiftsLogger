@@ -20,12 +20,12 @@ public class ApiService
         return await _httpClient!.GetFromJsonAsync<List<Worker>>($"{_baseUrl}/api/workers") ?? [];
     }
 
-    public async Task<Worker> GetWorkerAsync(int id)
+    public async Task<Worker?> GetWorkerAsync(int id)
     {
         return await _httpClient!.GetFromJsonAsync<Worker>($"{_baseUrl}/api/workers/{id}");
     }
 
-    public async Task<Worker> CreateWorkerAsync(Worker worker)
+    public async Task<Worker?> CreateWorkerAsync(Worker worker)
     {
         var response = await _httpClient!.PostAsJsonAsync($"{_baseUrl}/api/workers", worker);
         return await response.Content.ReadFromJsonAsync<Worker>();

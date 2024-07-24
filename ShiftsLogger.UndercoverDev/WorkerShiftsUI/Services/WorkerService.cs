@@ -50,9 +50,26 @@ namespace WorkerShiftsUI.Services
             await _apiService.UpdateWorkerAsync(id, worker);
         }
 
-        public async Task DeleteWorker(int id)
+        public async Task DeleteWorker()
         {
-            await _apiService.DeleteWorkerAsync(id);
+            var workers = await _apiService.GetWorkersAsync();
+
+            if (workers.Count == 0 || workers == null)
+            {
+                AnsiConsole.MarkupLine("[bold][red]No workers found.[/]");
+                return;
+            }
+            
+            var selectedWorker = UserInteraction.GetWorkerOptionInput(workers);
+
+            if (selectedWorker == null || selectedWorker.Name == "Back")
+            {
+                return;
+            }
+            
+            await _apiService.DeleteWorkerAsync(selectedWorker.WorkerId);
+
+            AnsiConsole.MarkupLine($"[bold][green]{selectedWorker.Name} deleted.[/][/]");
         }
     }
 }
