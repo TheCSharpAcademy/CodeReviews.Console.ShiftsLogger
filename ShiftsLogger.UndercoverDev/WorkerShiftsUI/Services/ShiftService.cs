@@ -92,6 +92,7 @@ public class ShiftService : IShiftService
         if (shift == null)
         {
             AnsiConsole.MarkupLine("[bold][red]This worker has no shift[/][/]");
+            return;
         }
 
         AnsiConsole.MarkupLine("[bold][blue]Enter updated shift details[/][/]");

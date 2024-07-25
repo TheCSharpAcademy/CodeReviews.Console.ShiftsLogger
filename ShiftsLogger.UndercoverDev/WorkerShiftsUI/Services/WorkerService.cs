@@ -36,7 +36,7 @@ namespace WorkerShiftsUI.Services
         {
             var workers = await _apiService.GetWorkersAsync();
             var worker = UserInteraction.GetWorkerDetails();
-            if (Validations.WorkerExists(workers, worker.Name))
+            if (worker.Name != null && Validations.WorkerExists(workers, worker.Name))
             {
                 AnsiConsole.MarkupLine("[bold][red]Worker already exists.[/][/]");
                 return;
@@ -58,7 +58,7 @@ namespace WorkerShiftsUI.Services
         public async Task UpdateWorker()
         {
             var workers = await _apiService.GetWorkersAsync();
-            if (workers.Count == 0 || workers == null)
+            if (workers == null || workers.Count == 0)
             {
                 AnsiConsole.MarkupLine("[bold][red]No workers found.[/][/]");
                 return;
@@ -89,7 +89,7 @@ namespace WorkerShiftsUI.Services
             Console.Clear();
             var workers = await _apiService.GetWorkersAsync();
 
-            if (workers.Count == 0 || workers == null)
+            if (workers == null || workers.Count == 0)
             {
                 AnsiConsole.MarkupLine("[bold][red]No workers found.[/][/]");
                 return;

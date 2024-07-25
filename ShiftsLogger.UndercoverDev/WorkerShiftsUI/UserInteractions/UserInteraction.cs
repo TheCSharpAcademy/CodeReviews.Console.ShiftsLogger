@@ -19,12 +19,12 @@ public static class UserInteraction
 
         var workerSelected = AnsiConsole.Prompt(workerSelector);
 
-        if (workerSelected == null || workerSelected.Name == "Back")
+        if (workerSelected.Name == "Back")
         {
             return;
         }
 
-        if (workerSelected != null && workerSelected.Shifts.Count != 0)
+        if (workerSelected.Shifts?.Count != 0)
         {
             ShowWorkerDetailsTable(workerSelected);
         }
@@ -139,7 +139,7 @@ public static class UserInteraction
         AnsiConsole.Write(table);
     }
 
-    internal static Shift GetShiftOptionInput(List<Shift>? shifts)
+    internal static Shift? GetShiftOptionInput(List<Shift>? shifts)
     {
         if (shifts == null || shifts.Count == 0)
         {
