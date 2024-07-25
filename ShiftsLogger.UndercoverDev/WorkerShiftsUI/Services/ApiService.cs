@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
 using WorkerShiftsUI.Models;
+using WorkerShiftsUI.Utilities;
 
 namespace WorkerShiftsUI.Services;
 public class ApiService
@@ -17,54 +18,62 @@ public class ApiService
     // Workers Methods
     public async Task<List<Worker>> GetWorkersAsync()
     {
-        return await _httpClient!.GetFromJsonAsync<List<Worker>>($"{_baseUrl}/api/workers") ?? [];
+        var response = await _httpClient!.GetAsync($"{_baseUrl}/api/workers");
+        return await ApiResponseHandler.HandleResponse<List<Worker>>(response) ?? [];
     }
 
     public async Task<Worker?> GetWorkerAsync(int id)
     {
-        return await _httpClient!.GetFromJsonAsync<Worker>($"{_baseUrl}/api/workers/{id}");
+        var response = await _httpClient!.GetAsync($"{_baseUrl}/api/workers/{id}");
+        return await ApiResponseHandler.HandleResponse<Worker>(response);
     }
 
     public async Task<Worker?> CreateWorkerAsync(Worker worker)
     {
         var response = await _httpClient!.PostAsJsonAsync($"{_baseUrl}/api/workers", worker);
-        return await response.Content.ReadFromJsonAsync<Worker>();
+        return await ApiResponseHandler.HandleResponse<Worker>(response);
     }
 
-    public async Task UpdateWorkerAsync(int id, Worker worker)
+    public async Task<Worker?> UpdateWorkerAsync(int id, Worker worker)
     {
-        await _httpClient!.PutAsJsonAsync($"{_baseUrl}/api/workers/{id}", worker);
+        var response = await _httpClient!.PutAsJsonAsync($"{_baseUrl}/api/workers/{id}", worker);
+        return await ApiResponseHandler.HandleResponse<Worker>(response);
     }
 
     public async Task DeleteWorkerAsync(int id)
     {
-        await _httpClient!.DeleteAsync($"{_baseUrl}/api/workers/{id}");
+        var response = await _httpClient!.DeleteAsync($"{_baseUrl}/api/workers/{id}");
+        await ApiResponseHandler.HandleResponse<object>(response);
     }
 
     // Shifts Methods
     public async Task<List<Shift>> GetShiftsAsync()
     {
-        return await _httpClient!.GetFromJsonAsync<List<Shift>>($"{_baseUrl}/api/shifts") ?? [];
+        var response = await _httpClient!.GetAsync($"{_baseUrl}/api/shifts");
+        return await ApiResponseHandler.HandleResponse<List<Shift>>(response) ?? [];
     }
 
     public async Task<Shift?> GetShiftAsync(int id)
     {
-        return await _httpClient!.GetFromJsonAsync<Shift>($"{_baseUrl}/api/shifts/{id}");
+        var response = await _httpClient!.GetAsync($"{_baseUrl}/api/shift/{id}");
+        return await ApiResponseHandler.HandleResponse<Shift>(response);
     }
 
     public async Task<Shift?> CreateShiftAsync(Shift shift)
     {
         var response = await _httpClient!.PostAsJsonAsync($"{_baseUrl}/api/shifts", shift);
-        return await response.Content.ReadFromJsonAsync<Shift>();
+        return await ApiResponseHandler.HandleResponse<Shift>(response);
     }
 
-    public async Task UpdateShiftAsync(int id, Shift shift)
+    public async Task<Shift?> UpdateShiftAsync(int id, Shift shift)
     {
-        await _httpClient!.PutAsJsonAsync($"{_baseUrl}/api/shifts/{id}", shift);
+        var response = await _httpClient!.PutAsJsonAsync($"{_baseUrl}/api/shifts/{id}", shift);
+        return await ApiResponseHandler.HandleResponse<Shift>(response);
     }
 
     public async Task DeleteShiftAsync(int id)
     {
-        await _httpClient!.DeleteAsync($"{_baseUrl}/api/shifts/{id}");
+        var response = await _httpClient!.DeleteAsync($"{_baseUrl}/api/shifts/{id}");
+        await ApiResponseHandler.HandleResponse<object>(response);
     }
 }

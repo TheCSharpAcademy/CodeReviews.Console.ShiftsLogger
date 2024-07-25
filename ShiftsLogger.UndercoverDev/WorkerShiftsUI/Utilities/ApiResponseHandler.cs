@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Spectre.Console;
 
 namespace WorkerShiftsUI.Utilities;
 public class ApiResponseHandler
@@ -7,6 +8,17 @@ public class ApiResponseHandler
     {
         if (response.IsSuccessStatusCode)
         {
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                return default;
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return default;
+            }
+
             return await response.Content.ReadFromJsonAsync<T>();
         }
         else
@@ -14,4 +26,5 @@ public class ApiResponseHandler
             throw new HttpRequestException($"API request failed: {response.StatusCode}");
         }
     }
+
 }
