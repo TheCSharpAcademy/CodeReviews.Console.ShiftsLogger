@@ -2,6 +2,7 @@
 using Spectre.Console;
 using WorkerShiftsUI.Models;
 using WorkerShiftsUI.UserInteractions;
+using WorkerShiftsUI.Utilities;
 using WorkerShiftsUI.Views;
 
 namespace WorkerShiftsUI.Services
@@ -33,7 +34,13 @@ namespace WorkerShiftsUI.Services
 
         public async Task AddWorker()
         {
+            var workers = await _apiService.GetWorkersAsync();
             var worker = UserInteraction.GetWorkerDetails();
+            if (Validations.WorkerExists(workers, worker.Name))
+            {
+                AnsiConsole.MarkupLine("[bold][red]Worker already exists.[/][/]");
+                return;
+            }
             var createdWorker = await _apiService.CreateWorkerAsync(worker);
 
             if (createdWorker == null)

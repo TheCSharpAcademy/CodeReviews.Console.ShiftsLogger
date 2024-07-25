@@ -51,14 +51,4 @@ public class WorkersView : IWorkersView
             }
         }
     }
-
-    public void ShowWorker(Worker worker)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void ShowWorkers(List<Worker> workers)
-    {
-        throw new NotImplementedException();
-    }
 }

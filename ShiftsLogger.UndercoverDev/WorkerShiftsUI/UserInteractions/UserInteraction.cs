@@ -98,7 +98,7 @@ public static class UserInteraction
         return workerSelected;
     }
 
-    private static Shift GetShiftDetails()
+    internal static Shift GetShiftDetails()
     {
         var now = DateTime.Now;
         const string timeFormat = "yyyy-MM-dd HH:mm";
@@ -110,5 +110,46 @@ public static class UserInteraction
         var endTime = DateTime.ParseExact(endTimeString, timeFormat, CultureInfo.InvariantCulture);
 
         return new Shift { StartTime = startTime, EndTime = endTime };
+    }
+
+    internal static void ShowShifts(List<Shift> shifts)
+    {
+        var table = new Table()
+            .AddColumn("ID")
+            .AddColumn("Start Time")
+            .AddColumn("End Time")
+            .AddColumn("Shift Duration")
+            .AddColumn("Worker Name")
+            .Title("[bold][blue]Shifts[/][/]");
+
+        if (shifts!= null)
+        {
+            var count = 1;
+            foreach (var shift in shifts)
+            {
+                TimeSpan duration = shift.EndTime - shift.StartTime;
+                table.AddRow(count.ToString(), shift.StartTime.ToString(), shift.EndTime.ToString(), duration.ToString(), shift.WorkerName?? "Unknown");
+                count++;
+            }
+        }
+
+        AnsiConsole.Write(table);
+    }
+
+    internal static Shift GetShiftOptionInput(List<Shift>? shifts)
+    {
+        if (shifts == null || shifts.Count == 0)
+        {
+            return null;
+        }
+
+        var shiftSelector = new SelectionPrompt<Shift>
+        {
+            Title = "[bold][blue]Select a shift[/][/]",
+        };
+        shiftSelector.AddChoices(shifts);
+        shiftSelector.UseConverter(shift => $"{shift.StartTime} - {shift.EndTime}");
+
+        return AnsiConsole.Prompt(shiftSelector);
     }
 }

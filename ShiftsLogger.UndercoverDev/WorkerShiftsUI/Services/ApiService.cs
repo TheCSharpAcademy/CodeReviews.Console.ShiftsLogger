@@ -44,15 +44,15 @@ public class ApiService
     // Shifts Methods
     public async Task<List<Shift>> GetShiftsAsync()
     {
-        return await _httpClient!.GetFromJsonAsync<List<Shift>>($"{_baseUrl}/api/shifts");
+        return await _httpClient!.GetFromJsonAsync<List<Shift>>($"{_baseUrl}/api/shifts") ?? [];
     }
 
-    public async Task<Shift> GetShiftAsync(int id)
+    public async Task<Shift?> GetShiftAsync(int id)
     {
         return await _httpClient!.GetFromJsonAsync<Shift>($"{_baseUrl}/api/shifts/{id}");
     }
 
-    public async Task<Shift> CreateShiftAsync(Shift shift)
+    public async Task<Shift?> CreateShiftAsync(Shift shift)
     {
         var response = await _httpClient!.PostAsJsonAsync($"{_baseUrl}/api/shifts", shift);
         return await response.Content.ReadFromJsonAsync<Shift>();

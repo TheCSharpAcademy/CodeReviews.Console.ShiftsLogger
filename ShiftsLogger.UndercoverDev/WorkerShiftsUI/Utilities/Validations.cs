@@ -1,5 +1,6 @@
 using System.Globalization;
 using Spectre.Console;
+using WorkerShiftsUI.Models;
 
 namespace WorkerShiftsUI.Utilities
 {
@@ -20,6 +21,11 @@ namespace WorkerShiftsUI.Utilities
                         return ValidationResult.Success();
                     })
             );
+        }
+
+        internal static bool WorkerExists(List<Worker> workers, string workerName)
+        {
+            return workers.Any(w => w.Name.ToLower().Equals(workerName.ToLower()));
         }
     }
 }
