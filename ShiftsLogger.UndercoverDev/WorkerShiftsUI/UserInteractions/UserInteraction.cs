@@ -40,6 +40,7 @@ public static class UserInteraction
             .AddColumn("Shift ID")
             .AddColumn("Start Time")
             .AddColumn("End Time")
+            .AddColumn("Shift Duration")
             .Title("[bold][blue]Worker Details[/][/]");
 
         if (worker.Shifts != null)
@@ -47,7 +48,9 @@ public static class UserInteraction
             var count = 1;
             foreach (var shift in worker.Shifts)
             {
-                table.AddRow(count.ToString(), shift.StartTime.ToString(), shift.EndTime.ToString());
+                TimeSpan duration = shift.EndTime - shift.StartTime;
+
+                table.AddRow(count.ToString(), shift.StartTime.ToString(), shift.EndTime.ToString(), duration.ToString());
                 count++;
             }
         }

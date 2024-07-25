@@ -47,6 +47,7 @@ public class WorkersView : IWorkersView
                     break;
                 case "Go Back":
                     isWorkerViewRunning = false;
+                    Console.Clear();
                     return;
             }
         }
