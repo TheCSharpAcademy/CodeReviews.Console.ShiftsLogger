@@ -12,7 +12,7 @@ namespace ShiftsLoggerUI.Utilities
             DateTime startDate;
             while (!DateTime.TryParseExact(input, "yyyy-MM-dd hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out startDate))
             {
-                input = AnsiConsole.Ask<string>("[blue]Start Date should be in the format of YYYY-MM-DD HH:MM am/pm[/]");
+                input = AnsiConsole.Ask<string>("[red]Start Date should be in the format of YYYY-MM-DD HH:MM am/pm[/]");
             }
             return startDate;
         }
@@ -24,7 +24,7 @@ namespace ShiftsLoggerUI.Utilities
             DateTime endDate;
             while (!DateTime.TryParseExact(input, "yyyy-MM-dd hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.None, out endDate))
             {
-                input = AnsiConsole.Ask<string>("[blue]End Date should be in the format of YYYY-MM-DD HH:MM am/pm[/]");
+                input = AnsiConsole.Ask<string>("[red]End Date should be in the format of YYYY-MM-DD HH:MM am/pm[/]");
             }
             return endDate;
         }

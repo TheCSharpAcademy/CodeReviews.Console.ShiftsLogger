@@ -74,13 +74,11 @@ namespace ShiftsLoggerUI.Service
                 var employeeId = userInput.GetNumberInput("Input EmployeeId");
                 var startTime = userInput.GetStartDate();
                 var endTime = userInput.GetEndDate();
-
-
-               if(!validation.ValidateRange(startTime, endTime))
-               {
-                    throw new Exception("End Time cannot be less than start time");
-               }
-                var duration = startTime - endTime;
+                if (validation.ValidateRange(startTime, endTime))
+                {
+                    throw new Exception("Start Time cannot be greater than End time");
+                }
+                var duration = endTime - startTime;
                 var comment = userInput.GetStringInput();
 
                 var payload = new ShiftLog()
@@ -131,6 +129,7 @@ namespace ShiftsLoggerUI.Service
                 {
                     throw new Exception("Start Time cannot be greater than End time");
                 }
+                var duration = endTime - startTime;
                 var comment = userInput.GetStringInput();
                 var payload = new ShiftLog()
                 {
@@ -138,6 +137,7 @@ namespace ShiftsLoggerUI.Service
                     EmployeeId = employeeId,
                     StartTime = startTime,
                     EndTime = endTime,
+                    Duration = duration,
                     Comment = comment,
                 };
 

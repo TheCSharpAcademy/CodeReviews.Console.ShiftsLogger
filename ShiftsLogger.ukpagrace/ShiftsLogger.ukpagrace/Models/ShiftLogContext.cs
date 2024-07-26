@@ -10,6 +10,7 @@ namespace ShiftsLogger.ukpagrace.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            // Implemented in controller
         }
            
         public DbSet<ShiftLog> ShiftLog { get; set; } = null!;

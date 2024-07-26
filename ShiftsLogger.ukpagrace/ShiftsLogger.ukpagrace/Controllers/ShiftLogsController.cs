@@ -15,18 +15,16 @@ namespace ShiftsLogger.ukpagrace.Controllers
             _context = context;
         }
 
-        // GET: api/ShiftLogs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ShiftLogDTO>>> GetShiftLog()
+        public async Task<ActionResult<IEnumerable<ShiftLogDto>>> GetShiftLog()
         {
             return await _context.ShiftLog
-                .Select(x =>LogDTO(x))
+                .Select(x =>LogDto(x))
                 .ToListAsync();
         }
 
-        // GET: api/ShiftLogs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ShiftLogDTO>> GetShiftLog(long id)
+        public async Task<ActionResult<ShiftLogDto>> GetShiftLog(long id)
         {
             var shiftLog = await _context.ShiftLog.FindAsync(id);
 
@@ -35,15 +33,13 @@ namespace ShiftsLogger.ukpagrace.Controllers
                 return NotFound();
             }
 
-            return LogDTO(shiftLog);
+            return LogDto(shiftLog);
         }
 
-        // PUT: api/ShiftLogs/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutShiftLog(long id, ShiftLogDTO shiftLogDTO)
+        public async Task<IActionResult> PutShiftLog(long id, ShiftLogDto ShiftLogDto)
         {
-            if (id != shiftLogDTO.Id)
+            if (id != ShiftLogDto.Id)
             {
                 return BadRequest();
             }
@@ -53,11 +49,11 @@ namespace ShiftsLogger.ukpagrace.Controllers
                 return NotFound();
             }
 
-            shiftLog.EmployeeId = shiftLogDTO.EmployeeId;
-            shiftLog.StartTime = shiftLogDTO.StartTime;
-            shiftLog.EndTime = shiftLogDTO.EndTime;
-            shiftLog.Duration = shiftLogDTO.Duration;
-            shiftLog.Comment = shiftLogDTO.Comment;
+            shiftLog.EmployeeId = ShiftLogDto.EmployeeId;
+            shiftLog.StartTime = ShiftLogDto.StartTime;
+            shiftLog.EndTime = ShiftLogDto.EndTime;
+            shiftLog.Duration = ShiftLogDto.Duration;
+            shiftLog.Comment = ShiftLogDto.Comment;
 
             _context.Entry(shiftLog).State = EntityState.Modified;
 
@@ -80,18 +76,16 @@ namespace ShiftsLogger.ukpagrace.Controllers
             return NoContent();
         }
 
-        // POST: api/ShiftLogs
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ShiftLog>> PostShiftLog(ShiftLogDTO shiftLogDTO)
+        public async Task<ActionResult<ShiftLog>> PostShiftLog(ShiftLogDto ShiftLogDto)
         {
             var shiftLogItem = new ShiftLog
             {
-                EmployeeId = shiftLogDTO.EmployeeId,
-                StartTime = shiftLogDTO.StartTime,
-                EndTime = shiftLogDTO.EndTime,
-                Duration = shiftLogDTO.Duration,
-                Comment = shiftLogDTO.Comment,
+                EmployeeId = ShiftLogDto.EmployeeId,
+                StartTime = ShiftLogDto.StartTime,
+                EndTime = ShiftLogDto.EndTime,
+                Duration = ShiftLogDto.Duration,
+                Comment = ShiftLogDto.Comment,
             };
 
             _context.ShiftLog.Add(shiftLogItem);
@@ -100,7 +94,6 @@ namespace ShiftsLogger.ukpagrace.Controllers
             return CreatedAtAction(nameof(GetShiftLog), new { id = shiftLogItem.Id }, shiftLogItem);
         }
 
-        // DELETE: api/ShiftLogs/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShiftLog(long id)
         {
@@ -121,9 +114,9 @@ namespace ShiftsLogger.ukpagrace.Controllers
             return _context.ShiftLog.Any(e => e.Id == id);
         }
 
-        private static ShiftLogDTO LogDTO(ShiftLog shiftLog)
+        private static ShiftLogDto LogDto(ShiftLog shiftLog)
         {
-            return new ShiftLogDTO
+            return new ShiftLogDto
             {
                 Id = shiftLog.Id,
                 EmployeeId = shiftLog.EmployeeId,

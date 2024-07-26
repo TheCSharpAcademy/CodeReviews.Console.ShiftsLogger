@@ -1,6 +1,6 @@
 ﻿namespace ShiftsLogger.ukpagrace.Models
 {
-    public class ShiftLogDTO
+    public class ShiftLogDto
     {
         public long? Id { get; set; }
         public long EmployeeId { get; set; }
