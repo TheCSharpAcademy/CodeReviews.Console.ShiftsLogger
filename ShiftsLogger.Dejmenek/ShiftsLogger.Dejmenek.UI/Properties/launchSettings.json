@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ShiftsLogger.Dejmenek.UI": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\Damian\\source\\repos\\CodeReviews.Console.ShiftsLogger\\ShiftsLogger.Dejmenek\\ShiftsLogger.Dejmenek.UI"
+    }
+  }
+}
