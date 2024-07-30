@@ -1,6 +1,8 @@
-# Shifts Logger
+# ShiftsLogger
 
-![shifts logger logo](./_resources/logo.png)
+## Description
+
+![shifts logger logo](./_resources/logo.png) 
 
 Welcome to the Shifts Logger App!
 

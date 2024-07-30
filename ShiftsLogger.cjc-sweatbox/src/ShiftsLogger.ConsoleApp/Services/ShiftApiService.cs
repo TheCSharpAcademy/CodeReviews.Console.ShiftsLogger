@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Web;
+﻿using System.Web;
 using Newtonsoft.Json;
 using RestSharp;
 using ShiftsLogger.ConsoleApp.Models;
@@ -40,13 +39,13 @@ internal class ShiftApiService
         try
         {
             var reponse = client.Execute(request, Method.Post);
-            if (reponse.StatusCode is HttpStatusCode.Created)
+            if (reponse.StatusCode is System.Net.HttpStatusCode.Created)
             {
                 output = true;
             }
             else
             {
-                throw new InvalidOperationException($"Invalid HTTP Status Code. Expected: {HttpStatusCode.Created}. Actual: {reponse.StatusCode}.");
+                throw new InvalidOperationException($"Invalid HTTP Status Code. Expected: {System.Net.HttpStatusCode.Created}. Actual: {reponse.StatusCode}.");
             }
         }
         catch (Exception exception)
@@ -68,13 +67,13 @@ internal class ShiftApiService
         try
         {
             var reponse = client.Execute(request, Method.Delete);
-            if (reponse.StatusCode is HttpStatusCode.NoContent)
+            if (reponse.StatusCode is System.Net.HttpStatusCode.NoContent)
             {
                 output = true;
             }
             else
             {
-                throw new InvalidOperationException($"Invalid HTTP Status Code. Expected: {HttpStatusCode.NoContent}. Actual: {reponse.StatusCode}.");
+                throw new InvalidOperationException($"Invalid HTTP Status Code. Expected: {System.Net.HttpStatusCode.NoContent}. Actual: {reponse.StatusCode}.");
             }
         }
         catch (Exception exception)
@@ -96,13 +95,13 @@ internal class ShiftApiService
         try
         {
             var reponse = client.Execute(request, Method.Get);
-            if (reponse.StatusCode is HttpStatusCode.OK)
+            if (reponse.StatusCode is System.Net.HttpStatusCode.OK)
             {
                 output = JsonConvert.DeserializeObject<IReadOnlyList<ShiftDto>>(reponse.Content!)!;
             }
             else
             {
-                throw new InvalidOperationException($"Invalid HTTP Status Code. Expected: {HttpStatusCode.OK}. Actual: {reponse.StatusCode}.");
+                throw new InvalidOperationException($"Invalid HTTP Status Code. Expected: {System.Net.HttpStatusCode.OK}. Actual: {reponse.StatusCode}.");
             }
         }
         catch (Exception exception)
@@ -129,13 +128,13 @@ internal class ShiftApiService
         try
         {
             var reponse = client.Execute(request, Method.Put);
-            if (reponse.StatusCode is HttpStatusCode.OK)
+            if (reponse.StatusCode is System.Net.HttpStatusCode.OK)
             {
                 output = true;
             }
             else
             {
-                throw new InvalidOperationException($"Invalid HTTP Status Code. Expected: {HttpStatusCode.OK}. Actual: {reponse.StatusCode}.");
+                throw new InvalidOperationException($"Invalid HTTP Status Code. Expected: {System.Net.HttpStatusCode.OK}. Actual: {reponse.StatusCode}.");
             }
         }
         catch (Exception exception)

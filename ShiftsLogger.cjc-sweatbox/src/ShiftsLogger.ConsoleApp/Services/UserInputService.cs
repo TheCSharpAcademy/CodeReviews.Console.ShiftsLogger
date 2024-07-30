@@ -66,17 +66,6 @@ internal static partial class UserInputService
             .DefaultValue(defaultValue)
             );
     }
-
-    //internal static Category GetCategory(string prompt, IReadOnlyList<Category> categories)
-    //{
-    //    return AnsiConsole.Prompt(
-    //            new SelectionPrompt<Category>()
-    //            .Title(prompt)
-    //            .AddChoices(categories)
-    //            .UseConverter(c => c.Name)
-    //            );
-    //}
-
     internal static SelectionChoice GetPageChoice(string prompt, IEnumerable<SelectionChoice> choices)
     {
         return AnsiConsole.Prompt(
