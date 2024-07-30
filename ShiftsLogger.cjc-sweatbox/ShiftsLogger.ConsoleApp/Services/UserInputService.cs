@@ -11,11 +11,6 @@ namespace ShiftsLogger.ConsoleApp.Services;
 /// </summary>
 internal static partial class UserInputService
 {
-    #region Constants
-
-    // TODO: Validation Messages.
-
-    #endregion
     #region Methods - Internal
 
     internal static DateTime? GetShiftStartDateTime(string prompt, string format)
