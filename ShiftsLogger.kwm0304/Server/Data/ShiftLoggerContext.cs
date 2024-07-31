@@ -5,9 +5,14 @@ namespace Server.Data;
 
 public class ShiftLoggerContext : DbContext
 {
-  public DbSet<Employee> Employees { get; set; }
-  public DbSet<Shift> Shifts { get; set; }
-  public DbSet<EmployeeShift> EmployeeShifts { get; set; }
+  public ShiftLoggerContext(DbContextOptions<ShiftLoggerContext> options)
+      : base(options)
+  {
+  }
+  public DbSet<Employee> Employees { get; set; } = null!;
+  public DbSet<Shift> Shifts { get; set; } = null!;
+  public DbSet<EmployeeShift> EmployeeShifts { get; set; } = null!;
+
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
@@ -23,5 +28,8 @@ public class ShiftLoggerContext : DbContext
       .HasOne(es => es.Shift)
       .WithMany(s => s.EmployeeShifts)
       .HasForeignKey(es => es.ShiftId);
+
+    modelBuilder.Entity<EmployeeShift>()
+      .HasIndex(es => es.ClockInTime);
   }
 }
