@@ -1,6 +1,8 @@
+using Server.Models;
+
 namespace Server.Services.Interfaces;
 
-public interface IEmployeeService
+public interface IEmployeeService : IService<Employee>
 {
     
 }

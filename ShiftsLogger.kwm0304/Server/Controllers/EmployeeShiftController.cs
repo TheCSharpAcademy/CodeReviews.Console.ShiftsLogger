@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Server.Models;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;
 
@@ -6,7 +7,10 @@ namespace Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class EmployeeShiftController(IEmployeeShiftService service) : ControllerBase
+public class EmployeeShiftController : Controller<EmployeeShift>
 {
-    private readonly IEmployeeShiftService _service = service;
+    public EmployeeShiftController(IService<EmployeeShift> service) : base(service)
+    {
+    }
+
 }

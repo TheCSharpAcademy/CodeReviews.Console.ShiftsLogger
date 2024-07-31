@@ -1,9 +1,12 @@
+using Server.Models;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;
 
 namespace Server.Services;
 
-public class EmployeeShiftService(IEmployeeShiftRepository repository) : IEmployeeService
+public class EmployeeShiftService : Service<EmployeeShift>, IEmployeeShiftService
 {
-    private readonly IEmployeeShiftRepository _repository = repository;
+    public EmployeeShiftService(IRepository<EmployeeShift> repository) : base(repository)
+    {
+    }
 }

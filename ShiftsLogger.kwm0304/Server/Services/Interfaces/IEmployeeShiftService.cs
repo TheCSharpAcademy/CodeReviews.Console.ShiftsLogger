@@ -1,6 +1,8 @@
+using Server.Models;
+
 namespace Server.Services.Interfaces;
 
-public interface IEmployeeShiftService
+public interface IEmployeeShiftService : IService<EmployeeShift>
 {
     
 }

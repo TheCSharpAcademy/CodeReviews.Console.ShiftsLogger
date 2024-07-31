@@ -1,9 +1,12 @@
+using Server.Models;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;
 
 namespace Server.Services;
 
-public class ShiftService(IShiftRepository repository) : IShiftService
+public class ShiftService : Service<Shift>, IShiftService
 {
-    private readonly IShiftRepository _repository = repository;
+    public ShiftService(IRepository<Shift> repository) : base(repository)
+    {
+    }
 }
