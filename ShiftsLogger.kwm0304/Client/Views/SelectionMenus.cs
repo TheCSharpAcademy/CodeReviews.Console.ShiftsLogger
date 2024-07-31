@@ -1,5 +1,7 @@
 using Client.Utils;
 using Server.Models;
+using Shared;
+using Shared.Enums;
 
 namespace Client.Views;
 
@@ -22,6 +24,12 @@ public class SelectionMenus
   {
     var menu = new BasePrompt<EmployeeShift>("Select an employee-shift to view details", employeeShifts);
     return menu.Show()!;
+  }
+
+  public static ShiftClassification SelectShift(List<ShiftClassification> shifts)
+  {
+    var menu = new BasePrompt<ShiftClassification>("What shift would you like to assign?", shifts);
+    return menu.Show();
   }
 
   public static string MainMenu()
@@ -56,6 +64,20 @@ public class SelectionMenus
   {
     var menuOptions = new List<string> { "View all employees on shift", "View late employees on shift", "Edit shift attributes", "Delete shift", "Back" };
     var menu = new BasePrompt<string>(genericPrompt, menuOptions);
+    return menu.Show()!;
+  }
+
+  public static string SelectEmployeePayRange()
+  {
+    var menuOptions = new List<string> {"Day", "Week", "Month", "Year"};
+    var menu = new BasePrompt<string>("What pay range do you want to view?", menuOptions);
+    return menu.Show()!;
+  }
+
+  public static string EmployeeEditSelection()
+  {
+    var menuOptions = new List<string>{"Name", "Shift", "Pay", "Back"};
+    var menu = new BasePrompt<string>("What attribute would you like to edit?", menuOptions);
     return menu.Show()!;
   }
 }

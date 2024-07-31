@@ -1,4 +1,4 @@
-using Server.Models;
+using Shared;
 using Server.Models.Dtos;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;

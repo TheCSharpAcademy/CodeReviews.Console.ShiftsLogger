@@ -11,7 +11,7 @@ public class IBaseApi<T> where T : class
   public IBaseApi(HttpClient http, string endpoint)
   {
     _http = http;
-    _http.BaseAddress = new Uri("https://localhost:7066");
+    _http.BaseAddress = new Uri("https://localhost:7066/api");
     _endpoint = endpoint;
   }
 

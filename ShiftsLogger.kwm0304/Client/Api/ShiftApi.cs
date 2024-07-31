@@ -1,12 +1,8 @@
+using Shared;
+
 namespace Client.Api;
 
-public class ShiftApi
+public class ShiftApi(HttpClient http) : IBaseApi<Shift>(http, "/shifts")
 {
-    private readonly HttpClient _http;
-    public ShiftApi(HttpClient http)
-    {
-      _http = http;
-    }
 
-    
 }

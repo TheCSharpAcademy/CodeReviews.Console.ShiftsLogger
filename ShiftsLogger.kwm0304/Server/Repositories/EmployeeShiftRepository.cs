@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
-using Server.Models;
+using Shared;
 using Server.Repositories.Interfaces;
 
 namespace Server.Repositories;

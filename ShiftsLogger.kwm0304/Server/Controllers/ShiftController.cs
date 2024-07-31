@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Server.Models;
-using Server.Models.Dtos;
 using Server.Services.Interfaces;
-using Spectre.Console;
+using Shared;
 
 namespace Server.Controllers;
 

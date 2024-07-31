@@ -1,22 +1,26 @@
 using Spectre.Console;
 
-namespace Client.Views;
+namespace Client.Utils;
 
 public class StringPrompt
 {
-  public static string GetAndConfirmResponse(string question)
+  public static T GetAndConfirmResponse<T>(string question)
   {
-    string answer = AnsiConsole.Ask<string>(question);
-    if (!string.IsNullOrEmpty(answer) ||
-      !string.IsNullOrWhiteSpace(answer))
+    while (true)
     {
-      bool confirm = AnsiConsole.Confirm("Are you sure?");
-      if (confirm)
-        return answer;
+      T answer = AnsiConsole.Ask<T>(question);
+
+      if (answer != null && !string.IsNullOrWhiteSpace(answer.ToString()))
+      {
+        bool confirm = AnsiConsole.Confirm("Are you sure?");
+        if (confirm)
+          return answer;
+      }
       else
-        return GetAndConfirmResponse(question);
+      {
+        AnsiConsole.MarkupLine("[bold red]Response cannot be empty.[/]");
+        AnsiConsole.WriteLine("Please enter a valid response:");
+      }
     }
-    AnsiConsole.MarkupLine("[bold red]Response cannot be empty.[/]\n Please enter a valid response:");
-    return GetAndConfirmResponse(question);
   }
 }

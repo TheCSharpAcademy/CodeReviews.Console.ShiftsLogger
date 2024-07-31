@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Server.Models;
+using Shared;
 
 namespace Server.Data;
 

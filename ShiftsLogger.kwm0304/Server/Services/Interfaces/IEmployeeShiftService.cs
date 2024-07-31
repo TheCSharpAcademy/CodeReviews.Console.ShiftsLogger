@@ -1,4 +1,4 @@
-using Server.Models;
+using Shared;
 using Server.Models.Dtos;
 
 namespace Server.Services.Interfaces;
