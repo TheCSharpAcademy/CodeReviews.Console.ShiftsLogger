@@ -1,2 +1,16 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿
+
+namespace Client;
+
+public class Program
+{
+  static async Task Main()
+  {
+    using HttpClient client = new();
+    while(true)
+    {
+      AppSession session = new(client);
+      await session.OnStart();
+    }
+  }
+}

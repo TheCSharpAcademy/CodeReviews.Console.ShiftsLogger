@@ -7,7 +7,7 @@ using Spectre.Console;
 namespace Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class ShiftController : Controller<Shift>
 {
     public ShiftController(IService<Shift> service) : base(service)

@@ -7,7 +7,7 @@ using Spectre.Console;
 namespace Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class EmployeeShiftController : Controller<EmployeeShift>
 {
     private readonly IEmployeeShiftService _employeeShiftService;
