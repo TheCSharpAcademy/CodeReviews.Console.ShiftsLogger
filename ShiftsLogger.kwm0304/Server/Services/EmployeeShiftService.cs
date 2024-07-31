@@ -47,6 +47,11 @@ public class EmployeeShiftService : Service<EmployeeShift>, IEmployeeShiftServic
         return await _employeeShiftRepository.GetEmployeeShiftByIds(employeeId, shiftId);
     }
 
+    public async Task<List<EmployeeShift>> GetLateEmployeesForShiftAsync(int shiftId)
+    {
+        return await _employeeShiftRepository.GetLateEmployeesForShiftAsync(shiftId);
+    }
+
     public async Task<EmployeeShift> UpdateEmployeeShiftAsync(int employeeId, int shiftId, EmployeeShiftDto employeeShiftDto)
     {
         var empShift = await _employeeShiftRepository.GetEmployeeShiftByIds(employeeId, shiftId) ?? throw new NullReferenceException("No employeeshift found with this id");

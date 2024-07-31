@@ -37,8 +37,27 @@ public class EmployeeShiftController : Controller<EmployeeShift>
         }
     }
 
+    [HttpGet("late/{shiftId}")]
+    public async Task<IActionResult> GetLateEmployeesForShift(int shiftId)
+    {
+        try
+        {
+            var lateEmployees = await _employeeShiftService.GetLateEmployeesForShiftAsync(shiftId);
+            if (lateEmployees.Count == 0)
+            {
+                return Ok(new { Message = "No late employees found for this shift." });
+            }
+            return Ok(lateEmployees);
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.WriteException(e);
+            return BadRequest(e.Message);
+        }
+    }
+
     [HttpPost("create")]
-    public async Task<IActionResult> CreateEmployeeShift([FromBody]EmployeeShiftDto employeeShiftDto)
+    public async Task<IActionResult> CreateEmployeeShift([FromBody] EmployeeShiftDto employeeShiftDto)
     {
         try
         {
@@ -55,7 +74,7 @@ public class EmployeeShiftController : Controller<EmployeeShift>
     }
 
     [HttpPut("{employeeId}/{shiftId}")]
-    public async Task<IActionResult> UpdateEmployeeShift(int employeeId, int shiftId, [FromBody]EmployeeShiftDto employeeShiftDto)
+    public async Task<IActionResult> UpdateEmployeeShift(int employeeId, int shiftId, [FromBody] EmployeeShiftDto employeeShiftDto)
     {
         try
         {

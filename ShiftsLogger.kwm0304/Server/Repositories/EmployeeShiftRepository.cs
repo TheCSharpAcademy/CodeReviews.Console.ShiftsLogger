@@ -13,20 +13,28 @@ public class EmployeeShiftRepository : Repository<EmployeeShift>, IEmployeeShift
     _context = context;
   }
 
-    public async Task DeleteEmployeeShift(int employeeId, int shiftId)
+  public async Task DeleteEmployeeShift(int employeeId, int shiftId)
+  {
+    var employeeShift = await GetEmployeeShiftByIds(employeeId, shiftId);
+    if (employeeShift != null)
     {
-        var employeeShift = await GetEmployeeShiftByIds(employeeId, shiftId);
-        if (employeeShift != null)
-        {
-          _context.EmployeeShifts.Remove(employeeShift);
-          await _context.SaveChangesAsync();
-        }
+      _context.EmployeeShifts.Remove(employeeShift);
+      await _context.SaveChangesAsync();
     }
+  }
 
-    public async Task<EmployeeShift?> GetEmployeeShiftByIds(int employeeId, int shiftId)
-    {
-      return await _context.EmployeeShifts.FirstOrDefaultAsync(
-        es => es.EmployeeId == employeeId && es.ShiftId == shiftId
-      );
-    }
+  public async Task<EmployeeShift?> GetEmployeeShiftByIds(int employeeId, int shiftId)
+  {
+    return await _context.EmployeeShifts.FirstOrDefaultAsync(
+      es => es.EmployeeId == employeeId && es.ShiftId == shiftId
+    );
+  }
+
+  public async Task<List<EmployeeShift>> GetLateEmployeesForShiftAsync(int shiftId)
+  {
+    return await _context.EmployeeShifts
+        .Include(es => es.Shift)
+        .Where(es => es.ShiftId == shiftId && es.ClockInTime > es.Shift!.StartTime)
+        .ToListAsync();
+  }
 }
