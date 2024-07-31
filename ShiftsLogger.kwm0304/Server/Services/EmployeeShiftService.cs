@@ -44,12 +44,19 @@ public class EmployeeShiftService : Service<EmployeeShift>, IEmployeeShiftServic
 
     public async Task<EmployeeShift> GetEmployeeShiftAsync(int employeeId, int shiftId)
     {
-        return await _employeeShiftRepository.GetEmployeeShiftByIds(employeeId, shiftId);
+        var emplopyeeShift = await _employeeShiftRepository.GetEmployeeShiftByIds(employeeId, shiftId)
+        ?? throw new NullReferenceException("Employee-shift not found");
+        return emplopyeeShift;
     }
 
-    public async Task<List<EmployeeShift>> GetLateEmployeesForShiftAsync(int shiftId)
+    public async Task<object> GetLateEmployeesForShiftAsync(int shiftId)
     {
-        return await _employeeShiftRepository.GetLateEmployeesForShiftAsync(shiftId);
+        var lateEmployees = await _employeeShiftRepository.GetLateEmployeesForShiftAsync(shiftId);
+        if (lateEmployees.Count == 0)
+        {
+            return new { Message = "No late employees found for this shift." };
+        }
+        return lateEmployees;
     }
 
     public async Task<EmployeeShift> UpdateEmployeeShiftAsync(int employeeId, int shiftId, EmployeeShiftDto employeeShiftDto)

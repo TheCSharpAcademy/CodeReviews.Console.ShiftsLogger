@@ -23,12 +23,8 @@ public class EmployeeShiftController : Controller<EmployeeShift>
     {
         try
         {
-            var employeeShift = await _employeeShiftService.GetEmployeeShiftAsync(employeeId, shiftId);
-            if (employeeShift == null)
-            {
-                return NotFound("EmployeeShift not found");
-            }
-            return Ok(employeeShift);
+            var result = await _employeeShiftService.GetEmployeeShiftAsync(employeeId, shiftId);
+            return Ok(result);
         }
         catch (Exception e)
         {
@@ -42,12 +38,8 @@ public class EmployeeShiftController : Controller<EmployeeShift>
     {
         try
         {
-            var lateEmployees = await _employeeShiftService.GetLateEmployeesForShiftAsync(shiftId);
-            if (lateEmployees.Count == 0)
-            {
-                return Ok(new { Message = "No late employees found for this shift." });
-            }
-            return Ok(lateEmployees);
+            var result = await _employeeShiftService.GetLateEmployeesForShiftAsync(shiftId);
+            return Ok(result);
         }
         catch (Exception e)
         {
