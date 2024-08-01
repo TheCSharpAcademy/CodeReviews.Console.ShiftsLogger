@@ -9,79 +9,49 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class ShiftController: ControllerBase {
     private readonly AppDbContext db;
+    private readonly ShiftService service; 
     public ShiftController(AppDbContext appDbContext)
     {
         db = appDbContext; 
+        service = new(db);
     }    
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GetShiftDto>>> GetShifts()
     {
-        var shifts = await db.Shifts.ToListAsync();
+        var shifts = await service.GetShiftsAsync();
 
-        return shifts.Select(s => new GetShiftDto {
-            Id = s.Id,
-            Name = s.Name,
-            StartTime = s.StartTime,
-            EndTime = s.EndTime,
-        }).ToList();
+        return Ok(shifts);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<GetShiftDto>> GetShift(int id)
     {
-        var shift = await db.Shifts.FindAsync(id);
+        var shift = await service.GetShiftById(id);
+
         if (shift == null) {
-            return NotFound(); 
+            return NotFound();
         }
 
-        return new GetShiftDto {
-            Id = shift.Id,
-            Name = shift.Name,
-            StartTime = shift.StartTime,
-            EndTime = shift.EndTime
-        };
+        return Ok(shift);
     }
 
     [HttpPost]
     public async Task<ActionResult<GetShiftDto>> PostShift(PostShiftDto dto)
     {
-        var shift = new Shift {
-            Name = dto.Name,
-            StartTime = dto.StartTime,
-            EndTime = dto.EndTime,
-            WorkerShifts = []
-        };
+        var createdShift = await service.CreateShift(dto); 
 
-        db.Shifts.Add(shift);
-        await db.SaveChangesAsync();
-
-        var returnDto = new GetShiftDto {
-            Id = shift.Id,
-            Name = shift.Name,
-            StartTime = shift.StartTime,
-            EndTime = shift.EndTime,
-        };
-
-        return CreatedAtAction("GetShift", new { id = shift.Id }, returnDto); 
+        return CreatedAtAction("GetShift", new { id = createdShift.Id }, createdShift); 
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> PutShift(int id, PutShiftDto dto)
     {
-        var shift = await db.Shifts.FindAsync(id);
-
-        if (shift == null)
-        {
+        var shift = await service.FindShift(id);
+        if (shift == null) {
             return NotFound();
         }
-
-        shift.Name = dto.Name;
-        shift.StartTime = dto.StartTime;
-        shift.EndTime = dto.EndTime;
-
-        db.Entry(shift).State = EntityState.Modified;
-        await db.SaveChangesAsync();
+        await service.UpdateShift(shift, dto);
 
         return NoContent();
     }
@@ -89,14 +59,13 @@ public class ShiftController: ControllerBase {
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteShift(int id)
     {
-        var shift = await db.Shifts.FindAsync(id);
+        var shift = await service.FindShift(id);
         if (shift == null)
         {
             return NotFound();
         }
 
-        db.Shifts.Remove(shift);
-        await db.SaveChangesAsync();
+        await service.DeleteShift(shift);
 
         return NoContent();
     }

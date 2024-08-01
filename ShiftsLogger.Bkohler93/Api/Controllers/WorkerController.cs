@@ -8,96 +8,64 @@ namespace Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class WorkerController: ControllerBase {
-    private readonly AppDbContext db;
+    private readonly WorkerService service; 
     public WorkerController(AppDbContext appDbContext)
     {
-        db = appDbContext; 
+        service = new(appDbContext);
     }    
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GetWorkerDto>>> GetWorkers()
     {
-        var workers = await db.Workers.ToListAsync();
+        var workers = await service.GetWorkers();
 
-        return workers.Select(w => new GetWorkerDto{
-            Id = w.Id,
-            FirstName = w.FirstName,
-            LastName = w.LastName,
-            Position = w.Position,
-        }).ToList();
+        return Ok(workers);     
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<GetWorkerDto>> GetWorker(int id)
     {
-        var worker = await db.Workers.FindAsync(id);
+        var worker = await service.GetWorkerById(id);
 
         if (worker == null) {
-            return NotFound(); 
-        }
+            return NotFound();
+        } 
 
-        return new GetWorkerDto{
-            Id = worker.Id,
-            FirstName = worker.FirstName,
-            LastName = worker.LastName,
-            Position = worker.Position
-        };
+        return worker;
     }
 
     [HttpPost]
     public async Task<ActionResult<GetWorkerDto>> PostWorker(PostWorkerDto dto)
     {
-        var worker = new Worker {
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            Position = dto.Position,
-            WorkerShifts = [],
-        };
+        var worker = await service.CreateWorker(dto); 
 
-        db.Workers.Add(worker);
-        await db.SaveChangesAsync();
-
-        var returnDto = new GetWorkerDto{
-            Id = worker.Id,
-            FirstName = worker.FirstName,
-            LastName = worker.LastName,
-            Position = worker.Position,
-        };
-
-        return CreatedAtAction("GetWorker", new { id = worker.Id }, returnDto); 
+        return CreatedAtAction("GetWorker", new { id = worker.Id }, worker); 
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> PutWorker(int id, PutWorkerDto dto)
     {
-        var worker = await db.Workers.FindAsync(id);
+        var worker = await service.FindWorker(id);
 
         if (worker == null)
         {
             return NotFound();
         }
 
-        worker.FirstName = dto.FirstName;
-        worker.LastName = dto.LastName;
-        worker.Position = dto.Position;
-
-        db.Entry(worker).State = EntityState.Modified;
-        await db.SaveChangesAsync();
-
+        await service.UpdateWorker(dto, worker); 
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteWorker(int id)
     {
-        var worker = await db.Workers.FindAsync(id);
+        var worker = await service.FindWorker(id);
         if (worker == null)
         {
             return NotFound();
         }
 
-        db.Workers.Remove(worker);
-        await db.SaveChangesAsync();
+        await service.DeleteWorker(worker); 
 
         return NoContent();
     }
