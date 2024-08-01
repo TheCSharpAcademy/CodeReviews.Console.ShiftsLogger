@@ -9,4 +9,14 @@ public class EmployeeShiftApi(HttpClient http) : IBaseApi<EmployeeShift>(http, "
         throw new NotImplementedException();
     }
 
+    internal async Task<List<EmployeeShift>> GetLateEmployees(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal async Task<List<EmployeeShift>> GetShiftEmployees(int shiftId)
+    {
+        throw new NotImplementedException();
+    }
+
 }

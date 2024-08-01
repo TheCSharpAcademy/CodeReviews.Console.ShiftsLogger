@@ -44,8 +44,8 @@ public class EmployeeHandler
   {
     string name = StringPrompt.GetAndConfirmResponse<string>("What is the employees name?");
     double pay = StringPrompt.GetAndConfirmResponse<double>("What do they get paid per hour?");
-    List<ShiftClassification> shifts = [ShiftClassification.First, ShiftClassification.Second, ShiftClassification.Third];
-    ShiftClassification shift = SelectionMenus.SelectShift(shifts);
+
+    ShiftClassification shift = SelectionMenus.SelectShiftClassification();
     Employee employee = new()
     {
       Name = name,
@@ -81,27 +81,59 @@ public class EmployeeHandler
         await HandleEdit(editOption, employee);
         break;
       case "Delete employee":
+        await HandleDelete(employee);
         break;
       case "Back":
         return;
       default:
         return;
     }
-
   }
 
-    private async Task HandleEdit(string editOption, Employee employee)
+  private async Task HandleDelete(Employee employee)
+  {
+    bool confirm = AnsiConsole.Confirm($"Are you sure you want to delete {employee.Name}?");
+    if (confirm)
     {
-      switch (editOption)
-      {
-        case "Name":
+      await _api.DeleteByIdAsync(employee.EmployeeId);
+      return;
+    }
+  }
+
+  private async Task HandleEdit(string editOption, Employee employee)
+  {
+    var table = new Table()
+    .Title("Current Employee Attributes")
+    .Centered();
+    table.AddColumns("Id", "Name", "Shift", "Pay/hr.");
+    table.AddRow(employee.EmployeeId.ToString(), employee.Name!, employee.ShiftAssignment.ToString(), "$" + employee.PayRate.ToString());
+    AnsiConsole.Write(table);
+
+    switch (editOption)
+    {
+      case "Name":
         string name = StringPrompt.GetAndConfirmResponse<string>("What would you like to change their name to?");
         employee.Name = name;
         break;
-      }
+      case "Shift":
+        ShiftClassification classification = SelectionMenus.SelectShiftClassification();
+        employee.ShiftAssignment = classification;
+        break;
+      case "Pay":
+        double pay = StringPrompt.GetAndConfirmResponse<double>("What would you like to change the pay rate to?");
+        employee.PayRate = pay;
+        break;
+      case "Back":
+        return;
+      default:
+        return;
     }
+    int id = employee.EmployeeId;
+    await _api.UpdateAsync(id, employee);
+    return;
+  }
 
-    private async Task HandleViewPay(string payOption, Employee employee)
+  private async Task HandleViewPay(string payOption, Employee employee)
   {
     double pay = await _api.GetEmployeePayForRange(payOption);
     AnsiConsole.MarkupLine($"{employee.Name} pay for {payOption}: ${pay}");
@@ -109,7 +141,7 @@ public class EmployeeHandler
     Console.ReadKey(true);
   }
 
-  private void ShowEmployeeShiftsTable(List<EmployeeShift> empShifts, Employee employee)
+  private static void ShowEmployeeShiftsTable(List<EmployeeShift> empShifts, Employee employee)
   {
     BaseTable<EmployeeShift> table = new($"Shifts for {employee.Name}", empShifts);
     table.Show();

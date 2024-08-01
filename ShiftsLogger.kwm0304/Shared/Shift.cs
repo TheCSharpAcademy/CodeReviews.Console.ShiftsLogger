@@ -5,8 +5,8 @@ namespace Shared;
 public class Shift
 {
   public int ShiftId { get; set; }
-  public DateTime StartTime { get; private set; }
-  public DateTime EndTime { get; private set; }
+  public DateTime StartTime { get;  set; }
+  public DateTime EndTime { get;  set; }
   public ShiftClassification _classification;
   public List<EmployeeShift>? EmployeeShifts { get; set; }
   public ShiftClassification Classification

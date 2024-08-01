@@ -26,8 +26,9 @@ public class SelectionMenus
     return menu.Show()!;
   }
 
-  public static ShiftClassification SelectShift(List<ShiftClassification> shifts)
+  public static ShiftClassification SelectShiftClassification()
   {
+    List<ShiftClassification> shifts = [ShiftClassification.First, ShiftClassification.Second, ShiftClassification.Third];
     var menu = new BasePrompt<ShiftClassification>("What shift would you like to assign?", shifts);
     return menu.Show();
   }
@@ -78,6 +79,20 @@ public class SelectionMenus
   {
     var menuOptions = new List<string>{"Name", "Shift", "Pay", "Back"};
     var menu = new BasePrompt<string>("What attribute would you like to edit?", menuOptions);
+    return menu.Show()!;
+  }
+
+  public static string ShiftEditSelection()
+  {
+    var menuOptions = new List<string>{"Start Time", "End Time", "Back"};
+    var menu = new BasePrompt<string>("What shift attribute would you like to edit?", menuOptions);
+    return menu.Show()!;
+  }
+
+  public static string SelectTimeChange(string input)
+  {
+    var options = new List<string> {"Sooner", "Later"};
+    var menu = new BasePrompt<string>($"Do yout want to move {input} time sooner or later?", options);
     return menu.Show()!;
   }
 }
