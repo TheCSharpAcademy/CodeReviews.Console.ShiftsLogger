@@ -66,6 +66,7 @@ public class ShiftHandler
       Console.WriteLine("Shift addition cancelled.");
     }
   }
+
   private async Task HandleViewShifts()
   {
     List<Shift> shifts = await _api.GetAllAsync();
@@ -106,13 +107,7 @@ public class ShiftHandler
 
   private async Task HandleEditShift(string option, Shift shift)
   {
-    var table = new Table()
-    .Title("Current Shift Attributes")
-    .Centered();
-    table.AddColumns("Id", "Classification", "Start Time", "End Time");
-    table.AddRow(shift.ShiftId.ToString(), shift.Classification.ToString(), shift.StartTime.ToString("yyyy-MM-dd hh:mm:ss"), shift.EndTime.ToString("yyyy-MM-dd hh:mm:ss"));
-    AnsiConsole.Write(table);
-
+    Tables.ShowShiftDetails(shift);
     switch (option)
     {
       case "Start Time":
@@ -153,18 +148,12 @@ public class ShiftHandler
   private async Task HandleViewLate(int id)
   {
     List<EmployeeShift> late = await _employeeShiftApi.GetLateEmployees(id);
-    BaseTable<EmployeeShift> table = new($"All late employees for shift {id}", late);
-    table.Show();
-    AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
-    Console.ReadKey(true);
+    Tables.ShowEmployeesForShift($"All late employees for shift {id}", late);
   }
 
   private async Task HandleViewEmployeeShifts(int shiftId)
   {
     List<EmployeeShift> employees = await _employeeShiftApi.GetShiftEmployees(shiftId);
-    BaseTable<EmployeeShift> table = new($"All employees for shift {shiftId}", employees);
-    table.Show();
-    AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
-    Console.ReadKey(true);
+    Tables.ShowEmployeesForShift($"All employees for shift {shiftId}", employees);
   }
 }

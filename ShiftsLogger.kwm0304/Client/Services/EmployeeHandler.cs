@@ -70,7 +70,7 @@ public class EmployeeHandler
     {
       case "View all shifts for employee":
         List<EmployeeShift> empShifts = await _employeeShiftApi.GetEmployeeShiftByIds();
-        ShowEmployeeShiftsTable(empShifts, employee);
+        Tables.ShowEmployeesForShift($"Shifts for {employee.Name}", empShifts);
         break;
       case "View employees pay":
         string payOption = SelectionMenus.SelectEmployeePayRange();
@@ -102,13 +102,7 @@ public class EmployeeHandler
 
   private async Task HandleEdit(string editOption, Employee employee)
   {
-    var table = new Table()
-    .Title("Current Employee Attributes")
-    .Centered();
-    table.AddColumns("Id", "Name", "Shift", "Pay/hr.");
-    table.AddRow(employee.EmployeeId.ToString(), employee.Name!, employee.ShiftAssignment.ToString(), "$" + employee.PayRate.ToString());
-    AnsiConsole.Write(table);
-
+    Tables.ShowEmployeeDetails(employee);
     switch (editOption)
     {
       case "Name":
@@ -137,14 +131,6 @@ public class EmployeeHandler
   {
     double pay = await _api.GetEmployeePayForRange(payOption);
     AnsiConsole.MarkupLine($"{employee.Name} pay for {payOption}: ${pay}");
-    AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
-    Console.ReadKey(true);
-  }
-
-  private static void ShowEmployeeShiftsTable(List<EmployeeShift> empShifts, Employee employee)
-  {
-    BaseTable<EmployeeShift> table = new($"Shifts for {employee.Name}", empShifts);
-    table.Show();
     AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
     Console.ReadKey(true);
   }
