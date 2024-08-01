@@ -2,6 +2,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Api.Models.Dtos;
 
+# pragma warning disable CS1591
 public class PostWorkerShiftDto {
     public int WorkerId { get; set; }
     public int ShiftId { get; set; }
@@ -26,3 +27,4 @@ public class GetWorkerShiftDto {
     public required GetWorkerDto Worker { get; set; }
     public required GetShiftDto Shift { get; set; }
 }
+# pragma warning restore CS1591

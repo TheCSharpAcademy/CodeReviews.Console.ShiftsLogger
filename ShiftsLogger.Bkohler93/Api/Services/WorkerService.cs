@@ -2,6 +2,7 @@ using Api.Data.Entities;
 using Api.Models.Dtos;
 using Microsoft.EntityFrameworkCore;
 
+# pragma warning disable CS1591
 public class WorkerService {
     private readonly AppDbContext db;
     public WorkerService(AppDbContext dbContext)
@@ -78,3 +79,4 @@ public class WorkerService {
         await db.SaveChangesAsync();
     }    
 }
+# pragma warning restore CS1591

@@ -2,6 +2,7 @@ using Api.Data.Entities;
 using Api.Models.Dtos;
 using Microsoft.EntityFrameworkCore;
 
+# pragma warning disable CS1591
 public class ShiftService {
     private readonly AppDbContext db;
     public ShiftService(AppDbContext dbContext)
@@ -79,3 +80,4 @@ public class ShiftService {
         await db.SaveChangesAsync();
     }
 }
+# pragma warning restore CS1591

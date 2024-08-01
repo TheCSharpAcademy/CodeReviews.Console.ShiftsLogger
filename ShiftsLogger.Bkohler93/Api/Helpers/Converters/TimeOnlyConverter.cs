@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Api.Helpers;
 
+# pragma warning disable CS1591
 public class TimeOnlyJsonConverter : JsonConverter<TimeOnly>
 {
     private const string TimeFormat = "HH:mm";
@@ -27,3 +28,4 @@ public class TimeOnlyJsonConverter : JsonConverter<TimeOnly>
         writer.WriteStringValue(value.ToString(TimeFormat));
     }
 }
+# pragma warning restore CS1591
