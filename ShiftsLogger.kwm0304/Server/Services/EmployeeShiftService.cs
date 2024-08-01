@@ -2,6 +2,7 @@ using Shared;
 using Server.Models.Dtos;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;
+using Spectre.Console;
 
 namespace Server.Services;
 
@@ -42,6 +43,22 @@ public class EmployeeShiftService : Service<EmployeeShift>, IEmployeeShiftServic
         }
     }
 
+    public async Task<List<EmployeeShift>> GetEmployeesForShiftAsync(int shiftId)
+    {
+        if (shiftId <= 0)
+            throw new ArgumentOutOfRangeException(nameof(shiftId), "Employee ID must be greater than zero.");
+        try
+        {
+            var employeeShifts = await _employeeShiftRepository.GetEmployeesForShiftAsync(shiftId);
+            return employeeShifts ?? ([]);
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.WriteException(e);
+            throw new ApplicationException("An error occurred while retrieving employee shifts.", e);
+        }
+    }
+
     public async Task<EmployeeShift> GetEmployeeShiftAsync(int employeeId, int shiftId)
     {
         var emplopyeeShift = await _employeeShiftRepository.GetEmployeeShiftByIds(employeeId, shiftId)
@@ -58,6 +75,23 @@ public class EmployeeShiftService : Service<EmployeeShift>, IEmployeeShiftServic
         }
         return lateEmployees;
     }
+
+    public async Task<List<EmployeeShift>> GetShiftsForEmployeeAsync(int employeeId)
+    {
+        if (employeeId <= 0)
+            throw new ArgumentOutOfRangeException(nameof(employeeId), "Employee ID must be greater than zero.");
+        try
+        {
+            var employeeShifts = await _employeeShiftRepository.GetShiftsForEmployeeAsync(employeeId);
+            return employeeShifts ?? ([]);
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.WriteException(e);
+            throw new ApplicationException("An error occurred while retrieving employee shifts.", e);
+        }
+    }
+
 
     public async Task<EmployeeShift> UpdateEmployeeShiftAsync(int employeeId, int shiftId, EmployeeShiftDto employeeShiftDto)
     {

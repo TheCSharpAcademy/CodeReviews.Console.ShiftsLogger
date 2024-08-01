@@ -69,7 +69,8 @@ public class EmployeeHandler
     switch (choice)
     {
       case "View all shifts for employee":
-        List<EmployeeShift> empShifts = await _employeeShiftApi.GetEmployeeShiftByIds();
+      int id = employee.EmployeeId;
+        List<EmployeeShift> empShifts = await _employeeShiftApi.GetEmployeeShiftByIds(id);
         Tables.ShowEmployeesForShift($"Shifts for {employee.Name}", empShifts);
         break;
       case "View employees pay":

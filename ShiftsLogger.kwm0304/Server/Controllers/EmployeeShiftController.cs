@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Server.Models.Dtos;
 using Server.Services.Interfaces;
@@ -7,7 +8,7 @@ using Spectre.Console;
 namespace Server.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/employee-shift")]
 public class EmployeeShiftController : Controller<EmployeeShift>
 {
     private readonly IEmployeeShiftService _employeeShiftService;
@@ -19,11 +20,41 @@ public class EmployeeShiftController : Controller<EmployeeShift>
     }
 
     [HttpGet("{employeeId}/{shiftId}")]
-    public async Task<IActionResult> GetEmployeeShift(int employeeId, int shiftId)
+    public async Task<IActionResult> GetEmployeeShift(int shiftId)
     {
         try
         {
-            var result = await _employeeShiftService.GetEmployeeShiftAsync(employeeId, shiftId);
+            var result = await _employeeShiftService.GetLateEmployeesForShiftAsync(shiftId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.WriteException(e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("shift/{shiftId}")]
+    public async Task<IActionResult> GetAllEmployeesOnShift(int shiftId)
+    {
+        try
+        {
+            var result = await _employeeShiftService.GetEmployeesForShiftAsync(shiftId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.WriteException(e);
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpGet("employee/{employeeId}")]
+    public async Task<IActionResult> GetAllShiftsForEmployee(int employeeId)
+    {
+        try
+        {
+            var result = await _employeeShiftService.GetShiftsForEmployeeAsync(employeeId);
             return Ok(result);
         }
         catch (Exception e)

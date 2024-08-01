@@ -153,7 +153,7 @@ public class ShiftHandler
 
   private async Task HandleViewEmployeeShifts(int shiftId)
   {
-    List<EmployeeShift> employees = await _employeeShiftApi.GetShiftEmployees(shiftId);
+    List<EmployeeShift> employees = await _employeeShiftApi.GetAllEmployeesOnShift(shiftId);
     Tables.ShowEmployeesForShift($"All employees for shift {shiftId}", employees);
   }
 }

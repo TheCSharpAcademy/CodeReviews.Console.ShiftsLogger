@@ -37,4 +37,17 @@ public class EmployeeShiftRepository : Repository<EmployeeShift>, IEmployeeShift
         .Where(es => es.ShiftId == shiftId && es.ClockInTime > es.Shift!.StartTime)
         .ToListAsync();
   }
+
+  public async Task<List<EmployeeShift>> GetShiftsForEmployeeAsync(int employeeId)
+  {
+    return await _context.Set<EmployeeShift>()
+    .Where(es => es.EmployeeId == employeeId)
+    .ToListAsync();
+  }
+  public async Task<List<EmployeeShift>> GetEmployeesForShiftAsync(int shiftId)
+  {
+    return await _context.Set<EmployeeShift>()
+    .Where(es => es.ShiftId == shiftId)
+    .ToListAsync();
+  }
 }
