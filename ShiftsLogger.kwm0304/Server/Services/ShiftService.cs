@@ -1,6 +1,6 @@
-using Server.Models;
 using Server.Repositories.Interfaces;
 using Server.Services.Interfaces;
+using Shared;
 
 namespace Server.Services;
 

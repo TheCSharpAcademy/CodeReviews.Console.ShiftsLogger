@@ -1,4 +1,4 @@
-using Server.Models;
+using Shared;
 
 namespace Server.Services.Interfaces;
 
