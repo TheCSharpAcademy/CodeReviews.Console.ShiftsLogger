@@ -9,9 +9,9 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class WorkerController: ControllerBase {
     private readonly WorkerService service; 
-    public WorkerController(AppDbContext appDbContext)
+    public WorkerController(WorkerService workerService)
     {
-        service = new(appDbContext);
+        service = workerService;
     }    
 
     [HttpGet]

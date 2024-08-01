@@ -8,12 +8,10 @@ namespace Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class ShiftController: ControllerBase {
-    private readonly AppDbContext db;
     private readonly ShiftService service; 
-    public ShiftController(AppDbContext appDbContext)
+    public ShiftController(ShiftService shiftService)
     {
-        db = appDbContext; 
-        service = new(db);
+        service = shiftService;
     }    
 
     [HttpGet]

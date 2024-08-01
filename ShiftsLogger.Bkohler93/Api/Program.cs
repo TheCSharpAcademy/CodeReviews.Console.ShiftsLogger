@@ -15,6 +15,9 @@ builder.Services.AddControllers().AddJsonOptions(options => {
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ShiftService>();
+builder.Services.AddScoped<WorkerService>();
+builder.Services.AddScoped<WorkerShiftService>();
 
 var app = builder.Build();
 

@@ -8,12 +8,10 @@ namespace Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class WorkerShiftController: ControllerBase {
-    private readonly AppDbContext db;
     private readonly WorkerShiftService service;
-    public WorkerShiftController(AppDbContext appDbContext)
+    public WorkerShiftController(WorkerShiftService workerShiftService)
     {
-        db = appDbContext; 
-        service = new(appDbContext);
+        service = workerShiftService;
     }    
 
     [HttpGet]
