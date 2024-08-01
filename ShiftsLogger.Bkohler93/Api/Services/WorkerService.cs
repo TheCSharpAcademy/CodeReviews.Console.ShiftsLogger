@@ -1,5 +1,5 @@
 using Api.Data.Entities;
-using Api.Models.Dtos;
+using Models;
 using Microsoft.EntityFrameworkCore;
 
 # pragma warning disable CS1591
