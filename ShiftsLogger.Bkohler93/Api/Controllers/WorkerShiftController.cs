@@ -39,7 +39,7 @@ public class WorkerShiftController: ControllerBase {
     /// <response code="404">If the worker shift was not found</response>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(GetWorkerShiftDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetWorkerShiftDto>> GetWorkerShift(int id)
     {
        var workerShift = await service.GetWorkerShift(id); 
@@ -70,7 +70,7 @@ public class WorkerShiftController: ControllerBase {
     /// </remarks>
     [HttpPost]
     [ProducesResponseType(typeof(WorkerShift), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<WorkerShift>> PostWorker(PostWorkerShiftDto dto)
     {
         var workerShift = await service.CreateWorkerShift(dto); 
@@ -98,8 +98,8 @@ public class WorkerShiftController: ControllerBase {
     ///     
     /// </remarks>
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutWorkerShift(int id, PutWorkerShiftDto dto)
     {
         var workerShift = await service.FindWorkerShiftEntity(id);
@@ -122,8 +122,8 @@ public class WorkerShiftController: ControllerBase {
     /// <response code="404">If the worker shift was not found</response>
     /// <response code="204">The worker was deleted</response>
     [HttpDelete("{id}")]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteWorkerShift(int id)
     {
         var workerShift = await service.FindWorkerShiftEntity(id);

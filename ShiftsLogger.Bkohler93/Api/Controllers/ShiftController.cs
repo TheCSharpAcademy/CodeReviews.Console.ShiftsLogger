@@ -38,7 +38,7 @@ public class ShiftController: ControllerBase {
     /// <response code="404">If shift not found</response>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(GetShiftDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Nullable),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetShiftDto>> GetShift(int id)
     {
         var shift = await service.GetShiftById(id);
@@ -70,7 +70,7 @@ public class ShiftController: ControllerBase {
     /// </remarks>
     [HttpPost]
     [ProducesResponseType(typeof(GetShiftDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(Nullable),StatusCodes.Status400BadRequest), ]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GetShiftDto>> PostShift(PostShiftDto dto)
     {
         var createdShift = await service.CreateShift(dto); 
@@ -87,6 +87,7 @@ public class ShiftController: ControllerBase {
     /// <response code="204">If the shift was updated</response>
     /// <response code="404">If the shift was not found</response>
     /// <remarks>
+    /// Sample request:
     /// 
     ///     PUT /api/shift/{id}
     ///     {
@@ -94,6 +95,7 @@ public class ShiftController: ControllerBase {
     ///         "startTime": "09:00",
     ///         "endTime": "15:00"
     ///     }
+    ///     
     /// </remarks>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]

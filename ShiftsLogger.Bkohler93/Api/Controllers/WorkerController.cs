@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using Api.Models.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,7 +37,7 @@ public class WorkerController: ControllerBase {
     /// <response code="200">Returns the worker</response>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(GetWorkerDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GetWorkerDto>> GetWorker(int id)
     {
         var worker = await service.GetWorkerById(id);
@@ -70,7 +69,7 @@ public class WorkerController: ControllerBase {
     /// </remarks>
     [HttpPost]
     [ProducesResponseType(typeof(GetWorkerDto), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GetWorkerDto>> PostWorker(PostWorkerDto dto)
     {
         var worker = await service.CreateWorker(dto); 
@@ -98,8 +97,8 @@ public class WorkerController: ControllerBase {
     ///     
     /// </remarks>
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutWorker(int id, PutWorkerDto dto)
     {
         var worker = await service.FindWorker(id);
@@ -121,8 +120,8 @@ public class WorkerController: ControllerBase {
     /// <response code="404">If the worker was not found</response>
     /// <response code="204">If the worker was deleted</response>
     [HttpDelete("{id}")]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Nullable), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteWorker(int id)
     {
         var worker = await service.FindWorker(id);
