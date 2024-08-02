@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Server.Services.Interfaces;
 using Spectre.Console;
@@ -64,10 +65,19 @@ public class Controller<T>(IService<T> service) : ControllerBase where T : class
   {
     try
     {
-      if (id != (entity as dynamic).Id)
+      PropertyInfo idProperty = typeof(T).GetProperties()
+      .FirstOrDefault(p => p.Name.EndsWith("Id", StringComparison.OrdinalIgnoreCase))!;
+
+      if (idProperty is null)
       {
-        return BadRequest();
+        return BadRequest("Id is null");
       }
+      int entityId = (int)idProperty.GetValue(entity)!;
+      if (id != entityId)
+      {
+        return BadRequest("Given doesn't match entities ID");
+      }
+      idProperty.SetValue(entity, id);
       await _service.UpdateAsync(entity);
       return Ok("Updated successfully");
     }
