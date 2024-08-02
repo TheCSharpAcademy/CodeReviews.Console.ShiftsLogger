@@ -197,40 +197,4 @@ public static class UI
         }
         AnsiConsole.Write(table);
     }
-
-    // public static void DisplayStackInfos(IEnumerable<StackInfoDto> stacks)
-    // {
-    //     var table = new Table();
-
-    //     string[] columns = ["ID", "Name"];
-    //     table.AddColumns(columns);
-
-    //     foreach (var stack in stacks)
-    //     {
-    //         table.AddRow(
-    //             stack.Id.ToString(),
-    //             stack.Name
-    //         );
-    //     }
-    //     AnsiConsole.Write(table);
-    // }
-    // public static void DisplayFlashcardInfos(IEnumerable<FlashcardInfoDto> flashcards)
-    // {
-    //     var table = new Table();
-    //     var count = 1;
-
-    //     string[] columns = ["#", "Front", "Back"];
-    //     table.AddColumns(columns);
-
-    //     foreach (var flashcard in flashcards)
-    //     {
-    //         table.AddRow(
-    //             count.ToString(),
-    //             flashcard.Front,
-    //             flashcard.Back
-    //         );
-    //         count++;
-    //     }
-    //     AnsiConsole.Write(table);
-    // }
 }

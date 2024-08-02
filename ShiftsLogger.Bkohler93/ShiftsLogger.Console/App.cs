@@ -1,7 +1,4 @@
-using System.Reflection.Metadata;
-using Microsoft.AspNetCore.Mvc;
 using ShiftsLogger.Controllers;
-using ShiftsLogger.Services;
 
 namespace ShiftsLogger;
 
