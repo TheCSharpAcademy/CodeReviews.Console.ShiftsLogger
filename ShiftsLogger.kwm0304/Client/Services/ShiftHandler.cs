@@ -7,18 +7,17 @@ using Spectre.Console;
 
 namespace Client.Services;
 
-public class ShiftHandler
+public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi)
 {
-  private readonly ShiftApi _api;
-  private readonly EmployeeShiftApi _employeeShiftApi;
+  private readonly ShiftApi _api = api;
+  private readonly EmployeeShiftApi _employeeShiftApi = employeeShiftApi;
 
-  public ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi)
+    public async Task HandleShiftChoice()
   {
-    _api = api;
-    _employeeShiftApi = employeeShiftApi;
-  }
-  public async Task HandleShiftChoice()
-  {
+    bool running = true;
+
+    while (running)
+    {
       string choice = SelectionMenus.ShiftMenu();
       switch (choice)
       {
@@ -29,9 +28,12 @@ public class ShiftHandler
           await HandleViewShifts();
           break;
         case "Back":
+          running = false;
           break;
         default:
+          running = false;
           break;
+      }
     }
   }
 

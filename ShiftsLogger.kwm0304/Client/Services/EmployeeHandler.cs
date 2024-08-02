@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Client.Api;
 using Client.Utils;
 using Client.Views;
@@ -8,37 +7,31 @@ using Spectre.Console;
 
 namespace Client.Services
 {
-  public class EmployeeHandler
-  {
-    private readonly EmployeeApi _api;
-    private readonly EmployeeShiftApi _employeeShiftApi;
-
-    public EmployeeHandler(EmployeeApi api, EmployeeShiftApi employeeShiftApi)
+  public class EmployeeHandler(EmployeeApi api, EmployeeShiftApi employeeShiftApi)
     {
-      _api = api;
-      _employeeShiftApi = employeeShiftApi;
-    }
+    private readonly EmployeeApi _api = api;
+    private readonly EmployeeShiftApi _employeeShiftApi = employeeShiftApi;
 
-    public async Task HandleEmployeeChoice()
+        public async Task HandleEmployeeChoice()
     {
-
-      string choice = SelectionMenus.EmployeeMenu();
-      switch (choice)
+      bool running = true;
+      while (running)
       {
-        case "Add employee":
-          await HandleAddEmployee();
-          break;
-        case "View employees":
-          await HandleViewEmployees();
-
-          break;
-        case "Back":
-          
-          break;
-        default:
-         
-          break;
-
+        string choice = SelectionMenus.EmployeeMenu();
+        switch (choice)
+        {
+          case "Add employee":
+            await HandleAddEmployee();
+            break;
+          case "View employees":
+            await HandleViewEmployees();
+            break;
+          case "Back":
+            running = false;
+            break;
+          default:
+            break;
+        }
       }
     }
 
@@ -55,33 +48,36 @@ namespace Client.Services
     {
       List<Employee> employees = await _api.GetAllAsync();
       Employee employee = SelectionMenus.SelectEmployee(employees);
-      string choice = SelectionMenus.EmployeeOptionsMenu();
-      await HandleEmployeeAction(employee, choice);
+      bool running = true;
+      while (running)
+      {
+        string choice = SelectionMenus.EmployeeOptionsMenu();
+        running = await HandleEmployeeAction(employee, choice);
+      }
     }
 
-    private async Task HandleEmployeeAction(Employee employee, string choice)
+    private async Task<bool> HandleEmployeeAction(Employee employee, string choice)
     {
       switch (choice)
       {
         case "View all shifts for employee":
           List<EmployeeShift> empShifts = await _employeeShiftApi.GetEmployeeShiftByIds(employee.EmployeeId);
           Tables.EmployeeShiftsTable($"Shifts for {employee.Name}", employee.Name!, empShifts);
-          break;
-        case "View employee's pay":
-          string payOption = SelectionMenus.SelectEmployeePayRange();
-          await HandleViewPay(payOption, employee);
-          break;
+          return true;
+        case "View employees pay":
+          await HandleViewPay(employee);
+          return true;
         case "Edit employee attributes":
           string editOption = SelectionMenus.EmployeeEditSelection();
           await HandleEdit(editOption, employee);
-          break;
+          return true;
         case "Delete employee":
           await HandleDelete(employee);
-          break;
+          return true;
         case "Back":
-          break;
+          return false;
         default:
-          break;
+          return true;
       }
     }
 
@@ -119,10 +115,21 @@ namespace Client.Services
       await _api.UpdateAsync(employee.EmployeeId, employee);
     }
 
-    private async Task HandleViewPay(string payOption, Employee employee)
+    private async Task HandleViewPay(Employee employee)
     {
-      double pay = await _api.GetEmployeePayForRange(payOption);
-      AnsiConsole.MarkupLine($"{employee.Name} pay for {payOption}: ${pay}");
+      var payRate = employee.PayRate;
+      var shifts = await _employeeShiftApi.GetEmployeeShiftByIds(employee.EmployeeId);
+      var firstWorked = shifts.Min(s => s.ClockInTime).Date;
+      var lastWorked = shifts.Max(s => s.ClockOutTime).Date;
+      var totalWorked = (lastWorked - firstWorked).TotalDays + 1;
+      var totalWeeks = totalWorked / 7;
+      var totalMonths = totalWorked / 30.44;
+      var totalHours = shifts.Aggregate(0.0, (total, shift) => total + (shift.ClockOutTime - shift.ClockInTime).TotalHours);
+      var totalPay = totalHours * payRate;
+      var payPerWeek = totalPay / totalWeeks;
+      var payPerMonth = totalPay / totalMonths;
+      var payPerYear = payPerWeek * 52;
+      AnsiConsole.MarkupLine($"{employee.Name}'s pay:\n Year: ${payPerYear:F2} \n Month: ${payPerMonth:F2} \n Week: ${payPerWeek:F2}");
       AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
       Console.ReadKey(true);
     }

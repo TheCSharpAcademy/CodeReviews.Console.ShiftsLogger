@@ -39,4 +39,8 @@ public class Shift
         break;
     }
   }
+    public override string ToString()
+    {
+        return $"Id: {ShiftId} | StartedOn: {StartTime:yyyy-MM-dd HH:mm:ss} | EndedOn: {EndTime:yyyy-MM-dd HH:mm:ss} | Classification: {Classification}";
+    }
 }

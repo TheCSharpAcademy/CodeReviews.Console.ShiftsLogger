@@ -66,4 +66,20 @@ public class Tables
         AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
         Console.ReadKey(true);
     }
+
+    public static void AllShiftsTable(string title, List<Shift> shifts)
+    {
+        var table = new Table()
+        .Title(title)
+        .Border(TableBorder.Markdown)
+        .BorderStyle(new Style(foreground: Color.DarkCyan, decoration: Decoration.Bold));
+        table.AddColumns("ShiftId", "Started On", "Ended On", "Classification");
+        foreach (var shift in shifts)
+        {
+            table.AddRow(shift.ShiftId.ToString(), shift.StartTime.ToString("yyyy-MM-dd HH:mm:ss"), shift.EndTime.ToString("yyyy-MM-dd HH:mm:ss"), shift.Classification.ToString());
+        }
+        AnsiConsole.Write(table);
+        AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
+        Console.ReadKey(true);
+    }
 }

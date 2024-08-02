@@ -50,4 +50,5 @@ public class EmployeeShiftRepository : Repository<EmployeeShift>, IEmployeeShift
     .Where(es => es.ShiftId == shiftId)
     .ToListAsync();
   }
+  
 }

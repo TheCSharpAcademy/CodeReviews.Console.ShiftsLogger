@@ -20,12 +20,6 @@ public class SelectionMenus
     return menu.Show()!;
   }
 
-  public static EmployeeShift SelectEmployeeShift(List<EmployeeShift> employeeShifts)
-  {
-    var menu = new BasePrompt<EmployeeShift>("Select an employee-shift to view details", employeeShifts);
-    return menu.Show()!;
-  }
-
   public static ShiftClassification SelectShiftClassification()
   {
     List<ShiftClassification> shifts = [ShiftClassification.First, ShiftClassification.Second, ShiftClassification.Third];
@@ -35,7 +29,7 @@ public class SelectionMenus
 
   public static string MainMenu()
   {
-    var menuOptions = new List<string> { "View employees", "View shifts", "Exit" };
+    var menuOptions = new List<string> { "Employees", "Shifts", "Exit" };
     var menu = new BasePrompt<string>(genericPrompt, menuOptions);
     return menu.Show()!;
   }
@@ -65,13 +59,6 @@ public class SelectionMenus
   {
     var menuOptions = new List<string> { "View all employees on shift", "View late employees on shift", "Edit shift attributes", "Delete shift", "Back" };
     var menu = new BasePrompt<string>(genericPrompt, menuOptions);
-    return menu.Show()!;
-  }
-
-  public static string SelectEmployeePayRange()
-  {
-    var menuOptions = new List<string> {"Day", "Week", "Month", "Year"};
-    var menu = new BasePrompt<string>("What pay range do you want to view?", menuOptions);
     return menu.Show()!;
   }
 

@@ -16,31 +16,40 @@ public class AppSession
   }
   public async Task OnStart()
   {
-
-    string choice = SelectionMenus.MainMenu();
-    await HandleMainMenuChoice(choice);
-
+    bool running = true;
+    while (running)
+    {
+      Console.Clear();
+      AnsiConsole.WriteLine(@"
+ _______  __   __  ___   _______  _______    ___      _______  _______  _______  _______  ______   
+|       ||  | |  ||   | |       ||       |  |   |    |       ||       ||       ||       ||    _ |  
+|  _____||  |_|  ||   | |    ___||_     _|  |   |    |   _   ||    ___||    ___||    ___||   | ||  
+| |_____ |       ||   | |   |___   |   |    |   |    |  | |  ||   | __ |   | __ |   |___ |   |_||_ 
+|_____  ||       ||   | |    ___|  |   |    |   |___ |  |_|  ||   ||  ||   ||  ||    ___||    __  |
+ _____| ||   _   ||   | |   |      |   |    |       ||       ||   |_| ||   |_| ||   |___ |   |  | |
+|_______||__| |__||___| |___|      |___|    |_______||_______||_______||_______||_______||___|  |_|
+");
+      string choice = SelectionMenus.MainMenu();
+      running = await HandleMainMenuChoice(choice);
+    }
   }
 
-  private async Task HandleMainMenuChoice(string choice)
+  private async Task<bool> HandleMainMenuChoice(string choice)
   {
-    while (true)
-    {
       switch (choice)
       {
-        case "View employees":
+        case "Employees":
           await _employeeHandler.HandleEmployeeChoice();
-          break;
-        case "View shifts":
+          return true;
+        case "Shifts":
           await _shiftHandler.HandleShiftChoice();
-          break;
+          return true;
         case "Exit":
           AnsiConsole.WriteLine("Goodbye!");
           Environment.Exit(0);
-          break;
+          return false;
         default:
-          break;
-      }
+          return true;
     }
   }
 }
