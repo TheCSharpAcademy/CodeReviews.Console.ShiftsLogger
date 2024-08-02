@@ -32,4 +32,38 @@ public class Tables
         AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
         Console.ReadKey(true);
     }
+
+    public static void EmployeeShiftsTable(string title, string name, List<EmployeeShift> shifts)
+    {
+        if (shifts == null || shifts.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[bold red]No shifts to display.[/]");
+            AnsiConsole.MarkupLine("[bold blue]Press any key to continue...[/]");
+            Console.ReadKey(true);
+            return;
+        }
+        var table = new Table()
+            .Title(title)
+            .Border(TableBorder.Markdown)
+            .BorderStyle(new Style(foreground: Color.DarkCyan, decoration: Decoration.Bold));
+        table.AddColumns("EmployeeId", "Employee", "ShiftId", "Started On", "Ended On", "Hours worked");
+        foreach (var shift in shifts)
+        {
+            if (shift == null)
+            {
+                continue;
+            }
+            double hoursWorked = (shift.ClockOutTime - shift.ClockInTime).TotalHours;
+            table.AddRow(
+                shift.EmployeeId.ToString(),
+                name,
+                shift.ShiftId.ToString(),
+                shift.ClockInTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                shift.ClockOutTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                hoursWorked.ToString());
+        }
+        AnsiConsole.Write(table);
+        AnsiConsole.MarkupLine("[bold blue]Press any key to exit..[/]");
+        Console.ReadKey(true);
+    }
 }

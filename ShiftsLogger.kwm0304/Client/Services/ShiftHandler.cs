@@ -10,19 +10,15 @@ namespace Client.Services;
 public class ShiftHandler
 {
   private readonly ShiftApi _api;
-  private readonly HttpClient _http;
   private readonly EmployeeShiftApi _employeeShiftApi;
-  public ShiftHandler(HttpClient http)
+
+  public ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi)
   {
-    _http = http;
-    _api = new(_http);
-    _employeeShiftApi = new(_http);
+    _api = api;
+    _employeeShiftApi = employeeShiftApi;
   }
   public async Task HandleShiftChoice()
   {
-    bool running = true;
-    while (running)
-    {
       string choice = SelectionMenus.ShiftMenu();
       switch (choice)
       {
@@ -33,12 +29,9 @@ public class ShiftHandler
           await HandleViewShifts();
           break;
         case "Back":
-          running = false;
-          return;
+          break;
         default:
-          running = false;
-          return;
-      }
+          break;
     }
   }
 
@@ -107,25 +100,31 @@ public class ShiftHandler
 
   private async Task HandleEditShift(string option, Shift shift)
   {
-    Tables.ShowShiftDetails(shift);
-    switch (option)
+    bool running = true;
+    while (running)
     {
-      case "Start Time":
-        int startChange = ChangeTime("start");
-        shift.StartTime = shift.StartTime.AddHours(startChange);
-        break;
-      case "End Time":
-        int endChange = ChangeTime("end");
-        shift.EndTime = shift.EndTime.AddHours(endChange);
-        break;
-      case "Back":
-        return;
-      default:
-        return;
+      Tables.ShowShiftDetails(shift);
+      switch (option)
+      {
+        case "Start Time":
+          int startChange = ChangeTime("start");
+          shift.StartTime = shift.StartTime.AddHours(startChange);
+          break;
+        case "End Time":
+          int endChange = ChangeTime("end");
+          shift.EndTime = shift.EndTime.AddHours(endChange);
+          break;
+        case "Back":
+          running = false;
+          return;
+        default:
+          running = false;
+          return;
+      }
+      int id = shift.ShiftId;
+      await _api.UpdateAsync(id, shift);
+      return;
     }
-    int id = shift.ShiftId;
-    await _api.UpdateAsync(id, shift);
-    return;
   }
 
   private static int ChangeTime(string input)
@@ -147,6 +146,7 @@ public class ShiftHandler
 
   private async Task HandleViewLate(int id)
   {
+
     List<EmployeeShift> late = await _employeeShiftApi.GetLateEmployees(id);
     Tables.ShowEmployeesForShift($"All late employees for shift {id}", late);
   }

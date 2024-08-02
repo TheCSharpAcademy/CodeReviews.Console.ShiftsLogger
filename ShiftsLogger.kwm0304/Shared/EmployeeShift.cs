@@ -10,4 +10,5 @@ public class EmployeeShift
 
   public DateTime ClockInTime { get; set; }
   public DateTime ClockOutTime { get; set; }
+  
 }

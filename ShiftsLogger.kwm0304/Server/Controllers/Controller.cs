@@ -51,7 +51,7 @@ public class Controller<T>(IService<T> service) : ControllerBase where T : class
     try
     {
       await _service.AddAsync(entity);
-      return CreatedAtAction(nameof(GetById), new { id = (entity as dynamic).Id }, entity);
+      return Ok(entity);
     }
     catch (Exception e)
     {
