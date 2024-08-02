@@ -6,8 +6,8 @@ namespace Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ShiftController : Controller<Shift>
+public class ShiftsController : Controller<Shift>
 {
-    public ShiftController(IService<Shift> service) : base(service)
+    public ShiftsController(IService<Shift> service) : base(service)
     {}
 }

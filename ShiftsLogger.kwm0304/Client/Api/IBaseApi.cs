@@ -7,7 +7,7 @@ public class IBaseApi<T> where T : class
 {
   private readonly HttpClient _http;
   private readonly string _endpoint;
-
+private const string baseUrl = "https://localhost:7066/api";
   public IBaseApi(HttpClient http, string endpoint)
   {
     _http = http;
@@ -29,7 +29,8 @@ public class IBaseApi<T> where T : class
 
   public async Task<List<T>> GetAllAsync()
   {
-    return await _http.GetFromJsonAsync<List<T>>(_endpoint) ?? [];
+    
+    return await _http.GetFromJsonAsync<List<T>>(baseUrl + _endpoint) ?? [];
   }
 
   public async Task<T> GetByIdAsync(int id)

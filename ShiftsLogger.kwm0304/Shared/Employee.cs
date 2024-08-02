@@ -10,4 +10,8 @@ public class Employee
   public ShiftClassification ShiftAssignment { get; set; }
   public double PayRate { get; set; }
   public List<EmployeeShift>? EmployeeShifts { get; set; }
+    public override string ToString()
+    {
+        return Name!;
+    }
 }

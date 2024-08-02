@@ -5,10 +5,10 @@ using Shared;
 namespace Server.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class EmployeeController : Controller<Employee>
+[Route("api/employees")]
+public class EmployeesController : Controller<Employee>
 {
-    public EmployeeController(IService<Employee> service) : base(service)
+    public EmployeesController(IService<Employee> service) : base(service)
     {
     }
 }

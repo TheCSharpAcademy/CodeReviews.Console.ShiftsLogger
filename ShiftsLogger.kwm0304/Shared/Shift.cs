@@ -5,8 +5,8 @@ namespace Shared;
 public class Shift
 {
   public int ShiftId { get; set; }
-  public DateTime StartTime { get;  set; }
-  public DateTime EndTime { get;  set; }
+  public DateTime StartTime { get; set; }
+  public DateTime EndTime { get; set; }
   public ShiftClassification _classification;
   public List<EmployeeShift>? EmployeeShifts { get; set; }
   public ShiftClassification Classification
@@ -26,8 +26,8 @@ public class Shift
     switch (_classification)
     {
       case ShiftClassification.First:
-        StartTime = today.AddHours(9);
-        EndTime = today.AddHours(17);
+        StartTime = today.AddHours(9).AddYears(-1);
+        EndTime = today.AddHours(17).AddYears(-1);
         break;
       case ShiftClassification.Second:
         StartTime = today.AddHours(17);
