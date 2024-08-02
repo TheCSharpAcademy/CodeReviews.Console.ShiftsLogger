@@ -72,6 +72,7 @@ public class ShiftController: ControllerBase {
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GetShiftDto>> PostShift(PostShiftDto dto)
     {
+        Console.WriteLine("Hello?");
         var createdShift = await service.CreateShift(dto); 
 
         return CreatedAtAction("GetShift", new { id = createdShift.Id }, createdShift); 

@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Options;
-using ShiftsLogger.Services;
-
 namespace ShiftsLogger.Controllers;
 
 public class MainMenuController {
@@ -10,10 +7,9 @@ public class MainMenuController {
     private readonly WorkerShiftController _workerShiftController;
     public static readonly List<string> Options = ["Manage workers", "Manage shifts", "Manage worker shifts"];
     private readonly Dictionary<string, Action> _optionHandlers;
-    public MainMenuController(ApiService apiService, 
-                            WorkerController workerController,
+    public MainMenuController(WorkerController workerController,
                             ShiftController shiftController,
-                            WorkerShiftController workerShiftController )
+                            WorkerShiftController workerShiftController)
     {
         _workerController = workerController;
         _shiftController = shiftController;

@@ -1,7 +1,7 @@
 using System.Reflection;
-using Api.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Models.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 

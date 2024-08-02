@@ -15,6 +15,7 @@ public class App {
     public void Run() {
         while(true) 
         {
+            UI.Clear();   
             var choice = UI.MenuSelection("[green]ShiftsLogger[/] Main Menu", [
                 "Exit",
                 ..MainMenuController.Options,
