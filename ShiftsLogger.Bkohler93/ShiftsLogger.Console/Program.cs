@@ -6,8 +6,9 @@ using ShiftsLogger.Controllers;
 using ShiftsLogger.Services;
 
 var host = Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, config) => {
-                    config.AddJsonFile("appsettings.development.json", optional: false, reloadOnChange: true);
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    config.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
                 })
                 .ConfigureServices((context, services) =>
                 {

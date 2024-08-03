@@ -3,13 +3,14 @@ using ShiftsLogger.Services;
 
 namespace ShiftsLogger.Controllers;
 
-public class WorkerShiftController {
+public class WorkerShiftController
+{
     private readonly ApiService _service;
     public static readonly List<string> Options = ["Log a worker's shift", "Edit a worker's logged shift", "View a worker's worked shifts", "View all workers worked shifts", "Delete a logged shift"];
     private readonly Dictionary<string, Action> _optionHandlers;
     public WorkerShiftController(ApiService service)
     {
-        _service = service; 
+        _service = service;
         _optionHandlers = new Dictionary<string, Action>{
             { Options[0], LogWorkerShift },
             { Options[1], EditWorkerShift },
@@ -28,7 +29,8 @@ public class WorkerShiftController {
     public void LogWorkerShift()
     {
         var workers = _service.GetAllWorkers();
-        if (workers == null) {
+        if (workers == null)
+        {
             UI.ConfirmationMessage("No workers to log a shift for");
             return;
         }
@@ -50,36 +52,40 @@ public class WorkerShiftController {
 
         var shiftDate = UI.DateOnlyResponseWithDefault("Enter the [green]shift date[/] the worker worked on. ", DateOnly.FromDateTime(DateTime.Today));
 
-        var workerShift = new PostWorkerShiftDto{
+        var workerShift = new PostWorkerShiftDto
+        {
             WorkerId = worker.Id,
             ShiftId = shift.Id,
             ShiftDate = shiftDate
         };
 
-        try {
+        try
+        {
             _service.CreateWorkerShift(workerShift);
             UI.ConfirmationMessage("Logged worker shift");
-        }catch(Exception e) {
+        }
+        catch (Exception e)
+        {
             UI.ConfirmationMessage(e.Message);
         }
     }
 
     public void EditWorkerShift()
     {
-       var workerShifts = _service.GetAllWorkerShifts();
+        var workerShifts = _service.GetAllWorkerShifts();
 
-       if (workerShifts == null)
-       {
-        UI.ConfirmationMessage("No worker shifts to edit");
-        return;
-       } 
+        if (workerShifts == null)
+        {
+            UI.ConfirmationMessage("No worker shifts to edit");
+            return;
+        }
 
-       UI.DisplayWorkerShifts(workerShifts);
+        UI.DisplayWorkerShifts(workerShifts);
 
-       var workerShift = SelectWorkerShiftFromList(workerShifts, "edit");
+        var workerShift = SelectWorkerShiftFromList(workerShifts, "edit");
 
-       var shiftDate = UI.DateOnlyResponseWithDefault("Enter the [green]shift date[/]", workerShift.ShiftDate);
-    
+        var shiftDate = UI.DateOnlyResponseWithDefault("Enter the [green]shift date[/]", workerShift.ShiftDate);
+
         var workers = _service.GetAllWorkers();
         if (workers == null)
         {
@@ -100,16 +106,19 @@ public class WorkerShiftController {
 
         var shift = ShiftController.SelectShiftFromList(shifts, "assign to worker shift");
 
-        var dto = new PutWorkerShiftDto{
+        var dto = new PutWorkerShiftDto
+        {
             WorkerId = worker.Id,
             ShiftId = shift.Id,
             ShiftDate = shiftDate,
         };
-    
-        try {
+
+        try
+        {
             _service.UpdateWorkerShift(workerShift.Id, dto);
-            UI.ConfirmationMessage("Updated worker shift. ");
-        } catch(Exception e)
+            UI.ConfirmationMessage("Updated worker shift");
+        }
+        catch (Exception e)
         {
             UI.ConfirmationMessage(e.Message);
         }
@@ -145,7 +154,7 @@ public class WorkerShiftController {
         var workers = _service.GetAllWorkers();
         if (workers == null)
         {
-            UI.ConfirmationMessage("No workers to view worker shifts for. ");
+            UI.ConfirmationMessage("No workers to view worker shifts for");
             return;
         }
 
@@ -156,7 +165,8 @@ public class WorkerShiftController {
 
         var filteredWorkerShifts = workerShifts.Where(ws => ws.WorkerId == worker.Id);
 
-        if (filteredWorkerShifts.Count() == 0) {
+        if (filteredWorkerShifts.Count() == 0)
+        {
             UI.ConfirmationMessage("No work shifts to list for that worker");
             return;
         }
@@ -193,13 +203,15 @@ public class WorkerShiftController {
         UI.DisplayWorkerShifts(workerShifts);
         var workerShift = SelectWorkerShiftFromList(workerShifts, "delete");
 
-        try {
+        try
+        {
             _service.DeleteWorkerShift(workerShift.Id);
-            UI.ConfirmationMessage("Worker shift deleted. ");
-        }catch(Exception e)
+            UI.ConfirmationMessage("Worker shift deleted");
+        }
+        catch (Exception e)
         {
             UI.ConfirmationMessage(e.Message);
         }
     }
-    
+
 }

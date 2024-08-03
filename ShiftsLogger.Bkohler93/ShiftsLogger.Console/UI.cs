@@ -22,7 +22,8 @@ public static class UI
 
     public static string StringResponse(string question) => AnsiConsole.Ask<string>(question + ":");
 
-    public static string StringResponseWithFormat(string prompt, string format) {
+    public static string StringResponseWithFormat(string prompt, string format)
+    {
         while (true)
         {
             string response = AnsiConsole.Ask<string>(prompt + $"[grey] formatted as '{format}[/]':");
@@ -33,22 +34,23 @@ public static class UI
             }
 
             AnsiConsole.MarkupLine($"Requires format '[yellow]{format}[/]'");
-        } 
+        }
     }
 
-    public static TimeOnly TimeOnlyResponse(string prompt) 
+    public static TimeOnly TimeOnlyResponse(string prompt)
     {
         while (true)
         {
             var response = AnsiConsole.Ask<string>(prompt + ":");
 
-            if (TimeOnly.TryParseExact(response, "HH:mm", out TimeOnly time)) {
+            if (TimeOnly.TryParseExact(response, "HH:mm", out TimeOnly time))
+            {
                 return time;
             }
 
             AnsiConsole.MarkupLine("[red]Invalid time.[/] [grey]Format as 'HH:mm'[/]");
         }
-    } 
+    }
 
     public static TimeOnly TimeOnlyResponseWithDefault(string prompt, TimeOnly defaultTime)
     {
@@ -57,9 +59,12 @@ public static class UI
             AnsiConsole.Markup(prompt + $". [grey]Format as 'HH:mm'[/]. Press 'enter' to leave as [grey]{defaultTime.ToHourMinutes()}[/]: ");
             var response = Console.ReadLine();
 
-            if (response==""){
+            if (response == "")
+            {
                 return defaultTime;
-            } else if(TimeOnly.TryParseExact(response, "HH:mm", out TimeOnly time)){
+            }
+            else if (TimeOnly.TryParseExact(response, "HH:mm", out TimeOnly time))
+            {
                 return time;
             }
 
@@ -120,18 +125,25 @@ public static class UI
             AnsiConsole.Markup(prompt + $". [grey]Format as 'dd-MM-yyyy'[/]. Press 'enter' to leave as [grey]{defaultDate.ToDayMonthYear()}[/]: ");
             var response = Console.ReadLine();
 
-            if (response==""){
+            if (response == "")
+            {
                 return defaultDate;
-            } else if(DateOnly.TryParseExact(response, "dd-MM-yyyy", out DateOnly date)){
+            }
+            else if (DateOnly.TryParseExact(response, "dd-MM-yyyy", out DateOnly date))
+            {
                 return date;
             }
 
             AnsiConsole.MarkupLine("[red]Invalid date.[/] [grey]Format as 'dd-MM-yyyy'[/]");
-        } 
+        }
     }
 
     public static void ConfirmationMessage(string message)
     {
+        if (message != "")
+        {
+            AnsiConsole.Write(". ");
+        }
         AnsiConsole.Console.MarkupLine(message + "Press 'enter' to continue");
         Console.ReadLine();
         AnsiConsole.Clear();
@@ -155,7 +167,7 @@ public static class UI
                 worker.Position
             );
         }
-        AnsiConsole.Write(table); 
+        AnsiConsole.Write(table);
     }
 
     public static void DisplayShifts(IEnumerable<GetShiftDto> shifts)
@@ -165,7 +177,7 @@ public static class UI
         string[] columns = ["ID", "Name", "Start Time", "End Time"];
         table.AddColumns(columns);
 
-        foreach(var shift in shifts)
+        foreach (var shift in shifts)
         {
             table.AddRow(
                 shift.Id.ToString(),
@@ -180,11 +192,11 @@ public static class UI
     public static void DisplayWorkerShifts(IEnumerable<GetWorkerShiftDto> workerShifts)
     {
         var table = new Table();
-        
-        string[] columns = ["ID", "Worker ID", "Shift ID", "Shift Date", "Shift Name", "Worker Name"]; 
+
+        string[] columns = ["ID", "Worker ID", "Shift ID", "Shift Date", "Shift Name", "Worker Name"];
         table.AddColumns(columns);
 
-        foreach(var workerShift in workerShifts)
+        foreach (var workerShift in workerShifts)
         {
             table.AddRow(
                 workerShift.Id.ToString(),
