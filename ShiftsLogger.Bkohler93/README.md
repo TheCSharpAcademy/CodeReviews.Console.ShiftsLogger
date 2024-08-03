@@ -1,8 +1,10 @@
 # Shifts Logger CLI
 
-- Console based CRUD application to manage workers and their shifts.
+## Description
 
-- Developed using C# and MSSQL
+Console based CRUD application to manage workers and their shifts.
+
+Developed using C# and MSSQL
 
 ## Running the application
 
