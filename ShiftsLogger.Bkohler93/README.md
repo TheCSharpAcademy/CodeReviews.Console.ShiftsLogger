@@ -4,7 +4,7 @@
 
 - Developed using C# and MSSQL
 
-## Running the application
+# Running the application
 
 Ensure you have .NET 8 installed on your system.
 
