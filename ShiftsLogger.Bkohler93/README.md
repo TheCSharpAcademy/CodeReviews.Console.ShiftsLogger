@@ -6,7 +6,9 @@ Console based CRUD application to manage workers and their shifts.
 
 Developed using C# and MSSQL
 
-### test
+### Some extra stuff
+
+Filled in with some more words
 
 ## Running the application
 
@@ -17,4 +19,6 @@ connect to the server via a connection string. Ensure you copy
 `appsettings.json` and paste it as `appsettings.Development.json` and then
 fill in your associated connection string in the `defaultConnection` field.
 
-### test
+### More stuff
+
+More words than this filled in here.
