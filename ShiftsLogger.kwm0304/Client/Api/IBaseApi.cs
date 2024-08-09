@@ -7,12 +7,12 @@ public class IBaseApi<T> where T : class
 {
   private readonly HttpClient _http;
   private readonly string _endpoint;
-private const string baseUrl = "https://localhost:7066/api";
+private const string baseUrl = "http://localhost:5062/api";
 private readonly string _url;
   public IBaseApi(HttpClient http, string endpoint)
   {
     _http = http;
-    _http.BaseAddress = new Uri("https://localhost:7066/api");
+    _http.BaseAddress = new Uri("http://localhost:5062/api");
     _endpoint = endpoint;
     _url = $"{_http.BaseAddress}{_endpoint}";
   }

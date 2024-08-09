@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
-// using Server.Mocks;
+using Server.Mocks;
 using Server.Repositories;
 using Server.Repositories.Interfaces;
 using Server.Services;
@@ -22,8 +22,8 @@ builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IShiftService, ShiftService>();
 builder.Services.AddScoped<IEmployeeShiftService, EmployeeShiftService>();
-// builder.Services.AddScoped<MockData>();
-// builder.Services.AddHostedService<MockDataService>();
+builder.Services.AddScoped<MockData>();
+builder.Services.AddHostedService<MockDataService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

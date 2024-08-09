@@ -1,24 +1,46 @@
 
-// namespace Server.Mocks;
+using Spectre.Console;
 
-// public class MockDataService : IHostedService
-// {
-//   private readonly IServiceScopeFactory _serviceScopeFactory;
+namespace Server.Mocks;
 
-//   public MockDataService(IServiceScopeFactory serviceScopeFactory)
-//   {
-//     _serviceScopeFactory = serviceScopeFactory;
-//   }
+public class MockDataService : IHostedService
+{
+  private readonly IServiceScopeFactory _serviceScopeFactory;
 
-//   public async Task StartAsync(CancellationToken cancellationToken)
-//   {
-//     using var scope = _serviceScopeFactory.CreateScope();
-//     var mockData = scope.ServiceProvider.GetRequiredService<MockData>();
-//     await mockData.AssignMockEmployeeShifts();
-//   }
+  public MockDataService(IServiceScopeFactory serviceScopeFactory)
+  {
+    _serviceScopeFactory = serviceScopeFactory;
+  }
 
-//   public Task StopAsync(CancellationToken cancellationToken)
-//   {
-//     return Task.CompletedTask;
-//   }
-// }
+  public async Task StartAsync(CancellationToken cancellationToken)
+  {
+    using var scope = _serviceScopeFactory.CreateScope();
+    var mockData = scope.ServiceProvider.GetRequiredService<MockData>();
+
+    bool employeesExist = await mockData.CheckIfEmployeesExist();
+    bool shiftsExist = await mockData.CheckIfShiftsExist();
+    bool employeeShiftsExist = await mockData.CheckIfEmployeeShiftsExist();
+
+    if (!employeesExist)
+    {
+      await mockData.CreateMockEmployees();
+    }
+    if (!shiftsExist)
+    {
+      await mockData.CreateMockShifts();
+    }
+    if (!employeeShiftsExist)
+    {
+      await mockData.AssignMockEmployeeShifts();
+    }
+    else
+    {
+      AnsiConsole.WriteLine("Mock data already exists, skipping creation");
+    }
+  }
+
+  public Task StopAsync(CancellationToken cancellationToken)
+  {
+    return Task.CompletedTask;
+  }
+}

@@ -44,6 +44,7 @@ public class EmployeeShiftRepository : Repository<EmployeeShift>, IEmployeeShift
     .Where(es => es.EmployeeId == employeeId)
     .ToListAsync();
   }
+  
   public async Task<List<EmployeeShift>> GetEmployeesForShiftAsync(int shiftId)
   {
     return await _context.Set<EmployeeShift>()
