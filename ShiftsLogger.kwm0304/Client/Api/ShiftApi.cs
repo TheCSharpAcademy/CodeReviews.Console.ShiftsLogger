@@ -16,7 +16,7 @@ public class ShiftApi(HttpClient http) : IBaseApi<Shift>(http, "/shifts")
     }
     catch (Exception e)
     {
-      AnsiConsole.WriteException(e);
+      AnsiConsole.WriteLine(e.Message);
       return null;
     }
   }

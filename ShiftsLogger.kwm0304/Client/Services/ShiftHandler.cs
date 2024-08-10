@@ -101,36 +101,44 @@ public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi, Emplo
     }
     catch (Exception e)
     {
-      AnsiConsole.WriteException(e);
+      AnsiConsole.WriteLine(e.Message);
     }
   }
 
 
   private async Task HandleViewShifts()
   {
-    List<Shift> shifts = await _api.GetAllAsync();
-    Shift shift = SelectionMenus.SelectShift(shifts);
-    int id = shift.ShiftId;
-    string choice = SelectionMenus.ShiftOptionsMenu();
-    switch (choice)
+    try
     {
-      case "View all employees on shift":
-        await HandleViewEmployeeShifts(id);
-        break;
-      case "View late employees on shift":
-        await HandleViewLate(id);
-        break;
-      case "Edit shift attributes":
-        string editOption = SelectionMenus.ShiftEditSelection();
-        await HandleEditShift(editOption, shift);
-        break;
-      case "Delete shift":
-        await HandleDeleteShift(id);
-        break;
-      case "Back":
-        return;
-      default:
-        return;
+      List<Shift> shifts = await _api.GetAllAsync();
+      Shift shift = SelectionMenus.SelectShift(shifts);
+      int id = shift.ShiftId;
+      string choice = SelectionMenus.ShiftOptionsMenu();
+      switch (choice)
+      {
+        case "View all employees on shift":
+          await HandleViewEmployeeShifts(id);
+          break;
+        case "View late employees on shift":
+          await HandleViewLate(id);
+          break;
+        case "Edit shift attributes":
+          string editOption = SelectionMenus.ShiftEditSelection();
+          await HandleEditShift(editOption, shift);
+          break;
+        case "Delete shift":
+          await HandleDeleteShift(id);
+          break;
+        case "Back":
+          return;
+        default:
+          return;
+      }
+    }
+    catch (Exception e)
+    {
+      AnsiConsole.WriteLine(e.Message);
+      return;
     }
   }
 
@@ -139,8 +147,16 @@ public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi, Emplo
     bool confirm = AnsiConsole.Confirm($"Are you sure you want to delete this shift?");
     if (confirm)
     {
-      await _api.DeleteByIdAsync(id);
-      return;
+      try
+      {
+        await _api.DeleteByIdAsync(id);
+        return;
+      }
+      catch (Exception e)
+      {
+        AnsiConsole.WriteLine(e.Message);
+        return;
+      }
     }
   }
 
@@ -168,8 +184,16 @@ public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi, Emplo
           return;
       }
       int id = shift.ShiftId;
-      await _api.UpdateAsync(id, shift);
-      return;
+      try
+      {
+        await _api.UpdateAsync(id, shift);
+        return;
+      }
+      catch (Exception e)
+      {
+        AnsiConsole.WriteLine(e.Message);
+        return;
+      }
     }
   }
 
@@ -192,20 +216,36 @@ public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi, Emplo
 
   private async Task HandleViewLate(int id)
   {
-    List<EmployeeShift> late = await _employeeShiftApi.GetLateEmployees(id);
-    if (late != null && late.Count > 0)
+    try
     {
-      Tables.ShowEmployeesForShift($"All late employees for shift {id}", late);
+      List<EmployeeShift> late = await _employeeShiftApi.GetLateEmployees(id);
+      if (late != null && late.Count > 0)
+      {
+        Tables.ShowEmployeesForShift($"All late employees for shift {id}", late);
+      }
+      else
+      {
+        AnsiConsole.WriteLine("No late employees found for this shift.");
+      }
     }
-    else
+    catch (Exception e)
     {
-      AnsiConsole.WriteLine("No late employees found for this shift.");
+      AnsiConsole.WriteLine(e.Message);
+      return;
     }
   }
 
   private async Task HandleViewEmployeeShifts(int shiftId)
   {
-    List<EmployeeShift> employees = await _employeeShiftApi.GetAllEmployeesOnShift(shiftId);
-    Tables.ShowEmployeesForShift($"All employees for shift {shiftId}", employees);
+    try
+    {
+      List<EmployeeShift> employees = await _employeeShiftApi.GetAllEmployeesOnShift(shiftId);
+      Tables.ShowEmployeesForShift($"All employees for shift {shiftId}", employees);
+    }
+    catch (Exception e)
+    {
+      AnsiConsole.WriteLine(e.Message);
+      return;
+    }
   }
 }
