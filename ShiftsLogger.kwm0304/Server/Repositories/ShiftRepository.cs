@@ -20,4 +20,14 @@ public class ShiftRepository : Repository<Shift>, IShiftRepository
     var shifts = await _context.Shifts.Where(s => s.Classification == classification).ToListAsync();
     return shifts;
   }
+
+  public async Task<Shift?> GetLatestShiftAsync()
+{
+    var newestShift = await _context.Shifts.OrderByDescending(s => s.ShiftId).FirstOrDefaultAsync();
+    if (newestShift != null)
+    {
+      return newestShift;
+    }
+    return null;
+}
 }

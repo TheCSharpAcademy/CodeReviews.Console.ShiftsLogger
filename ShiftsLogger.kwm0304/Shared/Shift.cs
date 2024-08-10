@@ -26,8 +26,8 @@ public class Shift
     switch (_classification)
     {
       case ShiftClassification.First:
-        StartTime = today.AddHours(9).AddYears(-1);
-        EndTime = today.AddHours(17).AddYears(-1);
+        StartTime = today.AddHours(9);
+        EndTime = today.AddHours(17);
         break;
       case ShiftClassification.Second:
         StartTime = today.AddHours(17);

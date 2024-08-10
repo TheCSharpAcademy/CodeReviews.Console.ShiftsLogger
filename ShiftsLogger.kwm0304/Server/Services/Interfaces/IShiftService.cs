@@ -6,4 +6,5 @@ namespace Server.Services.Interfaces;
 public interface IShiftService : IService<Shift>
 {
     Task<List<Shift>> GetShiftsByClassification(ShiftClassification classification);
+    Task<Shift?> GetNewestShift();
 }

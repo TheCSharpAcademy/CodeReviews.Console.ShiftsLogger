@@ -1,18 +1,20 @@
 using Client.Api;
 using Client.Utils;
 using Client.Views;
+using Server.Models.Dtos;
 using Shared;
 using Shared.Enums;
 using Spectre.Console;
 
 namespace Client.Services;
 
-public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi)
+public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi, EmployeeApi employeeApi)
 {
   private readonly ShiftApi _api = api;
   private readonly EmployeeShiftApi _employeeShiftApi = employeeShiftApi;
+  private readonly EmployeeApi _employeeApi = employeeApi;
 
-    public async Task HandleShiftChoice()
+  public async Task HandleShiftChoice()
   {
     bool running = true;
 
@@ -49,7 +51,8 @@ public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi)
       try
       {
         await _api.CreateAsync(newShift);
-        Console.WriteLine($"Shift added successfully.");
+        await AssignEmployeesToCreatedShift(classification);
+        Console.WriteLine("Shift added and employees assigned successfully.");
       }
       catch (Exception ex)
       {
@@ -61,6 +64,47 @@ public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi)
       Console.WriteLine("Shift addition cancelled.");
     }
   }
+
+  private async Task AssignEmployeesToCreatedShift(ShiftClassification classification)
+  {
+    try
+    {
+      Shift? shift = await _api.GetNewestShift();
+      if (shift != null && shift.Classification == classification)
+      {
+        List<Employee> employees = await _employeeApi.GetEmployeeByShiftClassification(classification);
+        if (employees != null)
+        {
+          foreach (var employee in employees)
+          {
+            EmployeeShiftDto empShift = new()
+            {
+              EmployeeId = employee.EmployeeId,
+              ShiftId = shift.ShiftId,
+              ClockInTime = SharedUtils.GetRandomTime(shift.StartTime),
+              ClockOutTime = SharedUtils.GetRandomTime(shift.EndTime)
+            };
+            await _employeeShiftApi.CreateEmployeeShift(empShift);
+            AnsiConsole.WriteLine($"Assigned {employee.Name} to Shift: {shift.ShiftId}");
+          }
+          AnsiConsole.WriteLine("Employee shifts assigned and created");
+        }
+        else
+        {
+          AnsiConsole.WriteLine("No employees are assigned this shift classification");
+        }
+      }
+      else
+      {
+        AnsiConsole.WriteLine("Shift was not found or was incorrect");
+      }
+    }
+    catch (Exception e)
+    {
+      AnsiConsole.WriteException(e);
+    }
+  }
+
 
   private async Task HandleViewShifts()
   {
@@ -150,7 +194,14 @@ public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi)
   {
 
     List<EmployeeShift> late = await _employeeShiftApi.GetLateEmployees(id);
-    Tables.ShowEmployeesForShift($"All late employees for shift {id}", late);
+    if (late != null)
+    {
+      Tables.ShowEmployeesForShift($"All late employees for shift {id}", late);
+    }
+    else
+    {
+      AnsiConsole.WriteLine("No late employees found for this shift.");
+    }
   }
 
   private async Task HandleViewEmployeeShifts(int shiftId)

@@ -1,4 +1,3 @@
-
 using Spectre.Console;
 
 namespace Server.Mocks;
@@ -25,8 +24,20 @@ public class MockDataService : IHostedService
     {
       await mockData.CreateMockEmployees();
     }
+    else
+    {
+      AnsiConsole.WriteLine("Employees already exist, deleting and recreating...");
+      await mockData.DeleteAllEmployees();
+      await mockData.CreateMockEmployees();
+    }
     if (!shiftsExist)
     {
+      await mockData.CreateMockShifts();
+    }
+    else
+    {
+      AnsiConsole.WriteLine("Shifts already exist, deleting and recreating...");
+      await mockData.DeleteAllShifts();
       await mockData.CreateMockShifts();
     }
     if (!employeeShiftsExist)
@@ -35,8 +46,11 @@ public class MockDataService : IHostedService
     }
     else
     {
-      AnsiConsole.WriteLine("Mock data already exists, skipping creation");
+      AnsiConsole.WriteLine("Employee shifts already exist, deleting and recreating...");
+      await mockData.DeleteAllEmployeeShifts();
+      await mockData.AssignMockEmployeeShifts();
     }
+      AnsiConsole.WriteLine("Mock data already exists, skipping creation");
   }
 
   public Task StopAsync(CancellationToken cancellationToken)

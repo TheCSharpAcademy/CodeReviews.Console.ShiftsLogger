@@ -17,4 +17,8 @@ public class ShiftService : Service<Shift>, IShiftService
     {
         return await _shiftRepository.GetShiftsByClassification(classification);
     }
+    public async Task<Shift?> GetNewestShift()
+    {
+        return await _shiftRepository.GetLatestShiftAsync();
+    }
 }

@@ -45,7 +45,7 @@ public class MockData
   }
   public async Task<bool> CheckIfEmployeeShiftsExist()
   {
-    List<EmployeeShift> emptShift = await _empShiftService.GetEmployeesForShiftAsync(1);
+    List<EmployeeShift> emptShift = await _empShiftService.GetEmployeesForShiftAsync(1204);
     return emptShift != null;
   }
 
@@ -60,14 +60,13 @@ public class MockData
     DateTime startDate = DateTime.Today.AddYears(-1);
     for (int i = 0; i <= 90; i++)
     {
-      ShiftClassification classification = i < 201 ? ShiftClassification.First : i > 201 && i < 401 ? ShiftClassification.Second : ShiftClassification.Third;
+      ShiftClassification classification = i < 30 ? ShiftClassification.First : i > 30 && i < 60 ? ShiftClassification.Second : ShiftClassification.Third;
       Shift newShift = new()
       {
         Classification = classification,
         StartTime = startDate,
         EndTime = GetEndTime(startDate, classification)
       };
-
       await _shiftService.AddAsync(newShift);
       AnsiConsole.WriteLine($"Adding {newShift.ShiftId} | Classification: {newShift.Classification} | Start Time: {newShift.StartTime} EndTime: {newShift.EndTime}");
       startDate = startDate.AddDays(1);
@@ -97,6 +96,24 @@ public class MockData
       AnsiConsole.MarkupLine("[bold yellow]Shift Deleted[/]");
     }
   }
+  public async Task DeleteAllEmployees()
+  {
+    List<Employee> allEmployees = await _service.GetAllAsync();
+    foreach (var employee in allEmployees)
+    {
+      await _service.DeleteAsync(employee.EmployeeId);
+      AnsiConsole.MarkupLine("[bold yellow]Shift Deleted[/]");
+    }
+  }
+  public async Task DeleteAllEmployeeShifts()
+  {
+    List<EmployeeShift> allShifts = await _empShiftService.GetAllAsync();
+    foreach (var shift in allShifts)
+    {
+      await _empShiftService.DeleteEmployeeShiftAsync(shift.EmployeeId, shift.ShiftId);
+      AnsiConsole.MarkupLine("[bold yellow]Shift Deleted[/]");
+    }
+  }
 
   private static ShiftClassification GetRandomShift()
   {
@@ -109,23 +126,16 @@ public class MockData
   public async Task AssignMockEmployeeShifts()
   {
     var shiftClassifications = Enum.GetValues(typeof(ShiftClassification)).Cast<ShiftClassification>();
-    var assignmentTasks = new List<Task>();
-
     foreach (var classification in shiftClassifications)
     {
-      assignmentTasks.Add(AssignShiftsForClassification(classification));
+      await AssignShiftsForClassification(classification);
     }
-
-    await Task.WhenAll(assignmentTasks);
   }
 
   private async Task AssignShiftsForClassification(ShiftClassification classification)
   {
     var employees = await _service.GetEmployeesByShift(classification);
     var shifts = await _shiftService.GetShiftsByClassification(classification);
-
-    var assignmentTasks = new ConcurrentBag<Task>();
-
     foreach (var shift in shifts)
     {
       foreach (var employee in employees)
@@ -134,21 +144,12 @@ public class MockData
         {
           ShiftId = shift.ShiftId,
           EmployeeId = employee.EmployeeId,
-          ClockInTime = GetRandomTime(shift.StartTime),
-          ClockOutTime = GetRandomTime(shift.EndTime)
+          ClockInTime = SharedUtils.GetRandomTime(shift.StartTime),
+          ClockOutTime = SharedUtils.GetRandomTime(shift.EndTime)
         };
-
-        assignmentTasks.Add(_empShiftService.CreateEmployeeShiftAsync(dto));
+        await _empShiftService.CreateEmployeeShiftAsync(dto);
       }
-
     }
-    await Task.WhenAll(assignmentTasks);
     AnsiConsole.WriteLine($"Assigned {employees.Count} employees to {shifts.Count} {classification} shifts");
-  }
-
-  private static DateTime GetRandomTime(DateTime shiftTime)
-  {
-    int minutesOffset = _random.Next(-60, 61);
-    return shiftTime.AddMinutes(minutesOffset);
-  }
+  } 
 }
