@@ -33,7 +33,6 @@ public class EmployeeShiftRepository : Repository<EmployeeShift>, IEmployeeShift
   public async Task<List<EmployeeShift>> GetLateEmployeesForShiftAsync(int shiftId)
   {
     return await _context.EmployeeShifts
-        .Include(es => es.Shift)
         .Where(es => es.ShiftId == shiftId && es.ClockInTime > es.Shift!.StartTime)
         .ToListAsync();
   }

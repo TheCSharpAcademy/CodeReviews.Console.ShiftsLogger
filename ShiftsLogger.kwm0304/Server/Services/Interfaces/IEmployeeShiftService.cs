@@ -10,7 +10,7 @@ public interface IEmployeeShiftService : IService<EmployeeShift>
 
     Task<EmployeeShift> UpdateEmployeeShiftAsync(int employeeId, int shiftId, EmployeeShiftDto employeeShiftDto);
     Task DeleteEmployeeShiftAsync(int employeeId, int shiftId);
-    Task<object> GetLateEmployeesForShiftAsync(int shiftId);
+    Task<List<EmployeeShift>> GetLateEmployeesForShiftAsync(int shiftId);
     Task<List<EmployeeShift>> GetEmployeesForShiftAsync(int shiftId);
     Task<List<EmployeeShift>> GetShiftsForEmployeeAsync(int employeeId);
 }

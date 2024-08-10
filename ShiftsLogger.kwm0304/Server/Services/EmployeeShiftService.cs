@@ -66,14 +66,19 @@ public class EmployeeShiftService : Service<EmployeeShift>, IEmployeeShiftServic
         return emplopyeeShift;
     }
 
-    public async Task<object> GetLateEmployeesForShiftAsync(int shiftId)
+    public async Task<List<EmployeeShift>> GetLateEmployeesForShiftAsync(int shiftId)
     {
-        var lateEmployees = await _employeeShiftRepository.GetLateEmployeesForShiftAsync(shiftId);
-        if (lateEmployees.Count == 0)
+        try
         {
-            return new { Message = "No late employees found for this shift." };
+            var lateEmployees = await _employeeShiftRepository.GetLateEmployeesForShiftAsync(shiftId);
+    
+            return lateEmployees;
         }
-        return lateEmployees;
+        catch (Exception e)
+        {
+            AnsiConsole.WriteException(e);
+            throw new ApplicationException("An error occurred while retrieving late employees for this shift");
+        }
     }
 
     public async Task<List<EmployeeShift>> GetShiftsForEmployeeAsync(int employeeId)

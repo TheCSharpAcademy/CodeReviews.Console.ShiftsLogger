@@ -192,9 +192,8 @@ public class ShiftHandler(ShiftApi api, EmployeeShiftApi employeeShiftApi, Emplo
 
   private async Task HandleViewLate(int id)
   {
-
     List<EmployeeShift> late = await _employeeShiftApi.GetLateEmployees(id);
-    if (late != null)
+    if (late != null && late.Count > 0)
     {
       Tables.ShowEmployeesForShift($"All late employees for shift {id}", late);
     }
