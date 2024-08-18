@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftLoggerApi.Data;
 using ShiftLoggerApi.Models;
-using ShiftLoggerApi.Dtos;
 
 namespace ShiftLoggerApi.Controllers;
 
@@ -41,7 +40,7 @@ public class ShiftsController : ControllerBase
     // PUT: api/Shifts/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut]
-    public async Task<IActionResult> PutShift(EndShiftDto endShift)
+    public async Task<IActionResult> PutShift()
     {
         var shift = await _context.Shifts.FirstOrDefaultAsync(s => s.End == null);
         if (shift == null)
@@ -49,7 +48,7 @@ public class ShiftsController : ControllerBase
             return NotFound("No open shifts. Start a new one before ending.");
         }
 
-        shift.End = endShift.End;
+        shift.End = DateTime.Now;
         shift.Duration = shift.End - shift.Start;
 
         _context.Entry(shift).State = EntityState.Modified;
@@ -80,7 +79,7 @@ public class ShiftsController : ControllerBase
         var shift = new Shift
         {
             EmployeeName = startShift.EmployeeName,
-            Start = startShift.Start
+            Start = DateTime.Now
         };
 
         _context.Shifts.Add(shift);
