@@ -1,7 +1,10 @@
-﻿class Program
+﻿namespace ShiftsLoggerUI;
+
+class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello world!");
+        Menu menu = new Menu();
+        menu.ShowMenu();
     }
 }
