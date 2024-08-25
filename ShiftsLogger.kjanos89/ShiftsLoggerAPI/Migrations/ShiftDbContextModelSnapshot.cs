@@ -36,42 +36,9 @@ namespace ShiftsLoggerAPI.Migrations
                     b.Property<DateTime>("Start")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("WorkerId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("WorkerId");
 
                     b.ToTable("Shifts");
-                });
-
-            modelBuilder.Entity("ShiftsLoggerAPI.Worker", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Workers");
-                });
-
-            modelBuilder.Entity("ShiftsLoggerAPI.Shift", b =>
-                {
-                    b.HasOne("ShiftsLoggerAPI.Worker", "Worker")
-                        .WithMany()
-                        .HasForeignKey("WorkerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Worker");
                 });
 #pragma warning restore 612, 618
         }

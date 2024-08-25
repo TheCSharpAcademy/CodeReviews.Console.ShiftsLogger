@@ -13,41 +13,50 @@ public class ShiftsController : ControllerBase
         context = _context;
     }
 
-    [HttpPut]
-    public IActionResult UpdateShift(int id, Shift shift)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutShift(int id, Shift infoShift)
     {
+        Shift shift = await context.Shifts.FindAsync(id);
+        if (shift == null)
+        {
+            return NotFound("Shift not found.");
+        }
+        if (infoShift.End <= infoShift.Start)
+        {
+            return BadRequest("EndTime must be later than StartTime.");
+        }
+        shift.Start = infoShift.Start;
+        shift.End = infoShift.End;
+        context.Entry(shift).State = EntityState.Modified;
         try
         {
-            if (id != shift.Id)
-            {
-                return BadRequest("Id does not match.");
-            }
-            var updateShift = context.Shifts.Find(id);
-            if (updateShift == null)
-            {
-                return NotFound();
-            }
-            updateShift.Start = shift.Start;
-            updateShift.End = shift.End;
-            updateShift.Id = shift.Id;
-            updateShift.WorkerId = shift.WorkerId;
-            updateShift.Worker = shift.Worker;
-            context.SaveChanges();
-            return NoContent();
+            await context.SaveChangesAsync();
         }
-        catch (Exception ex)
+        catch (DbUpdateConcurrencyException)
         {
-            return StatusCode(500, ex.Message);
+            if (!ShiftExists(id))
+            {
+                return NotFound("Shift not found.");
+            }
+            else
+            {
+                throw;
+            }
         }
-       
+        return NoContent();
     }
+
+    private bool ShiftExists(int id)
+    {
+        return context.Shifts.Any(e => e.Id == id);
+    }
+
     [HttpGet]
-    public ActionResult<IEnumerable<Shift>> GetShifts()
+    public async Task<ActionResult<IEnumerable<Shift>>> GetShifts()
     {
         try
         {
-            var shifts = context.Shifts.Include(s => s.Worker).ToList();
-            return Ok(shifts);
+            return await context.Shifts.ToListAsync();
         }
         catch (Exception ex)
         {
@@ -55,44 +64,45 @@ public class ShiftsController : ControllerBase
         }
         
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Shift>> GetShift(int id)
+    {
+        var shift = await context.Shifts.FindAsync(id);
+
+        if (shift == null)
+        {
+            return NotFound();
+        }
+
+        return shift;
+    }
+
 
     [HttpPost]
-    public ActionResult<Shift> PostShift(Shift shift)
+    public async Task<ActionResult<Shift>> PostShift(Shift infoShift)
     {
-        try
+        Shift shift = new()
         {
-            context.Shifts.Add(shift);
-            context.SaveChanges();
-
-            return CreatedAtAction(nameof(GetShifts), new { id = shift.Id }, shift);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
-        
+            Start = infoShift.Start,
+            End = infoShift.End
+        };
+        context.Shifts.Add(shift);
+        await context.SaveChangesAsync();
+        return CreatedAtAction("GetShift", new { id = shift.Id }, shift);
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteShift(int id)
+    public async Task<IActionResult> DeleteShift(int id)
     {
-        try
+        var shift = await context.Shifts.FindAsync(id);
+        if (shift == null)
         {
-            var shift = context.Shifts.Find(id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
-
-            context.Shifts.Remove(shift);
-            context.SaveChanges();
-
-            return NoContent();
+            return NotFound();
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        context.Shifts.Remove(shift);
+        await context.SaveChangesAsync();
+        return NoContent();
     }
 
 }
