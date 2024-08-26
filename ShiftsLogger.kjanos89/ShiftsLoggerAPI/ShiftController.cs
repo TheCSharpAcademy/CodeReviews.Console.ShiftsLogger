@@ -32,23 +32,11 @@ public class ShiftsController : ControllerBase
         {
             await context.SaveChangesAsync();
         }
-        catch (DbUpdateConcurrencyException)
+        catch (Exception ex)
         {
-            if (!ShiftExists(id))
-            {
-                return NotFound("Shift not found.");
-            }
-            else
-            {
-                throw;
-            }
+            return NotFound();
         }
         return NoContent();
-    }
-
-    private bool ShiftExists(int id)
-    {
-        return context.Shifts.Any(e => e.Id == id);
     }
 
     [HttpGet]

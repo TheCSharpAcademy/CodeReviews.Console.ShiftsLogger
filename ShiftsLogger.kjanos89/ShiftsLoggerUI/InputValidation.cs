@@ -1,9 +1,17 @@
-﻿namespace ShiftsLoggerUI;
+﻿using System.Globalization;
+
+namespace ShiftsLoggerUI;
 
 public class InputValidation
 {
     public int NumberValidation(string str)
     {
+        if (string.IsNullOrEmpty(str))
+        {
+            Console.WriteLine("Wrong input, try again!");
+            str = Console.ReadLine();
+            return NumberValidation(str);
+        }
         int num;
         while (String.IsNullOrEmpty(str) || !int.TryParse(str, out num))
         {
@@ -29,7 +37,7 @@ public class InputValidation
     public DateTime DateValidation(string input)
     {
         DateTime date;
-        if(DateTime.TryParse(input, out date))
+        if (DateTime.TryParseExact(input, "yyyy.MM.dd. HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
         {
             return date;
         }

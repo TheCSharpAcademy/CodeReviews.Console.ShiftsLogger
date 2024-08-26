@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ShiftsLoggerAPI
+namespace ShiftsLoggerAPI;
+
+public class ShiftDbContext : DbContext
 {
-    public class ShiftDbContext : DbContext
-    {
-        public ShiftDbContext(DbContextOptions<ShiftDbContext> options) : base(options) { }
-        public DbSet<Shift> Shifts { get; set; }
-    }
+    public ShiftDbContext(DbContextOptions<ShiftDbContext> options) : base(options) { }
+    public DbSet<Shift> Shifts { get; set; }
 }

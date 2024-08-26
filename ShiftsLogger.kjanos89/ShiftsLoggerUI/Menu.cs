@@ -57,16 +57,29 @@ public class Menu
         }
     }
 
-    private async Task DeleteShift()
+    public async Task DeleteShift()
     {
         await ShowAllData();
-        Console.WriteLine("Please enter the id of the shift you want to delete:");
-        if (!int.TryParse(Console.ReadLine(), out int id))
+        List<Shift> shifts = await Service.LoadShifts();
+        List<int> ids = new List<int>();
+        foreach (Shift s in shifts)
         {
-            Console.WriteLine("Invalid ID.");
+            ids.Add(s.Id);
+        }
+        Console.WriteLine("Please enter the id of the shift you want to delete or press '0' to return to the main menu:");
+        string temp = Console.ReadLine();
+        if (temp == "0")
+        {
+            ShowMenu();
             return;
         }
-
+        int id = validation.NumberValidation(temp);
+        if (!ids.Contains(id))
+        {
+            Console.WriteLine("Id does not exist! Try again!");
+            await DeleteShift();
+            return;
+        }
         try
         {
             await Service.DeleteShift(id);
@@ -74,14 +87,14 @@ public class Menu
         catch (Exception ex)
         {
             Console.WriteLine($"An error occurred during deletion: {ex.Message}");
+            Task.Delay(1000).Wait();
         }
         Console.ReadLine(); 
         ShowMenu();
         return;
     }
 
-
-    private async Task UpdateShift()
+    public async Task UpdateShift()
     {
         await ShowAllData();
         List<Shift> shifts = await Service.LoadShifts();
@@ -101,6 +114,8 @@ public class Menu
         if (!ids.Contains(id))
         {
             Console.WriteLine("Id does not exist! Try again!");
+            await UpdateShift();
+            return;
         }
         while (true)
         {
@@ -157,7 +172,7 @@ public class Menu
             {
                 Console.WriteLine("The end date must be a later date than the start. Try again!");
                 Task.Delay(1600).Wait();
-                UpdateShift();
+                await UpdateShift();
                 return;
             }
         }
@@ -209,6 +224,7 @@ public class Menu
             else
             {
                 Console.WriteLine("The end of the shift must be later than the start of the shift. Try again!");
+                Task.Delay(1600).Wait();
             }
             ShowMenu();
             return;
@@ -268,5 +284,4 @@ public class Menu
         ShowMenu();
         return;
     }
-
 }

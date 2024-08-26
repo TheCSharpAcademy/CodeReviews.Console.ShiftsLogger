@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
-namespace ShiftsLoggerUI;
+﻿namespace ShiftsLoggerUI;
 
 class Program
 {
