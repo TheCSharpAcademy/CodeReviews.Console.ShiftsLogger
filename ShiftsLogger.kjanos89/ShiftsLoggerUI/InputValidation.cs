@@ -21,7 +21,6 @@ public class InputValidation
         return num;
     }
 
-
     public string StringValidation()
     {
         string str = Console.ReadLine();
@@ -53,5 +52,4 @@ public class InputValidation
     {
         return start<end;
     }
-
 }

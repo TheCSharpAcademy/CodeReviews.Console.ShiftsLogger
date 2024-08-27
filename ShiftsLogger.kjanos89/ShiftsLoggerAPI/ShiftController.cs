@@ -66,7 +66,6 @@ public class ShiftsController : ControllerBase
         return shift;
     }
 
-
     [HttpPost]
     public async Task<ActionResult<Shift>> PostShift(Shift infoShift)
     {
@@ -92,5 +91,4 @@ public class ShiftsController : ControllerBase
         await context.SaveChangesAsync();
         return NoContent();
     }
-
 }
