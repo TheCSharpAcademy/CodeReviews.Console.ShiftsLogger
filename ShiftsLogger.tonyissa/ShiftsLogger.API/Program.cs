@@ -5,8 +5,6 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ShiftsContext>(opt => opt.UseSqlServer());
 builder.Services.AddEndpointsApiExplorer();
@@ -26,7 +24,6 @@ builder.Services.AddSwaggerGen(s =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
