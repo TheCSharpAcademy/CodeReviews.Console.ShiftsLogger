@@ -64,6 +64,14 @@ public class ShiftsEntriesController : ControllerBase
         {
             return BadRequest();
         }
+        else if (shiftsEntry.Start > shiftsEntry.End)
+        {
+            return ValidationProblem(new ValidationProblemDetails
+            {
+                Title = "Validation error",
+                Detail = "Start date must not be later than end date"
+            });
+        }
 
         _context.Entry(shiftsEntry).State = EntityState.Modified;
 
@@ -95,6 +103,14 @@ public class ShiftsEntriesController : ControllerBase
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
     public async Task<ActionResult<ShiftsEntry>> PostShiftsEntry(ShiftsEntry shiftsEntry)
     {
+        if (shiftsEntry.Start > shiftsEntry.End)
+        {
+            return ValidationProblem(new ValidationProblemDetails { 
+                Title = "Validation error",
+                Detail = "Start date must not be later than end date"
+            });
+        }
+
         _context.ShiftsEntry.Add(shiftsEntry);
         await _context.SaveChangesAsync();
 
