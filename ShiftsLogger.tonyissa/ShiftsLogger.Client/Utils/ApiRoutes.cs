@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace ShiftsLogger.UI.Routes;
+namespace ShiftsLogger.UI.Utils;
 
 internal class ApiRoutes
 {
@@ -15,7 +15,7 @@ internal class ApiRoutes
 
     internal static string GetShiftsByIdUrl(int id) => $"{_baseURL}/{id}";
 
-    internal static string CreateShift() => _baseURL;
+    internal static string CreateShiftUrl() => _baseURL;
 
-    internal static string DeleteShift(int id) => $"{_baseURL}/{id}";
+    internal static string DeleteShiftUrl(int id) => $"{_baseURL}/{id}";
 }
