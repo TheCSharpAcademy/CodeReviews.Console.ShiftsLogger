@@ -9,8 +9,8 @@ public static class ShiftsUI
     public static List<string> MainMenuOptions = [
         "View shifts",
         "Create shifts",
-        "Delete shifts",
         "Update shifts",
+        "Delete shifts",
         "Quit"
     ];
 
@@ -33,9 +33,10 @@ public static class ShiftsUI
                 case "Create shifts":
                     await ShiftsService.SubmitShiftAsync();
                     break;
-                case "Delete shifts":
-                    break;
                 case "Update shifts":
+                    await ShiftsService.ChangeShiftAsync();
+                    break;
+                case "Delete shifts":
                     break;
                 default:
                     return;
@@ -73,5 +74,18 @@ public static class ShiftsUI
         }
 
         return new ShiftsEntry { Start = start, End = end };
+    }
+
+    public static int GetShiftId(List<ShiftsEntry> entries)
+    {
+        var id = AnsiConsole.Ask<int>("Select the ID of the entry");
+
+        if (!entries.Exists(s => s.Id == id))
+        {
+            AnsiConsole.MarkupLine("[red]Invalid selection[/]");
+            return GetShiftId(entries);
+        }
+
+        return id;
     }
 }

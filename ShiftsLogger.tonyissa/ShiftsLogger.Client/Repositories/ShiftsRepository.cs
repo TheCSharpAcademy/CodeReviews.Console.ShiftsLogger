@@ -34,7 +34,7 @@ public static class ShiftsRepository
     {
         using var client = new HttpClient();
         var url = ApiRoutes.UpdateShiftUrl(entry.Id);
-        var response = await client.PostAsJsonAsync(url, entry);
+        var response = await client.PutAsJsonAsync(url, entry);
         response.EnsureSuccessStatusCode();
     }
 

@@ -21,4 +21,18 @@ public static class ShiftsService
         AnsiConsole.WriteLine("Shift created successfully. Press any key to continue...");
         Console.ReadKey();
     }
+
+    public static async Task ChangeShiftAsync()
+    {
+        var list = await ShiftsRepository.GetShiftsAsync();
+        ShiftsUI.ListEntries(list);
+
+        var selection = ShiftsUI.GetShiftId(list);
+        var shift = ShiftsUI.GetShiftInformation();
+        shift.Id = selection;
+
+        await ShiftsRepository.UpdateShiftAsync(shift);
+        AnsiConsole.WriteLine("Shift updated successfully. Press any key to continue...");
+        Console.ReadKey();
+    }
 }
