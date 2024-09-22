@@ -38,7 +38,7 @@ public static class ShiftsRepository
         response.EnsureSuccessStatusCode();
     }
 
-    public static async Task DeleteShiftAsync(long id)
+    public static async Task DeleteShiftAsync(int id)
     {
         using var client = new HttpClient();
         var url = ApiRoutes.DeleteShiftUrl(id);

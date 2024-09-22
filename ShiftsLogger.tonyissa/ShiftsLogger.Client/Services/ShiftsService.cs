@@ -35,4 +35,21 @@ public static class ShiftsService
         AnsiConsole.WriteLine("Shift updated successfully. Press any key to continue...");
         Console.ReadKey();
     }
+
+    public static async Task RemoveShiftAsync()
+    {
+        var list = await ShiftsRepository.GetShiftsAsync();
+        ShiftsUI.ListEntries(list);
+
+        var selection = ShiftsUI.GetShiftId(list);
+
+        if (!ShiftsUI.ConfirmSelection())
+        {
+            return;
+        }
+
+        await ShiftsRepository.DeleteShiftAsync(selection);
+        AnsiConsole.WriteLine("Shift deleted successfully. Press any key to continue...");
+        Console.ReadKey();
+    }
 }

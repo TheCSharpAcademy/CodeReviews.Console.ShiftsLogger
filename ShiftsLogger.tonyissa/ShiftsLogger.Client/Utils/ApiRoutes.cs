@@ -13,11 +13,11 @@ public class ApiRoutes
 
     public static string GetShiftsUrl() => _baseURL;
 
-    public static string GetShiftsByIdUrl(long id) => $"{_baseURL}/{id}";
+    public static string GetShiftsByIdUrl(int id) => $"{_baseURL}/{id}";
 
-    public static string UpdateShiftUrl(long id) => $"{_baseURL}/{id}";
+    public static string UpdateShiftUrl(int id) => $"{_baseURL}/{id}";
 
     public static string CreateShiftUrl() => _baseURL;
 
-    public static string DeleteShiftUrl(long id) => $"{_baseURL}/{id}";
+    public static string DeleteShiftUrl(int id) => $"{_baseURL}/{id}";
 }

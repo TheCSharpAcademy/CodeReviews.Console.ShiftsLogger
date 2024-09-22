@@ -37,6 +37,7 @@ public static class ShiftsUI
                     await ShiftsService.ChangeShiftAsync();
                     break;
                 case "Delete shifts":
+                    await ShiftsService.RemoveShiftAsync();
                     break;
                 default:
                     return;
@@ -87,5 +88,10 @@ public static class ShiftsUI
         }
 
         return id;
+    }
+
+    public static bool ConfirmSelection()
+    {
+        return AnsiConsole.Confirm("Are you sure?");
     }
 }
