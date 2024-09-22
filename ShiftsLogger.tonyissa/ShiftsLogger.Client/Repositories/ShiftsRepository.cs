@@ -14,8 +14,9 @@ public static class ShiftsRepository
         var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
 
-        var json = await response.Content.ReadAsStreamAsync();
-        var shiftsList = await JsonSerializer.DeserializeAsync<List<ShiftsEntry>>(json);
+        var jsonStream = await response.Content.ReadAsStreamAsync();
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var shiftsList = await JsonSerializer.DeserializeAsync<List<ShiftsEntry>>(jsonStream, options);
 
         return shiftsList ?? [];
     }

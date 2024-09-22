@@ -2,7 +2,7 @@
 
 namespace ShiftsLogger.UI.Utils;
 
-internal class ApiRoutes
+public class ApiRoutes
 {
     private readonly static string _baseURL;
 
@@ -11,11 +11,13 @@ internal class ApiRoutes
         _baseURL = ConfigurationManager.AppSettings.Get("BaseUrl")!;
     }
 
-    internal static string GetShiftsUrl() => _baseURL;
+    public static string GetShiftsUrl() => _baseURL;
 
-    internal static string GetShiftsByIdUrl(int id) => $"{_baseURL}/{id}";
+    public static string GetShiftsByIdUrl(long id) => $"{_baseURL}/{id}";
 
-    internal static string CreateShiftUrl() => _baseURL;
+    public static string UpdateShiftUrl(long id) => $"{_baseURL}/{id}";
 
-    internal static string DeleteShiftUrl(int id) => $"{_baseURL}/{id}";
+    public static string CreateShiftUrl() => _baseURL;
+
+    public static string DeleteShiftUrl(long id) => $"{_baseURL}/{id}";
 }
