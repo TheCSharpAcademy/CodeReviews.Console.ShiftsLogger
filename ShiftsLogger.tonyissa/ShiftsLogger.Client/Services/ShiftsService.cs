@@ -13,4 +13,12 @@ public static class ShiftsService
         AnsiConsole.WriteLine("Press any key to continue...");
         Console.ReadKey();
     }
+
+    public static async Task SubmitShiftAsync()
+    {
+        var shift = ShiftsUI.GetShiftInformation();
+        await ShiftsRepository.CreateShiftAsync(shift);
+        AnsiConsole.WriteLine("Shift created successfully. Press any key to continue...");
+        Console.ReadKey();
+    }
 }

@@ -7,7 +7,7 @@ static async Task StartProgram()
     {
         try
         {
-            await ShiftsUI.StartupMenu();
+            await ShiftsUI.LaunchStartMenu();
             break;
         }
         catch (Exception ex)

@@ -7,6 +7,8 @@ namespace ShiftsLogger.Client.Repositories;
 
 public static class ShiftsRepository
 {
+    private static readonly JsonSerializerOptions options = new() { PropertyNameCaseInsensitive = true };
+
     public static async Task<List<ShiftsEntry>> GetShiftsAsync()
     {
         using var client = new HttpClient();
@@ -15,7 +17,6 @@ public static class ShiftsRepository
         response.EnsureSuccessStatusCode();
 
         var jsonStream = await response.Content.ReadAsStreamAsync();
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         var shiftsList = await JsonSerializer.DeserializeAsync<List<ShiftsEntry>>(jsonStream, options);
 
         return shiftsList ?? [];

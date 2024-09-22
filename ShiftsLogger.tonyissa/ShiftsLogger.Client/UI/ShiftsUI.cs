@@ -14,7 +14,7 @@ public static class ShiftsUI
         "Quit"
     ];
 
-    public static async Task StartupMenu()
+    public static async Task LaunchStartMenu()
     {
         while (true)
         {
@@ -31,6 +31,7 @@ public static class ShiftsUI
                     await ShiftsService.ListShiftsAsync();
                     break;
                 case "Create shifts":
+                    await ShiftsService.SubmitShiftAsync();
                     break;
                 case "Delete shifts":
                     break;
@@ -45,7 +46,7 @@ public static class ShiftsUI
     public static void ListEntries(List<ShiftsEntry> entries)
     {
         var table = new Table();
-        table.AddColumns("ID", "Shift Start", "Shift End", "Total time");
+        table.AddColumns("ID", "Shift Start", "Shift End", "Total hours");
 
         foreach (var entry in entries)
         {
@@ -53,10 +54,24 @@ public static class ShiftsUI
                 entry.Id.ToString(),
                 entry.Start.ToString("f"),
                 entry.End.ToString("f"),
-                (entry.End - entry.Start).ToString(@"h\:mm")
+                (entry.End - entry.Start).TotalHours.ToString("f")
             );
         }
 
         AnsiConsole.Write(table);
+    }
+
+    public static ShiftsEntry GetShiftInformation()
+    {
+        var start = AnsiConsole.Ask<DateTime>("Enter a start date");
+        var end = AnsiConsole.Ask<DateTime>("Enter an end date");
+        
+        if (start >= end)
+        {
+            AnsiConsole.MarkupLine("[red]Start date must be before the end date[/]");
+            return GetShiftInformation();
+        }
+
+        return new ShiftsEntry { Start = start, End = end };
     }
 }
