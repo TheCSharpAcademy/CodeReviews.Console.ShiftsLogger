@@ -1,13 +1,13 @@
-﻿using ShiftsLogger.UI.Display;
+﻿using ShiftsLogger.Client.UI;
 using Spectre.Console;
 
-static void StartProgram()
+static async Task StartProgram()
 {
     while (true)
     {
         try
         {
-            UserInterfaceHelper.StartupMenu();
+            await ShiftsUI.StartupMenu();
             break;
         }
         catch (Exception ex)
@@ -20,4 +20,4 @@ static void StartProgram()
     }
 }
 
-StartProgram();
+await StartProgram();

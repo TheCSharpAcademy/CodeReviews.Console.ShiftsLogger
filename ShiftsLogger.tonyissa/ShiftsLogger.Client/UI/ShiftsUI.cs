@@ -10,28 +10,35 @@ public static class ShiftsUI
         "View shifts",
         "Create shifts",
         "Delete shifts",
-        "Update shifts"
+        "Update shifts",
+        "Quit"
     ];
 
     public static async Task StartupMenu()
     {
-        var result = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-            .Title("What do you want to do?")
-            .AddChoices(MainMenuOptions)
-        );
-
-        switch (result)
+        while (true)
         {
-            case "View shifts":
-                await ShiftsService.ListShiftsAsync();
-                break;
-            case "Create shifts":
-                break;
-            case "Delete shifts":
-                break;
-            case "Update shifts":
-                break;
+            Console.Clear();
+            var result = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title("What do you want to do?")
+                .AddChoices(MainMenuOptions)
+            );
+
+            switch (result)
+            {
+                case "View shifts":
+                    await ShiftsService.ListShiftsAsync();
+                    break;
+                case "Create shifts":
+                    break;
+                case "Delete shifts":
+                    break;
+                case "Update shifts":
+                    break;
+                default:
+                    return;
+            }
         }
     }
 
@@ -51,6 +58,5 @@ public static class ShiftsUI
         }
 
         AnsiConsole.Write(table);
-        Console.ReadKey();
     }
 }
