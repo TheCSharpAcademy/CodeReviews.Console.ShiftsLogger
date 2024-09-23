@@ -13,5 +13,5 @@ public class Shift
     public string Duration { get; set; } = null!;
     public int WorkerId { get; set; }
     [ForeignKey("WorkerId")]
-    public Worker Worker { get; set; } = null!;
+    public Worker? Worker { get; set; }
 }

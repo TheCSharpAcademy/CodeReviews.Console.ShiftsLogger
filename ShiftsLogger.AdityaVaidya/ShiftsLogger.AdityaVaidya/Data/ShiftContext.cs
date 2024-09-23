@@ -17,4 +17,14 @@ public class ShiftContext: DbContext
             optionsBuilder.UseSqlServer(connectionString);
         }
     }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Shift>()
+            .HasOne(s => s.Worker)
+            .WithMany() // Assuming a worker can have many shifts
+            .HasForeignKey(s => s.WorkerId)
+            .OnDelete(DeleteBehavior.Cascade); // This enables cascade delete
+
+        base.OnModelCreating(modelBuilder);
+    }
 }

@@ -8,8 +8,7 @@ DotNetEnv.Env.Load();
 // Add services to the container.
 builder.Services.AddControllers();
 var connectionString = DotNetEnv.Env.GetString("CONNECTION_STRING");
-builder.Services.AddDbContext<ShiftContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ShiftContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
