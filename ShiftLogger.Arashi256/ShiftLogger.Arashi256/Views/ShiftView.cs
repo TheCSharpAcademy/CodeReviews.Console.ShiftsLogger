@@ -119,7 +119,7 @@ namespace ShiftLogger_Frontend.Arashi256.Views
 
         private async Task AddNewShiftAsync()
         {
-            WorkerShiftDetails? workerShiftDetails = await GetWorkerShiftDetails(0, null, null);
+            WorkerShiftDetails? workerShiftDetails = await GetWorkerShiftDetails();
             if (workerShiftDetails == null)
             {
                 AnsiConsole.MarkupLine("\n[yellow]Operation cancelled[/]\n");
@@ -174,10 +174,10 @@ namespace ShiftLogger_Frontend.Arashi256.Views
             AnsiConsole.Write(tblWorkerShift);
         }
 
-        private async Task<WorkerShiftDetails?> GetWorkerShiftDetails(int? wid, DateTime? currentShiftStart, DateTime? currentShiftEnd)
+        private async Task<WorkerShiftDetails?> GetWorkerShiftDetails()
         {
             bool isValidShift = false;
-            int workerId = wid ?? 0;
+            int workerId = 0;
             string firstName, lastName;
             DateTime workerShiftStart, workerShiftEnd;
             List<WorkerOutputDto>? workers = await _workerView.ListWorkersAsync();
@@ -209,7 +209,7 @@ namespace ShiftLogger_Frontend.Arashi256.Views
                         AnsiConsole.MarkupLine("\n[yellow]The shift end cannot be before shift start. Try again.[/]\n");
                 } while (!isValidShift);
                 // Create the worker shift details
-                return new WorkerShiftDetails { WorkerId = (int)workerId, ShiftStart = workerShiftStart, ShiftEnd = workerShiftEnd, DisplayFirstName = firstName, DisplayLastName = lastName };
+                return new WorkerShiftDetails { WorkerId = workerId, ShiftStart = workerShiftStart, ShiftEnd = workerShiftEnd, DisplayFirstName = firstName, DisplayLastName = lastName };
             }
             else
             {
@@ -366,7 +366,7 @@ namespace ShiftLogger_Frontend.Arashi256.Views
                     AnsiConsole.MarkupLine("[white]Please update the Worker for this shift\n[/]");
                     WorkerShiftOutputDto shiftToUpdate = workershifts[workershiftId - 1];
                     int pkid = shiftToUpdate.Id;
-                    WorkerShiftDetails? updatedShiftDetails = await GetWorkerShiftDetails(pkid, shiftToUpdate.ShiftStart, shiftToUpdate.ShiftEnd);
+                    WorkerShiftDetails? updatedShiftDetails = await GetWorkerShiftDetails();
                     if (updatedShiftDetails != null)
                     {
                         WorkerShiftInputDto updatedWorkerInputDto = PackageInputWorkerShift(pkid, updatedShiftDetails.WorkerId, updatedShiftDetails.ShiftStart, updatedShiftDetails.ShiftEnd);

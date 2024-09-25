@@ -251,7 +251,6 @@ namespace ShiftLogger_Frontend.Arashi256.Views
                 else
                 {
                     WorkerOutputDto workerToDelete = workers[workerid - 1];
-                    int pkid = workerToDelete.Id;
                     DisplayWorker(workerToDelete);
                     if (AnsiConsole.Confirm($"[yellow]WARNING: Deleting this worker will also delete any associated worker shifts. This action is permanent.\nAre you sure you want to delete this worker?[/]"))
                     {
