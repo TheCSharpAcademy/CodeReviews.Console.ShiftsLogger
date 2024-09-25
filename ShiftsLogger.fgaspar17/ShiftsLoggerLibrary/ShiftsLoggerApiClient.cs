@@ -17,9 +17,9 @@ public sealed class ShiftsLoggerApiClient
         );
 
     private ShiftsLoggerApiClient() { }
-    
 
-    public static HttpClient Instance { get =>  instance.Value; }
+
+    public static HttpClient Instance { get => instance.Value; }
 
     public async Task<T> GetAsyncDataFromShiftsLogger<T>(string endpoint) where T : class, new()
     {
