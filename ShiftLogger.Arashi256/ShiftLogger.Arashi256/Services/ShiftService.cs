@@ -15,7 +15,7 @@ namespace ShiftLogger_Frontend.Arashi256.Services
         public ShiftService()
         {
             AppManager appManager = new AppManager();
-            string? baseURL = appManager.ApiBaseURL;
+            string? baseURL = appManager.ApiBaseUrl;
             if (string.IsNullOrEmpty(baseURL))
             {
                 throw new ArgumentException("ERROR: API URL could not be loaded fron App.config");

@@ -2,7 +2,7 @@
 {
     internal class WorkerShiftDetails
     {
-        public int WorkerId { get; set; } = 0;
+        public int WorkerId { get; set; };
         public DateTime ShiftStart { get; set; } = DateTime.Now;
         public DateTime ShiftEnd { get; set; } = DateTime.Now;
         public string DisplayFirstName { get; set; } = string.Empty;

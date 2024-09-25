@@ -119,7 +119,7 @@ namespace ShiftLogger_Frontend.Arashi256.Views
 
         private async Task AddNewShiftAsync()
         {
-            WorkerShiftDetails? workerShiftDetails = await GetWorkerShiftDetails(null, null, null);
+            WorkerShiftDetails? workerShiftDetails = await GetWorkerShiftDetails(0, null, null);
             if (workerShiftDetails == null)
             {
                 AnsiConsole.MarkupLine("\n[yellow]Operation cancelled[/]\n");
@@ -174,10 +174,10 @@ namespace ShiftLogger_Frontend.Arashi256.Views
             AnsiConsole.Write(tblWorkerShift);
         }
 
-        private async Task<WorkerShiftDetails?> GetWorkerShiftDetails(int? worker, DateTime? currentShiftStart, DateTime? currentShiftEnd)
+        private async Task<WorkerShiftDetails?> GetWorkerShiftDetails(int? wid, DateTime? currentShiftStart, DateTime? currentShiftEnd)
         {
             bool isValidShift = false;
-            int workerId;
+            int workerId = wid ?? 0;
             string firstName, lastName;
             DateTime workerShiftStart, workerShiftEnd;
             List<WorkerOutputDto>? workers = await _workerView.ListWorkersAsync();
@@ -209,7 +209,7 @@ namespace ShiftLogger_Frontend.Arashi256.Views
                         AnsiConsole.MarkupLine("\n[yellow]The shift end cannot be before shift start. Try again.[/]\n");
                 } while (!isValidShift);
                 // Create the worker shift details
-                return new WorkerShiftDetails { WorkerId = workerId, ShiftStart = workerShiftStart, ShiftEnd = workerShiftEnd, DisplayFirstName = firstName, DisplayLastName = lastName };
+                return new WorkerShiftDetails { WorkerId = (int)workerId, ShiftStart = workerShiftStart, ShiftEnd = workerShiftEnd, DisplayFirstName = firstName, DisplayLastName = lastName };
             }
             else
             {
@@ -321,7 +321,6 @@ namespace ShiftLogger_Frontend.Arashi256.Views
                 else
                 {
                     WorkerShiftOutputDto shiftToDelete = workershifts[workershiftid - 1];
-                    int pkid = shiftToDelete.Id;
                     DisplayWorkerShift(shiftToDelete);
                     if (AnsiConsole.Confirm($"[yellow]WARNING: This action is permanent.\nAre you sure you want to delete this shift?[/]"))
                     {

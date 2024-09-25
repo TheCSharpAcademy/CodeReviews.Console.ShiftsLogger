@@ -4,7 +4,7 @@ namespace ShiftLogger_Frontend.Arashi256.Config
 {
     internal class AppManager
     {
-        public string? ApiBaseURL { get; private set; }
+        public string? ApiBaseUrl { get; private set; }
         public string? PreferredDateTimeFormat { get; private set; }
         private NameValueCollection? _appConfig;
 
@@ -19,7 +19,7 @@ namespace ShiftLogger_Frontend.Arashi256.Config
                 }
                 else
                 {
-                    ApiBaseURL = _appConfig.Get("APIBaseURL");
+                    ApiBaseUrl = _appConfig.Get("APIBaseURL");
                     PreferredDateTimeFormat = _appConfig.Get("PreferredDateTimeFormat");
                 }
             }
