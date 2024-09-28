@@ -17,23 +17,31 @@ public class UserInput
     
     public static async Task<bool> SwitchMenuChoice(string menuChoice)
     {
-        switch (menuChoice)
+        try
         {
-            case "Add a shift":
-                Shift shift = new();
-                return await client.PostShift(EnterShiftProperties(shift));
-            case "Delete a shift":
-                string shiftId = await ChooseShift();
-                PresentationLayer.ShowSingleShift(shiftId, "Deleting");
-                return await client.DeleteShift(shiftId);
-            case "Edit a shift":
-                shiftId = await ChooseShift();
-                PresentationLayer.ShowSingleShift(shiftId, "Editing");
-                return await client.EditShift(shiftId);
-            case "View all shifts":
-                return await PresentationLayer.ShowAllShifts();
-            case "Exit":
-                return true;
+            switch (menuChoice)
+            {
+                case "Add a shift":
+                    Shift shift = new();
+                    return await client.PostShift(EnterShiftProperties(shift));
+                case "Delete a shift":
+                    string shiftId = await ChooseShift();
+                    PresentationLayer.ShowSingleShift(shiftId, "Deleting");
+                    return await client.DeleteShift(shiftId);
+                case "Edit a shift":
+                    shiftId = await ChooseShift();
+                    PresentationLayer.ShowSingleShift(shiftId, "Editing");
+                    return await client.EditShift(shiftId);
+                case "View all shifts":
+                    return await PresentationLayer.ShowAllShifts();
+                case "Exit":
+                    return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.Markup($"[red]Something went wrong. Details: {ex.Message}[/]");
+            Console.ReadLine();
         }
         return false;
     }

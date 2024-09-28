@@ -22,9 +22,9 @@ public class ShiftsLoggerHttpClient
         {
             shifts = await _httpClient.GetFromJsonAsync<List<Shift>>(_baseAddress);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
+            throw;
         }
         if (shifts is null)
         {
@@ -41,9 +41,9 @@ public class ShiftsLoggerHttpClient
         {    
             shift = await _httpClient.GetFromJsonAsync<Shift>($"{shiftId}");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
+            throw;
         }
         if (shift is null)
         {
@@ -64,9 +64,9 @@ public class ShiftsLoggerHttpClient
             }     
             AnsiConsole.Markup($"[green]Operation successful.[/]");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
+            throw;
         }
         Console.ReadLine();
         return false;
@@ -83,9 +83,9 @@ public class ShiftsLoggerHttpClient
             }
             AnsiConsole.Markup($"[green]Operation successful.[/]");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
+            throw;
         }
         Console.ReadLine();
         return false;
@@ -103,9 +103,9 @@ public class ShiftsLoggerHttpClient
             }
             AnsiConsole.Markup($"[green]Operation successful.[/]");
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenEverything);
+            throw;
         }
         Console.ReadLine();
         return false;
