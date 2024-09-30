@@ -90,25 +90,37 @@ public class UserInput
 
         Console.Clear();
 
-        AnsiConsole.MarkupLine("[grey bold](Enter '0' to go back to menu)[/]");
-        var name = AnsiConsole.Ask<string>("[yellow bold]Enter the Name of the Employee: [/]");
-        if (name == "0") return null;
+        if (Validation.UpdateConfirm("Do you want to update employee name: ", "yellow"))
+        {
+            AnsiConsole.MarkupLine("[grey bold](Enter '0' to go back to menu)[/]");
+            var name = AnsiConsole.Ask<string>("[yellow bold]Enter the Name of the Employee: [/]");
+            if (name == "0") return null;
+            updateShift.EmployeeName = name;
+        }
+
 
         View.ShowDateInstruction();
 
-        var start = Validation.CheckDate("Start");
-        if (start == null) return null;
-
-        var end = Validation.CheckDate("End");
-        if (end == null) return null;
-
-        if (end < start)
+        if (Validation.UpdateConfirm("Do you want to update Start time of the shift: ", "green"))
         {
-            end = end.Value.AddDays(1);
+            var start = Validation.CheckDate("Start");
+            if (start == null) return null;
+            updateShift.Start = start.Value;
         }
-        updateShift.EmployeeName = name;
-        updateShift.Start = start.Value;
-        updateShift.End = end.Value;
+        Console.WriteLine();
+        if (Validation.UpdateConfirm("Do you want to update End time of the shift: ", "red"))
+        {
+            var end = Validation.CheckDate("End");
+            if (end == null) return null;
+            updateShift.End = end.Value;
+        }
+
+
+
+        if (updateShift.End < updateShift.Start)
+        {
+            updateShift.End = updateShift.End.AddDays(1);
+        }
 
         return updateShift;
     }
@@ -117,9 +129,9 @@ public class UserInput
     {
         AnsiConsole.MarkupLine("[grey bold](Enter '0' to go back to menu)[/]");
         int shiftId = AnsiConsole.Ask<int>("[greenyellow bold]Enter the Id to Delete: [/]");
-        while(Validation.CheckId(shifts, shiftId))
+        while (Validation.CheckId(shifts, shiftId))
         {
-            if(shiftId == 0) return 0;
+            if (shiftId == 0) return 0;
             AnsiConsole.MarkupLine($"[red bold]Id: {shiftId} doesn't exist in the database. Please Enter another Id.[/]");
             shiftId = AnsiConsole.Ask<int>("[olive bold]Please Enter the Id in present in the above table: [/]");
         }
