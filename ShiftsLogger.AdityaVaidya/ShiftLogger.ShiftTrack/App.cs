@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Text;
 using ShiftLogger.ShiftTrack.Views;
-using ShiftLogger.ShiftTrack.Helper;
 using ShiftLogger.ShiftTrack.Models;
 
 namespace ShiftLogger.ShiftTrack;
@@ -34,13 +33,16 @@ internal class App
             {
                 selection = Display.GetSelection("What do you wish to do", new[] { "Create a Worker", "Create a shift", "Go to Main Menu"});
                 if (selection == "Create a Worker")
-                    await PostWorkerAsync(client);
-                else if (selection == "Create  a shift")
                 {
-                    //Shift userInput = Display.GetShiftDetails();
-                    //PostShiftAsync(client, userInput);
-                } 
-                    
+                    Worker worker = Display.GetWorkerDetails();
+                    await PostWorkerAsync(client, worker);
+                }
+                else if (selection == "Create a shift")
+                {
+                    await DisplayWorkersAsync(client);
+                    Shift shift = Display.GetShiftDetails();
+                    await PostShiftAsync(client, shift);
+                }
             }
             else if (selection == "Edit Worker/Shift")
             {
@@ -65,9 +67,9 @@ internal class App
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             string json = await client.GetStringAsync($"https://localhost:7134/api/Workers");
-            List<Worker> workers = JsonSerializer.Deserialize<List<Worker>>(json, options);
+            List<Worker> ?workers = JsonSerializer.Deserialize<List<Worker>>(json, options);
             Display.DisplayWorkers(workers, new string[] { "Worker ID", "Name", "Email ID" });
-            Console.ReadLine();
+            Console.WriteLine("Press any key to continue");
         }
         catch (HttpRequestException ex)
         {
@@ -91,8 +93,14 @@ internal class App
     {
         try
         {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
             string json = await client.GetStringAsync($"https://localhost:7134/api/Shifts");
-            Console.WriteLine(json);
+            List<Shift>? shift = JsonSerializer.Deserialize<List<Shift>>(json, options);
+            Display.DisplayShifts(shift, new string[] { "Date", "Start Time", "End Time", "Duration", "WorkerId" });
+            Console.WriteLine("Press any key to continue");
         }
         catch (HttpRequestException ex)
         {
@@ -112,24 +120,11 @@ internal class App
         }
     }
 
-    private async Task PostWorkerAsync(HttpClient client)
+    private async Task PostWorkerAsync(HttpClient client, Worker worker)
     {
         try
         {
-            string emailId;
-            Console.Write("Enter Name: ");
-            string name = Console.ReadLine();
-            do
-            {
-                Console.Write("Enter Email: ");
-                emailId = Console.ReadLine();
-            } while (!Validation.IsValidEmail(emailId));
             var url = "https://localhost:7134/api/Workers";
-            var worker = new
-            {
-                name = name,
-                emailId = emailId
-            };
             var jsonContent = new StringContent(JsonSerializer.Serialize(worker), Encoding.UTF8, "application/json");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
@@ -162,11 +157,25 @@ internal class App
         }
     }
 
-    private async Task PostShiftAsync(HttpClient client, Shift userInput)
+    private async Task PostShiftAsync(HttpClient client, Shift shift)
     {
         try
         {
-           
+            
+            var url = "https://localhost:7134/api/Shifts";
+            var jsonContent = new StringContent(JsonSerializer.Serialize(shift), Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+            var response = await client.PostAsync(url, jsonContent);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Shift added successfully: {responseContent}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to add shift. Status code: {response.StatusCode}");
+            }
         }
         catch (HttpRequestException ex)
         {

@@ -10,7 +10,6 @@ namespace ShiftsLogger.AdityaVaidya.Controllers
     public class ShiftsController : ControllerBase
     {
         private readonly ShiftContext _context;
-
         public ShiftsController(ShiftContext context)
         {
             _context = context;
@@ -46,9 +45,7 @@ namespace ShiftsLogger.AdityaVaidya.Controllers
             {
                 return BadRequest();
             }
-
             _context.Entry(shift).State = EntityState.Modified;
-
             try
             {
                 await _context.SaveChangesAsync();
