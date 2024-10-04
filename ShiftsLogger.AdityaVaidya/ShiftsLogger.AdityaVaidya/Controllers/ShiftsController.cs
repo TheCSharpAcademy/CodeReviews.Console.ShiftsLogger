@@ -70,9 +70,9 @@ namespace ShiftsLogger.AdityaVaidya.Controllers
         [HttpPost]
         public async Task<ActionResult<Shift>> PostShift(Shift shift)
         {
+            Console.WriteLine("Hey Aditya Vaidya : ",shift);
             _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction("GetShift", new { id = shift.ShiftId }, shift);
         }
 

@@ -27,30 +27,10 @@ internal static class Display
         AnsiConsole.Write(table);
     }
 
-    public static void DisplayShifts(List<Shift> shifts, string[] columns, string title = "All Shifts")
-    {
-        var table = new Table();
-        table.Title = new TableTitle(title);
-        foreach (var column in columns)
-        {
-            table.AddColumn(column);
-        }
-        foreach (var shift in shifts)
-        {
-            table.AddRow(shift.Date,shift.StartTime, shift.EndTime, shift.Duration, shift.WorkerId.ToString());
-        }
-        AnsiConsole.Write(table);
-    }
-
-    public static Shift GetShiftDetails()
+    public static Shift GetShiftDetails(int workerId)
     {
         Shift shift = new Shift();
-        string input;
-        do
-        {
-            Console.Write("Enter the id of the worker for whom you wish to create the post:");
-            input = Console.ReadLine();
-        } while (!Validation.IsGivenInputInteger(input));
+        shift.WorkerId = workerId;
         do
         {
             Console.Write("Enter a date in the format yyyy-MM-dd (e.g., 2024-03-14) :");
@@ -70,6 +50,23 @@ internal static class Display
         return shift;
     }
 
+    public static void DisplayShifts<T>(List<T> shiftDetails, string[] columns, string title = "All Shifts")
+    {
+        var table = new Table();
+        table.Title = new TableTitle(title);
+        foreach (var column in columns)
+        {
+            table.AddColumn(column);
+        }
+        foreach (var shift in shiftDetails)
+        {
+            var properties = shift.GetType().GetProperties();
+            var rowValues = properties.Select(prop => prop.GetValue(shift)?.ToString() ?? string.Empty).ToArray();
+            table.AddRow(rowValues);
+        }
+        AnsiConsole.Write(table);
+    }
+
     public static Worker GetWorkerDetails()
     {
         Worker worker = new Worker();
@@ -81,5 +78,27 @@ internal static class Display
             worker.EmailId = Console.ReadLine();
         } while (!Validation.IsValidEmail(worker.EmailId));
         return worker;
+    }
+
+    public static int GetWorkerId()
+    {
+        string input;
+        do
+        {
+            Console.Write("Enter the Id of the worker:");
+            input = Console.ReadLine();
+        } while (!Validation.IsGivenInputInteger(input));
+        return int.Parse(input);
+    }
+
+    public static int GetShiftId()
+    {
+        string input;
+        do
+        {
+            Console.Write("Enter the Id of the shift you want to delete:");
+            input = Console.ReadLine();
+        } while (!Validation.IsGivenInputInteger(input));
+        return int.Parse(input);
     }
 }
