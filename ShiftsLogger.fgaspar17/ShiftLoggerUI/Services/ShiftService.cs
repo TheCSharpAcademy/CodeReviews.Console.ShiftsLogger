@@ -56,7 +56,7 @@ public class ShiftService
         bool isCancelled;
         string oldShiftId, start, end, employeeId;
 
-        ShowShiftTable();
+        if (!ShowShiftTable()) return;
 
         ExistingModelValidator<string, Shift> existingShift = new()
         {
@@ -83,7 +83,7 @@ public class ShiftService
             GetModel = EmployeeService.GetEmployeeById
         };
 
-        EmployeeService.ShowEmployeeTable();
+        if(!EmployeeService.ShowEmployeeTable()) return;
 
         (isCancelled, employeeId) = EmployeeService.AskForEmployeeId(existingEmployee);
         if (isCancelled) return;
@@ -113,7 +113,7 @@ public class ShiftService
         bool isCancelled;
         string id;
 
-        ShowShiftTable();
+        if (!ShowShiftTable()) return;
 
         ExistingModelValidator<string, Shift> existingShift = new()
         {
@@ -137,7 +137,7 @@ public class ShiftService
 
     public static void ShowShifts()
     {
-        ShowShiftTable();
+        if (!ShowShiftTable()) return;
         Prompter.PressKeyToContinuePrompt();
     }
 
@@ -146,7 +146,7 @@ public class ShiftService
         bool isCancelled;
         string employeeId;
 
-        EmployeeService.ShowEmployeeTable();
+        if(!EmployeeService.ShowEmployeeTable()) return;
 
         ExistingModelValidator<string, Employee> existingEmployee = new()
         {
@@ -187,9 +187,17 @@ public class ShiftService
         return shifts.Where(s => s.ShiftId.ToString() == input).FirstOrDefault();
     }
 
-    public static void ShowShiftTable()
+    public static bool ShowShiftTable()
     {
-        List<ShiftDto> shifts = ShiftController.GetShiftsAsync().Result.Select(s => ShiftMapper.MapToDto(s)).ToList();
-        OutputRenderer.ShowTable(shifts, "Shifts");
+        List<Shift> shifts = ShiftController.GetShiftsAsync().Result;
+        if (shifts == null)
+        {
+            Prompter.PressKeyToContinuePrompt();
+            return false;
+        }
+        List<ShiftDto> shiftsDto = shifts.Select(s => ShiftMapper.MapToDto(s)).ToList();
+        OutputRenderer.ShowTable(shiftsDto, "Shifts");
+
+        return true;
     }
 }

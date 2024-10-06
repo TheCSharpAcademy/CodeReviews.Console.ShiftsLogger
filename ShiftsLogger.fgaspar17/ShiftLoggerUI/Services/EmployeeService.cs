@@ -41,7 +41,7 @@ public class EmployeeService
         bool isCancelled;
         string oldId, oldName, newName;
 
-        ShowEmployeeTable();
+        if (!ShowEmployeeTable()) return;
 
         ExistingModelValidator<string, Employee> existingEmployee = new()
         {
@@ -82,7 +82,7 @@ public class EmployeeService
         bool isCancelled;
         string id;
 
-        ShowEmployeeTable();
+        if (!ShowEmployeeTable()) return;
 
         ExistingModelValidator<string, Employee> existingEmployee = new()
         {
@@ -106,7 +106,7 @@ public class EmployeeService
 
     public static void ShowEmployees()
     {
-        ShowEmployeeTable();
+        if (!ShowEmployeeTable()) return;
         Prompter.PressKeyToContinuePrompt();
     }
 
@@ -134,10 +134,18 @@ public class EmployeeService
         return employees.Where(e => e.EmployeeId.ToString() == input).FirstOrDefault();
     }
 
-    public static void ShowEmployeeTable()
+    public static bool ShowEmployeeTable()
     {
-        List<EmployeeDto> employees = EmployeeController.GetEmployeesAsync().Result.Select(e => EmployeeMapper.MapToDto(e)).ToList();
-        OutputRenderer.ShowTable(employees, "Employees");
+        List<Employee> employees = EmployeeController.GetEmployeesAsync().Result;
+        if (employees == null)
+        {
+            Prompter.PressKeyToContinuePrompt();
+            return false;
+        }
+
+        List<EmployeeDto> employeesDto = employees.Select(e => EmployeeMapper.MapToDto(e)).ToList();
+        OutputRenderer.ShowTable(employeesDto, "Employees");
+        return true;
     }
 
 }
