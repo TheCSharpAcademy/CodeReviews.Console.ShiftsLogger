@@ -6,7 +6,7 @@ using ShiftsLogger.API.Models.Shifts;
 namespace ShiftsLogger.API.Controllers
 {
   [ApiController]
-  [Route("[controller]")]
+  [Route("api/[controller]")]
   public class ShiftsController : ControllerBase
   {
     private readonly IShiftServices _services;
