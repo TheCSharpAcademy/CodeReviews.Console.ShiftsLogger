@@ -12,7 +12,7 @@ using ShiftsLogger.API.Data;
 namespace ShiftsLogger.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241011083413_Initial")]
+    [Migration("20241011095606_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace ShiftsLogger.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ShiftsLogger.API.Data.Shift", b =>
+            modelBuilder.Entity("Shift", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -104,7 +104,7 @@ namespace ShiftsLogger.API.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ShiftsLogger.API.Data.Shift", b =>
+            modelBuilder.Entity("Shift", b =>
                 {
                     b.HasOne("ShiftsLogger.API.Data.Worker", "Worker")
                         .WithMany("Shifts")
