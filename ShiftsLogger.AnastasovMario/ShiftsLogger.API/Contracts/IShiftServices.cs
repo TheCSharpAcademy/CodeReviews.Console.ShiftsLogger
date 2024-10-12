@@ -7,6 +7,7 @@ namespace ShiftsLogger.API.Contracts
   {
     Task<IEnumerable<ShiftDto>> GetAllShiftsAsync();
     Task<ShiftDto> GetShiftByIdAsync(int id);
+    Task<ShiftDto> GetShift(int id);
     Task AddShiftAsync(Shift shift);
     Task UpdateShiftAsync(int shiftId, ShiftEditDto shift);
     Task DeleteShiftAsync(int id);

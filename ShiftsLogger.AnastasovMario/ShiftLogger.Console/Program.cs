@@ -15,6 +15,7 @@ while (isAppRunning)
         MenuOptions.AddShift,
         MenuOptions.DeleteShift,
         MenuOptions.UpdateShift,
+        MenuOptions.GetShift,
         MenuOptions.GetAllShifts,
         MenuOptions.Quit));
 
@@ -28,6 +29,9 @@ while (isAppRunning)
       break;
     case MenuOptions.UpdateShift:
       await apiClient.UpdateShiftAsync();
+      break;
+    case MenuOptions.GetShift:
+      await apiClient.GetShiftAsync();
       break;
     case MenuOptions.GetAllShifts:
       await apiClient.GetAllShiftsAsync();

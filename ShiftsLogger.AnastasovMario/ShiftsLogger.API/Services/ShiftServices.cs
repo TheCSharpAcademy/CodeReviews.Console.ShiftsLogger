@@ -42,6 +42,22 @@ namespace ShiftsLogger.API.Services
         .ToListAsync();
     }
 
+    public async Task<ShiftDto> GetShift(int id)
+    {
+      var shift = await _context.Shifts
+        .Where(s => s.Id == id)
+        .Select(s => new ShiftDto
+        {
+          Worker = s.Worker!.FirstName + " " + s.Worker.LastName,
+          StartShift = s.Start.ToString("MM/dd/yyyy HH:mm"),
+          EndShift = s.End.ToString("MM/dd/yyyy HH:mm")
+        })
+        .FirstOrDefaultAsync()
+        ?? throw new Exception("Shift with this Id doesn't exists");
+
+      return shift;
+    }
+
     public async Task<ShiftDto> GetShiftByIdAsync(int id)
     {
       var shift = await _context.Shifts

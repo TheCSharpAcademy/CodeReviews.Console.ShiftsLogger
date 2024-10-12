@@ -33,7 +33,9 @@ namespace ShiftLoggerConsoleUI
         {
           var jsonResponse = await response.Content.ReadAsStringAsync();
           var shifts = JsonConvert.DeserializeObject<IEnumerable<ShiftDto>>(jsonResponse)!;
+
           UserInterface.ShowShifts(shifts);
+
 
           Helper.ContinueMessage();
         }
@@ -129,6 +131,35 @@ namespace ShiftLoggerConsoleUI
         else
         {
           var jsonResponse = await response.Content.ReadAsStringAsync();
+          Console.WriteLine(jsonResponse);
+        }
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex.Message);
+      }
+    }
+
+    public async Task GetShiftAsync()
+    {
+      try
+      {
+        int shiftId = AnsiConsole.Ask<int>("Enter the Id of the shift you want to GET \n");
+
+        var response = await _httpClient.GetAsync($"api/shifts/{shiftId}");
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+          var shift = JsonConvert.DeserializeObject<ShiftDto>(jsonResponse)!;
+
+          UserInterface.ShowShift(shift);
+
+          Helper.ContinueMessage();
+        }
+        else
+        {
           Console.WriteLine(jsonResponse);
         }
       }

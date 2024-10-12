@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShiftsLogger.API.Contracts;
-using ShiftsLogger.API.Data;
 using ShiftsLogger.API.Models.Shifts;
 
 namespace ShiftsLogger.API.Controllers
@@ -23,6 +22,21 @@ namespace ShiftsLogger.API.Controllers
         var shifts = await _services.GetAllShiftsAsync();
 
         return Ok(shifts);
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex.Message);
+      }
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetShift(int id)
+    {
+      try
+      {
+        var shift = await _services.GetShift(id);
+
+        return Ok(shift);
       }
       catch (Exception ex)
       {

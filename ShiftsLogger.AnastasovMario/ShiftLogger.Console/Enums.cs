@@ -5,6 +5,7 @@
     AddShift,
     DeleteShift,
     UpdateShift,
+    GetShift,
     GetAllShifts,
     Quit
   }
