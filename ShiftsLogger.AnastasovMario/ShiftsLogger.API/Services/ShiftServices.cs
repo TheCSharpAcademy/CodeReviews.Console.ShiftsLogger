@@ -36,8 +36,8 @@ namespace ShiftsLogger.API.Services
         .Select(s => new ShiftDto
         {
           Worker = s.Worker!.FirstName + " " + s.Worker.LastName,
-          StartShift = s.Start.ToString("MMMM dd, yyyy, hh:mm tt"),
-          EndShift = s.End.ToString("MMMM dd, yyyy, hh:mm tt")
+          StartShift = s.Start.ToString("MM/dd/yyyy HH:mm"),
+          EndShift = s.End.ToString("MM/dd/yyyy HH:mm")
         })
         .ToListAsync();
     }

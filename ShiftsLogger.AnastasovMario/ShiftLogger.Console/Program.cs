@@ -15,24 +15,27 @@ while (isAppRunning)
         MenuOptions.AddShift,
         MenuOptions.DeleteShift,
         MenuOptions.UpdateShift,
-        MenuOptions.GetShift,
         MenuOptions.GetAllShifts,
         MenuOptions.Quit));
 
   switch (option)
   {
-    case MenuOptions.GetShift:
-      break;
     case MenuOptions.AddShift:
+      await apiClient.AddShiftAsync();
       break;
     case MenuOptions.DeleteShift:
+      await apiClient.DeleteShiftAsync();
       break;
     case MenuOptions.UpdateShift:
+      await apiClient.UpdateShiftAsync();
       break;
     case MenuOptions.GetAllShifts:
       await apiClient.GetAllShiftsAsync();
       break;
     case MenuOptions.Quit:
+      isAppRunning = false;
+      Console.WriteLine("\nGoodbye\n");
+      Environment.Exit(0);
       break;
     default:
       break;

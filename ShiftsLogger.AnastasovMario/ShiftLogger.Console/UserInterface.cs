@@ -11,10 +11,11 @@ namespace ShiftLoggerConsoleUI
       table.AddColumn("Name");
       table.AddColumn("Start Shift");
       table.AddColumn("End Shift");
+      table.AddColumn("Duration");
 
       foreach (var shift in shifts)
       {
-        table.AddRow(shift.Worker, shift.StartShift, shift.EndShift);
+        table.AddRow(shift.Worker, shift.StartShift, shift.EndShift, shift.Duration.ToString());
       }
 
       AnsiConsole.Write(table);

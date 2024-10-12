@@ -2,7 +2,6 @@
 {
   public enum MenuOptions
   {
-    GetShift,
     AddShift,
     DeleteShift,
     UpdateShift,
