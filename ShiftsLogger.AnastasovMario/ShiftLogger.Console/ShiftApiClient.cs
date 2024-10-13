@@ -88,8 +88,7 @@ namespace ShiftLoggerConsoleUI
 
         if (response.IsSuccessStatusCode)
         {
-          var jsonResponse = await response.Content.ReadAsStringAsync();
-          Console.WriteLine($"Successfully deleted a shift:");
+          Console.WriteLine($"Successfully deleted a shift");
         }
         else
         {
