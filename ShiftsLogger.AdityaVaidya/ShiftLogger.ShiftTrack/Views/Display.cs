@@ -50,6 +50,28 @@ internal static class Display
         return shift;
     }
 
+    public static Shift GetEditedShiftDetails()
+    {
+        var shift = new Shift();
+        do
+        {
+            Console.Write("Enter a date in the format yyyy-MM-dd (e.g., 2024-03-14) :");
+            shift.Date = Console.ReadLine();
+        } while (!Validation.ValidateInputDate(shift.Date));
+        do
+        {
+            Console.Write("Enter valid Start-time in the format HH:mm (e.g., 12:30) :");
+            shift.StartTime = Console.ReadLine();
+        } while (!Validation.ValidateStartSessionTime(shift.StartTime));
+        do
+        {
+            Console.Write("Enter valid End-time in the format HH:mm (e.g., 12:35) :");
+            shift.EndTime = Console.ReadLine();
+        } while (!Validation.ValidateEndSessionTime(shift.StartTime, shift.EndTime));
+        shift.Duration = Validation.CalculateShiftDuration(shift.StartTime, shift.EndTime);
+        return shift;
+    }
+
     public static void DisplayShifts<T>(List<T> shiftDetails, string[] columns, string title = "All Shifts")
     {
         var table = new Table();
@@ -97,6 +119,17 @@ internal static class Display
         do
         {
             Console.Write("Enter the Id of the shift you want to delete:");
+            input = Console.ReadLine();
+        } while (!Validation.IsGivenInputInteger(input));
+        return int.Parse(input);
+    }
+
+    public static int GetShiftIdEdit()
+    {
+        string input;
+        do
+        {
+            Console.Write("Enter the Id of the shift you want to edit:");
             input = Console.ReadLine();
         } while (!Validation.IsGivenInputInteger(input));
         return int.Parse(input);

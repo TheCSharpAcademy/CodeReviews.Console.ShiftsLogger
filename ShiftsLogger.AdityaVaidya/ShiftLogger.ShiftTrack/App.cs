@@ -27,7 +27,10 @@ internal class App
                 if (selection == "View Workers")
                     await DisplayWorkersAsync(client);
                 else if (selection == "View shifts")
+                {
                     await DisplayShiftsAsync(client);
+                }
+                    
             }
             else if (selection == "Create a Worker/Shift")
             {
@@ -39,14 +42,24 @@ internal class App
                 }
                 else if (selection == "Create a shift")
                 {
-                    await DisplayWorkersAsync(client);
-                    int workerId = Display.GetWorkerId();
-                    bool workerExists = await CheckWorkerExistsAsync(client, workerId);
-                    if (workerExists)
+                    bool workerExist = await DisplayWorkersAsync(client);
+                    if (workerExist)
                     {
-                        Shift shift = Display.GetShiftDetails(workerId);
-                        await PostShiftAsync(client, shift);
+                        int workerId = Display.GetWorkerId();
+                        bool workerIdExists = await CheckWorkerExistsAsync(client, workerId);
+                        if (workerIdExists)
+                        {
+                            Shift shift = Display.GetShiftDetails(workerId);
+                            await PostShiftAsync(client, shift);
+                        }
+                        else
+                        {
+                            Console.WriteLine("The entered worker does not exist. Please enter valid workerId");
+                            Console.ReadLine();
+                        }
                     }
+                    else
+                        Console.WriteLine("No worker exists to create a shift. Kindly create worker first");
                 }
             }
             else if (selection == "Edit Worker/Shift")
@@ -54,51 +67,90 @@ internal class App
                 selection = Display.GetSelection("What do you wish to do?", new[] { "Edit A Worker", "Edit a shift", "Go to Main Menu" });
                 if (selection == "Edit A Worker")
                 {
-                    await DisplayWorkersAsync(client);
-                    int workerId = Display.GetWorkerId();
-                    bool workerExists = await CheckWorkerExistsAsync(client, workerId);
-                    if (workerExists)
+                    bool workerExist = await DisplayWorkersAsync(client);
+                    if (workerExist)
                     {
-                        Worker worker = Display.GetWorkerDetails();
-                        worker.WorkerId = workerId;
-                        await PutWorkersAsync(client, worker);
+                        int workerId = Display.GetWorkerId();
+                        bool workerExists = await CheckWorkerExistsAsync(client, workerId);
+                        if (workerExists)
+                        {
+                            Worker worker = Display.GetWorkerDetails();
+                            worker.WorkerId = workerId;
+                            await PutWorkersAsync(client, worker);
+                        }
+                        else
+                        {
+                            Console.WriteLine("The given worker id does not exist.");
+                            Console.ReadLine();
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("The given worker id does not exist.");
+                        Console.WriteLine("No worker exists to edit. Kindly create worker first");
                         Console.ReadLine();
                     }
+                        
                 }
                 else if (selection == "Edit a shift")
                 {
-                    await DisplayShiftsAsync(client);
-                    int shiftId = Display.GetShiftId();
-                    bool shiftExists = await CheckShiftExistsAsync(client,shiftId);
-                    if (shiftExists)
+                    bool shiftsExist = await DisplayShiftsAsync(client);
+                    if (shiftsExist)
                     {
-
+                        int shiftId = Display.GetShiftIdEdit();
+                        bool shiftIdExists = await CheckShiftExistsAsync(client,shiftId);
+                        if (!shiftIdExists)
+                        {
+                            Console.WriteLine("The given shiftId does not exist. Please enter a valid shiftId");
+                            Console.ReadLine();
+                        }
+                        else
+                        {
+                            Shift shift = Display.GetEditedShiftDetails();
+                            int workerId = await GetWorkerIdForShift(client, shiftId);
+                            if (workerId != -1)
+                            {
+                                shift.ShiftId = shiftId;
+                                shift.WorkerId = workerId;
+                                await PutShiftAsync(client, shift);
+                            }
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("The given shift id does not exist.");
+                        Console.WriteLine("No shifts exist.Cannot edit.Press any key to continue");
                         Console.ReadLine();
                     }
                 }
             }
             else if (selection == "Delete Worker/Shift")
             {
-                selection = Display.GetSelection("What do you wish to do?", new[] { "Delete A Worker", "Delete a shift", "Go to Main Menu" });
-                if (selection == "Delete a worker")
+                selection = Display.GetSelection("What do you wish to do?", new[] { "Delete a Worker", "Delete a shift", "Go to Main Menu" });
+                if (selection == "Delete a Worker")
                 {
-                    await DisplayWorkersAsync(client);
-                    int workerId = Display.GetWorkerId();
-                    await DeleteWorkerAsync(client, workerId);
+                    bool workerExist = await DisplayWorkersAsync(client);
+                    if (workerExist) {
+                        int workerId = Display.GetWorkerId();
+                        await DeleteWorkerAsync(client, workerId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No workers present to delete. Kindly add some workers");
+                        Console.ReadLine();
+                    }
                 }
                 else if (selection == "Delete a shift")
                 {
-                    await DisplayShiftsAsync(client);
-                    int shiftId = Display.GetShiftId();
-                    await DeleteShiftAsync(client, shiftId);
+                    bool shiftsExist = await DisplayShiftsAsync(client);
+                    if (shiftsExist)
+                    {
+                        int shiftId = Display.GetShiftId();
+                        await DeleteShiftAsync(client, shiftId);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No shifts exist.Cannot Delete");
+                        Console.ReadLine();
+                    }
                 }
             }
             Console.Clear();
@@ -107,7 +159,7 @@ internal class App
 
     }
 
-    private async Task DisplayWorkersAsync(HttpClient client)
+    private async Task<bool> DisplayWorkersAsync(HttpClient client)
     {
         try
         {
@@ -117,27 +169,37 @@ internal class App
             };
             string json = await client.GetStringAsync($"https://localhost:7134/api/Workers");
             List<Worker>? workers = JsonSerializer.Deserialize<List<Worker>>(json, options);
-            Display.DisplayWorkers(workers, new string[] { "Worker ID", "Name", "Email ID" });
+            if(workers.Count == 0)
+            {
+                Console.WriteLine("No workers exist");
+                return false;
+            }
+            else
+                Display.DisplayWorkers(workers, new string[] { "Worker ID", "Name", "Email ID" });
             Console.WriteLine("Press any key to continue");
+            return true;
         }
         catch (HttpRequestException ex)
         {
             Console.WriteLine($"Request error: {ex.Message}");
+            return false;
         }
         catch (TaskCanceledException ex)
         {
             Console.WriteLine("Request timed out.");
+            return false;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
+            return false;
         }
         finally
         {
             Console.ReadLine();
         }
     }
-    private async Task DisplayShiftsAsync(HttpClient client)
+    private async Task<bool> DisplayShiftsAsync(HttpClient client)
     {
         try
         {
@@ -147,33 +209,45 @@ internal class App
             };
             string shiftJson = await client.GetStringAsync($"https://localhost:7134/api/Shifts");
             List<Shift>? shifts = JsonSerializer.Deserialize<List<Shift>>(shiftJson, options);
-            string workerJson = await client.GetStringAsync($"https://localhost:7134/api/Workers");
-            List<Worker>? workers = JsonSerializer.Deserialize<List<Worker>>(workerJson, options);
-            var shiftDetails = from shift in shifts
-                               join worker in workers on shift.WorkerId equals worker.WorkerId
-                               select new
-                               {
-                                   shift.ShiftId,
-                                   WorkerName = worker.Name,
-                                   shift.Date,
-                                   shift.StartTime,
-                                   shift.EndTime,
-                                   shift.Duration
-                               };
-            Display.DisplayShifts(shiftDetails.ToList(), new string[] { "ShiftID","Worker Name", "Date", "Start Time", "End Time", "Duration" });
-            Console.WriteLine("Press any key to continue");
+            if (shifts.Count == 0)
+            {
+                Console.WriteLine("No shifts exist. Cannot display.");
+                return false;
+            }
+            else
+            {
+                string workerJson = await client.GetStringAsync($"https://localhost:7134/api/Workers");
+                List<Worker>? workers = JsonSerializer.Deserialize<List<Worker>>(workerJson, options);
+                var shiftDetails = from shift in shifts
+                                   join worker in workers on shift.WorkerId equals worker.WorkerId
+                                   select new
+                                   {
+                                       shift.ShiftId,
+                                       WorkerName = worker.Name,
+                                       shift.Date,
+                                       shift.StartTime,
+                                       shift.EndTime,
+                                       shift.Duration
+                                   };
+                Display.DisplayShifts(shiftDetails.ToList(), new string[] { "ShiftID", "Worker Name", "Date", "Start Time", "End Time", "Duration" });
+                Console.WriteLine("Press any key to continue");
+                return true;
+            }
         }
         catch (HttpRequestException ex)
         {
             Console.WriteLine($"Request error: {ex.Message}");
+            return false;
         }
         catch (TaskCanceledException ex)
         {
             Console.WriteLine("Request timed out.");
+            return false;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
+            return false;
         }
         finally
         {
@@ -230,7 +304,7 @@ internal class App
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Shift added successfully: {responseContent}");
+                Console.WriteLine("Shift added successfully.Press any key to continue");
             }
             else
             {
@@ -288,6 +362,40 @@ internal class App
         }
     }
 
+    private async Task<int> GetWorkerIdForShift(HttpClient client, int shiftId)
+    {
+        try
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var url = $"https://localhost:7134/api/Shifts/{shiftId}";
+            var response = await client.GetStringAsync(url);
+            Shift? shift = JsonSerializer.Deserialize<Shift>(response, options);
+            if (shift != null)
+            {
+                return shift.WorkerId;
+            }
+            else
+            {
+                Console.WriteLine("Shift not found.");
+                return -1;
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Request error: {ex.Message}");
+            return -1;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+            return -1;
+        }
+    }
+
+
     private async Task DeleteShiftAsync(HttpClient client, int shiftId)
     {
         try
@@ -301,6 +409,43 @@ internal class App
             else
             {
                 Console.WriteLine($"Failed to delete worker. Status code: {response.StatusCode}");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Request error: {ex.Message}");
+        }
+        catch (TaskCanceledException ex)
+        {
+            Console.WriteLine($"Request timed out. {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+        finally
+        {
+            Console.ReadLine();
+        }
+    }
+
+    private async Task PutShiftAsync(HttpClient client, Shift shift)
+    {
+        try
+        {
+            var url = $"https://localhost:7134/api/Shifts/{shift.ShiftId}";
+            var jsonContent = new StringContent(JsonSerializer.Serialize(shift), Encoding.UTF8, "application/json");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/plain"));
+            var response = await client.PutAsync(url, jsonContent);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Shift edited successfully: {responseContent}");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to edit shift. Status code: {response.StatusCode}");
             }
         }
         catch (HttpRequestException ex)
@@ -428,10 +573,6 @@ internal class App
         {
             Console.WriteLine($"An error occurred: {ex.Message}");
             return false;
-        }
-        finally
-        {
-            Console.ReadLine();
         }
     }
 
