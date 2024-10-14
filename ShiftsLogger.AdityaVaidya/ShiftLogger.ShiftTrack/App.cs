@@ -171,7 +171,7 @@ internal class App
             List<Worker>? workers = JsonSerializer.Deserialize<List<Worker>>(json, options);
             if(workers.Count == 0)
             {
-                Console.WriteLine("No workers exist");
+                Console.WriteLine("No workers exist. Cannot create shifts. Press any key to continue");
                 return false;
             }
             else
@@ -303,7 +303,6 @@ internal class App
             var response = await client.PostAsync(url, jsonContent);
             if (response.IsSuccessStatusCode)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
                 Console.WriteLine("Shift added successfully.Press any key to continue");
             }
             else
