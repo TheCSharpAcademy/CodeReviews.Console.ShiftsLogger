@@ -1,0 +1,140 @@
+[
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.ShiftsController",
+    "Method": "AddShiftAsync",
+    "RelativePath": "api/Shifts",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "shift",
+        "Type": "ShiftsLoggerAPI.Models.ShiftCreate",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.ShiftsController",
+    "Method": "UpdateShiftAsync",
+    "RelativePath": "api/Shifts",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newShift",
+        "Type": "ShiftsLoggerAPI.Models.ShiftUpdate",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.ShiftsController",
+    "Method": "DeleteShift",
+    "RelativePath": "api/Shifts/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.ShiftsController",
+    "Method": "GetShiftsAsync",
+    "RelativePath": "api/Shifts/{workerID}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "workerID",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.WorkerController",
+    "Method": "AddWorkerAsync",
+    "RelativePath": "api/Worker",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "worker",
+        "Type": "ShiftsLoggerAPI.Models.WorkerCreate",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.WorkerController",
+    "Method": "UpdateWorkerAsync",
+    "RelativePath": "api/Worker",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "newWorker",
+        "Type": "ShiftsLoggerAPI.Models.WorkerUpdate",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.WorkerController",
+    "Method": "GetWorkerAsync",
+    "RelativePath": "api/Worker/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.WorkerController",
+    "Method": "DeleteWorkerAsync",
+    "RelativePath": "api/Worker/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "ShiftsLoggerAPI.Controller.WorkerController",
+    "Method": "GetAllWorkersAsync",
+    "RelativePath": "api/Worker/all",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  }
+]
