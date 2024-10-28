@@ -31,5 +31,21 @@ public static class VisualisationEngine
         AnsiConsole.Write(tree);
         MenuBuilder.EnterButtonPause();
     }
-    
+
+    public static void DisplayShifts(List<ShiftRead> shifts)
+    {
+        var table = new Table().Title("[yellow]--Shifts--[/]").Expand();
+        table.AddColumns("[yellow]ShiftId[/]", "[yellow]WorkerId[/]","[yellow]Day[/]","[yellow]Start[/]","[yellow]End[/]","[yellow]Duration[/]");
+        foreach (var shift in shifts)
+        {
+            
+            table.AddRow($"[darkturquoise]{shift.Id}[/]",$"[darkturquoise]{shift.WorkerId}[/]",
+                $"[darkturquoise]{shift.Start:dd/MM/yyyy}[/]",
+                $"[darkturquoise]{shift.Start:HH:mm}[/]",
+                $"[darkturquoise]{shift.End:HH:mm}[/]",
+                $"[darkturquoise]{shift.Duration:HH:mm}[/]");
+        }
+        AnsiConsole.Write(table);
+        MenuBuilder.EnterButtonPause();
+    }
 }

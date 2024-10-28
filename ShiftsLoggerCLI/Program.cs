@@ -9,7 +9,6 @@ internal class Program
     {   InputHandler inputHandler = new();
         WorkerHandler workerHandler = new(inputHandler);
         ShiftsHandler shiftsHandler = new(inputHandler);
-        ResponseManager.InitResponseManager();
         bool isRunning = true;
         
         while (isRunning)
@@ -21,7 +20,7 @@ internal class Program
                     workerHandler.HandleWorkers();
                     break;
                 case Option.Shifts:
-                    MenuBuilder.DisplayShiftsWorkerOptions(false);
+                    shiftsHandler.HandleShifts();
                     break;
                 case Option.Help:
                     MenuBuilder.DisplayHelpMenu();

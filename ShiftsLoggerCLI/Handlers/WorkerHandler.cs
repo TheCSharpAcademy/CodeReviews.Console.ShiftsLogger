@@ -6,32 +6,29 @@ namespace ShiftsLoggerCLI.Handlers;
 
 public class WorkerHandler(InputHandler inputHandler)
 {
-    private readonly InputHandler _inputHandler = inputHandler;
-
-  
-    private async void AddWorker()
+    private  void AddWorker()
     {
-        WorkerCreate worker = _inputHandler.CreateWorker();
+        WorkerCreate worker = inputHandler.CreateWorker();
         ResponseManager.AddWorker(worker).Wait();
     }
 
     private void DeleteWorker()
     {
-        int id = _inputHandler.ChooseWorkerFromSelection(ResponseManager.GetAllWorkers().Result).Id;
+        int id = inputHandler.ChooseWorkerFromSelection(ResponseManager.GetAllWorkers().Result).Id;
         ResponseManager.DeleteWorker(id).Wait();
     }
 
     private void UpdateWorker()
     {
-        int id = _inputHandler.ChooseWorkerFromSelection(ResponseManager.GetAllWorkers().Result).Id;
-        var newWorker = _inputHandler.GetWorkerUpdate(id);
+        int id = inputHandler.ChooseWorkerFromSelection(ResponseManager.GetAllWorkers().Result).Id;
+        var newWorker = inputHandler.GetWorkerUpdate(id);
         ResponseManager.UpdateWorker(newWorker).Wait();
         
     }
 
     private  void GetWorkerDetails()
     {
-        int id = _inputHandler.ChooseWorkerFromSelection(ResponseManager.GetAllWorkers().Result).Id;
+        int id = inputHandler.ChooseWorkerFromSelection(ResponseManager.GetAllWorkers().Result).Id;
         
         WorkerRead? worker =  ResponseManager.GetWorker(id).Result;
         if (worker == null)
