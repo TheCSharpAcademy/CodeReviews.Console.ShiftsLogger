@@ -10,6 +10,7 @@ namespace ShiftsLoggerAPI.Services
         Task<bool> RemoveShiftAsync(int shiftID);
         Task<bool> UpdateShiftAsync(ShiftUpdate newShift);
         Task<List<Shift>> GetShiftsAsync(int workerID);
+        Task<List<Shift>> GetAllShiftsAsync();
     }
     public class ShiftsService : IShiftsService
     {
@@ -36,6 +37,11 @@ namespace ShiftsLoggerAPI.Services
             
                 return await _ctx.Shifts.Where(shift=>shift.WorkerId == workerID).ToListAsync();
             
+        }
+
+        public async Task<List<Shift>> GetAllShiftsAsync()
+        {
+            return await _ctx.Shifts.ToListAsync();
         }
 
         public async Task<bool> RemoveShiftAsync(int shiftID)

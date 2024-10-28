@@ -10,10 +10,10 @@ namespace ShiftsLoggerAPI.Controller
     public class WorkerController : ControllerBase
     {
         private readonly IWorkerService _workerService;
-        public readonly Regex EmailValidation = new(@"^[a-zA-Z0-9._%+-]{2,}@[a-zA-Z]+\.[a-zA-Z]{2,}$");
+        private readonly Regex _emailValidation = new(@"^[a-zA-Z0-9._%+-]{2,}@[a-zA-Z]+\.[a-zA-Z]{2,}$");
         private bool ValidateEmail(string email)
         {
-            return EmailValidation.IsMatch(email);
+            return _emailValidation.IsMatch(email);
         }
         public WorkerController(IWorkerService workerService)
         {

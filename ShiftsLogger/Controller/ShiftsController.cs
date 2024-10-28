@@ -14,6 +14,13 @@ namespace ShiftsLoggerAPI.Controller
         {
             _shiftsService = shiftsService;
         }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllShifts()
+        {
+            var shifts = await _shiftsService.GetAllShiftsAsync();
+            return Ok(shifts);
+        }
         [HttpPost]
         public async Task<IActionResult> AddShiftAsync([FromBody] ShiftCreate shift)
         {
@@ -28,10 +35,10 @@ namespace ShiftsLoggerAPI.Controller
             return success?Created():BadRequest($"Worker id {shift.WorkerId} wasnt found");
 
         }
-        [HttpGet("{workerID}")]
-        public async Task<IActionResult> GetShiftsAsync(int workerID)
+        [HttpGet("{workerId}")]
+        public async Task<IActionResult> GetShiftsAsync(int workerId)
         {
-            var shifts = await _shiftsService.GetShiftsAsync(workerID);
+            var shifts = await _shiftsService.GetShiftsAsync(workerId);
             return Ok(shifts);
         }
    
