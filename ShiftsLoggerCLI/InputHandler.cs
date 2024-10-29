@@ -213,7 +213,7 @@ public partial class InputHandler
             }
         }while(start == DateTime.MinValue || start > DateTime.Now);
         
-        DateTime end = DateTime.MinValue; ;
+        DateTime end = DateTime.MinValue; 
         do
         {
             string endStr = AnsiConsole.Prompt(new TextPrompt<string>($"Enter End Time ({TimeFormat}):").AllowEmpty());
