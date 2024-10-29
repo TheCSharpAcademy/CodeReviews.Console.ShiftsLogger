@@ -14,8 +14,6 @@ internal static class MenuBuilder
     public static Crud DisplayShiftsWorkerOptions(bool workers)
     {
         var operations = Enum.GetValues<Crud>().ToList();
-        if (!workers)
-            operations.Remove(Crud.ReadAll);
         return AnsiConsole.Prompt(new SelectionPrompt<Crud>()
             .Title($"[yellow]--{(workers ? "Workers" : "Shifts")}--[/]")
             .AddChoices(operations)

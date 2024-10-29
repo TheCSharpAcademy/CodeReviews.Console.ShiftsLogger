@@ -1,5 +1,5 @@
 ﻿using ShiftsLoggerCLI.Enums;
-using ShiftsLoggerCLI.Handlers;
+using ShiftsLoggerCLI.Services;
 
 
 namespace ShiftsLoggerCLI;
@@ -7,8 +7,8 @@ internal class Program
 {
     static  void Main(string[] args)
     {   InputHandler inputHandler = new();
-        WorkerHandler workerHandler = new(inputHandler);
-        ShiftsHandler shiftsHandler = new(inputHandler);
+        WorkerService workerService = new(inputHandler);
+        ShiftService shiftService = new(inputHandler);
         bool isRunning = true;
         
         while (isRunning)
@@ -17,10 +17,10 @@ internal class Program
             switch (MenuBuilder.GetOption())
             {
                 case Option.Workers:
-                    workerHandler.HandleWorkers();
+                    workerService.HandleWorkers();
                     break;
                 case Option.Shifts:
-                    shiftsHandler.HandleShifts();
+                    shiftService.HandleShifts();
                     break;
                 case Option.Help:
                     MenuBuilder.DisplayHelpMenu();

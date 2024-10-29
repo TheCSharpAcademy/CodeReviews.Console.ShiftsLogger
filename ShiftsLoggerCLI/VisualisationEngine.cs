@@ -43,7 +43,7 @@ public static class VisualisationEngine
                 $"[darkturquoise]{shift.Start:dd/MM/yyyy}[/]",
                 $"[darkturquoise]{shift.Start:HH:mm}[/]",
                 $"[darkturquoise]{shift.End:HH:mm}[/]",
-                $"[darkturquoise]{shift.Duration:HH:mm}[/]");
+                $"[darkturquoise]{shift.Duration.Hours} : {shift.Duration.Minutes}[/]");
         }
         AnsiConsole.Write(table);
         MenuBuilder.EnterButtonPause();

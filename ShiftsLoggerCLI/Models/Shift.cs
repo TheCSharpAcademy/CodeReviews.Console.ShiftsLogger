@@ -9,7 +9,7 @@ public record ShiftRead
     [property:JsonPropertyName("id")]
      int Id ,
      
-   [property:JsonPropertyName("workerid")]
+   [property:JsonPropertyName("workerId")]
      int WorkerId,
      
     [property:JsonPropertyName("start")]
@@ -18,6 +18,7 @@ public record ShiftRead
    [property:JsonPropertyName("end")]
      DateTime End )
 {
+    [JsonIgnore]
     public TimeSpan Duration => End.Subtract(Start);
 
     public override string ToString() => $"Id: {Id}, WorkerId: {WorkerId}, Start: {Start}, End: {End}";

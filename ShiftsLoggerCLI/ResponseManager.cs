@@ -17,13 +17,8 @@ public static class ResponseManager
         PositionManager.SetPositions(GetAllWorkers().Result);
     }
 
-    public static async Task<List<ShiftRead>> GetShiftsByWorkerId(int workerId)
-    {
-        var response = await Client.GetAsync($"api/shifts/{workerId}");
-        string json = await response.Content.ReadAsStringAsync();
-        var shifts = JsonSerializer.Deserialize<List<ShiftRead>>(json) ?? new();
-        return shifts;
-    }
+
+   
     public static async Task<WorkerRead?> GetWorker(int id)
     {
         HttpResponseMessage response = await Client.GetAsync($"api/worker/{id}");
@@ -109,17 +104,19 @@ public static class ResponseManager
         AnsiConsole.MarkupLine("[red]Failed to update Shift.[/]");
     }
 
-    public static async Task<List<ShiftRead>> GetShifts(int workerId)
-    {
-        HttpResponseMessage response = await Client.GetAsync($"api/shifts/{workerId}");
-        var shifts = JsonSerializer.Deserialize<List<ShiftRead>>(await response.Content.ReadAsStringAsync())??new();
-        return shifts;
-    }
+    
 
     public static async Task<List<ShiftRead>> GetAllShifts()
     {
         HttpResponseMessage response = await Client.GetAsync("api/shifts/all");
         var shifts = JsonSerializer.Deserialize<List<ShiftRead>>(await response.Content.ReadAsStringAsync())??new();
+        return shifts;
+    }
+    public static async Task<List<ShiftRead>> GetShiftsByWorkerId(int workerId)
+    {
+        var response = await Client.GetAsync($"api/shifts/{workerId}");
+        string json = await response.Content.ReadAsStringAsync();
+        var shifts = JsonSerializer.Deserialize<List<ShiftRead>>(json) ?? new();
         return shifts;
     }
 }

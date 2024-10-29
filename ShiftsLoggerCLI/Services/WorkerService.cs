@@ -2,9 +2,9 @@
 using ShiftsLoggerCLI.Models;
 using Spectre.Console;
 
-namespace ShiftsLoggerCLI.Handlers;
+namespace ShiftsLoggerCLI.Services;
 
-public class WorkerHandler(InputHandler inputHandler)
+public class WorkerService(InputHandler inputHandler)
 {
     private  void AddWorker()
     {
