@@ -69,6 +69,8 @@ public class WorkerService(InputHandler inputHandler)
             case Crud.ReadAll:
                 GetAllWorkers();
                 break;
+            case Crud.Return:
+                break;
         }
         
         

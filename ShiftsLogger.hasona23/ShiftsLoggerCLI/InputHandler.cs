@@ -128,7 +128,7 @@ public partial class InputHandler
             {
                 AnsiConsole.MarkupLine("[red]Cant Accept Future Dates[/]");
             }
-        }while(day == DateTime.MinValue && day > DateTime.Today);
+        }while(day == DateTime.MinValue || day > DateTime.Today);
         DateTime start ;
         do
         {
@@ -141,7 +141,7 @@ public partial class InputHandler
                 AnsiConsole.MarkupLine("[red]Cant Accept Future Times[/]");
                 continue;
             }
-        }while(start == DateTime.MinValue && start > DateTime.Now);
+        }while(start == DateTime.MinValue || start > DateTime.Now);
         
         DateTime end ;
         do
@@ -160,7 +160,7 @@ public partial class InputHandler
                 AnsiConsole.MarkupLine("[red]Cant Accept Future Times[/]");
                 continue;
             }
-        }while(end == DateTime.MinValue);
+        }while(end == DateTime.MinValue || end > DateTime.Now);
         start = new DateTime(day.Year, day.Month, day.Day, start.Hour, start.Minute, start.Second);
         end = new DateTime(day.Year, day.Month, day.Day, end.Hour, end.Minute, end.Second);
         if (end < start)
@@ -229,7 +229,7 @@ public partial class InputHandler
                 AnsiConsole.MarkupLine("[red]Cant Accept Future Times[/]");
                 continue;
             }
-        }while(end == DateTime.MinValue && end > DateTime.Now);
+        }while(end == DateTime.MinValue || end > DateTime.Now);
 
         if (start == DateTime.MinValue)
             start = shift.Start;

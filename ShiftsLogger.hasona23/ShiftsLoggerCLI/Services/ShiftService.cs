@@ -30,11 +30,11 @@ public class ShiftService(InputHandler inputHandler)
     {
         int workerId = inputHandler.ChooseWorkerFromSelection(Workers).Id;
         var shifts = ResponseManager.GetShiftsByWorkerId(workerId).Result;
-        if (shifts.Count == 0)
+        if (shifts.Count() == 0)
         {
             AnsiConsole.MarkupLine("[red]Worker doesnt have shifts.[/]"); 
             MenuBuilder.EnterButtonPause();
-            return ;
+            return;
         }
         int shiftId = inputHandler.ChooseShiftFromSelection(shifts).Id;
         ResponseManager.DeleteShift(shiftId).Wait();
@@ -72,6 +72,8 @@ public class ShiftService(InputHandler inputHandler)
                 break;
             case Crud.Read:
                 GetShifts();
+                break;
+            case Crud.Return:
                 break;
         }
     }

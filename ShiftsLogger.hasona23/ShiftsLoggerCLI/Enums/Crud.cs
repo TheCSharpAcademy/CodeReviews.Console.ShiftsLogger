@@ -6,6 +6,7 @@ internal enum Crud
     Update,
     Delete,
     ReadAll,
+    Return,
 }
 
 
