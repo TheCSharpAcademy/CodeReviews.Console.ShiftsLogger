@@ -14,13 +14,27 @@ public class WorkerService(InputHandler inputHandler)
 
     private void DeleteWorker()
     {
-        int id = inputHandler.ChooseWorkerFromSelection(ResponseManager.GetAllWorkers().Result).Id;
+        var workers = ResponseManager.GetAllWorkers().Result;
+        if (workers.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]No Workers Found![/]");
+            MenuBuilder.EnterButtonPause();
+            return;
+        }
+        int id = inputHandler.ChooseWorkerFromSelection(workers).Id;
         ResponseManager.DeleteWorker(id).Wait();
     }
 
     private void UpdateWorker()
     {
-        int id = inputHandler.ChooseWorkerFromSelection(ResponseManager.GetAllWorkers().Result).Id;
+        var workers = ResponseManager.GetAllWorkers().Result;
+        if (workers.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]No Workers Found![/]");
+            MenuBuilder.EnterButtonPause();
+            return;
+        }
+        int id = inputHandler.ChooseWorkerFromSelection(workers).Id;
         var newWorker = inputHandler.GetWorkerUpdate(id);
         ResponseManager.UpdateWorker(newWorker).Wait();
         
@@ -44,6 +58,12 @@ public class WorkerService(InputHandler inputHandler)
     private void GetAllWorkers()
     {
         var workers =  ResponseManager.GetAllWorkers().Result;
+        if (workers.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]No Workers Found[/]");
+            MenuBuilder.EnterButtonPause();
+            return;
+        }
         var task = new Task(()=>PositionManager.SetPositions(workers));
         task.Start();
         VisualisationEngine.DisplayWorkers(workers);

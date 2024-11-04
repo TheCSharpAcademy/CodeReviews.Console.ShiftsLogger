@@ -11,12 +11,24 @@ public class ShiftService(InputHandler inputHandler)
     {
         int workerId = inputHandler.ChooseWorkerFromSelection(Workers).Id;
         var shifts = ResponseManager.GetShiftsByWorkerId(workerId).Result;
+        if (shifts.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]No shifts found![/]");
+            MenuBuilder.EnterButtonPause();
+            return;
+        }
         VisualisationEngine.DisplayShifts(shifts);
     }
 
     private void GetAllShifts()
     {
         var shifts = ResponseManager.GetAllShifts().Result;
+        if (shifts.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]No shifts found![/]");
+            MenuBuilder.EnterButtonPause();
+            return;
+        }
         VisualisationEngine.DisplayShifts(shifts);
     }
 
