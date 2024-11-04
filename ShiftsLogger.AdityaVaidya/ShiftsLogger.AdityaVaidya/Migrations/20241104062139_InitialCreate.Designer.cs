@@ -11,7 +11,7 @@ using ShiftsLogger.AdityaVaidya.Data;
 namespace ShiftsLogger.AdityaVaidya.Migrations
 {
     [DbContext(typeof(ShiftContext))]
-    [Migration("20240923200003_InitialCreate")]
+    [Migration("20241104062139_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
