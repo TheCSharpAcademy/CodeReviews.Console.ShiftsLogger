@@ -1,6 +1,4 @@
 ﻿using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Text;
 using ShiftLogger.ShiftTrack.Views;
 using ShiftLogger.ShiftTrack.Models;
 using ShiftLogger.ShiftTrack.Services;
