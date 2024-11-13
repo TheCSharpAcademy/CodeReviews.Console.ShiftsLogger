@@ -76,7 +76,6 @@ namespace ShiftLoggerAPI.Controllers
             shift.Duration = Utilities.GetDuration(shift.StartTime ?? 0, shift.EndTime ?? 0);
             _context.Shifts.Add(shift);
             await _context.SaveChangesAsync();
-            //return CreatedAtAction("GetShift", new { id = shift.Id }, shift);
             return CreatedAtAction(nameof(GetShift), new {id = shift.Id }, shift);
         }
 
