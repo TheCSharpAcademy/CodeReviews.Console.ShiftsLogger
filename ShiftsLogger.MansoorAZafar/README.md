@@ -1,6 +1,8 @@
 # Shift Logger
 
-Set the `APP_HOST` in `ShiftLoggerUI/appsettings.json` to the URL of wherever the API host is running. Also, update the database configuration in `ShiftLoggerAPI/appsettings.json` to specify the database you will use.
+Set the `APP_HOST` in `ShiftLoggerUI/appsettings.json` to the URL where the
+API host is running. Also, update the database configuration in
+`ShiftLoggerAPI/appsettings.json` to specify the database you will use.
 
 ## Running
 
