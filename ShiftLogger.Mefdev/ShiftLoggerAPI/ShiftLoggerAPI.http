@@ -1,0 +1,40 @@
+@ShiftLoggerAPI_HostAddress = https://localhost:7263/api
+
+GET {{ShiftLoggerAPI_HostAddress}}/WorkerShift/2
+Accept: application/json
+
+###
+
+GET {{ShiftLoggerAPI_HostAddress}}/WorkerShift
+Accept: application/json
+
+###
+
+
+POST {{ShiftLoggerAPI_HostAddress}}/WorkerShift
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "jake test",
+    "start": "2024-11-17T18:53:03.633",
+    "end": "2024-11-18T10:11:03.633"
+}
+
+###
+
+PUT {{ShiftLoggerAPI_HostAddress}}/WorkerShift/5
+Accept: application/json
+Content-Type: application/json
+
+ {
+    "id": 5,
+    "name": "jake test",
+    "start": "2024-11-18T18:53:03.633",
+    "end": "2024-11-19T10:11:03.633"
+ }
+###
+
+DELETE  {{ShiftLoggerAPI_HostAddress}}/WorkerShift/1
+
+###
