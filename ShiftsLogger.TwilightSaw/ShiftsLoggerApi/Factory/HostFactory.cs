@@ -5,22 +5,24 @@ namespace ShiftsLoggerApi.Factory
 {
     internal class HostFactory
     {
-        public static IHost CreateDbHost(string[] args)
+        public static WebApplication CreateWebApplication(string[] args)
         {
-            return Host.CreateDefaultBuilder(args)
-                .ConfigureServices((context, services) =>
-                {
-                    var configuration = context.Configuration;
+            var builder = WebApplication.CreateBuilder(args);
+            var configuration = builder.Configuration;
 
-                    services.AddDbContext<AppDbContext>(options =>
-                        options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            var services = builder.Services;
 
-                    services.AddControllers();
-                    services.AddEndpointsApiExplorer();
-                    services.AddSwaggerGen();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                .LogTo(Console.WriteLine, LogLevel.None)
+                .UseLazyLoadingProxies());
+            
+            services.AddRouting();
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
 
+            return builder.Build();
 
-                }).Build();
         }
 
     }

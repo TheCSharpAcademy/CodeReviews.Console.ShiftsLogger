@@ -3,10 +3,10 @@
 public class Shift
 {
     public int Id { get; set; }
-    public TimeOnly StartTime { get; set; }
-    public TimeOnly EndTime { get; set; }
+    public string StartTime { get; set; }
+    public string? EndTime { get; set; }
 
-    public TimeOnly Duration { get; set; }
+    public string? Duration { get; set; }
 
-    public DateOnly Date { get; set; }
+    public string Date { get; set; }
 }

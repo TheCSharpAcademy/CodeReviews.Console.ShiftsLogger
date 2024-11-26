@@ -11,17 +11,9 @@ public class AppDbContext : DbContext
 
 
     private readonly IConfiguration _configuration;
-    public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration)
+    public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
-        _configuration = configuration;
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var connectionString = _configuration.GetConnectionString("DefaultConnection");
-        optionsBuilder.UseSqlServer(connectionString).UseLazyLoadingProxies();
-        optionsBuilder.UseSqlServer(connectionString).LogTo(Console.WriteLine, LogLevel.None);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
