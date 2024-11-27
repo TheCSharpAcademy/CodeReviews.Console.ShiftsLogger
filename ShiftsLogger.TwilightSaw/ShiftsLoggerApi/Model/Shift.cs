@@ -9,4 +9,5 @@ public class Shift
     public string? Duration { get; set; }
 
     public string Date { get; set; }
+
 }

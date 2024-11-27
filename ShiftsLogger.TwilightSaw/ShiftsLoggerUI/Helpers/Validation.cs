@@ -26,9 +26,9 @@ public class Validation
         catch (Exception e)
         {
             back = default;
-            return getMessage ? e.Message : "";
+            return e.Message;
         }
-        return "Executed successfully";
+        return getMessage ? "Executed successfully" : "";
     }
 
     public static void EndMessage(string? message)

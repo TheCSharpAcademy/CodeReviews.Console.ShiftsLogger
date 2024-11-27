@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using ShiftsLoggerUI.Model;
 using Spectre.Console;
 
 namespace ShiftsLoggerUI.Helpers;
@@ -30,6 +31,16 @@ public class UserInput
     {
         variants.Add(backVariant);
         return AnsiConsole.Prompt(new SelectionPrompt<string>()
+            .Title("[blue]Please, choose an option from the list below:[/]")
+            .PageSize(10)
+            .MoreChoicesText("[grey](Move up and down to reveal more categories[/]")
+            .AddChoices(variants));
+    }
+
+    public static ShiftDto CreateShiftsChoosingList(List<ShiftDto> variants, ShiftDto backVariant)
+    {
+        variants.Add(backVariant);
+        return AnsiConsole.Prompt(new SelectionPrompt<ShiftDto>()
             .Title("[blue]Please, choose an option from the list below:[/]")
             .PageSize(10)
             .MoreChoicesText("[grey](Move up and down to reveal more categories[/]")

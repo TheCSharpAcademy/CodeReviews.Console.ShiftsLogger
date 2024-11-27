@@ -10,6 +10,17 @@ public class Shift(TimeOnly startTime, TimeOnly? endTime, TimeOnly? duration, Da
 
     public ShiftDto ToDto()
     {
-        return new ShiftDto(StartTime.ToString(), EndTime.ToString(), Duration.ToString(), Date.ToString());
+        var shitDto = new ShiftDto(StartTime.ToString(), EndTime.ToString(), Duration.ToString(), Date.ToString())
+            {
+                id = Id
+            };
+        return shitDto;
+    }
+
+    public void CalculateDuration()
+    {
+        
+        var duration = (EndTime - StartTime);
+        Duration = duration < TimeSpan.Zero ? TimeOnly.FromTimeSpan(duration.Value.Add(TimeSpan.FromHours(24))) : TimeOnly.FromTimeSpan(duration.Value);
     }
 }
