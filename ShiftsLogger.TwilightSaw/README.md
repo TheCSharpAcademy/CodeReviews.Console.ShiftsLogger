@@ -1,4 +1,4 @@
-﻿﻿﻿# ShiftsLogger
+# ShiftsLogger
 
 ## Given Requirements:
 
@@ -14,15 +14,15 @@
 ## Features
 
 - SQL Server database connection with Entity Framework.
-  > [!IMPORTANT]
-  > After downloading the project, you should check appsetting.json and write your own path to connect the db.
-  >
-  > ![image](https://github.com/TwilightSaw/CodeReviews.Console.ShiftsLogger/blob/main/ShiftsLogger.TwilightSaw/images/appsettings.png)
+> [!IMPORTANT]
+> After downloading the project, you should check appsetting.json and write your own path to connect the db.
+>
+> ![image](https://github.com/TwilightSaw/CodeReviews.Console.ShiftsLogger/blob/main/ShiftsLogger.TwilightSaw/images/appsettings.png)
 
 > [!IMPORTANT]
 > Also you should do starting migrations to create db with all necessary tables, simply write `dotnet ef database update` in CLI.
 >
-> ![image]https://github.com/TwilightSaw/CodeReviews.Console.ShiftsLogger/blob/main/ShiftsLogger.TwilightSaw/images/migrations.png)
+> ![image](https://github.com/TwilightSaw/CodeReviews.Console.ShiftsLogger/blob/main/ShiftsLogger.TwilightSaw/images/migrations.png)
 
 - A console based UI where you can navigate by user input.
 
@@ -31,10 +31,10 @@
 - CRUD functionalities.
 
 - The seperate RESTful API project which handles all main HTTP methods.
-  > [!IMPORTANT]
-  > You need to start this project in the first place to be able to use the UI part.
-  >
-  > ![image](https://github.com/TwilightSaw/CodeReviews.Console.ShiftsLogger/blob/main/ShiftsLogger.TwilightSaw/images/api.png)
+> [!IMPORTANT]
+> You need to start this project in the first place to be able to use the UI part.
+>
+> ![image](https://github.com/TwilightSaw/CodeReviews.Console.ShiftsLogger/blob/main/ShiftsLogger.TwilightSaw/images/api.png)
 
 ## Challenges and Learned Lessons
 
@@ -53,6 +53,6 @@
 - ChatGPT for new information as API creation, EF usage, JSON parsing etc..
 - Spectre.Console documentation.
 - EF documentation.
-- This article about API - https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Introduction.
-- This Microsoft API tutor - https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-6.0&tabs=visual-studio.
+- This article about API - [link](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Client-side_web_APIs/Introduction).
+- This Microsoft API tutor - [link](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-6.0&tabs=visual-studio).
 - Various StackOverflow articles.
