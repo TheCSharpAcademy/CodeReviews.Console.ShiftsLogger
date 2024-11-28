@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <Folder Include="Converters\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="images\" />
   </ItemGroup>
 
 </Project>

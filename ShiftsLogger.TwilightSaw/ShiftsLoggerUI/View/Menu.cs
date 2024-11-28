@@ -10,14 +10,15 @@ public class Menu(ShiftController shiftController)
     
     public async Task MainMenu()
     {
-        var pendingShift = false;
         var end = true;
         while (end)
         {
-            Console.Clear();
+            var pendingShift = await IsShiftPending();
+            AnsiConsole.Write(new Rule("[olive]Here you can start your shift![/]"));
             var userInput = !pendingShift 
                 ? UserInput.CreateChoosingList(["Show your shifts", "Start the shift", "Delete the shift - admin only"], "Exit") 
                 : UserInput.CreateChoosingList(["Show your shifts", "End the shift", "Delete the shift - admin only"], "Exit");
+            Console.Clear();
             switch (userInput)
             {
                 case "Exit":
@@ -28,11 +29,9 @@ public class Menu(ShiftController shiftController)
                     break;
                 case "Start the shift":
                     await StartShift();
-                    pendingShift = true;
                     break;
                 case "End the shift":
                     await EndShift();
-                    pendingShift = false;
                     break;
                 case "Delete the shift - admin only":
                     await DeleteShift();
@@ -52,14 +51,14 @@ public class Menu(ShiftController shiftController)
     
     private async Task StartShift()
     {
-        TimeOnly startTime = TimeOnly.FromDateTime(DateTime.Now);
+        var startTime = TimeOnly.FromDateTime(DateTime.Now);
         await shiftController.CreateShift(new Shift(startTime, null, null, DateOnly.FromDateTime(DateTime.Now)));
         Validation.EndMessage("Your shift successfully started!");
     }
 
     private async Task EndShift()
     {
-        TimeOnly endTime = TimeOnly.FromDateTime(DateTime.Now);
+        var endTime = TimeOnly.FromDateTime(DateTime.Now);
         var shifts = await shiftController.GetShifts();
         var lastShift = shifts.Last();
 
@@ -83,5 +82,19 @@ public class Menu(ShiftController shiftController)
         }
         AnsiConsole.Write(table);
         Validation.EndMessage("");
+    }
+
+    private async Task<bool> IsShiftPending()
+    {
+        var shift = await shiftController.GetShifts();
+        try
+        {
+            var lastShift = shift.Last();
+            return lastShift.EndTime == TimeOnly.FromTimeSpan(new TimeSpan(0));
+        }
+        catch(Exception e)
+        {
+            return false;
+        }
     }
 }
