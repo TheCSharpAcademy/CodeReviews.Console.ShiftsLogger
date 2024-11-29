@@ -46,14 +46,12 @@ public class Menu(ShiftController shiftController)
         var deleteInput = UserInput.CreateShiftsChoosingList(shifts.Select(s => s.ToDto()).ToList(),new ShiftDto("Return", null, null, ""));
         if (deleteInput.startTime == "Return") return;
         await shiftController.Delete(deleteInput.id);
-        Validation.EndMessage("You successfully deleted this shift.");
     }  
     
     private async Task StartShift()
     {
         var startTime = TimeOnly.FromDateTime(DateTime.Now);
         await shiftController.CreateShift(new Shift(startTime, null, null, DateOnly.FromDateTime(DateTime.Now)));
-        Validation.EndMessage("Your shift successfully started!");
     }
 
     private async Task EndShift()
@@ -68,7 +66,6 @@ public class Menu(ShiftController shiftController)
         };
         newShift.CalculateDuration();
         await shiftController.UpdateShift(newShift, lastShift.Id);
-        Validation.EndMessage("Your shift successfully ended! Good Job!");
     }
 
     private async Task ShowShifts()
@@ -90,7 +87,7 @@ public class Menu(ShiftController shiftController)
         try
         {
             var lastShift = shift.Last();
-            return lastShift.EndTime == TimeOnly.FromTimeSpan(new TimeSpan(0));
+            return lastShift.EndTime == null;
         }
         catch(Exception e)
         {

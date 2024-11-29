@@ -12,14 +12,16 @@ public class ShiftDto(string startTime, string? endTime, string? duration, strin
     {
 
         TimeOnly.TryParse(startTime, out var StartTime);
-        TimeOnly.TryParse(endTime, out var EndTime);
+        TimeOnly.TryParse(endTime, out TimeOnly EndTime);
         TimeOnly.TryParse(duration, out var Duration);
         DateOnly.TryParse(date, out var Date);
+
+        
         var shift = new Shift(StartTime, EndTime, Duration, Date)
         {
             Id = id
         };
-        return shift;
+        return endTime == "" ? new Shift(StartTime, null, null, Date) { Id = id } : shift;
     }
 
     public override string ToString()
