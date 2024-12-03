@@ -1,0 +1,21 @@
+@ShiftsLogger.API_HostAddress = https://localhost:7298
+
+GET {{ShiftsLogger.API_HostAddress}}/shifts/1
+Accept: application/json
+###
+
+GET {{ShiftsLogger.API_HostAddress}}/shifts/
+Accept: appplication/json
+###
+
+POST {{ShiftsLogger.API_HostAddress}}/shifts/
+Accept: appplication/json
+###
+
+PUT {{ShiftsLogger.API_HostAddress}}/shifts/
+Accept: appplication/json
+###
+
+DELETE {{ShiftsLogger.API_HostAddress}}/shifts/
+Accept: appplication/json
+###
