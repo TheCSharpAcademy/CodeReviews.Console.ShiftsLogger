@@ -17,9 +17,6 @@ public class ShiftConsoleService
             return false;
         }
 
-        var testshift = allShifts.LastOrDefault();
-        bool shiftbool = allShifts[allShifts.Count - 1].ShiftInProgress;
-
         return (allShifts.LastOrDefault().ShiftInProgress) ? true : false;
     }
 
