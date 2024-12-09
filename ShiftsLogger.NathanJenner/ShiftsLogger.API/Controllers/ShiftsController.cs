@@ -47,18 +47,4 @@ public class ShiftsController : ControllerBase
         _shiftService.Update(shift);
         return NoContent();
     }
-
-    // DELETE action
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
-    {
-        var shift = _shiftService.Get(id);
-
-        if (shift is null)
-            return NotFound();
-
-        _shiftService.Delete(shift);
-
-        return NoContent();
-    }
 }
