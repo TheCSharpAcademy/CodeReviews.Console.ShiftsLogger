@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UI.Models;
+﻿using UI.Models;
 using UI.Helpers;
 using Spectre.Console;
 using UI.Services;
 using UI.Controllers;
-using System.Transactions;
 
 namespace UI.UI
 {

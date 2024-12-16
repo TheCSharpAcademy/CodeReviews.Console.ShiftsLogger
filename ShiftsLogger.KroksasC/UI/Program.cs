@@ -1,11 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using UI.Models;
-using System;
-using UI.Controllers;
-using UI.UI;
+﻿using UI.UI;
 
 namespace UI
 {

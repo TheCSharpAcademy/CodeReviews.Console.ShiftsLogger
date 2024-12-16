@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
-namespace API.Models
+﻿namespace API.Models
 {
     public class Shift
     {
