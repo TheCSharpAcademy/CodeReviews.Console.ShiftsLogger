@@ -1,4 +1,6 @@
-﻿namespace ShiftsLogger.Bina28.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ShiftsLogger.Bina28.Models;
 
 public class Shift
 {
