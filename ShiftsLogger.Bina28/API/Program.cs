@@ -20,6 +20,9 @@ builder.Services.AddCors(options =>
 	});
 });
 var app = builder.Build();
+
+ShiftService.SeedDatabase(app.Services); 
+
 app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.

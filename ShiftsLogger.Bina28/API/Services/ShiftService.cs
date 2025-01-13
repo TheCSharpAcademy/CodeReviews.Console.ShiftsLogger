@@ -1,5 +1,6 @@
 ﻿using ShiftsLogger.Bina28.Data;
 using ShiftsLogger.Bina28.Models;
+using System;
 
 namespace ShiftsLogger.Bina28.Services;
 
@@ -61,4 +62,34 @@ public class ShiftService : IShiftService{
 		_dbContext.SaveChanges();
 		return savedShift;
 	}
-}
+
+	public static void Initialize(ShiftsDbContext context)
+	{
+		
+		context.Database.EnsureCreated();
+
+		
+		if (context.Shifts.Any())
+		{
+			return; 
+		}
+
+		
+		var shiftFaker = new ShiftFaker();
+		var shifts = shiftFaker.GenerateShifts(100); // Generate 10 shifts
+
+		context.Shifts.AddRange(shifts);
+		context.SaveChanges();
+	}
+	public static void SeedDatabase(IServiceProvider serviceProvider)
+	{
+		// Create a scope for resolving services
+		using (var scope = serviceProvider.CreateScope())
+		{
+			var dbContext = scope.ServiceProvider.GetRequiredService<ShiftsDbContext>();
+
+			// Ensure that the Shifts table is seeded with data if it's empty
+			Initialize(dbContext);
+		}
+	}
+	}
