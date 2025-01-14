@@ -103,7 +103,10 @@ internal class View : ConsoleController
 
                 bool isAdded = await _shiftService.CreateShift(newShift);
 
-                await ShowCurrentShift(newShift);
+                if (isAdded)
+                {
+                    await ShowCurrentShift(newShift);
+                }
                 break;
             case Enums.CurrentShiftOptions.End:
                 latestShift.EndTime = DateTime.Now;

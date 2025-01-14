@@ -7,7 +7,7 @@ using UI;
 
 internal class Program : ConsoleController
 {
-    static async Task Main(string[] args)
+    static async Task Main()
     {
 
         try
