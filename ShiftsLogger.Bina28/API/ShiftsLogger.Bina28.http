@@ -1,0 +1,6 @@
+@ShiftsLogger.Bina28_HostAddress = http://localhost:5237
+
+GET {{ShiftsLogger.Bina28_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
