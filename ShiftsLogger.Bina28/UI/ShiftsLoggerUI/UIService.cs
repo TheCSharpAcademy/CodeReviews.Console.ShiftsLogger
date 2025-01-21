@@ -109,7 +109,7 @@ internal static class UIService
 			AwaitKeyPress();
 			return;
 		}
-		UserInterface.UpdateInput(shift);
+		UserInterface.UpdateInputAsync(shift);
 		AwaitKeyPress();
 	}
 

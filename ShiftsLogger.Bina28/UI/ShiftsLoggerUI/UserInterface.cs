@@ -45,7 +45,7 @@ Duraton: {shift.Duration}");
 		Console.Clear();
 	}
 
-	internal static void UpdateInput(ShiftModel shift)
+	internal static async Task UpdateInputAsync(ShiftModel shift)
 	{
 		shift.EmployeeId = AnsiConsole.Confirm("Update employee's Id?")
 		? AnsiConsole.Ask<int>("Enter a new Id: ")
@@ -64,7 +64,7 @@ Duraton: {shift.Duration}");
 			: shift.Notes;
 
 
-		UIController.UpdateAsync(shift);
+		await UIController.UpdateAsync(shift);
 		AnsiConsole.MarkupLine("[green]Shift updated successfully![/]");
 	}
 }

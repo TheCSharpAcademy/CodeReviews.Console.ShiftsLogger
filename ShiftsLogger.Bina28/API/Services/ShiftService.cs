@@ -1,6 +1,9 @@
-﻿using ShiftsLogger.Bina28.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ShiftsLogger.Bina28.Data;
+using ShiftsLogger.Bina28.Dtos;
 using ShiftsLogger.Bina28.Models;
 using System;
+using System.Net;
 
 namespace ShiftsLogger.Bina28.Services;
 
@@ -11,59 +14,123 @@ public class ShiftService : IShiftService{
 	{
 		_dbContext = dbContext;
 	}
-	public Shift Create(Shift shift)
+	public async Task<ApiResponseDto<Shift>> Create(Shift shift)
 	{
-		var savedShift = _dbContext.Shifts.Add(shift);
-		_dbContext.SaveChanges();
-		return savedShift.Entity;
+		var savedShift = await _dbContext.Shifts.AddAsync(shift);
+		await _dbContext.SaveChangesAsync();
+		return new ApiResponseDto<Shift>
+		{
+			Data = savedShift.Entity,
+			ResponseCode = HttpStatusCode.Created
+		};
+
 	}
 
-	public string? Delete(int id)
+	public async Task<ApiResponseDto<string?>> Delete(int id)
 	{
-		var savedShift = _dbContext.Shifts.Find(id);
+		var savedShift =await _dbContext.Shifts.FindAsync(id);
 		if (savedShift == null)
 		{
-			return "Shift not found";
+			return new ApiResponseDto<string?>
+			{
+				RequestFailed = true,
+				Data = null,
+				ResponseCode = HttpStatusCode.NotFound,
+				ErrorMessage = $"Resource with id: {id} was not found."
+			};
 		}
 		_dbContext.Shifts.Remove(savedShift);
-		_dbContext.SaveChanges();
-		return $"Shift with id: {id} deleted successfully";
-	}
+		await _dbContext.SaveChangesAsync();
 
-	public List<Shift> GetAll()
-	{
-		return _dbContext.Shifts.ToList();
-	}
-
-	public Shift? GetById(int id)
-	{
-		var savedShift = _dbContext.Shifts.Find(id);
-		if (savedShift == null)
+		return new ApiResponseDto<string?>
 		{
-			return null;
-		}
-		else return savedShift;
+			Data = $"Successfully deleted shift with id: {id}.",
+			ResponseCode = HttpStatusCode.NoContent
+
+		};
 	}
 
-	public Shift Update(int id, Shift updatedShift)
+	public async Task<ApiResponseDto<List<Shift>>> GetAll(FilterOptions filterOptions)
 	{
-		var savedShift = _dbContext.Shifts.Find(id);
-		if (savedShift == null)
+	
+		// Base query
+		var query = _dbContext.Shifts.AsQueryable();
+
+		// Get total count of shifts (before pagination)
+		var totalShifts = await query.CountAsync();
+
+		// Apply pagination
+		var shifts = await query
+			.Skip((filterOptions.PageNumber - 1) * filterOptions.PageSize)
+			.Take(filterOptions.PageSize)
+			.ToListAsync();
+
+		bool hasPrevious = filterOptions.PageNumber > 1;
+		bool hasNext = (filterOptions.PageNumber * filterOptions.PageSize) < totalShifts;
+		// Return paginated result
+		return new ApiResponseDto<List<Shift>>
 		{
-			return null;
-		}
+			Data = shifts,
+			ResponseCode = HttpStatusCode.OK,
+			TotalCount = totalShifts,
+			CurrentPage = filterOptions.PageNumber,
+			PageSize = filterOptions.PageSize,
+			HasPrevious = hasPrevious,
+			HasNext = hasNext,
 
-		savedShift.EmployeeId = updatedShift.EmployeeId;
-		savedShift.StartTime = updatedShift.StartTime;
-		savedShift.EndTime = updatedShift.EndTime;
-		savedShift.ShiftType = updatedShift.ShiftType;
-		savedShift.Notes = updatedShift.Notes;
-
-		_dbContext.SaveChanges();
-		return savedShift;
+		};
 	}
 
-	public static void Initialize(ShiftsDbContext context)
+	public async Task<ApiResponseDto<Shift?>> GetById(int id)
+	{
+		var result = await _dbContext.Shifts.FindAsync(id);
+		if (result == null)
+		{
+			return new ApiResponseDto<Shift?>
+			{
+				RequestFailed = true,
+				Data = null,
+				ResponseCode = HttpStatusCode.NotFound,
+				ErrorMessage = $"Resource with id: {id} was not found."
+			};
+		}
+		return new ApiResponseDto<Shift?>
+		{
+			Data = result,
+			ResponseCode = HttpStatusCode.OK
+		};
+	}
+
+	public async Task<ApiResponseDto<Shift?>> Update(int id, Shift updatedShift)
+	{
+		var result = await _dbContext.Shifts.FindAsync(id);
+		if (result == null)
+		{
+			return new ApiResponseDto<Shift?>
+			{
+				RequestFailed = true,
+				Data = null,
+				ResponseCode = HttpStatusCode.NotFound,
+				ErrorMessage = $"Resource with id: {id} was not found."
+			};
+		}
+
+		result.EmployeeId = updatedShift.EmployeeId;
+		result.StartTime = updatedShift.StartTime;
+		result.EndTime = updatedShift.EndTime;
+		result.ShiftType = updatedShift.ShiftType;
+		result.Notes = updatedShift.Notes;
+
+		await _dbContext.SaveChangesAsync();
+		return new ApiResponseDto<Shift?>
+		{
+			Data = result,
+			ResponseCode = HttpStatusCode.OK
+
+		};
+	}
+
+		public static void Initialize(ShiftsDbContext context)
 	{
 		
 		context.Database.EnsureCreated();

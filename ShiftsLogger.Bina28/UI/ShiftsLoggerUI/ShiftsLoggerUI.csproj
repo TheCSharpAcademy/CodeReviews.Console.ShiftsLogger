@@ -16,4 +16,10 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ShiftsLogger.Bina28">
+      <HintPath>..\..\API\bin\Debug\net8.0\ShiftsLogger.Bina28.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

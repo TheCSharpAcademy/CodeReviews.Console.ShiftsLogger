@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShiftsLogger.Bina28.Dtos;
 using ShiftsLogger.Bina28.Models;
 using ShiftsLogger.Bina28.Services;
 
@@ -15,15 +16,15 @@ public class ShiftsController: ControllerBase
 	}
 
 	[HttpGet]
-	public ActionResult GetAll()
+	public async Task<ActionResult<ApiResponseDto<List<Shift>>>> GetAll(FilterOptions filterOptions)
 	{
-		return Ok(_shiftService.GetAll());
+		return Ok(await _shiftService.GetAll(filterOptions));
 	}
 
 	[HttpGet("{id}")]
-	public ActionResult<Shift> GetById(int id)
+	public async Task<ActionResult<ApiResponseDto<Shift>>> GetById(int id)
 	{
-		var shift = _shiftService.GetById(id);
+		var shift = await _shiftService.GetById(id);
 		if (shift == null)
 		{
 			return NotFound();
@@ -32,30 +33,40 @@ public class ShiftsController: ControllerBase
 	}
 
 	[HttpPost]
-	public ActionResult<Shift> Create(Shift shift)
+	public async Task<ActionResult<ApiResponseDto<List<Shift>>>> Create(Shift shift)
 	{
-		return Ok(_shiftService.Create(shift));
+		if(!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+		var createdShift = await _shiftService.Create(shift);
+
+		return new ObjectResult(createdShift) { StatusCode = 201 };
 	}
 
 	[HttpPut("{id}")]
-	public ActionResult<Shift> Update(int id, Shift updatedShift)
+	public async Task<ActionResult<ApiResponseDto<Shift>>> Update(int id, Shift updatedShift)
 	{
-		var shift = _shiftService.Update(id, updatedShift);
-		if (shift == null)
+		if (!ModelState.IsValid)
 		{
-			return NotFound();
+			return BadRequest(ModelState);
 		}
-		return Ok(shift);
-	}
-
-	[HttpDelete("{id}")]
-	public ActionResult<string> Delete(int id)
-	{
-		var result = _shiftService.Delete(id);
+		var result = await _shiftService.Update(id, updatedShift);
 		if (result == null)
 		{
 			return NotFound();
 		}
-		return result;
+		return Ok(result);
+	}
+
+	[HttpDelete("{id}")]
+	public async Task<ActionResult> Delete(int id)
+	{
+		var result =await  _shiftService.Delete(id);
+		if (result == null)
+		{
+			return NotFound();
+		}
+		return NoContent();
 	}
 }

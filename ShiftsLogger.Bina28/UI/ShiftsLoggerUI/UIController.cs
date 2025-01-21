@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json; 
 using System.Threading.Tasks;
+using ShiftsLogger.Bina28.Dtos;
 
 internal static class UIController
 {
@@ -41,20 +42,33 @@ internal static class UIController
 			var response = await _httpClient.GetAsync("Shifts"); // GET from /shifts
 			if (response.IsSuccessStatusCode)
 			{
-				return await response.Content.ReadFromJsonAsync<IEnumerable<ShiftModel>>();
+				// Deserialize the API response into ApiResponseDto<ShiftModel>
+				var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponseDto<IEnumerable<ShiftModel>>>();
+
+				// Check if the API response is successful and contains valid data
+				if (apiResponse?.Data != null)
+				{
+					return apiResponse.Data;
+				}
+				else
+				{
+					Console.WriteLine("No data returned from the API.");
+					return Enumerable.Empty<ShiftModel>();
+				}
 			}
 			else
 			{
 				Console.WriteLine($"Failed to fetch shifts: {response.ReasonPhrase}");
-				return new List<ShiftModel>();
+				return Enumerable.Empty<ShiftModel>();
 			}
 		}
 		catch (Exception ex)
 		{
 			Console.WriteLine($"Error fetching shifts: {ex.Message}");
-			return new List<ShiftModel>();
+			return Enumerable.Empty<ShiftModel>();
 		}
 	}
+
 
 	// Remove a shift
 	internal static async Task RemoveAsync(ShiftModel shift)
