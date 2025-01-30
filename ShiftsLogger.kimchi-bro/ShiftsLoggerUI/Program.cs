@@ -1,12 +1,7 @@
-﻿using ShiftsLoggerUI.Menu;
-
-namespace ShiftsLoggerUI
+﻿internal class Program
 {
-    internal class Program
+    static void Main()
     {
-        static void Main()
-        {
-            MainMenu.ShowMainMenu();
-        }
+        MainMenu.ShowMainMenu();
     }
 }

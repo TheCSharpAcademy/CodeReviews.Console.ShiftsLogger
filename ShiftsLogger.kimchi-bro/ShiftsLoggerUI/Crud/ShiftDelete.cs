@@ -1,14 +1,11 @@
-﻿using ShiftsLoggerUI.Helpers;
-using Spectre.Console;
-
-namespace ShiftsLoggerUI.ShiftCrud;
+﻿using Spectre.Console;
 
 internal class ShiftDelete
 {
     internal static void Delete()
     {
         Console.Clear();
-        AnsiConsole.MarkupLine("[yellow]Deleting shift.[/]\n");
+        AnsiConsole.MarkupLine("[yellow]Deleting shift[/]\n");
 
         var shift = ShiftRead.GetShift();
         if (shift.Id == 0)
@@ -32,7 +29,8 @@ internal class ShiftDelete
     {
         try
         {
-            var result = HttpClientFactory.GetHttpClient().DeleteAsync(EndpointUrl.ShiftsEndpoint + $"/{id}").Result;
+            var result = HttpClientFactory.GetHttpClient()
+                .DeleteAsync(EndpointUrl.ShiftsEndpoint + $"/{id}").Result;
 
             if (!result.IsSuccessStatusCode)
             {

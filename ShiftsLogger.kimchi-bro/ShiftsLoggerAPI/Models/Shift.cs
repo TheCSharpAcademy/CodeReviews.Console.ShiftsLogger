@@ -6,4 +6,7 @@ public class Shift
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
     public TimeSpan Duration { get; set; }
+
+    public int EmployeeId { get; set; }
+    public Employee? Employee { get; set; }
 }

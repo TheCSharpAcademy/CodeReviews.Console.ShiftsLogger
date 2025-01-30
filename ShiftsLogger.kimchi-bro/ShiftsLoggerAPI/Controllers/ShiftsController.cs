@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ShiftsLoggerAPI.Data;
 using ShiftsLoggerAPI.Models;
 
 namespace ShiftsLoggerAPI.Controllers
@@ -7,119 +8,62 @@ namespace ShiftsLoggerAPI.Controllers
     [ApiController]
     [Route("api/shifts")]
     [Produces("application/json")]
-    public class ShiftsController : ControllerBase
+    public class ShiftsController(ShiftsLoggerDbContext dbContext) : ControllerBase
     {
-        private readonly ShiftContext _context;
-
-        public ShiftsController(ShiftContext context)
-        {
-            _context = context;
-        }
+        private readonly ShiftsLoggerDbContext _dbContext = dbContext;
 
         [HttpGet]
-        public async Task<ActionResult<object>> GetShifts()
+        public async Task<ActionResult<Shift>> GetShifts()
         {
-            var shifts = await _context.Shifts.ToListAsync();
-            return new { shifts };
+            var shifts = await _dbContext.Shifts
+                .Include(s => s.Employee)
+                .ToListAsync();
+            return Ok(new { shifts });
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Shift>> GetShift(int id)
+        public async Task<ActionResult<Shift>> GetShiftById(int id)
         {
-            var shift = await _context.Shifts.FindAsync(id);
+            var shift = await _dbContext.Shifts.FindAsync(id);
+            if (shift is null) return NotFound();
 
-            if (shift == null)
-            {
-                return NotFound();
-            }
-
-            return shift;
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutShift(int id, Shift shift)
-        {
-            if (id != shift.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(shift).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ShiftExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(shift);
         }
 
         [HttpPost]
-        public async Task<ActionResult<object>> PostShift(Shift shift)
+        public async Task<ActionResult<Shift>> AddShift(Shift shift)
         {
-            _context.Shifts.Add(shift);
-            await _context.SaveChangesAsync();
+            _dbContext.Shifts.Add(shift);
+            await _dbContext.SaveChangesAsync();
 
-            return CreatedAtAction("GetShift", new { id = shift.Id }, shift);
+            return CreatedAtAction(nameof(GetShiftById), new { id = shift.Id }, shift);
         }
 
-        [HttpPost("addmock")]
-        public IActionResult PostShifts([FromBody] List<Shift> shifts)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateShift(int id, Shift updateShift)
         {
-            using var transaction = _context.Database.BeginTransaction();
-            try
-            {
-                _context.Shifts.AddRange(shifts);
-                _context.SaveChanges();
-                transaction.Commit();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                return BadRequest(ex.Message);
-            }
+            var shift = await _dbContext.Shifts.FindAsync(id);
+            if (shift is null) return NotFound();
+
+            shift.StartTime = updateShift.StartTime;
+            shift.EndTime = updateShift.EndTime;
+            shift.Duration = updateShift.Duration;
+            shift.EmployeeId = updateShift.EmployeeId;
+            await _dbContext.SaveChangesAsync();
+
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteShift(int id)
+        public async Task<IActionResult> DeleteShiftById(int id)
         {
-            var shift = await _context.Shifts.FindAsync(id);
-            if (shift == null)
-            {
-                return NotFound();
-            }
+            var shift = await _dbContext.Shifts.FindAsync(id);
+            if (shift is null) return NotFound();
 
-            _context.Shifts.Remove(shift);
-            await _context.SaveChangesAsync();
+            _dbContext.Shifts.Remove(shift);
+            await _dbContext.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        [HttpDelete("delmock")]
-        public async Task<IActionResult> DeleteShifts()
-        {
-            _context.Shifts.RemoveRange(_context.Shifts);
-            await _context.SaveChangesAsync();
-            _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Shifts', RESEED, 0)");
-
-            return NoContent();
-        }
-
-        private bool ShiftExists(int id)
-        {
-            return _context.Shifts.Any(e => e.Id == id);
         }
     }
 }

@@ -4,16 +4,24 @@
     `Server=(localdb)\\MSSQLLocalDB;`
     `Database=Shifts;`
 - A new database will be created the first time you run the app
+- Visit `https://localhost:7088/scalar/` to test API
 # Db Migration
 - Before any change in database schema (i.e. adding or changing property type, adding new model) perform database migration:
-    - Execute following commands in NuGet Package Manager console
+    - Execute following commands in NuGet Package Manager console (PMC)
     ```
-    Add-Migration InitialCreate
+    Add-Migration <your-migration-name>
+    ```
+- You could roll back and cancel all database schema changes if something goes wrong reverting to a previous migration
+    ```
+    Update-Database <previous-migration-name>
+    ```
+- Apply changes to you database schema if everything is all right
+    ```
     Update-Database
     ```
-- That will create initial migration to which you could roll back and cancel all database schema changes if something goes wrong
 # Features
 - Spectre.Console UI
+- Scalar API Client
 - MS SQL Server
-- Entity Framework
+- Entity Framework Core
 - Code-first approach for database creation

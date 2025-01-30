@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ShiftsLoggerAPI.Models;
+using ShiftsLoggerAPI.Data;
 
 namespace ShiftsLoggerAPI.Helpers;
 
@@ -8,13 +8,13 @@ internal static class DbHelper
     internal static void CheckDb(WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetService<ShiftContext>();
+        var dbContext = scope.ServiceProvider.GetService<ShiftsLoggerDbContext>();
+
         if (dbContext != null)
         {
             try
             {
-                var created = dbContext.Database.EnsureCreated();
-                if (!created) dbContext.Database.Migrate();
+                dbContext.Database.Migrate();
             }
             catch (Exception ex)
             {

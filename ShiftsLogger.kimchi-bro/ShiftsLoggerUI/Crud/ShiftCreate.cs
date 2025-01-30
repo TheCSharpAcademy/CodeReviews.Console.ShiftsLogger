@@ -1,16 +1,31 @@
 ﻿using Newtonsoft.Json;
 using ShiftsLoggerAPI.Models;
-using ShiftsLoggerUI.Helpers;
 using Spectre.Console;
 using System.Text;
-
-namespace ShiftsLoggerUI.ShiftCrud;
 
 internal class ShiftCreate
 {
     internal static void Create()
     {
         Console.Clear();
+        AnsiConsole.MarkupLine("[yellow]Creating new shift[/]\n");
+
+        var employee = EmployeeRead.GetEmployee();
+        if (employee.Id == 0)
+        {
+            AnsiConsole.MarkupLine("You need to add new employee first.\n");
+
+            var answer = DisplayInfoHelpers.GetYesNoAnswer("Do you want to add new employee now?");
+            if (!answer)
+            {
+                Console.Clear();
+                return;
+            }
+
+            EmployeeCreate.Create();
+            employee = EmployeeRead.GetEmployee();
+        }
+
         var (exit, startTime, endTime, duration) = InputDataHelpers.GetData();
         if (exit)
         {
@@ -18,10 +33,11 @@ internal class ShiftCreate
             return;
         }
 
-        AddNewShift(startTime, endTime, duration);
+        AddNewShift(startTime, endTime, duration, employee);
     }
 
-    private static void AddNewShift(DateTime startTime, DateTime endTime, TimeSpan duration)
+    private static void AddNewShift(
+        DateTime startTime, DateTime endTime, TimeSpan duration, Employee employee)
     {
         try
         {
@@ -29,7 +45,8 @@ internal class ShiftCreate
             {
                 StartTime = startTime,
                 EndTime = endTime,
-                Duration = duration
+                Duration = duration,
+                EmployeeId = employee.Id
             };
 
             var json = JsonConvert.SerializeObject(shift);

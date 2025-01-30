@@ -1,8 +1,6 @@
 ﻿using Spectre.Console;
 using System.Globalization;
 
-namespace ShiftsLoggerUI.Helpers;
-
 internal class InputDataHelpers
 {
     public const string DateTimeFormat = "yyyy-MM-dd HH:mm";

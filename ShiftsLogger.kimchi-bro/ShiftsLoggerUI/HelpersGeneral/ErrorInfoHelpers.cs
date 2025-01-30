@@ -1,7 +1,5 @@
 ﻿using Spectre.Console;
 
-namespace ShiftsLoggerUI.Helpers;
-
 internal class ErrorInfoHelpers
 {
     internal static void Http(HttpRequestException ex)

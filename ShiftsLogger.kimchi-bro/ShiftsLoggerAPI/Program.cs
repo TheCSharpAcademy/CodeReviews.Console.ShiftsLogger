@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using ShiftsLoggerAPI.Models;
 using ShiftsLoggerAPI.Helpers;
+using Scalar.AspNetCore;
+using ShiftsLoggerAPI.Data;
+
+namespace ShiftsLoggerAPI;
 
 public class Program
 {
@@ -8,13 +11,11 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddDbContext<ShiftContext>(options =>
-            options.UseSqlServer(
-                builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<ShiftsLoggerDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
         builder.Services.AddControllers();
+        builder.Services.AddOpenApi();
 
         var app = builder.Build();
 
@@ -22,8 +23,8 @@ public class Program
 
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
+            app.MapScalarApiReference();
+            app.MapOpenApi();
         }
 
         app.MapControllers();

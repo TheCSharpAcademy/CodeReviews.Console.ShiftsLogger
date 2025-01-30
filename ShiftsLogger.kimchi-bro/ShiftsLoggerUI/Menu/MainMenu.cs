@@ -1,19 +1,12 @@
-﻿using ShiftsLoggerUI.MockArea;
-using ShiftsLoggerUI.ShiftCrud;
-using Spectre.Console;
-
-namespace ShiftsLoggerUI.Menu;
+﻿using Spectre.Console;
 
 internal class MainMenu
 {
     private static readonly Dictionary<string, Action> _menuActions = new()
     {
-        { "Show all shifts", ShiftRead.ShowAllShifts },
-        { "Add new shift", ShiftCreate.Create },
-        { "Update shift", ShiftUpdate.Update },
-        { "Delete shift", ShiftDelete.Delete },
-        { "[yellow]Create random shifts[/]", ShiftMock.Generate },
-        { "[red]Delete all shifts[/]", ShiftMock.DeleteAll },
+        { "Shifts", ShiftMenu.ShowShiftMenu },
+        { "Employees", EmployeeMenu.ShowEmployeeMenu },
+        { "[yellow]Mock Area[/]", MockMenu.ShowMockMenu },
         { "Exit the app", () =>
             {
                 Console.Clear();

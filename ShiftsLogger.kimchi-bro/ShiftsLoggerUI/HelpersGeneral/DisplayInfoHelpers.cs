@@ -1,7 +1,5 @@
 ﻿using Spectre.Console;
 
-namespace ShiftsLoggerUI.Helpers;
-
 internal class DisplayInfoHelpers
 {
     public const string Back = "Back to main menu";

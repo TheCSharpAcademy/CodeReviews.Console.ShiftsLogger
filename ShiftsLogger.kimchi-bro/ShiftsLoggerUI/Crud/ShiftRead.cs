@@ -1,9 +1,6 @@
 ﻿using ShiftsLoggerAPI.Models;
-using ShiftsLoggerUI.Helpers;
 using Spectre.Console;
 using System.Text.Json;
-
-namespace ShiftsLoggerUI.ShiftCrud;
 
 internal class ShiftRead
 {
@@ -22,6 +19,7 @@ internal class ShiftRead
         table.AddColumn("[yellow]Start Time[/]");
         table.AddColumn("[yellow]End Time[/]");
         table.AddColumn("[yellow]Duration[/]");
+        table.AddColumn("[yellow]Employee[/]");
 
         foreach (var shift in shifts)
         {
@@ -29,7 +27,8 @@ internal class ShiftRead
                 new Markup($"[green]{num}[/]"),
                 new Markup($"{shift.StartTime.ToString(InputDataHelpers.DateTimeFormat)}"),
                 new Markup($"{shift.EndTime.ToString(InputDataHelpers.DateTimeFormat)}"),
-                new Markup($"{shift.Duration.Hours:D2}:{shift.Duration.Minutes:D2}"));
+                new Markup($"{shift.Duration.Hours:D2}:{shift.Duration.Minutes:D2}"),
+                new Markup($"{shift.Employee?.Name ?? string.Empty}"));
             num++;
         }
         AnsiConsole.Write(table);
@@ -42,7 +41,8 @@ internal class ShiftRead
     {
         try
         {
-            var result = HttpClientFactory.GetHttpClient().GetAsync(EndpointUrl.ShiftsEndpoint).Result;
+            var result = HttpClientFactory.GetHttpClient()
+                .GetAsync(EndpointUrl.ShiftsEndpoint).Result;
 
             if (!result.IsSuccessStatusCode)
             {
@@ -57,10 +57,16 @@ internal class ShiftRead
             var shifts = jsonDocument.RootElement.GetProperty("shifts").EnumerateArray()
                 .Select(e => new Shift
                 {
-                    Id = (int)e.GetProperty("id").GetInt64(),
+                    Id = e.GetProperty("id").GetInt32(),
                     StartTime = DateTime.Parse(e.GetProperty("startTime").GetString() ?? string.Empty),
                     EndTime = DateTime.Parse(e.GetProperty("endTime").GetString() ?? string.Empty),
-                    Duration = TimeSpan.Parse(e.GetProperty("duration").GetString() ?? string.Empty)
+                    Duration = TimeSpan.Parse(e.GetProperty("duration").GetString() ?? string.Empty),
+                    EmployeeId = e.GetProperty("employeeId").GetInt32(),
+                    Employee = new Employee
+                    {
+                        Id = e.GetProperty("employee").GetProperty("id").GetInt32(),
+                        Name = e.GetProperty("employee").GetProperty("name").GetString() ?? string.Empty,
+                    },
                 })
                 .OrderBy(e => e.StartTime)
                 .ToList();
@@ -91,7 +97,7 @@ internal class ShiftRead
         var success = shiftMap.TryGetValue(choice, out Shift? chosenShift);
         if (!success) return new Shift();
 
-        return chosenShift!;
+        return chosenShift ?? new Shift();
     }
 
     private static Dictionary<string, Shift> MakeShiftMap()
@@ -112,7 +118,8 @@ internal class ShiftRead
         return
             $"[yellow]Start time:[/] {shift.StartTime.ToString(InputDataHelpers.DateTimeFormat)} " +
             $"[yellow]End time:[/] {shift.EndTime.ToString(InputDataHelpers.DateTimeFormat)} " +
-            $"[yellow]Duration:[/] {shift.Duration.Hours:D2}:{shift.Duration.Minutes:D2}";
+            $"[yellow]Duration:[/] {shift.Duration.Hours:D2}:{shift.Duration.Minutes:D2} " +
+            $"[green]Employee:[/] {shift.Employee?.Name}";
     }
 
     private static List<string> MakeShiftList(List<Shift> shifts)
