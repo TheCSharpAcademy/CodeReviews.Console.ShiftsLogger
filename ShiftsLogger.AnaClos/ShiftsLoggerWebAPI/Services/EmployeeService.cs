@@ -23,7 +23,7 @@ public class EmployeeService : IEmployeeService
         try
         {
             Employee employee = Dto2Model(employeeDto);
-            var savedEmployee = _dbContext.Employees.Add(employee);
+            _dbContext.Employees.Add(employee);
             _dbContext.SaveChanges();
             return $"Successfully created employee with name {employee.Name}.";
         }

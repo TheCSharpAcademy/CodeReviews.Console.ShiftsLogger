@@ -62,7 +62,7 @@ public class ShiftsController : IController
         {
             _consoleController.MessageAndPressKey("The time slot is already used", "red");
             return;
-        };
+        }
 
         ShiftDto shiftDto = new ShiftDto
         {
@@ -196,7 +196,7 @@ public class ShiftsController : IController
             return;
         }
 
-        bool ok = int.TryParse(stringShift.Split('#')[1], out order);
+        int.TryParse(stringShift.Split('#')[1], out order);
 
         string[] columns = { "Property", "Value" };
 
@@ -213,7 +213,7 @@ public class ShiftsController : IController
     public void ViewAll()
     {
         EmployeeDto employee = _employeesController.GetEmployeeFromMenu("Select an employee");
-        TimeSpan total = TimeSpan.Zero;
+
         if (employee == null)
         {
             return;
