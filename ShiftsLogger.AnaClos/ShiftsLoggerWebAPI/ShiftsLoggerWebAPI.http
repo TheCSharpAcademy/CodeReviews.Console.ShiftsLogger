@@ -1,0 +1,6 @@
+@ShiftsLogger.AnaClos_HostAddress = http://localhost:5067
+
+GET {{ShiftsLogger.AnaClos_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
