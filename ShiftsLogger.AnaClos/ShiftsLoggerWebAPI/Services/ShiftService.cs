@@ -24,6 +24,7 @@ namespace ShiftsLoggerWebAPI.Services
             try
             {
                 Shift shift = Dto2Model(shiftDto);
+                //No savedShift
                 _dbContext.Shifts.Add(shift);
                 _dbContext.SaveChanges();
                 return "Successfully created shift.";
