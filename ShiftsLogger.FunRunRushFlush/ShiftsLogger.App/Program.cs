@@ -24,7 +24,6 @@ host.ConfigureLogging(logger =>
 {
     logger.ClearProviders();
     logger.AddDebug();
-    logger.AddConsole();
 });
 
 
