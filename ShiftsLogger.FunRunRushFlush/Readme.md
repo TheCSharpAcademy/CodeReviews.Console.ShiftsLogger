@@ -11,8 +11,6 @@ Inspired by the [C# Academy Shifts Logger Project](https://thecsharpacademy.com/
 
 ## How It Works
 
-### Console Application:
-
 1. **Launch the App.**
 2. **Navigate the Menu** using arrow keys.
 3. **View Shifts:** See an overview of all shifts.

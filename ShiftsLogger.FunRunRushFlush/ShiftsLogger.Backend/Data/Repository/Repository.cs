@@ -31,7 +31,7 @@ public sealed partial class Repository<TEntity> : IRepository<TEntity> where TEn
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         await dbContext.Set<TEntity>().AddAsync(entity, cancellationToken);
-        var result = await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 
     public async ValueTask<bool> UpdateAsync(TEntity entity, CancellationToken cancellationToken)

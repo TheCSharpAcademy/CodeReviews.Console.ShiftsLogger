@@ -10,18 +10,15 @@ public class ShiftsLoggerApp
 {
     private readonly ILogger<ShiftsLoggerApp> _log;
     private readonly ShiftsApiClient _shiftClient;
-    //private readonly IInputCancellationService _inputCancellationService;
     private readonly IUserInputValidationService _userInputValidation;
 
     public ShiftsLoggerApp(
         ILogger<ShiftsLoggerApp> log,
         ShiftsApiClient shiftClient,
-        //IInputCancellationService inputCancellationService,
         IUserInputValidationService userInputValidation)
     {
         _log = log;
         _shiftClient = shiftClient;
-        //_inputCancellationService = inputCancellationService;
         _userInputValidation = userInputValidation;
     }
 
