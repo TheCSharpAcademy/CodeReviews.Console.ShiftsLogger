@@ -43,10 +43,10 @@ public class ShiftsLoggerApp
         while (true)
         {
             AnsiConsole.Clear();
-            AppHelperFunctions.AppHeader("Phonebook", true);
+            AppHelperFunctions.AppHeader("ShiftsLogger", true);
 
             var fShifts = await _shiftClient.ShiftsAllAsync();
-            var dummy = new Shift("Test", "t", DateTime.Now, DateTime.Now);
+            var dummy = new Shift(nameof(Shift.EmployeeName), nameof(Shift.ShiftDescription), DateTime.Now, DateTime.Now);
             fShifts.Add(dummy);
             var listShifts = fShifts.ToList();
 
@@ -84,30 +84,30 @@ public class ShiftsLoggerApp
                             {
                                 if (i == selectedIndex)
                                 {
-                                    table.AddRow($"[blue] > {shift.EmployeeName} <[/]",
-                                                 $"[blue]> {shift.ShiftDescription} <[/]",
+                                    table.AddRow($"[blue] > {nameof(Shift.EmployeeName)} <[/]",
+                                                 $"[blue]> {nameof(Shift.ShiftDescription)} <[/]",
                                                  $"[blue]> {shift.ShiftStart} <[/]",
                                                  $"[blue]> {shift.ShiftEnd} <[/]",
-                                                 $"[blue]> {shift.ShiftDuration} <[/]");
+                                                 $"[blue]> 00:00:00 <[/]");
 
                                 }
                                 else
                                 {
-                                    table.AddRow($"[dim]> {shift.EmployeeName} <[/]",
-                                                       $"[dim]> {shift.ShiftDescription} <[/]",
+                                    table.AddRow($"[dim]> {nameof(Shift.EmployeeName)} <[/]",
+                                                       $"[dim]> {nameof(Shift.ShiftDescription)} <[/]",
                                                        $"[dim]> {shift.ShiftStart} <[/]",
                                                        $"[dim]> {shift.ShiftEnd} <[/]",
-                                                       $"[dim]> {shift.ShiftDuration} <[/]");
+                                                       $"[dim]> 00:00:00 <[/]");
                                 }
 
                             }
                             else if (i == selectedIndex)
                             {
-                                table.AddRow($"[blue]> {shift.EmployeeName} <[/]",
-                                       $"[blue]{shift.ShiftDescription} <[/]",
-                                       $"[blue]{shift.ShiftStart} <[/]",
-                                       $"[blue]{shift.ShiftEnd} <[/]",
-                                       $"[blue]{shift.ShiftDuration} <[/]");
+                                table.AddRow($"[blue]> {shift.EmployeeName}[/]",
+                                       $"[blue]{shift.ShiftDescription}[/]",
+                                       $"[blue]{shift.ShiftStart}[/]",
+                                       $"[blue]{shift.ShiftEnd}[/]",
+                                       $"[blue]{shift.ShiftDuration}[/]");
                             }
                             else
                             {

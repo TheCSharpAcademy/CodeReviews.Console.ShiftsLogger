@@ -21,7 +21,7 @@ public class UserInputValidationService : IUserInputValidationService
         DateTime shiftStart = default;
         DateTime shiftEnd = default;
 
-        AnsiConsole.MarkupLine("[yellow]Please provide the Name, Email and the Phonenumber for your registration.[/]");
+        AnsiConsole.MarkupLine("[yellow]Please provide the Name, ShiftDescription and the ShiftTimes.[/]");
 
         var name = AnsiConsole.Prompt(
             new TextPrompt<string>("[yellow]Enter your [green]Full Name[/] (max 100 characters):[/]")
