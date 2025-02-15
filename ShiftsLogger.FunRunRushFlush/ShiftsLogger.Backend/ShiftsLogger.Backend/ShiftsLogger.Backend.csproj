@@ -26,7 +26,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\ShiftsLogger.Domain\ShiftsLogger.Domain.csproj" />
-		<ProjectReference Include="..\ShiftsLogger.ServiceDefaults\ShiftsLogger.ServiceDefaults.csproj" />
 	</ItemGroup>
 
 </Project>

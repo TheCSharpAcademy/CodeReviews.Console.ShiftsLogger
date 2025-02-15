@@ -12,8 +12,7 @@ builder.Services.AddDbContextFactory<ShiftDbContext>(optionsBuilder =>
 });
 builder.Services.AddSingleton<IRepository<Shift>, Repository<Shift>>();
 
-// Add service defaults & Aspire client integrations.
-builder.AddServiceDefaults();
+
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
@@ -33,6 +32,6 @@ if (app.Environment.IsDevelopment())
     app.MapGet("/", () => Results.Redirect("/scalar/v1"));
 }
 app.MapControllers();
-app.MapDefaultEndpoints();
+
 
 app.Run();

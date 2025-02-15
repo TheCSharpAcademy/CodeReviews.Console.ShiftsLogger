@@ -5,13 +5,9 @@ VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLogger.Backend", "ShiftsLogger.Backend\ShiftsLogger.Backend.csproj", "{458A143C-48B7-4B8C-B28B-55E3CAF71999}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLogger.Frontend", "ShiftsLogger.Frontend\ShiftsLogger.Frontend.csproj", "{81C75D27-3403-416E-BF7D-994002629267}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLogger.AppHost", "ShiftsLogger.AppHost\ShiftsLogger.AppHost.csproj", "{4BC27056-E0E2-4A6A-966D-1868F394DD9F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLogger.ServiceDefaults", "ShiftsLogger.ServiceDefaults\ShiftsLogger.ServiceDefaults.csproj", "{92431620-97E9-4F5D-8E0D-2FD4B5168BF3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLogger.Domain", "ShiftsLogger.Domain\ShiftsLogger.Domain.csproj", "{945F5597-E101-4C14-9B05-4184679A00B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLogger.App", "ShiftsLogger.App\ShiftsLogger.App.csproj", "{2896054B-F64C-45EB-A5B9-A3EE268EF65B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,22 +19,14 @@ Global
 		{458A143C-48B7-4B8C-B28B-55E3CAF71999}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{458A143C-48B7-4B8C-B28B-55E3CAF71999}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{458A143C-48B7-4B8C-B28B-55E3CAF71999}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81C75D27-3403-416E-BF7D-994002629267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81C75D27-3403-416E-BF7D-994002629267}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81C75D27-3403-416E-BF7D-994002629267}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81C75D27-3403-416E-BF7D-994002629267}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4BC27056-E0E2-4A6A-966D-1868F394DD9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4BC27056-E0E2-4A6A-966D-1868F394DD9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4BC27056-E0E2-4A6A-966D-1868F394DD9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4BC27056-E0E2-4A6A-966D-1868F394DD9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92431620-97E9-4F5D-8E0D-2FD4B5168BF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92431620-97E9-4F5D-8E0D-2FD4B5168BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92431620-97E9-4F5D-8E0D-2FD4B5168BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92431620-97E9-4F5D-8E0D-2FD4B5168BF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{945F5597-E101-4C14-9B05-4184679A00B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{945F5597-E101-4C14-9B05-4184679A00B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{945F5597-E101-4C14-9B05-4184679A00B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{945F5597-E101-4C14-9B05-4184679A00B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2896054B-F64C-45EB-A5B9-A3EE268EF65B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2896054B-F64C-45EB-A5B9-A3EE268EF65B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2896054B-F64C-45EB-A5B9-A3EE268EF65B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2896054B-F64C-45EB-A5B9-A3EE268EF65B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
