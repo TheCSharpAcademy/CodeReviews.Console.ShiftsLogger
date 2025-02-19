@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ShiftLoggerApi.Models;
 
@@ -22,5 +23,9 @@ public class Worker
     public int DepartmentId { get; set; }
 
     [ForeignKey(nameof(DepartmentId))]
+    [JsonIgnore]
     public Department Department { get; set; } = null;
+
+    [JsonIgnore]
+    public List<Shift> Shifts { get; set; } = new();
 }

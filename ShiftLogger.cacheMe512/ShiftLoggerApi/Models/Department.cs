@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ShiftLoggerApi.Models;
 
@@ -13,5 +14,6 @@ public class Department
     [MaxLength(100)]
     public string DepartmentName { get; set; } = string.Empty;
 
+    [JsonIgnore]
     public List<Worker> Workers { get; set; } = new();
 }

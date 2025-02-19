@@ -1,0 +1,86 @@
+﻿@ShiftLoggerApi_HostAddress = https://localhost:7225
+
+### Create a new department
+POST {{ShiftLoggerApi_HostAddress}}/departments
+Content-Type: application/json
+Accept: application/json
+
+{
+  "DepartmentName": "Human Resources"
+}
+
+### Create a new worker
+POST {{ShiftLoggerApi_HostAddress}}/workers
+Content-Type: application/json
+Accept: application/json
+
+{
+  "FirstName": "Lila",
+  "LastName": "Nolan",
+  "HireDate": "2019-06-15T00:00:00",
+  "DepartmentId": 9
+}
+
+### Create a new shift
+POST {{ShiftLoggerApi_HostAddress}}/shifts
+Content-Type: application/json
+Accept: application/json
+
+{
+  "StartDate": "2024-05-23T08:00:00",
+  "EndDate": "2024-05-23T16:00:00",
+  "WorkerId": 11
+}
+
+### Update a worker (replace {worker_id} with a valid worker ID)
+PUT {{ShiftLoggerApi_HostAddress}}/workers/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "FirstName": "John",
+  "LastName": "Smith",
+  "HireDate": "2023-01-15T00:00:00",
+  "DepartmentId": 1
+}
+
+### Update a shift (replace {shift_id} with a valid shift ID)
+PUT {{ShiftLoggerApi_HostAddress}}/shifts/1
+Content-Type: application/json
+Accept: application/json
+
+{
+  "StartDate": "2024-02-19T07:00:00",
+  "EndDate": "2024-02-19T15:00:00",
+  "WorkerId": 1
+}
+
+### Get all departments
+GET {{ShiftLoggerApi_HostAddress}}/departments
+
+### Get a department by ID (replace {department_id} with a valid department ID)
+GET {{ShiftLoggerApi_HostAddress}}/departments/1
+
+### Get all shifts
+GET {{ShiftLoggerApi_HostAddress}}/shifts
+
+### Get shifts by worker ID (replace {worker_id} with a valid worker ID)
+GET {{ShiftLoggerApi_HostAddress}}/shifts/1
+
+### Get shifts by department ID (replace {department_id} with a valid department ID)
+GET {{ShiftLoggerApi_HostAddress}}/shifts/department/1
+
+### Get all workers
+GET {{ShiftLoggerApi_HostAddress}}/workers
+
+### Get a worker by ID (replace {worker_id} with a valid worker ID)
+GET {{ShiftLoggerApi_HostAddress}}/workers/1
+
+### Delete a shift (replace {shift_id} with a valid shift ID)
+DELETE {{ShiftLoggerApi_HostAddress}}/shifts/38
+
+### Delete a worker (replace {worker_id} with a valid worker ID)
+DELETE {{ShiftLoggerApi_HostAddress}}/workers/1
+
+### Delete a department (replace {department_id} with a valid department ID)
+DELETE {{ShiftLoggerApi_HostAddress}}/departments/1
