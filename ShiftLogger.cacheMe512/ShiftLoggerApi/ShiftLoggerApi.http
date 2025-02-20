@@ -6,7 +6,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "DepartmentName": "Marketing"
+  "DepartmentName": "Accounting"
 }
 
 ### Create a new worker
@@ -15,10 +15,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "FirstName": "Homer",
-  "LastName": "Simpson",
-  "HireDate": "2025-01-01T00:00:00",
-  "DepartmentId": 1
+  "FirstName": "Vic",
+  "LastName": "Firth",
+  "HireDate": "2023-02-15T00:00:00",
+  "DepartmentId": 12
 }
 
 ### Create a new shift
@@ -29,37 +29,37 @@ Accept: application/json
 {
   "StartDate": "2025-01-23T08:00:00",
   "EndDate": "2025-01-23T16:00:00",
-  "WorkerId": 13
+  "WorkerId": 14
 }
 
 ### Update a worker (replace {worker_id} with a valid worker ID)
-PUT {{ShiftLoggerApi_HostAddress}}/workers/13
+PUT {{ShiftLoggerApi_HostAddress}}/workers/14
 Content-Type: application/json
 Accept: application/json
 
 {
-  "FirstName": "Homer",
-  "LastName": "Simpson",
-  "HireDate": "2024-12-31T00:00:00",
-  "DepartmentId": 1
+  "FirstName": "Vic",
+  "LastName": "Firth",
+  "HireDate": "2022-12-31T00:00:00",
+  "DepartmentId": 12
 }
 
 ### Update a shift (replace {shift_id} with a valid shift ID)
-PUT {{ShiftLoggerApi_HostAddress}}/shifts/50
+PUT {{ShiftLoggerApi_HostAddress}}/shifts/51
 Content-Type: application/json
 Accept: application/json
 
 {
   "StartDate": "2025-02-20T07:00:00",
   "EndDate": "2025-02-20T15:00:00",
-  "WorkerId": 13
+  "WorkerId": 14
 }
 
 ### Get all departments
 GET {{ShiftLoggerApi_HostAddress}}/departments
 
 ### Get a department by ID (replace {department_id} with a valid department ID)
-GET {{ShiftLoggerApi_HostAddress}}/departments/10
+GET {{ShiftLoggerApi_HostAddress}}/departments/1
 
 ### Get all shifts
 GET {{ShiftLoggerApi_HostAddress}}/shifts
@@ -77,7 +77,7 @@ GET {{ShiftLoggerApi_HostAddress}}/workers
 GET {{ShiftLoggerApi_HostAddress}}/workers/2
 
 ### Delete a shift (replace {shift_id} with a valid shift ID)
-DELETE {{ShiftLoggerApi_HostAddress}}/shifts/50
+DELETE {{ShiftLoggerApi_HostAddress}}/shifts/2
 
 ### Delete a worker (replace {worker_id} with a valid worker ID)
 DELETE {{ShiftLoggerApi_HostAddress}}/workers/1
