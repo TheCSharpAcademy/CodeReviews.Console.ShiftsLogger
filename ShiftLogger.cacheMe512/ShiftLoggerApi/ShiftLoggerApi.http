@@ -6,7 +6,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "DepartmentName": "Human Resources"
+  "DepartmentName": "Marketing"
 }
 
 ### Create a new worker
@@ -15,10 +15,10 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "FirstName": "Lila",
-  "LastName": "Nolan",
-  "HireDate": "2019-06-15T00:00:00",
-  "DepartmentId": 9
+  "FirstName": "Homer",
+  "LastName": "Simpson",
+  "HireDate": "2025-01-01T00:00:00",
+  "DepartmentId": 1
 }
 
 ### Create a new shift
@@ -27,45 +27,45 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "StartDate": "2024-05-23T08:00:00",
-  "EndDate": "2024-05-23T16:00:00",
-  "WorkerId": 11
+  "StartDate": "2025-01-23T08:00:00",
+  "EndDate": "2025-01-23T16:00:00",
+  "WorkerId": 13
 }
 
 ### Update a worker (replace {worker_id} with a valid worker ID)
-PUT {{ShiftLoggerApi_HostAddress}}/workers/1
+PUT {{ShiftLoggerApi_HostAddress}}/workers/13
 Content-Type: application/json
 Accept: application/json
 
 {
-  "FirstName": "John",
-  "LastName": "Smith",
-  "HireDate": "2023-01-15T00:00:00",
+  "FirstName": "Homer",
+  "LastName": "Simpson",
+  "HireDate": "2024-12-31T00:00:00",
   "DepartmentId": 1
 }
 
 ### Update a shift (replace {shift_id} with a valid shift ID)
-PUT {{ShiftLoggerApi_HostAddress}}/shifts/1
+PUT {{ShiftLoggerApi_HostAddress}}/shifts/50
 Content-Type: application/json
 Accept: application/json
 
 {
-  "StartDate": "2024-02-19T07:00:00",
-  "EndDate": "2024-02-19T15:00:00",
-  "WorkerId": 1
+  "StartDate": "2025-02-20T07:00:00",
+  "EndDate": "2025-02-20T15:00:00",
+  "WorkerId": 13
 }
 
 ### Get all departments
 GET {{ShiftLoggerApi_HostAddress}}/departments
 
 ### Get a department by ID (replace {department_id} with a valid department ID)
-GET {{ShiftLoggerApi_HostAddress}}/departments/1
+GET {{ShiftLoggerApi_HostAddress}}/departments/10
 
 ### Get all shifts
 GET {{ShiftLoggerApi_HostAddress}}/shifts
 
 ### Get shifts by worker ID (replace {worker_id} with a valid worker ID)
-GET {{ShiftLoggerApi_HostAddress}}/shifts/1
+GET {{ShiftLoggerApi_HostAddress}}/shifts/2
 
 ### Get shifts by department ID (replace {department_id} with a valid department ID)
 GET {{ShiftLoggerApi_HostAddress}}/shifts/department/1
@@ -74,10 +74,10 @@ GET {{ShiftLoggerApi_HostAddress}}/shifts/department/1
 GET {{ShiftLoggerApi_HostAddress}}/workers
 
 ### Get a worker by ID (replace {worker_id} with a valid worker ID)
-GET {{ShiftLoggerApi_HostAddress}}/workers/1
+GET {{ShiftLoggerApi_HostAddress}}/workers/2
 
 ### Delete a shift (replace {shift_id} with a valid shift ID)
-DELETE {{ShiftLoggerApi_HostAddress}}/shifts/38
+DELETE {{ShiftLoggerApi_HostAddress}}/shifts/50
 
 ### Delete a worker (replace {worker_id} with a valid worker ID)
 DELETE {{ShiftLoggerApi_HostAddress}}/workers/1

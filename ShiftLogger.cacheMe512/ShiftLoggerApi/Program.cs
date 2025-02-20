@@ -3,7 +3,6 @@ using ShiftLoggerApi.Models;
 using ShiftLoggerApi;
 
 var builder = WebApplication.CreateBuilder(args);
-
 var connectionString = builder.Configuration.GetConnectionString("ShiftLoggerDatabase");
 
 builder.Services.AddDbContext<ShiftLoggerContext>(options =>
@@ -11,91 +10,105 @@ builder.Services.AddDbContext<ShiftLoggerContext>(options =>
 
 var app = builder.Build();
 
+var shifts = app.MapGroup("/shifts");
+var departments = app.MapGroup("/departments");
+var workers = app.MapGroup("/workers");
 
-app.MapGet("/shifts", async (ShiftLoggerContext db) =>
-    await db.Shifts.ToListAsync());
+shifts.MapGet("/", GetAllShifts);
+shifts.MapGet("/{worker_id}", GetShiftsByWorker);
+shifts.MapGet("/department/{department_id}", GetShiftsByDepartment);
+shifts.MapPost("/", CreateShift);
+shifts.MapPut("/{shift_id}", UpdateShift);
+shifts.MapDelete("/{shift_id}", DeleteShift);
 
-app.MapGet("/shifts/{worker_id}", async (int worker_id, ShiftLoggerContext db) =>
+departments.MapGet("/", GetAllDepartments);
+departments.MapGet("/{department_id}", GetDepartment);
+departments.MapPost("/", CreateDepartment);
+departments.MapDelete("/{department_id}", DeleteDepartment);
+
+workers.MapGet("/", GetAllWorkers);
+workers.MapGet("/{worker_id}", GetWorker);
+workers.MapPost("/", CreateWorker);
+workers.MapPut("/{worker_id}", UpdateWorker);
+workers.MapDelete("/{worker_id}", DeleteWorker);
+
+app.Run();
+
+static async Task<IResult> GetAllShifts(ShiftLoggerContext db)
 {
-    var shifts = await db.Shifts
-        .Where(s => s.WorkerId == worker_id)
-        .ToListAsync();
+    return TypedResults.Ok(await db.Shifts.ToListAsync());
+}
 
-    return shifts.Any() ? Results.Ok(shifts) : Results.NotFound();
-});
+static async Task<IResult> GetShiftsByWorker(int worker_id, ShiftLoggerContext db)
+{
+    var shifts = await db.Shifts.Where(s => s.WorkerId == worker_id).ToListAsync();
+    return shifts.Any() ? TypedResults.Ok(shifts) : TypedResults.NotFound();
+}
 
-app.MapGet("/shifts/department/{department_id}", async (int department_id, ShiftLoggerContext db) =>
+static async Task<IResult> GetShiftsByDepartment(int department_id, ShiftLoggerContext db)
 {
     var shifts = await db.Shifts
         .Where(s => db.Workers.Any(w => w.WorkerId == s.WorkerId && w.DepartmentId == department_id))
         .ToListAsync();
+    return shifts.Any() ? TypedResults.Ok(shifts) : TypedResults.NotFound();
+}
 
-    return shifts.Any() ? Results.Ok(shifts) : Results.NotFound();
-});
+static async Task<IResult> GetAllDepartments(ShiftLoggerContext db)
+{
+    return TypedResults.Ok(await db.Departments.ToListAsync());
+}
 
-app.MapGet("/departments", async (ShiftLoggerContext db) =>
-    await db.Departments.ToListAsync());
-
-app.MapGet("/departments/{department_id}", async (int department_id, ShiftLoggerContext db) =>
+static async Task<IResult> GetDepartment(int department_id, ShiftLoggerContext db)
 {
     var department = await db.Departments.FindAsync(department_id);
-    return department is not null ? Results.Ok(department) : Results.NotFound();
-});
+    return department is not null ? TypedResults.Ok(department) : TypedResults.NotFound();
+}
 
-app.MapGet("/workers", async (ShiftLoggerContext db) =>
-    await db.Workers.ToListAsync());
-
-app.MapGet("/workers/{worker_id}", async (int worker_id, ShiftLoggerContext db) =>
+static async Task<IResult> GetAllWorkers(ShiftLoggerContext db)
 {
-    var worker = await db.Workers
-        .Include(w => w.Department) // Include department details if needed
-        .FirstOrDefaultAsync(w => w.WorkerId == worker_id);
+    return TypedResults.Ok(await db.Workers.ToListAsync());
+}
 
-    return worker is not null ? Results.Ok(worker) : Results.NotFound();
-});
+static async Task<IResult> GetWorker(int worker_id, ShiftLoggerContext db)
+{
+    var worker = await db.Workers.Include(w => w.Department).FirstOrDefaultAsync(w => w.WorkerId == worker_id);
+    return worker is not null ? TypedResults.Ok(worker) : TypedResults.NotFound();
+}
 
-app.MapPost("/shifts", async (Shift shift, ShiftLoggerContext db) =>
+static async Task<IResult> CreateShift(Shift shift, ShiftLoggerContext db)
 {
     db.Shifts.Add(shift);
     await db.SaveChangesAsync();
+    return TypedResults.Created($"/shifts/{shift.ShiftId}", shift);
+}
 
-    return Results.Created($"/shifts/{shift.ShiftId}", shift);
-});
-
-app.MapPost("/departments", async (Department department, ShiftLoggerContext db) =>
+static async Task<IResult> CreateDepartment(Department department, ShiftLoggerContext db)
 {
     db.Departments.Add(department);
     await db.SaveChangesAsync();
+    return TypedResults.Created($"/departments/{department.DepartmentId}", department);
+}
 
-    return Results.Created($"/departments/{department.DepartmentId}", department);
-});
-
-app.MapPost("/workers", async (Worker worker, ShiftLoggerContext db) =>
+static async Task<IResult> CreateWorker(Worker worker, ShiftLoggerContext db)
 {
-    var departmentExists = await db.Departments.AnyAsync(d => d.DepartmentId == worker.DepartmentId);
-    if (!departmentExists)
+    if (!await db.Departments.AnyAsync(d => d.DepartmentId == worker.DepartmentId))
     {
-        return Results.BadRequest("Invalid DepartmentId. Department does not exist.");
+        return TypedResults.BadRequest("Invalid DepartmentId. Department does not exist.");
     }
 
     db.Workers.Add(worker);
     await db.SaveChangesAsync();
+    return TypedResults.Created($"/workers/{worker.WorkerId}", worker);
+}
 
-    return Results.Created($"/workers/{worker.WorkerId}", worker);
-});
-
-app.MapPut("/workers/{worker_id}", async (int worker_id, Worker updatedWorker, ShiftLoggerContext db) =>
+static async Task<IResult> UpdateWorker(int worker_id, Worker updatedWorker, ShiftLoggerContext db)
 {
     var worker = await db.Workers.FindAsync(worker_id);
-    if (worker is null)
-    {
-        return Results.NotFound();
-    }
+    if (worker is null) return TypedResults.NotFound();
 
-    var departmentExists = await db.Departments.AnyAsync(d => d.DepartmentId == updatedWorker.DepartmentId);
-    if (!departmentExists)
+    if (!await db.Departments.AnyAsync(d => d.DepartmentId == updatedWorker.DepartmentId))
     {
-        return Results.BadRequest("Invalid DepartmentId. Department does not exist.");
+        return TypedResults.BadRequest("Invalid DepartmentId. Department does not exist.");
     }
 
     worker.FirstName = updatedWorker.FirstName;
@@ -104,26 +117,22 @@ app.MapPut("/workers/{worker_id}", async (int worker_id, Worker updatedWorker, S
     worker.DepartmentId = updatedWorker.DepartmentId;
 
     await db.SaveChangesAsync();
-    return Results.Ok(worker);
-});
+    return TypedResults.Ok(worker);
+}
 
-app.MapPut("/shifts/{shift_id}", async (int shift_id, Shift updatedShift, ShiftLoggerContext db) =>
+static async Task<IResult> UpdateShift(int shift_id, Shift updatedShift, ShiftLoggerContext db)
 {
     var shift = await db.Shifts.FindAsync(shift_id);
-    if (shift is null)
-    {
-        return Results.NotFound();
-    }
+    if (shift is null) return TypedResults.NotFound();
 
-    var workerExists = await db.Workers.AnyAsync(w => w.WorkerId == updatedShift.WorkerId);
-    if (!workerExists)
+    if (!await db.Workers.AnyAsync(w => w.WorkerId == updatedShift.WorkerId))
     {
-        return Results.BadRequest("Invalid WorkerId. Worker does not exist.");
+        return TypedResults.BadRequest("Invalid WorkerId. Worker does not exist.");
     }
 
     if (updatedShift.StartDate >= updatedShift.EndDate)
     {
-        return Results.BadRequest("StartDate must be before EndDate.");
+        return TypedResults.BadRequest("StartDate must be before EndDate.");
     }
 
     shift.StartDate = updatedShift.StartDate;
@@ -131,58 +140,45 @@ app.MapPut("/shifts/{shift_id}", async (int shift_id, Shift updatedShift, ShiftL
     shift.WorkerId = updatedShift.WorkerId;
 
     await db.SaveChangesAsync();
-    return Results.Ok(shift);
-});
+    return TypedResults.Ok(shift);
+}
 
-app.MapDelete("/shifts/{shift_id}", async (int shift_id, ShiftLoggerContext db) =>
+static async Task<IResult> DeleteShift(int shift_id, ShiftLoggerContext db)
 {
     var shift = await db.Shifts.FindAsync(shift_id);
-    if (shift is null)
-    {
-        return Results.NotFound();
-    }
+    if (shift is null) return TypedResults.NotFound();
 
     db.Shifts.Remove(shift);
     await db.SaveChangesAsync();
-    return Results.NoContent();
-});
+    return TypedResults.NoContent();
+}
 
-app.MapDelete("/workers/{worker_id}", async (int worker_id, ShiftLoggerContext db) =>
+static async Task<IResult> DeleteWorker(int worker_id, ShiftLoggerContext db)
 {
     var worker = await db.Workers.FindAsync(worker_id);
-    if (worker is null)
-    {
-        return Results.NotFound();
-    }
+    if (worker is null) return TypedResults.NotFound();
 
-    bool hasShifts = await db.Shifts.AnyAsync(s => s.WorkerId == worker_id);
-    if (hasShifts)
+    if (await db.Shifts.AnyAsync(s => s.WorkerId == worker_id))
     {
-        return Results.BadRequest("Cannot delete worker. There are associated shifts.");
+        return TypedResults.BadRequest("Cannot delete worker. There are associated shifts.");
     }
 
     db.Workers.Remove(worker);
     await db.SaveChangesAsync();
-    return Results.NoContent();
-});
+    return TypedResults.NoContent();
+}
 
-app.MapDelete("/departments/{department_id}", async (int department_id, ShiftLoggerContext db) =>
+static async Task<IResult> DeleteDepartment(int department_id, ShiftLoggerContext db)
 {
     var department = await db.Departments.FindAsync(department_id);
-    if (department is null)
-    {
-        return Results.NotFound();
-    }
+    if (department is null) return TypedResults.NotFound();
 
-    bool hasWorkers = await db.Workers.AnyAsync(w => w.DepartmentId == department_id);
-    if (hasWorkers)
+    if (await db.Workers.AnyAsync(w => w.DepartmentId == department_id))
     {
-        return Results.BadRequest("Cannot delete department. There are associated workers.");
+        return TypedResults.BadRequest("Cannot delete department. There are associated workers.");
     }
 
     db.Departments.Remove(department);
     await db.SaveChangesAsync();
-    return Results.NoContent();
-});
-
-app.Run();
+    return TypedResults.NoContent();
+}
