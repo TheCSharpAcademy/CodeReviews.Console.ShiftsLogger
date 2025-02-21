@@ -16,6 +16,7 @@ var departments = app.MapGroup("/departments");
 var workers = app.MapGroup("/workers");
 
 shifts.MapGet("/", GetAllShifts);
+shifts.MapGet("/{shift_id}", GetShift);
 shifts.MapGet("/{worker_id}", GetShiftsByWorker);
 shifts.MapGet("/department/{department_id}", GetShiftsByDepartment);
 shifts.MapPost("/", CreateShift);
@@ -94,6 +95,12 @@ static async Task<IResult> DeleteWorker(int worker_id, ShiftLoggerContext db)
 static async Task<IResult> GetAllShifts(ShiftLoggerContext db)
 {
     return TypedResults.Ok(await db.Shifts.Select(s => new ShiftDto(s)).ToListAsync());
+}
+
+static async Task<IResult> GetShift(int shift_id, ShiftLoggerContext db)
+{
+    var shift = await db.Shifts.Include(s => s.Worker).FirstOrDefaultAsync(s => s.ShiftId == shift_id);
+    return shift is not null ? TypedResults.Ok(new ShiftDto(shift)) : TypedResults.NotFound();
 }
 
 static async Task<IResult> GetShiftsByWorker(int worker_id, ShiftLoggerContext db)

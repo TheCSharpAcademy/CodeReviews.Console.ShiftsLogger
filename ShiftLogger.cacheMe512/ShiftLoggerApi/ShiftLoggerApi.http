@@ -80,7 +80,7 @@ GET {{ShiftLoggerApi_HostAddress}}/workers/2
 DELETE {{ShiftLoggerApi_HostAddress}}/shifts/2
 
 ### Delete a worker (replace {worker_id} with a valid worker ID)
-DELETE {{ShiftLoggerApi_HostAddress}}/workers/1
+DELETE {{ShiftLoggerApi_HostAddress}}/workers/5
 
 ### Delete a department (replace {department_id} with a valid department ID)
-DELETE {{ShiftLoggerApi_HostAddress}}/departments/1
+DELETE {{ShiftLoggerApi_HostAddress}}/departments/12
