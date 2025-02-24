@@ -65,7 +65,7 @@ GET {{ShiftLoggerApi_HostAddress}}/departments/1
 GET {{ShiftLoggerApi_HostAddress}}/shifts
 
 ### Get shifts by worker ID (replace {worker_id} with a valid worker ID)
-GET {{ShiftLoggerApi_HostAddress}}/shifts/2
+GET {{ShiftLoggerApi_HostAddress}}/shifts?worker_id=7
 
 ### Get shifts by department ID (replace {department_id} with a valid department ID)
 GET {{ShiftLoggerApi_HostAddress}}/shifts/department/1

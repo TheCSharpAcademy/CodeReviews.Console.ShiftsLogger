@@ -28,7 +28,7 @@ internal class ShiftService
 
     public List<ShiftDto> GetShiftsByWorker(int workerId)
     {
-        var request = new RestRequest($"shifts/{workerId}", Method.Get);
+        var request = new RestRequest($"shifts?worker_id={workerId}", Method.Get);
         var response = _client.ExecuteAsync(request).Result;
 
         if (response.StatusCode == System.Net.HttpStatusCode.OK)
