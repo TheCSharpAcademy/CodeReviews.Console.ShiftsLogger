@@ -1,6 +1,7 @@
 ﻿using ShiftLoggerUi.DTOs;
 using ShiftLoggerUi.Services;
 using Spectre.Console;
+using System.Globalization;
 
 namespace ShiftLoggerUi
 {
@@ -8,10 +9,23 @@ namespace ShiftLoggerUi
     {
         public static DateTime GetDateTimeInput(string prompt)
         {
-            return AnsiConsole.Prompt(
-                new TextPrompt<DateTime>(prompt)
-                    .Validate(input => input > DateTime.MinValue ? ValidationResult.Success() : ValidationResult.Error("Invalid date/time.")));
+            string dateTimeString = AnsiConsole.Prompt(
+                new TextPrompt<string>(prompt)
+                    .Validate(input =>
+                    {
+                        if (!DateTime.TryParseExact(input, "yyyy-MM-dd HH:mm",
+                            CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                        {
+                            return ValidationResult.Error("Invalid format. Use YYYY-MM-DD HH:mm (e.g., 2025-02-24 14:30).");
+                        }
+
+                        return ValidationResult.Success();
+                    })
+            );
+
+            return DateTime.ParseExact(dateTimeString, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
         }
+
 
         public static int GetIntInput(string prompt)
         {

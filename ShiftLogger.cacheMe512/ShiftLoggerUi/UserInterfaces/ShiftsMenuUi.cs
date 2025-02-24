@@ -56,7 +56,17 @@ class ShiftsMenuUi
     public static void CreateShift()
     {
         Console.Clear();
-        Console.WriteLine("Enter new shift details:");
+
+        var selectedWorker = UserInput.GetWorkerOptionInput();
+        if (selectedWorker == null)
+        {
+            Console.WriteLine("No worker selected. Returning to menu...");
+            Console.ReadKey();
+            return;
+        }
+
+        Console.Clear();
+        Console.WriteLine($"Creating a shift for {selectedWorker.FirstName} {selectedWorker.LastName}\n");
 
         DateTime startDate = UserInput.GetDateTimeInput("Enter shift start date and time (YYYY-MM-DD HH:mm):");
         DateTime endDate = UserInput.GetDateTimeInput("Enter shift end date and time (YYYY-MM-DD HH:mm):");
@@ -67,10 +77,6 @@ class ShiftsMenuUi
             Console.ReadKey();
             return;
         }
-
-        var selectedWorker = UserInput.GetWorkerOptionInput();
-        if (selectedWorker == null)
-            return;
 
         var shift = new ShiftDto
         {
@@ -94,6 +100,7 @@ class ShiftsMenuUi
         Console.WriteLine("Press any key to continue...");
         Console.ReadKey();
     }
+
 
     public static void GetAllShifts()
     {

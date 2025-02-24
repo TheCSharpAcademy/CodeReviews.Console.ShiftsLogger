@@ -139,11 +139,6 @@ static async Task<IResult> UpdateShift(int shift_id, ShiftDto updatedShiftDto, S
     var shift = await db.Shifts.FindAsync(shift_id);
     if (shift is null) return TypedResults.NotFound();
 
-    if (!await db.Workers.AnyAsync(w => w.WorkerId == updatedShiftDto.WorkerId))
-    {
-        return TypedResults.BadRequest("Invalid WorkerId. Worker does not exist.");
-    }
-
     if (updatedShiftDto.StartDate >= updatedShiftDto.EndDate)
     {
         return TypedResults.BadRequest("StartDate must be before EndDate.");
@@ -151,7 +146,6 @@ static async Task<IResult> UpdateShift(int shift_id, ShiftDto updatedShiftDto, S
 
     shift.StartDate = updatedShiftDto.StartDate;
     shift.EndDate = updatedShiftDto.EndDate;
-    shift.WorkerId = updatedShiftDto.WorkerId;
 
     await db.SaveChangesAsync();
     return TypedResults.Ok(new ShiftDto(shift));

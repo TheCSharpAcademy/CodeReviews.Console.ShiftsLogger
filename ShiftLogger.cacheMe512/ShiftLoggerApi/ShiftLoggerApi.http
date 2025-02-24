@@ -45,14 +45,13 @@ Accept: application/json
 }
 
 ### Update a shift (replace {shift_id} with a valid shift ID)
-PUT {{ShiftLoggerApi_HostAddress}}/shifts/51
+PUT {{ShiftLoggerApi_HostAddress}}/shifts/52
 Content-Type: application/json
 Accept: application/json
 
 {
-  "StartDate": "2025-02-20T07:00:00",
-  "EndDate": "2025-02-20T15:00:00",
-  "WorkerId": 14
+  "StartDate": "2024-02-23T15:00:00",
+  "EndDate": "2024-02-23T18:00:00"
 }
 
 ### Get all departments
