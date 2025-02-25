@@ -30,7 +30,7 @@ internal class MainMenuUi
                 case MainMenuOptions.ManageDepartments:
                     break;
                 case MainMenuOptions.Quit:
-                    Console.WriteLine("Goodbye");
+                    Utilities.DisplayMessage("Goodbye", "cyan");
                     isAppRunning = false;
                     break;
             }

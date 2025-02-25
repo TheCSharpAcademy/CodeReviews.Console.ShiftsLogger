@@ -60,20 +60,20 @@ class ShiftsMenuUi
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null)
         {
-            Console.WriteLine("No worker selected. Returning to menu...");
+            Utilities.DisplayMessage("No worker selected. Returning to menu...", "red");
             Console.ReadKey();
             return;
         }
 
         Console.Clear();
-        Console.WriteLine($"Creating a shift for {selectedWorker.FirstName} {selectedWorker.LastName}\n");
+        AnsiConsole.MarkupLine($"Creating a shift for {selectedWorker.FirstName} {selectedWorker.LastName}\n");
 
         DateTime startDate = UserInput.GetDateTimeInput("Enter shift start date and time (YYYY-MM-DD HH:mm):");
         DateTime endDate = UserInput.GetDateTimeInput("Enter shift end date and time (YYYY-MM-DD HH:mm):");
 
         if (endDate <= startDate)
         {
-            Console.WriteLine("End time must be after start time.");
+            Utilities.DisplayMessage("End time must be after start time.", "red");
             Console.ReadKey();
             return;
         }
@@ -90,14 +90,14 @@ class ShiftsMenuUi
 
         if (createdShift != null)
         {
-            Console.WriteLine($"Shift for {selectedWorker.FirstName} {selectedWorker.LastName} created successfully!");
+            AnsiConsole.MarkupLine($"[green]Shift for {selectedWorker.FirstName} {selectedWorker.LastName} created successfully![/]");
         }
         else
         {
-            Console.WriteLine("Failed to create shift.");
+            Utilities.DisplayMessage("Failed to create shift.", "red");
         }
 
-        Console.WriteLine("Press any key to continue...");
+        Utilities.DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 
@@ -109,53 +109,67 @@ class ShiftsMenuUi
 
         if (shifts.Count == 0)
         {
-            Console.WriteLine("No shifts found.");
+            Utilities.DisplayMessage("No shifts found.", "red");
         }
         else
         {
-            ShowTable(shifts, new[] { "Shift ID", "Worker ID", "Start Date", "End Date" },
-                s => new[] { s.ShiftId.ToString(), s.WorkerId.ToString(), s.StartDate.ToString(), s.EndDate.ToString() });
+            ShowTable(shifts, new[] { "Shift ID", "First Name", "Last Name", "Start Date", "End Date" },
+                s => new[] { s.ShiftId.ToString(), s.FirstName, s.LastName, s.StartDate.ToString(), s.EndDate.ToString() });
         }
     }
 
     public static void GetShiftsByWorker()
     {
-        int workerId = UserInput.GetIntInput("Enter Worker ID:");
+        var selectedWorker = UserInput.GetWorkerOptionInput();
+        if (selectedWorker == null)
+        {
+            Utilities.DisplayMessage("No worker selected. Returning to menu...", "red");
+            Console.ReadKey();
+            return;
+        }
+
         var shiftService = new ShiftService();
-        var shifts = shiftService.GetShiftsByWorker(workerId);
+        var shifts = shiftService.GetShiftsByWorker(selectedWorker.WorkerId);
 
         if (shifts.Count == 0)
         {
-            Console.WriteLine("No shifts found for this worker.");
+            AnsiConsole.MarkupLine($"No shifts found for {selectedWorker.FirstName} {selectedWorker.LastName}.");
         }
         else
         {
-            ShowTable(shifts, new[] { "Shift ID", "Start Date", "End Date" },
-                s => new[] { s.ShiftId.ToString(), s.StartDate.ToString(), s.EndDate.ToString() });
+            ShowTable(shifts, new[] { "Shift ID", "First Name", "Last Name", "Start Date", "End Date" },
+                s => new[] { s.ShiftId.ToString(), s.FirstName, s.LastName, s.StartDate.ToString(), s.EndDate.ToString() });
         }
     }
 
     public static void GetShiftsByDepartment()
     {
-        int departmentId = UserInput.GetIntInput("Enter Department ID:");
+        var selectedDepartment = UserInput.GetDepartmentOptionInput();
+        if (selectedDepartment == null)
+        {
+            Utilities.DisplayMessage("No department selected. Returning to menu...", "red");
+            Console.ReadKey();
+            return;
+        }
+
         var shiftService = new ShiftService();
-        var shifts = shiftService.GetShiftsByDepartment(departmentId);
+        var shifts = shiftService.GetShiftsByDepartment(selectedDepartment.DepartmentId);
 
         if (shifts.Count == 0)
         {
-            Console.WriteLine("No shifts found for this department.");
+            AnsiConsole.MarkupLine($"No shifts found for {selectedDepartment.DepartmentName}.");
         }
         else
         {
-            ShowTable(shifts, new[] { "Shift ID", "Worker ID", "Start Date", "End Date" },
-                s => new[] { s.ShiftId.ToString(), s.WorkerId.ToString(), s.StartDate.ToString(), s.EndDate.ToString() });
+            ShowTable(shifts, new[] { "Shift ID", "First Name", "Last Name", "Start Date", "End Date" },
+                s => new[] { s.ShiftId.ToString(), s.FirstName, s.LastName, s.StartDate.ToString(), s.EndDate.ToString() });
         }
     }
 
     public static void UpdateShift()
     {
         Console.Clear();
-        Console.WriteLine("Select a worker to update shift:");
+        Utilities.DisplayMessage("Select a worker to update shift:", "cyan");
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null)
             return;
@@ -165,37 +179,37 @@ class ShiftsMenuUi
             return;
 
         Console.Clear();
-        Console.WriteLine("Enter new shift details:");
+        Utilities.DisplayMessage("Enter new shift details:", "cyan");
         DateTime startDate = UserInput.GetDateTimeInput("Enter new shift start date and time (YYYY-MM-DD HH:mm):");
         DateTime endDate = UserInput.GetDateTimeInput("Enter new shift end date and time (YYYY-MM-DD HH:mm):");
 
         if (endDate <= startDate)
         {
-            Console.WriteLine("End time must be after start time.");
+            Utilities.DisplayMessage("End time must be after start time.", "red");
             Console.ReadKey();
             return;
         }
 
         var shiftService = new ShiftService();
-        var updatedShift = new ShiftDto { ShiftId = selectedShift.ShiftId, StartDate = startDate, EndDate = endDate };
+        var updatedShift = new ShiftDto { ShiftId = selectedShift.ShiftId, StartDate = startDate, EndDate = endDate, FirstName = selectedShift.FirstName, LastName = selectedShift.LastName };
 
         if (shiftService.UpdateShift(selectedShift.ShiftId, updatedShift))
         {
-            Console.WriteLine("Shift updated successfully!");
+            Utilities.DisplayMessage("Shift updated successfully!", "green");
         }
         else
         {
-            Console.WriteLine("Failed to update shift.");
+            Utilities.DisplayMessage("Failed to update shift.", "red");
         }
 
-        Console.WriteLine("Press any key to continue...");
+        Utilities.DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 
     public static void DeleteShift()
     {
         Console.Clear();
-        Console.WriteLine("Select a worker to delete shift:");
+        Utilities.DisplayMessage("Select a worker to delete shift:", "cyan");
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null)
             return;
@@ -207,14 +221,14 @@ class ShiftsMenuUi
         var shiftService = new ShiftService();
         if (shiftService.DeleteShift(selectedShift.ShiftId))
         {
-            Console.WriteLine("Shift deleted successfully!");
+            Utilities.DisplayMessage("Shift deleted successfully!", "green");
         }
         else
         {
-            Console.WriteLine("Failed to delete shift.");
+            Utilities.DisplayMessage("Failed to delete shift.", "red");
         }
 
-        Console.WriteLine("Press any key to continue...");
+        Utilities.DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 }

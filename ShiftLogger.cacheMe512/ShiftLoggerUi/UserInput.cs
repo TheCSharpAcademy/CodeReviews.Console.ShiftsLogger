@@ -63,10 +63,12 @@ namespace ShiftLoggerUi
 
             if (workers.Count == 0)
             {
-                Console.WriteLine("No workers available. Cannot proceed.");
+                Utilities.DisplayMessage("No workers available. Cannot proceed.", "red");
                 Console.ReadKey();
                 return null;
             }
+
+            workers = workers.OrderBy(w => w.WorkerId).ToList();
 
             return AnsiConsole.Prompt(
                 new SelectionPrompt<WorkerDto>()
@@ -82,7 +84,7 @@ namespace ShiftLoggerUi
 
             if (shifts.Count == 0)
             {
-                Console.WriteLine("No shifts available for this worker. Cannot proceed.");
+                Utilities.DisplayMessage("No shifts available for this worker. Cannot proceed.", "red");
                 Console.ReadKey();
                 return null;
             }
@@ -93,5 +95,27 @@ namespace ShiftLoggerUi
                     .AddChoices(shifts)
                     .UseConverter(s => $"{s.ShiftId}: {s.StartDate} - {s.EndDate}"));
         }
+
+        public static DepartmentDto GetDepartmentOptionInput()
+        {
+            var departmentService = new DepartmentService();
+            List<DepartmentDto> departments = departmentService.GetAllDepartments();
+
+            if (departments.Count == 0)
+            {
+                Utilities.DisplayMessage("No departments available. Cannot proceed.", "red");
+                Console.ReadKey();
+                return null;
+            }
+
+            departments = departments.OrderBy(d => d.DepartmentId).ToList();
+
+            return AnsiConsole.Prompt(
+                new SelectionPrompt<DepartmentDto>()
+                    .Title("Select a department:")
+                    .AddChoices(departments)
+                    .UseConverter(d => $"{d.DepartmentId}: {d.DepartmentName}"));
+        }
+
     }
 }
