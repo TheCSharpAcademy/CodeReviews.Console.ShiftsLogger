@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ShiftLoggerApi.Models;
 using ShiftLoggerApi.DTOs;
 using ShiftLoggerApi;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ShiftLoggerDatabase");
@@ -101,18 +102,29 @@ static async Task<IResult> DeleteWorker(int worker_id, ShiftLoggerContext db)
 
 static async Task<IResult> GetAllShifts(ShiftLoggerContext db)
 {
-    return TypedResults.Ok(await db.Shifts.Select(s => new ShiftDto(s)).ToListAsync());
+    return TypedResults.Ok(await db.Shifts
+        .Include(s => s.Worker)
+        .Select(s => new ShiftDto(s))
+        .ToListAsync());
 }
 
 static async Task<IResult> GetShift(int shift_id, ShiftLoggerContext db)
 {
-    var shift = await db.Shifts.Include(s => s.Worker).FirstOrDefaultAsync(s => s.ShiftId == shift_id);
+    var shift = await db.Shifts
+        .Include(s => s.Worker)
+        .FirstOrDefaultAsync(s => s.ShiftId == shift_id);
+
     return shift is not null ? TypedResults.Ok(new ShiftDto(shift)) : TypedResults.NotFound();
 }
 
 static async Task<IResult> GetShiftsByWorker(int? worker_id, ShiftLoggerContext db)
 {
-    var shifts = await db.Shifts.Where(s => s.WorkerId == worker_id).Select(s => new ShiftDto(s)).ToListAsync();
+    var shifts = await db.Shifts
+        .Where(s => s.WorkerId == worker_id)
+        .Include(s => s.Worker)
+        .Select(s => new ShiftDto(s))
+        .ToListAsync();
+
     return shifts.Any() ? TypedResults.Ok(shifts) : TypedResults.NotFound();
 }
 
@@ -120,6 +132,7 @@ static async Task<IResult> GetShiftsByDepartment(int department_id, ShiftLoggerC
 {
     var shifts = await db.Shifts
         .Where(s => db.Workers.Any(w => w.WorkerId == s.WorkerId && w.DepartmentId == department_id))
+        .Include(s => s.Worker)
         .Select(s => new ShiftDto(s))
         .ToListAsync();
 
@@ -136,8 +149,11 @@ static async Task<IResult> CreateShift(ShiftDto shiftDTO, ShiftLoggerContext db)
 
 static async Task<IResult> UpdateShift(int shift_id, ShiftDto updatedShiftDto, ShiftLoggerContext db)
 {
+    Console.WriteLine($"Received Update Request for ShiftId: {shift_id}");
+    Console.WriteLine($"JSON Payload: {JsonSerializer.Serialize(updatedShiftDto)}");
+
     var shift = await db.Shifts.FindAsync(shift_id);
-    if (shift is null) return TypedResults.NotFound();
+    if (shift == null) return TypedResults.NotFound("Shift not found.");
 
     if (updatedShiftDto.StartDate >= updatedShiftDto.EndDate)
     {

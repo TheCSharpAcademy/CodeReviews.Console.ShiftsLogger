@@ -70,7 +70,14 @@ internal class ShiftService
     public bool UpdateShift(int shiftId, ShiftDto shift)
     {
         var request = new RestRequest($"shifts/{shiftId}", Method.Put);
-        request.AddJsonBody(shift);
+
+        request.AddJsonBody(new
+        {
+            ShiftId = shift.ShiftId,
+            StartDate = shift.StartDate,
+            EndDate = shift.EndDate,
+            WorkerId = shift.WorkerId
+        });
 
         var response = _client.ExecuteAsync(request).Result;
         return response.StatusCode == System.Net.HttpStatusCode.OK;
