@@ -28,6 +28,7 @@ internal class MainMenuUi
                     WorkersMenuUi.WorkersMenu();
                     break;
                 case MainMenuOptions.ManageDepartments:
+                    DepartmentsMenuUi.DepartmentsMenu();
                     break;
                 case MainMenuOptions.Quit:
                     Utilities.DisplayMessage("Goodbye", "cyan");

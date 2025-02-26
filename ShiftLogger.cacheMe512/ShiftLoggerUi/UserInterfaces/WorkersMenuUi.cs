@@ -70,9 +70,9 @@ internal class WorkersMenuUi
         if (createdWorker != null)
             AnsiConsole.MarkupLine("[green]Worker created successfully![/]");
         else
-            Utilities.DisplayMessage("Failed to create worker.", "red");
+            DisplayMessage("Failed to create worker.", "red");
 
-        Utilities.DisplayMessage("Press any key to continue...");
+        DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 
@@ -82,7 +82,7 @@ internal class WorkersMenuUi
         var workers = workerService.GetAllWorkers();
 
         if (workers.Count == 0)
-            Utilities.DisplayMessage("No workers found.", "red");
+            DisplayMessage("No workers found.", "red");
         else
             ShowTable(workers, new[] { "Worker ID", "First Name", "Last Name", "Hire Date", "Department Name" },
                 w => new[] { w.WorkerId.ToString(), w.FirstName, w.LastName, w.HireDate.ToString("yyyy-MM-dd"), w.DepartmentName ?? "N/A" });
@@ -91,7 +91,7 @@ internal class WorkersMenuUi
     public static void UpdateWorker()
     {
         Console.Clear();
-        Utilities.DisplayMessage("Select a worker to update:", "cyan");
+        DisplayMessage("Select a worker to update:", "cyan");
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null) return;
 
@@ -113,28 +113,28 @@ internal class WorkersMenuUi
 
         var workerService = new WorkerService();
         if (workerService.UpdateWorker(selectedWorker.WorkerId, updatedWorker))
-            Utilities.DisplayMessage("Worker updated successfully!", "green");
+            DisplayMessage("Worker updated successfully!", "green");
         else
-            Utilities.DisplayMessage("Failed to update worker.", "red");
+            DisplayMessage("Failed to update worker.", "red");
 
-        Utilities.DisplayMessage("Press any key to continue...");
+        DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 
     public static void DeleteWorker()
     {
         Console.Clear();
-        Utilities.DisplayMessage("Select a worker to delete:", "cyan");
+        DisplayMessage("Select a worker to delete:", "cyan");
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null) return;
 
         var workerService = new WorkerService();
         if (workerService.DeleteWorker(selectedWorker.WorkerId))
-            Utilities.DisplayMessage("Worker deleted successfully!", "green");
+            DisplayMessage("Worker deleted successfully!", "green");
         else
-            Utilities.DisplayMessage("Failed to delete worker.", "red");
+            DisplayMessage("Failed to delete worker.", "red");
 
-        Utilities.DisplayMessage("Press any key to continue...");
+        DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 }

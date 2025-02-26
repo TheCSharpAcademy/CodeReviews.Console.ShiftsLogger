@@ -60,7 +60,7 @@ class ShiftsMenuUi
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null)
         {
-            Utilities.DisplayMessage("No worker selected. Returning to menu...", "red");
+            DisplayMessage("No worker selected. Returning to menu...", "red");
             Console.ReadKey();
             return;
         }
@@ -73,7 +73,7 @@ class ShiftsMenuUi
 
         if (endDate <= startDate)
         {
-            Utilities.DisplayMessage("End time must be after start time.", "red");
+            DisplayMessage("End time must be after start time.", "red");
             Console.ReadKey();
             return;
         }
@@ -94,10 +94,10 @@ class ShiftsMenuUi
         }
         else
         {
-            Utilities.DisplayMessage("Failed to create shift.", "red");
+            DisplayMessage("Failed to create shift.", "red");
         }
 
-        Utilities.DisplayMessage("Press any key to continue...");
+        DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 
@@ -109,7 +109,7 @@ class ShiftsMenuUi
 
         if (shifts.Count == 0)
         {
-            Utilities.DisplayMessage("No shifts found.", "red");
+            DisplayMessage("No shifts found.", "red");
         }
         else
         {
@@ -123,7 +123,7 @@ class ShiftsMenuUi
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null)
         {
-            Utilities.DisplayMessage("No worker selected. Returning to menu...", "red");
+            DisplayMessage("No worker selected. Returning to menu...", "red");
             Console.ReadKey();
             return;
         }
@@ -147,7 +147,7 @@ class ShiftsMenuUi
         var selectedDepartment = UserInput.GetDepartmentOptionInput();
         if (selectedDepartment == null)
         {
-            Utilities.DisplayMessage("No department selected. Returning to menu...", "red");
+            DisplayMessage("No department selected. Returning to menu...", "red");
             Console.ReadKey();
             return;
         }
@@ -169,7 +169,7 @@ class ShiftsMenuUi
     public static void UpdateShift()
     {
         Console.Clear();
-        Utilities.DisplayMessage("Select a worker to update shift:", "cyan");
+        DisplayMessage("Select a worker to update shift:", "cyan");
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null)
             return;
@@ -179,13 +179,13 @@ class ShiftsMenuUi
             return;
 
         Console.Clear();
-        Utilities.DisplayMessage("Enter new shift details:", "cyan");
+        DisplayMessage("Enter new shift details:", "cyan");
         DateTime startDate = UserInput.GetDateTimeInput("Enter new shift start date and time (YYYY-MM-DD HH:mm):");
         DateTime endDate = UserInput.GetDateTimeInput("Enter new shift end date and time (YYYY-MM-DD HH:mm):");
 
         if (endDate <= startDate)
         {
-            Utilities.DisplayMessage("End time must be after start time.", "red");
+            DisplayMessage("End time must be after start time.", "red");
             Console.ReadKey();
             return;
         }
@@ -195,21 +195,21 @@ class ShiftsMenuUi
 
         if (shiftService.UpdateShift(selectedShift.ShiftId, updatedShift))
         {
-            Utilities.DisplayMessage("Shift updated successfully!", "green");
+            DisplayMessage("Shift updated successfully!", "green");
         }
         else
         {
-            Utilities.DisplayMessage("Failed to update shift.", "red");
+            DisplayMessage("Failed to update shift.", "red");
         }
 
-        Utilities.DisplayMessage("Press any key to continue...");
+        DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 
     public static void DeleteShift()
     {
         Console.Clear();
-        Utilities.DisplayMessage("Select a worker to delete shift:", "cyan");
+        DisplayMessage("Select a worker to delete shift:", "cyan");
         var selectedWorker = UserInput.GetWorkerOptionInput();
         if (selectedWorker == null)
             return;
@@ -221,14 +221,14 @@ class ShiftsMenuUi
         var shiftService = new ShiftService();
         if (shiftService.DeleteShift(selectedShift.ShiftId))
         {
-            Utilities.DisplayMessage("Shift deleted successfully!", "green");
+            DisplayMessage("Shift deleted successfully!", "green");
         }
         else
         {
-            Utilities.DisplayMessage("Failed to delete shift.", "red");
+            DisplayMessage("Failed to delete shift.", "red");
         }
 
-        Utilities.DisplayMessage("Press any key to continue...");
+        DisplayMessage("Press any key to continue...");
         Console.ReadKey();
     }
 }

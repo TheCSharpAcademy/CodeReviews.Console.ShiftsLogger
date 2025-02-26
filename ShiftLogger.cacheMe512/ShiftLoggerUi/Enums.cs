@@ -29,4 +29,13 @@ internal class Enums
         DeleteWorker,
         GoBack
     }
+
+    internal enum DepartmentMenu
+    {
+        AddDepartment,
+        ViewAllDepartments,
+        UpdateDepartment,
+        DeleteDepartment,
+        GoBack
+    }
 }

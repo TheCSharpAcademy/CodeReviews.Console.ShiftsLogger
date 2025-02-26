@@ -2,6 +2,7 @@
 using ShiftLoggerUi.Services;
 using Spectre.Console;
 using System.Globalization;
+using static ShiftLoggerUi.Utilities;
 
 namespace ShiftLoggerUi
 {
@@ -63,7 +64,7 @@ namespace ShiftLoggerUi
 
             if (workers.Count == 0)
             {
-                Utilities.DisplayMessage("No workers available. Cannot proceed.", "red");
+                DisplayMessage("No workers available. Cannot proceed.", "red");
                 Console.ReadKey();
                 return null;
             }
@@ -84,7 +85,7 @@ namespace ShiftLoggerUi
 
             if (shifts.Count == 0)
             {
-                Utilities.DisplayMessage("No shifts available for this worker. Cannot proceed.", "red");
+                DisplayMessage("No shifts available for this worker. Cannot proceed.", "red");
                 Console.ReadKey();
                 return null;
             }
@@ -103,7 +104,7 @@ namespace ShiftLoggerUi
 
             if (departments.Count == 0)
             {
-                Utilities.DisplayMessage("No departments available. Cannot proceed.", "red");
+                DisplayMessage("No departments available. Cannot proceed.", "red");
                 Console.ReadKey();
                 return null;
             }

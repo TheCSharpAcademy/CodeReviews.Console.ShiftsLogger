@@ -24,7 +24,7 @@ internal class Utilities
 
         AnsiConsole.Write(table);
 
-        Utilities.DisplayMessage("Press Any Key to Return to Menu");
+        DisplayMessage("Press Any Key to Return to Menu");
         Console.ReadKey();
         Console.Clear();
     }
