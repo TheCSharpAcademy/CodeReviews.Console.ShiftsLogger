@@ -20,4 +20,13 @@ internal class Enums
         DeleteShift,
         GoBack
     }
+
+    internal enum WorkerMenu
+    {
+        AddWorker,
+        ViewAllWorkers,
+        UpdateWorker,
+        DeleteWorker,
+        GoBack
+    }
 }

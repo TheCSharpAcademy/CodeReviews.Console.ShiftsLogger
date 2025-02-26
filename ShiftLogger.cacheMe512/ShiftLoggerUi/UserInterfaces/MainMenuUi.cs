@@ -25,7 +25,7 @@ internal class MainMenuUi
                     ShiftsMenuUi.ShiftsMenu();
                     break;
                 case MainMenuOptions.ManageWorkers:
-                    //WorkersMenu();
+                    WorkersMenuUi.WorkersMenu();
                     break;
                 case MainMenuOptions.ManageDepartments:
                     break;

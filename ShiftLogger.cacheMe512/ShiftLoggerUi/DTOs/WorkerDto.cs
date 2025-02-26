@@ -7,4 +7,5 @@ internal class WorkerDto
     public string LastName { get; set; }
     public DateTime HireDate { get; set; }
     public int DepartmentId { get; set; }
+    public string DepartmentName { get; set; }
 }
