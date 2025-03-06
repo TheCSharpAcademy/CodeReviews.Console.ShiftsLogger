@@ -24,7 +24,7 @@ public class Worker
 
     [ForeignKey(nameof(DepartmentId))]
     [JsonIgnore]
-    public Department Department { get; set; } = null;
+    public Department Department { get; set; }
 
     [JsonIgnore]
     public List<Shift> Shifts { get; set; } = new();

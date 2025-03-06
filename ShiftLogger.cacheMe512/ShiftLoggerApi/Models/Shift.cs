@@ -21,5 +21,5 @@ public class Shift
 
     [ForeignKey(nameof(WorkerId))]
     [JsonIgnore]
-    public Worker Worker { get; set; } = null;
+    public Worker Worker { get; set; }
 }
