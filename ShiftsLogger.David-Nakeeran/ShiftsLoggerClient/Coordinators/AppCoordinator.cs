@@ -135,8 +135,10 @@ class AppCoordinator
         var displayId = _userInput.GetId("Please enter the id of employee you wish to update or enter 0 to return to main menu");
         if (displayId == 0) return;
 
+        if(await GetEmployee(displayId) == null){
+            return;
+        }
         ApiResponse<EmployeeDTO> employeeObject = await GetEmployee(displayId);
-        Console.WriteLine(employeeObject.Data);
         employeeObject.Data.Name = _userInput.GetEmployeeName("Please enter updated name for employee");
 
 
@@ -274,6 +276,9 @@ class AppCoordinator
         var displayId = _userInput.GetId("Please enter the id of shift you wish to update or enter 0 to return to main menu");
         if (displayId == 0) return;
 
+        if(await GetShift(displayId) == null){
+            return;
+        }
         ApiResponse<ShiftDTO> shiftObject = await GetShift(displayId);
 
         var startTime = _userInput.GetShiftTimes("Please enter the start date and time in 'dd-mm-yyyy hh:mm' format, for example '24-02-2025 13:15'");
