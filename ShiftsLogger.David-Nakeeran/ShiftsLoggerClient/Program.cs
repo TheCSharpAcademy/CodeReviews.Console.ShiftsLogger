@@ -1,9 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using ShiftsLoggerClient.Coordinators;
 using ShiftsLoggerClient.Display;
 using ShiftsLoggerClient.Services;
-using ShiftsLoggerClient.UserInterface;
 using ShiftsLoggerClient.Utilities;
 
 namespace ShiftsLoggerClient;
