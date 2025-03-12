@@ -77,6 +77,12 @@ class AppCoordinator
             _userInput.WaitForUserInput();
             return false;
         }
+        if (employees.Data.Count == 0)
+        {
+            Console.WriteLine("No employess founds");
+            _userInput.WaitForUserInput();
+            return false;
+        }
         _displayManager.RenderGetAllEmployeesTable(employees.Data);
         _userInput.WaitForUserInput();
         return true;
@@ -211,6 +217,12 @@ class AppCoordinator
         if (shifts.Success == false)
         {
             Console.WriteLine(shifts.Message);
+            _userInput.WaitForUserInput();
+            return false;
+        }
+        if (shifts.Data.Count == 0)
+        {
+            Console.WriteLine("No shifts founds");
             _userInput.WaitForUserInput();
             return false;
         }

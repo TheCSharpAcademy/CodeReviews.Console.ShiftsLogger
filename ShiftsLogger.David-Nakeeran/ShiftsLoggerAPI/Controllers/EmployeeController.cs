@@ -29,9 +29,9 @@ namespace ShiftsLoggerAPI.Controllers
                 return StatusCode(500, employees.Error);
             }
 
-            if (employees.Data == null && !employees.Success)
+            if (employees.Data == null)
             {
-                return NotFound();
+                return Ok(new List<EmployeeDTO>());
             }
 
             if (!employees.Success)
