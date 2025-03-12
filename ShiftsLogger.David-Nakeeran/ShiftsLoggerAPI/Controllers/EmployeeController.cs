@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerAPI.Interface;
 using ShiftsLoggerAPI.Models;
 
@@ -23,14 +24,19 @@ namespace ShiftsLoggerAPI.Controllers
         {
             var employees = await _employeeService.GetAllEmployeesAsync();
 
-            if (employees.Message == "NotFound")
+            if (!string.IsNullOrEmpty(employees.Error))
             {
-                return NotFound(employees.Message);
+                return StatusCode(500, employees.Error);
+            }
+
+            if (employees.Data == null && !employees.Success)
+            {
+                return NotFound();
             }
 
             if (!employees.Success)
             {
-                return BadRequest(employees.Message);
+                return BadRequest();
             }
 
             var employeesDTO = employees?.Data?.Select(x => _employeeMapper.EmployeeToDTO(x)).ToList();
@@ -43,14 +49,19 @@ namespace ShiftsLoggerAPI.Controllers
         {
             var employee = await _employeeService.GetEmployeeByIdAsync(id);
 
-            if (employee.Data == null)
+            if (!string.IsNullOrEmpty(employee.Error))
             {
-                return NotFound(employee.Message);
+                return StatusCode(500, employee.Error);
+            }
+
+            if (employee.Data == null && !employee.Success)
+            {
+                return NotFound();
             }
 
             if (!employee.Success)
             {
-                return BadRequest(employee.Message);
+                return BadRequest();
             }
 
             var employeeDTO = _employeeMapper.EmployeeToDTO(employee.Data);
@@ -68,14 +79,19 @@ namespace ShiftsLoggerAPI.Controllers
             }
             var employee = await _employeeService.UpdateEmployee(id, employeeDTO);
 
-            if (employee.Data == null)
+            if (!string.IsNullOrEmpty(employee.Error))
             {
-                return NotFound(employee.Message);
+                return StatusCode(500, employee.Error);
+            }
+
+            if (employee.Data == null && !employee.Success)
+            {
+                return NotFound();
             }
 
             if (!employee.Success)
             {
-                return BadRequest(employee.Message);
+                return BadRequest();
             }
 
             var updatedEmployeeDTO = _employeeMapper.EmployeeToDTO(employee.Data);
@@ -87,22 +103,29 @@ namespace ShiftsLoggerAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeDTO>> PostEmployee(EmployeeDTO employeeDTO)
         {
+
             var createdEmployee = await _employeeService.CreateEmployee(employeeDTO);
 
-            if (createdEmployee.Data == null)
+            if (!string.IsNullOrEmpty(createdEmployee.Error))
             {
-                return NotFound(createdEmployee.Message);
+                return StatusCode(500, createdEmployee.Error);
+            }
+
+            if (createdEmployee.Data == null && !createdEmployee.Success)
+            {
+                return NotFound();
             }
 
             if (!createdEmployee.Success)
             {
-                return BadRequest(createdEmployee.Message);
+                return BadRequest();
             }
 
             return CreatedAtAction(
                 nameof(GetEmployee),
                 new { id = createdEmployee.Data.EmployeeId },
                 _employeeMapper.EmployeeToDTO(createdEmployee.Data));
+
         }
 
         // DELETE: api/Employee/5
@@ -111,14 +134,19 @@ namespace ShiftsLoggerAPI.Controllers
         {
             var employee = await _employeeService.DeleteEmployee(id);
 
-            if (!employee.Data)
+            if (!string.IsNullOrEmpty(employee.Error))
             {
-                return NotFound(employee.Message);
+                return StatusCode(500, employee.Error);
+            }
+
+            if (employee.Data == null && !employee.Success)
+            {
+                return NotFound();
             }
 
             if (!employee.Success)
             {
-                return BadRequest(employee.Message);
+                return BadRequest();
             }
 
             return NoContent();

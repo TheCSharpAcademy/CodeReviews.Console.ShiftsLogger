@@ -17,24 +17,13 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<bool> DeleteAsync(long id)
     {
-        try
+        var entityToBeDeleted = await _dbSet.FindAsync(id);
+        if (entityToBeDeleted != null)
         {
-            var entityToBeDeleted = await _dbSet.FindAsync(id);
-            if (entityToBeDeleted != null)
-            {
-                _dbSet.Remove(entityToBeDeleted);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            _dbSet.Remove(entityToBeDeleted);
+            await _context.SaveChangesAsync();
+            return true;
         }
-        catch (DbUpdateException dbEx)
-        {
-            throw new Exception("Database error occurred while deleting a shift", dbEx);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Error occurred when trying to delete", ex);
-        }
+        return false;
     }
 }

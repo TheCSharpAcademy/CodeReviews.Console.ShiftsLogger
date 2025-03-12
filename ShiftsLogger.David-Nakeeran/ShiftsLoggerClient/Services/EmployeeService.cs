@@ -51,7 +51,6 @@ class EmployeeService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error message: {ex.Message}");
             return new ApiResponse<List<EmployeeDTO>>
             {
                 Success = false,
@@ -165,7 +164,11 @@ class EmployeeService
         catch (Exception ex)
         {
             Console.WriteLine($"Error message:{ex.Message}");
-            return new ApiResponse<EmployeeDTO> { };
+            return new ApiResponse<EmployeeDTO>
+            {
+                Success = false,
+                Message = $"Error message:{ex.Message}"
+            };
         }
     }
 

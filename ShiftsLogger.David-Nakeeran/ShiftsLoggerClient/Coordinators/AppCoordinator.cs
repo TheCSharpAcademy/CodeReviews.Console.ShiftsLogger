@@ -68,11 +68,18 @@ class AppCoordinator
         return employees;
     }
 
-    internal async Task AllEmployees()
+    internal async Task<bool> AllEmployees()
     {
         var employees = await GetAllEmployees();
+        if (employees.Success == false)
+        {
+            Console.WriteLine(employees.Message);
+            _userInput.WaitForUserInput();
+            return false;
+        }
         _displayManager.RenderGetAllEmployeesTable(employees.Data);
         _userInput.WaitForUserInput();
+        return true;
     }
 
     internal async Task<Dictionary<long, long>> GetKeyValuePairsEmployees()
@@ -130,12 +137,15 @@ class AppCoordinator
 
     internal async Task UpdateEmployee()
     {
-        await AllEmployees();
+
+        bool allEmployees = await AllEmployees();
+        if (!allEmployees) return;
 
         var displayId = _userInput.GetId("Please enter the id of employee you wish to update or enter 0 to return to main menu");
         if (displayId == 0) return;
 
-        if(await GetEmployee(displayId) == null){
+        if (await GetEmployee(displayId) == null)
+        {
             return;
         }
         ApiResponse<EmployeeDTO> employeeObject = await GetEmployee(displayId);
@@ -158,7 +168,8 @@ class AppCoordinator
 
     internal async Task DeleteEmployee()
     {
-        await AllEmployees();
+        bool allEmployees = await AllEmployees();
+        if (!allEmployees) return;
 
         var displayId = _userInput.GetId("Please enter the id of employee or enter 0 to return to main menu");
         if (displayId == 0) return;
@@ -194,11 +205,18 @@ class AppCoordinator
         return shifts;
     }
 
-    internal async Task AllShifts()
+    internal async Task<bool> AllShifts()
     {
         var shifts = await GetAllShifts();
+        if (shifts.Success == false)
+        {
+            Console.WriteLine(shifts.Message);
+            _userInput.WaitForUserInput();
+            return false;
+        }
         _displayManager.RenderGetAllShiftsTable(shifts.Data);
         _userInput.WaitForUserInput();
+        return true;
     }
 
     internal async Task<Dictionary<long, long>> GetKeyValuePairsShifts()
@@ -271,12 +289,14 @@ class AppCoordinator
 
     internal async Task UpdateShift()
     {
-        await AllShifts();
+        bool allShifts = await AllShifts();
+        if (!allShifts) return;
 
         var displayId = _userInput.GetId("Please enter the id of shift you wish to update or enter 0 to return to main menu");
         if (displayId == 0) return;
 
-        if(await GetShift(displayId) == null){
+        if (await GetShift(displayId) == null)
+        {
             return;
         }
         ApiResponse<ShiftDTO> shiftObject = await GetShift(displayId);
@@ -307,7 +327,8 @@ class AppCoordinator
 
     internal async Task DeleteShift()
     {
-        await AllShifts();
+        bool allShifts = await AllShifts();
+        if (!allShifts) return;
 
         var displayId = _userInput.GetId("Please enter the id of shift or enter 0 to return to main menu");
         if (displayId == 0) return;

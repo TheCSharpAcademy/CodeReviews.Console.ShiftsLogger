@@ -37,9 +37,8 @@ public class ShiftService : IShiftService
         }
         catch (Exception ex)
         {
-            // log error
             _response.Success = false;
-            _response.Message = $"{ex.Message}";
+            _response.Error = $"Internal server error:{ex.Message}";
         }
         return _response;
     }
@@ -68,8 +67,7 @@ public class ShiftService : IShiftService
         catch (Exception ex)
         {
             _response.Success = false;
-            _response.Message = $"{ex.Message}";
-            // Add Ilogger
+            _response.Error = $"Internal server error:{ex.Message}";
 
         }
         return _response;
@@ -97,7 +95,7 @@ public class ShiftService : IShiftService
         catch (Exception ex)
         {
             _response.Success = false;
-            _response.Message = $"{ex.Message}";
+            _response.Error = $"Internal server error:{ex.Message}";
         }
         return _response;
     }
@@ -132,7 +130,7 @@ public class ShiftService : IShiftService
         catch (Exception ex)
         {
             _response.Success = false;
-            _response.Message = $"{ex.Message}";
+            _response.Error = $"Internal server error:{ex.Message}";
         }
         return _response;
     }
@@ -159,7 +157,7 @@ public class ShiftService : IShiftService
         catch (Exception ex)
         {
             _response.Success = false;
-            _response.Message = $"{ex.Message}";
+            _response.Error = $"Internal server error:{ex.Message}";
         }
         return _response;
     }
