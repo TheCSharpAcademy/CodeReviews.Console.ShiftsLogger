@@ -263,8 +263,8 @@ class AppCoordinator
 
     internal async Task CreateShift()
     {
-        bool allShifts = await AllShifts();
-        if (!allShifts) return;
+        bool allEmployees = await AllEmployees();
+        if (!allEmployees) return;
         var displayId = _userInput.GetId("Please enter the id of employee you wish to make a shift for or enter 0 to return to main menu");
         if (displayId == 0) return;
 
