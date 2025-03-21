@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftsLogger.API.Data;
-using ShiftsLogger.API.Model;
 using ShiftsLogger.API.Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +20,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapControllers(); 
+app.MapControllers();
 
 app.Run();
