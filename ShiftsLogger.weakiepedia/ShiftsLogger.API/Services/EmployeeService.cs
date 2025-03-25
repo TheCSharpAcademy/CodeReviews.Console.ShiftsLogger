@@ -56,7 +56,9 @@ public class EmployeeService : IEmployeeService
     {
         var savedEmployee = _db.Employees.Find(id);
 
-        if (savedEmployee == null || savedEmployee.Id != id) return null;
+        if (savedEmployee == null) return null;
+        
+        employee.Id = savedEmployee.Id;
         
         _db.Entry(savedEmployee).CurrentValues.SetValues(employee);
         _db.SaveChanges();

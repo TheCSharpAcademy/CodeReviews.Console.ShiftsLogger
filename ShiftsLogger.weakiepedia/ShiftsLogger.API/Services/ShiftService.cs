@@ -53,6 +53,8 @@ public class ShiftService : IShiftService
         if (savedShift == null || savedShift.Id != id || _db.Employees.Find(shift.EmployeeId) == null) 
             return null;
         
+        shift.Id = savedShift.Id;
+        
         shift.DurationInSeconds = (long)(shift.EndTime - shift.StartTime).TotalSeconds;
         
         _db.Entry(savedShift).CurrentValues.SetValues(shift);
