@@ -15,7 +15,7 @@ public static class Validators
                 out _))
         {
             return ValidationResult.Success();
-        };
+        }
         
         return ValidationResult.Error("[red]Time must be in format MM/dd/yyyy HH:mm (e.g., \"03/20/2025 15:30\".[/]");
     }
