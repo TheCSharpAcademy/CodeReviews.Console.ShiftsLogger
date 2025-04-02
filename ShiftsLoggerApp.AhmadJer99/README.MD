@@ -10,3 +10,7 @@ This Console app uses WebApi to perform CRUD operation on the database.
 - Added a seed database option in the ui to easily fill the database with some data for testing purposes.
 
 
+## Deployment
+To deploy this project
+- make sure to replace the api url in the appsettings of the ConsoleUI app with your appropriate link
+- Make sure to replace connection string in the API appsettings with your database connection string
