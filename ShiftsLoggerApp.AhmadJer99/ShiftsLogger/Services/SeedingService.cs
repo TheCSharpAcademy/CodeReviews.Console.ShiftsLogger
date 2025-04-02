@@ -18,7 +18,6 @@ public class SeedingService : BaseService
 
             if (empSeedResponse.IsSuccessStatusCode && shiftSeedResponse.IsSuccessStatusCode)
             {
-                //AnsiConsole.MarkupLine($"[green]{empSeedResponse.Content}[/]");
                 AnsiConsole.MarkupLine($"[green]Data base seeded successfully![/]");
                 Console.ReadLine();
             }

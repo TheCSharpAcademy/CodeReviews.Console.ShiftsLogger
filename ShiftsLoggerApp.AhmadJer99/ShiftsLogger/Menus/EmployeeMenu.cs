@@ -147,7 +147,6 @@ namespace ShiftsLoggerUI.Menus
                     TableVisualisationEngine<ShiftDto>.ViewAsTable(empShifts, TableAligntment.Center, new List<string> {"Shift start time", "Shift end time", "Duration (Hrs)" }, "Shifts");
                     break;
                 case string selection when selection.Contains("4."):
-                    // return;
                     break;
             }
         }

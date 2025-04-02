@@ -91,7 +91,7 @@ internal class ShiftsMenu : BaseMenu
             ShiftEndTime = endTime ?? default       
         };
 
-        var shift = await _shiftsService.Update(shiftId, updatedShift);
+        await _shiftsService.Update(shiftId, updatedShift);
         PressAnyKeyToContinue();
     }
 
@@ -99,7 +99,7 @@ internal class ShiftsMenu : BaseMenu
     private async Task DeleteShift()
     {
         var shiftId = AnsiConsole.Ask<int>("Enter Shift Id: ");
-        var deletedShift = await _shiftsService.Delete(shiftId);
+        await _shiftsService.Delete(shiftId);
     }
 
     private async Task GetAllShifts()
