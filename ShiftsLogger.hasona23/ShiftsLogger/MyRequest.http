@@ -1,6 +1,0 @@
-POST http://localhost:5105/api/worker;
-Content-Type : application/json
-{
-  "name":"Mohamed",
-  "email":"Mohamed@gmail.com"
-}
