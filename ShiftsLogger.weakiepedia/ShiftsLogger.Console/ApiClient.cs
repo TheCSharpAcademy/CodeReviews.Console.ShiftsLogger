@@ -20,6 +20,11 @@ public class ApiClient
             {
                 return response.Data;
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                AnsiConsole.MarkupLine($"[red]Error - {response.StatusCode}: {response.ErrorMessage}[/]");
+                return null;
+            }
             else
             {
                 return null;
@@ -44,6 +49,10 @@ public class ApiClient
             if (response.IsSuccessful)
             {
                 return response.Data;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
             }
             else
             {
@@ -72,6 +81,10 @@ public class ApiClient
             {
                 return response.Data;
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
             else
             {
                 AnsiConsole.MarkupLine($"[red]Error - {response.ErrorMessage}[/]");
@@ -99,6 +112,10 @@ public class ApiClient
             {
                 return response.Data;
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
             else
             {
                 AnsiConsole.MarkupLine($"[red]Error - {response.ErrorMessage}[/]");
@@ -124,6 +141,10 @@ public class ApiClient
             if (response.IsSuccessful)
             {
                 return response.Content;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
             }
             else
             {
@@ -151,6 +172,10 @@ public class ApiClient
             {
                 return response.Data;
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
             else
             {
                 AnsiConsole.MarkupLine($"[red]Error - {response.ErrorMessage}[/]");
@@ -177,6 +202,10 @@ public class ApiClient
             {
                 return response.Data;
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
             else
             {
                 AnsiConsole.MarkupLine($"[red]Error - {response.ErrorMessage}[/]");
@@ -188,6 +217,128 @@ public class ApiClient
             AnsiConsole.MarkupLine($"[red]Error - {ex.Message}[/]");
         }
         
+        return null;
+    }
+
+    public Shift? GetShiftById(int id)
+    {
+        var request = new RestRequest($"/shifts/{id}", Method.Get);
+
+        try
+        {
+            var response = _client.Execute<Shift>(request);
+
+            if (response.IsSuccessful)
+            {
+                return response.Data;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[red]Error - {response.ErrorMessage}[/]");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error - {ex.Message}[/]");
+        }
+
+        return null;
+    }
+
+    public Shift? CreateShift(Shift shift)
+    {
+        var request = new RestRequest($"/shifts/", Method.Post)
+            .AddJsonBody(shift);
+
+        try
+        {
+            var response = _client.ExecutePost<Shift?>(request);
+
+            if (response.IsSuccessful)
+            {
+                return response.Data;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[red]Error - {response.ErrorMessage}[/]");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error - {ex.Message}[/]");
+        }
+
+        return null;
+    }
+    
+    public Shift? UpdateShift(int id, Shift shift)
+    {
+        var request = new RestRequest($"/shifts/{id}/", Method.Put)
+            .AddJsonBody(shift);
+
+        try
+        {
+            var response = _client.ExecutePut<Shift>(request);
+
+            if (response.IsSuccessful)
+            {
+                return response.Data;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[red]Error - {response.ErrorMessage}[/]");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error - {ex.Message}[/]");
+        }
+
+        return null;
+    }
+    
+    public string? DeleteShift(int id)
+    {
+        var request = new RestRequest($"/shifts/{id}", Method.Delete);
+
+        try
+        {
+            var response = _client.ExecuteDelete(request);
+
+            if (response.IsSuccessful)
+            {
+                return response.Content;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[red]Error - {response.ErrorMessage}[/]");
+                return null;
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error - {ex.Message}[/]");
+        }
+
         return null;
     }
 }

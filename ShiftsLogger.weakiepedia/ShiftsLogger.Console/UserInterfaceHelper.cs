@@ -1,12 +1,13 @@
-﻿using ShiftsLogger.Console.Models;
+﻿using System.Globalization;
+using ShiftsLogger.Console.Models;
 using Spectre.Console;
 
 namespace ShiftsLogger.Console;
 
 public class UserInterfaceHelper
 {
-    private ApiClient _apiClient = new ApiClient();
-    private Utilities _utilities = new Utilities();
+    private readonly ApiClient _apiClient = new ApiClient();
+    private readonly Utilities _utilities = new Utilities();
     
     public Employee? ChooseEmployee(string title)
     {
@@ -26,14 +27,19 @@ public class UserInterfaceHelper
         return employee;
     }
     
-    public void ShowEmployee(string message, Employee employee)
+    public void ShowEmployee(Employee employee, string title, string? caption = null)
     {
         AnsiConsole.Clear();
         
         var table = new Table();
-        table.Title($"[slateblue1]{message}[/]");
+        table.Title($"[slateblue1]{title}[/]");
         table.BorderColor(Color.MediumPurple3);
-        table.AddColumn(new TableColumn($"[mediumpurple3]ID[/]"));
+        table.Alignment(Justify.Center);
+
+        if (caption != null)
+            table.Caption($"[slateblue1]{caption}[/]");
+        
+        table.AddColumn(new TableColumn("[mediumpurple3]ID[/]"));
         table.AddColumn(new TableColumn("[mediumpurple3]First Name[/]"));
         table.AddColumn(new TableColumn("[mediumpurple3]Last Name[/]"));
         table.AddRow(employee.Id.ToString(), employee.FirstName, employee.LastName);
@@ -71,6 +77,8 @@ public class UserInterfaceHelper
         var table = new Table();
         table.Title("[slateblue1]Employees[/]");
         table.BorderColor(Color.MediumPurple3);
+        table.Alignment(Justify.Center);
+        
         table.AddColumn(new TableColumn($"[mediumpurple3]ID[/]"));
         table.AddColumn(new TableColumn("[mediumpurple3]First Name[/]"));
         table.AddColumn(new TableColumn("[mediumpurple3]Last Name[/]"));
@@ -79,19 +87,56 @@ public class UserInterfaceHelper
         AnsiConsole.Write(table);
     }
     
-    public void ShowEmployeeChanges(Employee oldEmployee, Employee newEmployee)
+    public void ShowEmployeeChanges(Employee oldEmployee, Employee newEmployee, string? caption = null)
     {
         AnsiConsole.Clear();
         
         var table = new Table();
         table.Title("[slateblue1]Confirm employee's update[/]");
         table.BorderColor(Color.MediumPurple3);
+        table.Alignment(Justify.Center);
+
+        if (caption != null)
+        {
+            table.Caption($"[mediumpurple3]{caption}[/]");
+        }
+        
         table.AddColumn(new TableColumn(""));
         table.AddColumn(new TableColumn($"[mediumpurple3]Old version[/]"));
         table.AddColumn(new TableColumn("[mediumpurple3]New version[/]"));
         table.AddRow("ID", oldEmployee.Id.ToString(), oldEmployee.Id.ToString());
         table.AddRow("First Name", oldEmployee.FirstName, newEmployee.FirstName);
         table.AddRow("Last Name", oldEmployee.LastName, newEmployee.LastName);
+        
+        AnsiConsole.Write(table);
+    }
+    
+    public void ShowShift(Shift shift, string title, string? caption = null)
+    {
+        AnsiConsole.Clear();
+
+        long durationInSeconds = _utilities.CalculateTimeDifference(shift.StartTime, shift.EndTime);
+        var duration = _utilities.CalculateDuration(durationInSeconds);
+        
+        var table = new Table();
+        table.Title($"[slateblue1]{title}[/]");
+        table.BorderColor(Color.MediumPurple3);
+        table.Alignment(Justify.Center);
+
+        if (caption != null)
+            table.Caption($"[slateblue1]{caption}[/]");
+        
+        table.AddColumn(new TableColumn("[mediumpurple3]ID[/]"));
+        table.AddColumn(new TableColumn("[mediumpurple3]Employee ID[/]"));
+        table.AddColumn(new TableColumn("[mediumpurple3]Start Time[/]"));
+        table.AddColumn(new TableColumn("[mediumpurple3]End Time[/]"));
+        table.AddColumn(new TableColumn("[mediumpurple3]Duration[/]"));
+        table.AddRow(
+            shift.Id.ToString(),
+            shift.EmployeeId.ToString(),
+            shift.StartTime.ToString("g", CultureInfo.CurrentCulture),
+            shift.EndTime.ToString("g", CultureInfo.CurrentCulture),
+            duration.ToString("g", CultureInfo.InvariantCulture));
         
         AnsiConsole.Write(table);
     }
@@ -115,46 +160,56 @@ public class UserInterfaceHelper
             shifts = _apiClient.GetShiftsByEmployeeId(employee.Id);
             tableTitle = $"[slateblue1](#{employee.Id}) {employee.FirstName} {employee.LastName}'s shifts[/]";
         }
-
-        if (shifts == null || shifts.Count == 0)
-        {
-            AnsiConsole.MarkupLine("[red]Error - no shifts found.[/]");
-            return;
-        }
         
         if (employees == null || employees.Count == 0)
         {
             AnsiConsole.MarkupLine("[red]Error - no employees found.[/]");
+            
+            return;
+        }
+
+        if (shifts == null || shifts.Count == 0)
+        {
+            AnsiConsole.MarkupLine("[red]Error - no shifts found.[/]");
+            
             return;
         }
         
         List<int> id = new List<int>();
         List<int> employeeId = new List<int>();
-        
         List<string> firstName = new List<string>();
-        List<string> LastName = new List<string>();
-        
+        List<string> lastName = new List<string>();
         List<string> startTime = new List<string>();
         List<string> endTime = new List<string>();
         List<string> duration = new List<string>();
 
         foreach (var shift in shifts)
         {
+            var currentEmployee = employees.Find(e => e.Id == shift.EmployeeId);
+            
             id.Add(shift.Id);
             employeeId.Add(shift.EmployeeId);
-            firstName.Add(employees.FirstOrDefault(e => e.Id == shift.EmployeeId).FirstName);
-            LastName.Add(employees.FirstOrDefault(e => e.Id == shift.EmployeeId).LastName);
-            startTime.Add(shift.StartTime.ToString("g"));
-            endTime.Add(shift.EndTime.ToString("g"));
-            duration.Add(_utilities.CalculateDuration(shift.DurationInSeconds).ToString("g"));
+            
+            if (currentEmployee != null)
+            {
+                firstName.Add(currentEmployee.FirstName);
+                lastName.Add(currentEmployee.LastName);
+            }
+            else
+            {
+                firstName.Add("");
+                lastName.Add("");
+            }
+            
+            startTime.Add(shift.StartTime.ToString("g", CultureInfo.CurrentCulture));
+            endTime.Add(shift.EndTime.ToString("g", CultureInfo.CurrentCulture));
+            duration.Add(_utilities.CalculateDuration(shift.DurationInSeconds).ToString("g", CultureInfo.InvariantCulture));
         }
         
         string idCell = string.Join("\n", id);
         string employeeIdCell = string.Join("\n", employeeId);
-        
         string firstNameCell = string.Join("\n", firstName);
-        string lastNameCell = string.Join("\n", LastName);
-        
+        string lastNameCell = string.Join("\n", lastName);
         string startTimeCell = string.Join("\n", startTime);
         string endTimeCell = string.Join("\n", endTime);
         string durationCell = string.Join("\n", duration);
@@ -163,6 +218,7 @@ public class UserInterfaceHelper
         table.Title(tableTitle);
         table.BorderColor(Color.MediumPurple3);
         table.Alignment(Justify.Center);
+        
         table.AddColumn(new TableColumn($"[mediumpurple3]ID[/]"));
         table.AddColumn(new TableColumn("[mediumpurple3]Employee ID[/]"));
         table.AddColumn(new TableColumn("[mediumpurple3]First Name[/]"));
@@ -173,15 +229,85 @@ public class UserInterfaceHelper
         table.AddRow(idCell, employeeIdCell, firstNameCell, lastNameCell, startTimeCell, endTimeCell, durationCell);
         
         AnsiConsole.Write(table);
+
+        return;
+    }
+    
+    public void ShowShiftChanges(Shift oldShift, Shift newShift, Employee employee, string? caption = null)
+    {
+        AnsiConsole.Clear();
+        
+        var table = new Table();
+        table.Title($"[slateblue1]Confirm {employee.FirstName} {employee.LastName}'s shift update[/]");
+        table.BorderColor(Color.MediumPurple3);
+        table.Alignment(Justify.Center);
+
+        if (caption != null)
+        {
+            table.Caption($"[slateblue1]{caption}[/]");
+        }
+        
+        table.AddColumn(new TableColumn(""));
+        table.AddColumn(new TableColumn($"[mediumpurple3]Old version[/]"));
+        table.AddColumn(new TableColumn("[mediumpurple3]New version[/]"));
+        table.AddRow("ID", oldShift.Id.ToString(), oldShift.Id.ToString());
+        table.AddRow("Employee ID", oldShift.EmployeeId.ToString(), newShift.EmployeeId.ToString());
+        table.AddRow(
+            "Start Time", 
+            oldShift.StartTime.ToString("g", CultureInfo.CurrentCulture),
+            newShift.StartTime.ToString("g", CultureInfo.CurrentCulture));
+        table.AddRow(
+            "End Time", 
+            oldShift.EndTime.ToString("g", CultureInfo.CurrentCulture), 
+            newShift.EndTime.ToString("g", CultureInfo.CurrentCulture));
+        table.AddRow(
+            "Duration", 
+            _utilities.CalculateDuration(oldShift.DurationInSeconds).ToString("g", CultureInfo.InvariantCulture), 
+            _utilities.CalculateDuration(newShift.DurationInSeconds).ToString("g", CultureInfo.InvariantCulture));
+        
+        AnsiConsole.Write(table);
+    }
+
+    public DateTime[] AskForShiftDates()
+    {
+        DateTime startDate = DateTime.MinValue;
+        DateTime endDate = DateTime.MinValue;
+        
+        while (startDate == DateTime.MinValue || endDate == DateTime.MinValue)
+        {
+            AnsiConsole.MarkupLine("");
+                                
+            while (startDate == DateTime.MinValue)
+            {
+                string startDateInput = AskUserForText("Please enter the start time (dd/MM/yyyy HH:mm)");
+                startDate = _utilities.ConvertToDate(startDateInput);
+            }
+                                
+            AnsiConsole.MarkupLine("");
+
+            while (endDate == DateTime.MinValue)
+            {
+                string endDateInput = AskUserForText("Please enter the end time (dd/MM/yyyy HH:mm)");
+                endDate = _utilities.ConvertToDate(endDateInput);
+            }
+
+            if (!_utilities.ValidateDates(startDate, endDate))
+            {
+                startDate = DateTime.MinValue;
+                endDate = DateTime.MinValue;
+            }
+        }
+
+        DateTime[] dates = { startDate, endDate };
+
+        return dates;
     }
     
     public int AskUserForId()
     {
-        int id = -1;
-
-        while (id <= 0)
+        while (true)
         {
-            id = AnsiConsole.Prompt(
+            int id = AnsiConsole.Prompt(
                 new TextPrompt<int>("[grey66]Please enter the ID:[/]").PromptStyle(Color.Grey66));
 
             if (id <= 0)
@@ -193,8 +319,6 @@ public class UserInterfaceHelper
                 return id;
             }
         }
-
-        return -1;
     }
 
     public string AskUserForText(string message)
@@ -209,11 +333,17 @@ public class UserInterfaceHelper
     {
         bool confirmed = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title(message)
+                .Title($"[mediumpurple3]{message}[/]")
                 .AddChoices("Y", "N")
                 .HighlightStyle(Color.MediumPurple3)
         ) == "Y";
         
         return confirmed;
+    }
+    
+    public void PressAnyKey()
+    {
+        AnsiConsole.MarkupLine("\n[grey66]Press any key to continue.[/]");
+        System.Console.ReadKey(true);
     }
 }
