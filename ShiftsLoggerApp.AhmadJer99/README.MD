@@ -16,3 +16,15 @@ To deploy this project
 - make sure to replace the api url in the appsettings of the ConsoleUI app with your appropriate link
 - Make sure to replace connection string in the API appsettings with your database connection string
 
+
+## Project Summary
+#### What challenges did you face and how did you overcome them?
+- I had some trouble with the WebiApi part which is fairly new to me, other than that, it was pretty much straight forward.
+
+## 🛠 Skills Learned
+#### ENTITY-FRAMEWORK
+* I had previous experiences with entity framework but doing this project helped me to understand it even further
+
+#### WebApi & Postman
+* It's my first WebApi app ever so I learned alot of stuff about it, and tested using the postman utility and learnt how to use it.
+
