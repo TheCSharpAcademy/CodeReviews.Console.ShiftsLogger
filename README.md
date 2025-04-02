@@ -12,7 +12,7 @@ A simple app for logging employees' shifts
 - Managing employees
 - Logging and managing shifts of employees
 
-(Both employees and shifts are stored in MSSQL, connection to the database is handled by the API)
+(Both employees and shifts are stored in MSSQL database, connection to the database is handled by the API)
 
 ## How to setup
 In ShiftsLogger.API -> appsettings.json find **"DefaultConnection": ""** and put your connection string to the Microsoft SQL Server database there
