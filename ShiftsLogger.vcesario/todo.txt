@@ -1,0 +1,7 @@
+WEB SERVICE
+
+CRUD operations:
+- (POST) Create Shift: Shift Id, Worker Id, StartDateTime, EndDateTime
+- (DELETE) Delete Shift
+- (GET) Read Shift
+- (PUT) Update Shift
