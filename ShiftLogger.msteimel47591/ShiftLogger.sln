@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "ShiftLogger\API.csproj", "{9CD4CEB9-BFEF-49F8-BB9E-9CCAF3729C0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{791F47DF-5E12-4F66-8414-E760C00ED853}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CD4CEB9-BFEF-49F8-BB9E-9CCAF3729C0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CD4CEB9-BFEF-49F8-BB9E-9CCAF3729C0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CD4CEB9-BFEF-49F8-BB9E-9CCAF3729C0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CD4CEB9-BFEF-49F8-BB9E-9CCAF3729C0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{791F47DF-5E12-4F66-8414-E760C00ED853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{791F47DF-5E12-4F66-8414-E760C00ED853}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{791F47DF-5E12-4F66-8414-E760C00ED853}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{791F47DF-5E12-4F66-8414-E760C00ED853}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
