@@ -14,8 +14,6 @@ public class MainApplication
 
     public async Task Run()
     {
-        // DataService.Initialize();
-
         MenuOption chosenOption;
         do
         {
