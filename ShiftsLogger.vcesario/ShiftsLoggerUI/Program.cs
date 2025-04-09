@@ -1,1 +1,2 @@
-﻿new MainApplication().Run();
+﻿MainApplication mainApp = new();
+await mainApp.Run();

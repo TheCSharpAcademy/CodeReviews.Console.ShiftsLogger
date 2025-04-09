@@ -113,7 +113,7 @@ public class UserInputValidator
 
         if (!uint.TryParse(input, out uint result))
         {
-            return ValidationResult.Error(AppTexts.USERINPUT_LONGERROR);
+            return ValidationResult.Error(AppTexts.ERROR_USERINPUT_NUMBER);
         }
 
         return ValidationResult.Success();
@@ -126,9 +126,9 @@ public class UserInputValidator
             return ValidationResult.Success();
         }
 
-        if (!DateTime.TryParseExact(input, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+        if (!DateTime.TryParseExact(input, AppTexts.FORMAT_DATETIME, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
         {
-            return ValidationResult.Error(AppTexts.USERINPUT_DATETIMEERROR);
+            return ValidationResult.Error(AppTexts.ERROR_USERINPUT_DATETIME);
         }
 
         return ValidationResult.Success();
