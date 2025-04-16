@@ -32,6 +32,8 @@ public class ShiftService : IShiftService
             return null;
         
         _dbContext.Shifts.Remove(savedShift);
+        
+        _dbContext.SaveChanges();
 
         return $"Successfully deleted shift with id: {id}";
     }
