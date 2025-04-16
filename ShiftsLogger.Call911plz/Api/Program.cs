@@ -8,7 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ShiftsDbContext>(
+builder.Services.AddDbContext<ShiftsLoggerDbContext>(
     opt => opt.UseSqlServer(@"
         Server=localhost;
         Database=shiftloggerdb;
@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ShiftsDbContext>(
     )
 );
 builder.Services.AddScoped<IShiftService, ShiftService>();
+builder.Services.AddScoped<IWorkerService, WorkerService>();
 
 var app = builder.Build();
 

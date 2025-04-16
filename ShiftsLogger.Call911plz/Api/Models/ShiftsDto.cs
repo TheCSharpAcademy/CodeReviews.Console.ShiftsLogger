@@ -1,8 +1,6 @@
 
-public class Shift
+public class ShiftDto
 {
-    public int Id { get; set; }
-    public int WorkerId { get; set; }
     public DateTime StartDateTime { get; set; }
     public DateTime EndDateTime { get; set; }
 }

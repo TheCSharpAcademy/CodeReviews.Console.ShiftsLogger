@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/Workers/{workerId}/[controller]")]
 public class ShiftsController : ControllerBase
 {
     private readonly IShiftService _shiftService;    
@@ -11,16 +11,16 @@ public class ShiftsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<List<Shift>> GetAllShifts()
+    public ActionResult<List<Shift>> GetAllShifts(int workerId)
     {
-        var result = _shiftService.GetAllShifts();
+        var result = _shiftService.GetAllShifts(workerId);
         return Ok(result);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Shift> GetShiftById(int id)
+    public ActionResult<Shift> GetShiftById(int workerId, int id)
     {
-        var result = _shiftService.GetShiftById(id);
+        var result = _shiftService.GetShiftById(workerId, id);
 
         if (result == null)
             return NotFound();
@@ -29,15 +29,27 @@ public class ShiftsController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<Shift> CreateShift(Shift shift)
+    public ActionResult<Shift> CreateShift(int workerId, ShiftDto shiftDto)
     {
+        Shift shift = new() {
+            WorkerId = workerId,
+            StartDateTime = shiftDto.StartDateTime,
+            EndDateTime = shiftDto.EndDateTime,
+        };
+
         var result = _shiftService.CreateShift(shift);
         return Ok(result);
     }
 
     [HttpPut]
-    public ActionResult<Shift> UpdateShift(Shift shift)
+    public ActionResult<Shift> UpdateShift(int workerId, ShiftDto shiftDto)
     {
+        Shift shift = new() {
+            WorkerId = workerId,
+            StartDateTime = shiftDto.StartDateTime,
+            EndDateTime = shiftDto.EndDateTime,
+        };
+
         var result = _shiftService.UpdateShift(shift);
 
         if (result == null)

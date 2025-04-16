@@ -1,12 +1,13 @@
 
 using Microsoft.EntityFrameworkCore;
 
-public class ShiftsDbContext : DbContext
+public class ShiftsLoggerDbContext : DbContext
 {
-    public ShiftsDbContext(DbContextOptions options) : base(options)
+    public ShiftsLoggerDbContext(DbContextOptions options) : base(options)
     {
 
     }
     
+    public DbSet<Worker> Workers { get; set; }
     public DbSet<Shift> Shifts { get; set; }
 }
