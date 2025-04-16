@@ -4,23 +4,23 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class WorkersController : ControllerBase
 {
-    private readonly IWorkerService _WorkerService;    
+    private readonly IWorkerService _workerService;    
     public WorkersController(IWorkerService WorkerService)
     {
-        _WorkerService = WorkerService;
+        _workerService = WorkerService;
     }
 
     [HttpGet]
     public ActionResult<List<Worker>> GetAllWorkers()
     {
-        var result = _WorkerService.GetAllWorkers();
+        var result = _workerService.GetAllWorkers();
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
-    public ActionResult<Worker> GetWorkerById(int id)
+    [HttpGet("{workerId}")]
+    public ActionResult<Worker> GetWorkerById(int workerId)
     {
-        var result = _WorkerService.GetWorkerById(id);
+        var result = _workerService.GetWorkerById(workerId);
 
         if (result == null)
             return NotFound();
@@ -29,16 +29,25 @@ public class WorkersController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<Worker> CreateWorker(Worker Worker)
+    public ActionResult<Worker> CreateWorker(WorkerDto workerDto)
     {
-        var result = _WorkerService.CreateWorker(Worker);
+        Worker worker = new() {
+            EmployeeName = workerDto.EmployeeName,
+            EmployeeId = workerDto.EmployeeId,
+        };
+        var result = _workerService.CreateWorker(worker);
         return Ok(result);
     }
 
     [HttpPut]
-    public ActionResult<Worker> UpdateWorker(Worker Worker)
+    public ActionResult<Worker> UpdateWorker(WorkerDto workerDto)
     {
-        var result = _WorkerService.UpdateWorker(Worker);
+        Worker worker = new() {
+            EmployeeName = workerDto.EmployeeName,
+            EmployeeId = workerDto.EmployeeId,
+        };
+
+        var result = _workerService.UpdateWorker(worker);
 
         if (result == null)
             return NotFound();
@@ -46,10 +55,10 @@ public class WorkersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete("{id}")]
-    public ActionResult<string> DeleteWorker(int id)
+    [HttpDelete("{workerId}")]
+    public ActionResult<string> DeleteWorker(int workerId)
     {
-        var result = _WorkerService.DeleteWorker(id);
+        var result = _workerService.DeleteWorker(workerId);
 
         if (result == null)
             return NotFound();

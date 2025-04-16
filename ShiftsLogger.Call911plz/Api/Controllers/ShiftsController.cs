@@ -10,17 +10,27 @@ public class ShiftsController : ControllerBase
         _shiftService = shiftService;
     }
 
-    [HttpGet]
-    public ActionResult<List<Shift>> GetAllShifts(int workerId)
+    [HttpGet("all")]
+    public ActionResult<List<Shift>> GetAllShifts()
     {
-        var result = _shiftService.GetAllShifts(workerId);
+        return Ok(_shiftService.GetAllShifts());
+    }
+
+    [HttpGet]
+    public ActionResult<List<Shift>> GetShiftsByWorkerId(int workerId)
+    {
+        var result = _shiftService.GetShiftsByWorkerId(workerId);
+
+        if (result == null)
+            return NotFound();
+
         return Ok(result);
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Shift> GetShiftById(int workerId, int id)
+    public ActionResult<Shift> GetShiftByShiftId(int workerId, int id)
     {
-        var result = _shiftService.GetShiftById(workerId, id);
+        var result = _shiftService.GetShiftByShiftId(workerId, id);
 
         if (result == null)
             return NotFound();
@@ -38,13 +48,18 @@ public class ShiftsController : ControllerBase
         };
 
         var result = _shiftService.CreateShift(shift);
+
+        if (result == null)
+            return NotFound();
+
         return Ok(result);
     }
 
-    [HttpPut]
-    public ActionResult<Shift> UpdateShift(int workerId, ShiftDto shiftDto)
+    [HttpPut("{shiftId}")]
+    public ActionResult<Shift> UpdateShift(int workerId, int shiftId, ShiftDto shiftDto)
     {
         Shift shift = new() {
+            Id = shiftId,
             WorkerId = workerId,
             StartDateTime = shiftDto.StartDateTime,
             EndDateTime = shiftDto.EndDateTime,
@@ -59,9 +74,9 @@ public class ShiftsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public ActionResult<string> DeleteShift(int id)
+    public ActionResult<string> DeleteShift(int workerId, int id)
     {
-        var result = _shiftService.DeleteShift(id);
+        var result = _shiftService.DeleteShift(workerId, id);
 
         if (result == null)
             return NotFound();

@@ -2,10 +2,10 @@
 public interface IWorkerService
 {
     public List<Worker> GetAllWorkers();
-    public Worker? GetWorkerById(int id);
+    public Worker? GetWorkerById(int workerId);
     public Worker CreateWorker(Worker worker);
     public Worker? UpdateWorker(Worker worker);
-    public string? DeleteWorker(int id);
+    public string? DeleteWorker(int workerId);
 }
 
 public class WorkerService : IWorkerService
@@ -24,9 +24,11 @@ public class WorkerService : IWorkerService
         return savedWorker.Entity;
     }
 
-    public string? DeleteWorker(int id)
+    public string? DeleteWorker(int workerId)
     {
-        Worker? savedWorker = _dbContext.Workers.Find(id);
+        Worker? savedWorker = _dbContext.Workers
+            .Where(worker => worker.EmployeeId == workerId)
+            .FirstOrDefault();
 
         if (savedWorker == null)
             return null;
@@ -35,7 +37,7 @@ public class WorkerService : IWorkerService
         
         _dbContext.SaveChanges();
 
-        return $"Successfully deleted Worker with id: {id}";
+        return $"Successfully deleted Worker with db id: {savedWorker.Id}, WorkerId: {workerId}";
     }
 
     public List<Worker> GetAllWorkers()
@@ -43,19 +45,24 @@ public class WorkerService : IWorkerService
         return _dbContext.Workers.ToList();
     }
 
-    public Worker? GetWorkerById(int id)
+    public Worker? GetWorkerById(int workerId)
     {
-        Worker? savedWorker = _dbContext.Workers.Find(id);
+        Worker? savedWorker = _dbContext.Workers
+            .Where(worker => worker.EmployeeId == workerId)
+            .FirstOrDefault();
         return savedWorker;
     }
 
     public Worker? UpdateWorker(Worker worker)
     {
-        Worker? savedWorker = _dbContext.Workers.Find(worker.Id);
+        Worker? savedWorker = _dbContext.Workers
+            .Where(w => w.EmployeeId == worker.EmployeeId)
+            .FirstOrDefault();
 
         if (savedWorker == null)
             return null;
 
+        worker.Id = savedWorker.Id;
         _dbContext.Entry(savedWorker).CurrentValues.SetValues(worker);
         _dbContext.SaveChanges();
 
