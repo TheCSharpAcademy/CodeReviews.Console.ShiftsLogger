@@ -34,7 +34,6 @@ public class ShiftService : IShiftService
             return null;
 
         Shift? savedShift = _dbContext.Shifts.Find(id);
-
         if (savedShift == null)
             return null;
         
@@ -67,7 +66,6 @@ public class ShiftService : IShiftService
             return null;
         
         Shift? savedShift = _dbContext.Shifts.Find(shift.Id);
-
         if (savedShift == null)
             return null;
 

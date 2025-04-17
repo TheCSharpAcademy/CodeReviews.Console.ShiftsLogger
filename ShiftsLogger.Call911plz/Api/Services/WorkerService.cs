@@ -26,17 +26,24 @@ public class WorkerService : IWorkerService
 
     public string? DeleteWorker(int workerId)
     {
+        // check for valid worker
         Worker? savedWorker = _dbContext.Workers
             .Where(worker => worker.EmployeeId == workerId)
             .FirstOrDefault();
-
         if (savedWorker == null)
             return null;
-        
-        _dbContext.Workers.Remove(savedWorker);
-        
-        _dbContext.SaveChanges();
 
+        // remove any shifts assigned to worker
+        List<Shift>? workersShifts = _dbContext.Shifts.Where(shift => shift.WorkerId == workerId).ToList();
+        if (workersShifts != null)
+        {
+            foreach (Shift shift in workersShifts)
+                _dbContext.Remove(shift);
+        }
+        
+        // takes out the worker 
+        _dbContext.Workers.Remove(savedWorker);
+        _dbContext.SaveChanges();
         return $"Successfully deleted Worker with db id: {savedWorker.Id}, WorkerId: {workerId}";
     }
 
@@ -55,13 +62,14 @@ public class WorkerService : IWorkerService
 
     public Worker? UpdateWorker(Worker worker)
     {
+        // check for valid worker
         Worker? savedWorker = _dbContext.Workers
             .Where(w => w.EmployeeId == worker.EmployeeId)
             .FirstOrDefault();
-
         if (savedWorker == null)
             return null;
 
+        // update worker
         worker.Id = savedWorker.Id;
         _dbContext.Entry(savedWorker).CurrentValues.SetValues(worker);
         _dbContext.SaveChanges();
