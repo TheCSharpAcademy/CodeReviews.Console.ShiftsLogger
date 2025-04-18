@@ -104,7 +104,7 @@ public class UserInputValidator
     //     return ValidateEmailOrPeriod(input);
     // }
 
-    public ValidationResult ValidateWorkerIdOrPeriod(string input)
+    public ValidationResult ValidateIdOrPeriod(string input)
     {
         if (input.ToLower().Equals("."))
         {

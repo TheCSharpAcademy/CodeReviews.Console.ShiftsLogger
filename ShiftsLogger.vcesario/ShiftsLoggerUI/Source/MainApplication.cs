@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
+
+// using Newtonsoft.Json;
 using Spectre.Console;
 
 public class MainApplication
@@ -19,7 +21,7 @@ public class MainApplication
         {
             Console.Clear();
 
-            AnsiConsole.MarkupLine($"[darkmagenta]{AppTexts.LABEL_APPTITLE}[/]");
+            PrintHeader();
 
             Console.WriteLine();
             chosenOption = AnsiConsole.Prompt(
@@ -35,6 +37,7 @@ public class MainApplication
                     await AddNewShift();
                     break;
                 case MenuOption.ManageShifts:
+                    await new ShiftsManager(this).Open();
                     break;
                 case MenuOption.Exit:
                     break;
@@ -45,6 +48,11 @@ public class MainApplication
             }
         }
         while (chosenOption != MenuOption.Exit);
+    }
+
+    public void PrintHeader()
+    {
+        AnsiConsole.MarkupLine($"[darkmagenta]{AppTexts.LABEL_APPTITLE}[/]");
     }
 
     private async Task AddNewShift()
@@ -58,7 +66,7 @@ public class MainApplication
         Console.WriteLine();
         var workerIdInput = AnsiConsole.Prompt(
             new TextPrompt<string>(AppTexts.PROMPT_NEWSHIFT_WORKERID)
-            .Validate(validator.ValidateWorkerIdOrPeriod)
+            .Validate(validator.ValidateIdOrPeriod)
         );
         if (workerIdInput.Equals("."))
         {
@@ -114,7 +122,8 @@ public class MainApplication
         {
             string url = "https://localhost:7225/api/shiftlog";
             var shiftDto = new ShiftDto_WithoutId(workerId, startDatetime, endDatetime);
-            StringContent content = new StringContent(JsonConvert.SerializeObject(shiftDto), Encoding.UTF8, "application/json");
+            var serializedContent = JsonSerializer.Serialize(shiftDto);
+            StringContent content = new StringContent(serializedContent, Encoding.UTF8, "application/json");
             try
             {
                 var response = await client.PostAsync(url, content);
@@ -148,4 +157,5 @@ public class MainApplication
                 return AppTexts.LABEL_UNDEFINED;
         }
     }
+
 }

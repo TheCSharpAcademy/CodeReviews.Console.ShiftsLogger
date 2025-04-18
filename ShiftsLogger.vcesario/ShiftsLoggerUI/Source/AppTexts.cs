@@ -18,6 +18,11 @@ public static class AppTexts
     public const string LABEL_APPTITLE = "Shifts Logger";
     public const string LABEL_UNDEFINED = "<undefined>";
 
+    public const string LABEL_SHIFTTABLE_ID = "ID";
+    public const string LABEL_SHIFTTABLE_WORKERID = "Worker ID";
+    public const string LABEL_SHIFTTABLE_STARTTIME = "Start time";
+    public const string LABEL_SHIFTTABLE_ENDTIME = "End time";
+
     public const string ERROR_BADSTARTDATETIME = "Invalid date and time for starting a shift.";
     public const string ERROR_BADENDDATETIME = "Invalid date and time for ending a shift.";
     public const string ERROR_USERINPUT_DATETIME = $"Couldn't parse DateTime. Use template <{FORMAT_DATETIME}>.";

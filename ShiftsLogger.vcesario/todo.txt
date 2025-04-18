@@ -5,3 +5,13 @@ CRUD operations:
 - (DELETE) Delete Shift
 - (GET) Read Shift
 - (PUT) Update Shift
+
+---
+
+UI
+
+- [] Update shift
+- [] Merge ShiftsManager with Main App
+- [] C# Enum display
+- [] Update AppTexts
+- [] Folder/Omit todo.txt
