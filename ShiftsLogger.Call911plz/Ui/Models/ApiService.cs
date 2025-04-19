@@ -2,16 +2,34 @@ using RestSharp;
 using Spectre.Console;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Net;
 
 public class IApiService()
 {
     internal RestClient _client;
+    internal JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
 
     public void ConnectApi()
     {
         _client = new(
-            new RestClientOptions("http://localhost:5295/api/Shifts/")
+            new RestClientOptions("http://localhost:5295/api/")
         );
+    }
+
+    internal async Task<RestResponse?> ExecuteRestAsync(Func<Task<RestResponse>> requestFunc)
+    {
+        RestResponse response = await requestFunc();
+
+        if (Errors.Codes.TryGetValue(response.StatusCode, out string? value))
+        {
+            AnsiConsole.MarkupLine(value);
+            return null;
+        }
+
+        return response;
     }
 }
 
@@ -19,20 +37,17 @@ public class WorkerService() : IApiService()
 {
     public async Task<List<Worker>> GetAllWorkersAsync()
     {
-        var request = new RestRequest("");
-        var response = await _client.GetAsync(request);
+        RestResponse? response = await ExecuteRestAsync(
+            async() => await _client.GetAsync
+            (
+                new RestRequest("Workers")
+            ) 
+        );
 
-        if (response.Content == null)
-        {
-            AnsiConsole.MarkupLine("No content");
+        if (response == null)
             return [];
-        }
 
-        var jsonOptions = new JsonSerializerOptions{
-            PropertyNameCaseInsensitive = true
-        };
-        var workers = JsonSerializer.Deserialize<List<Worker>>(response.Content, jsonOptions);
-
+        var workers = JsonSerializer.Deserialize<List<Worker>>(response.Content, _jsonOptions);
         return workers ?? [];
     }
 }

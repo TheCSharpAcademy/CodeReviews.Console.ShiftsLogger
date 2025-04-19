@@ -1,4 +1,4 @@
-
+using System.Net;
 public static class MenuEnums
 {
     public enum Main { MANAGESHIFT, MANAGEWORKER, EXIT }
@@ -8,16 +8,15 @@ public static class MenuEnums
 
 public static class Errors
 {
-    public static Dictionary<int, string> Codes = new()
+    public static Dictionary<HttpStatusCode, string> Codes = new()
     {
-        {404, "Not found"},
-        {400, "Syntax Error"},
-        {401, "Not Authorized"},
-        {403, "Forbidden"},
-        {405, "Method Not Allowed"},
-        {500, "Internal Error"},
-        {501, "Not Implemented"},
-        {502, "Bad Gateway"},
-        {503, "Service Unavaliable"},
+        {HttpStatusCode.NotFound, "Not found"},
+        {HttpStatusCode.BadRequest, "Syntax Error"},
+        {HttpStatusCode.Forbidden, "Forbidden"},
+        {HttpStatusCode.MethodNotAllowed, "Method Not Allowed"},
+        {HttpStatusCode.InternalServerError, "Internal Error"},
+        {HttpStatusCode.NotImplemented, "Not Implemented"},
+        {HttpStatusCode.BadGateway, "Bad Gateway"},
+        {HttpStatusCode.ServiceUnavailable, "Service Unavaliable"},
     };
 }
