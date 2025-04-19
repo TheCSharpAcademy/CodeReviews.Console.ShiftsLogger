@@ -12,11 +12,11 @@ class Program
         WorkerService workerService = new();
         workerService.ConnectApi();
 
-        var output = await workerService.CreateWorkerAsync
+        var output = await workerService.UpdateWorkerAsync
         (
             new Worker()
             {
-                EmployeeName = "test",
+                EmployeeName = "aids",
                 EmployeeId = 1000,
             }
         );
