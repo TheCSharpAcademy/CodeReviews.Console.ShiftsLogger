@@ -15,4 +15,21 @@ public class DisplayTable()
 
         AnsiConsole.Write(table);
     }
+
+    public static void Shift(List<Shift> shifts)
+    {
+        Table table = new();
+        table.AddColumns(["Id", "Worker Id", "Start Time", "End Time"]);
+
+        foreach (Shift shift in shifts)
+        {
+            table.AddRow(
+                shift.Id.ToString(), 
+                shift.WorkerId.ToString(), 
+                shift.StartDateTime.ToString(), 
+                shift.EndDateTime.ToString());
+        }
+
+        AnsiConsole.Write(table);
+    }
 }

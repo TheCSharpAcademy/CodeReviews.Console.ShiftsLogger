@@ -1,9 +1,6 @@
 ﻿namespace Ui;
 
 using System.Threading.Tasks;
-using RestSharp;
-using System.Text.Json;
-using Spectre.Console;
 
 class Program
 {
@@ -12,17 +9,11 @@ class Program
         WorkerService workerService = new();
         workerService.ConnectApi();
 
-        var output = await workerService.DeleteWorkerAsync
-        (
-            new Worker()
-            {
-                EmployeeName = "aids",
-                EmployeeId = 1000,
-            }
-        );
-        //DisplayTable.Worker([output]);
+        ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(2));
+        shiftService.ConnectApi();
 
-        Console.WriteLine(output);
+        var output = await shiftService.GetAllShiftsByWorkerIdAsync();
+        DisplayTable.Shift(output);
 
 
         // var options = new RestClientOptions("http://localhost:5295/api/");
