@@ -11,7 +11,9 @@ CRUD operations:
 UI
 
 - [x] Update shift
-- [] Merge ShiftsManager with Main App
-- [] C# Enum display
+- [x] C# Enum display
+- [x] Merge ShiftsManager with Main App
+- [] Data class for connections?
 - [] Update AppTexts
+- [] implement "keep" keyword for edit
 - [] Folder/Omit todo.txt

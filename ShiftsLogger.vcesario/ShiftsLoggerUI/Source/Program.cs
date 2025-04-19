@@ -1,2 +1,3 @@
-﻿MainApplication mainApp = new();
+﻿Console.WriteLine("Loading application...");
+MainApplication mainApp = new();
 await mainApp.Run();

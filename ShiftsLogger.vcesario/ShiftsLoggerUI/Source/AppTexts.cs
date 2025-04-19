@@ -13,8 +13,10 @@ public static class AppTexts
 
     public const string LOG_NEWSHIFT_SUCCESS = "Shift logged successfully.";
 
-    public const string OPTION_MAINMENU_NEWSHIFT = "Add new shift";
-    public const string OPTION_MAINMENU_MANAGESHIFTS = "Manage shifts";
+    public const string OPTION_ADDSHIFT = "Add new shift";
+    public const string OPTION_VIEWALL = "View all shifts";
+    public const string OPTION_EDITSHIFT = "Edit shift";
+    public const string OPTION_REMOVESHIFT = "Remove shift";
     public const string OPTION_EXIT = "Exit";
     
     public const string LABEL_APPTITLE = "Shifts Logger";
