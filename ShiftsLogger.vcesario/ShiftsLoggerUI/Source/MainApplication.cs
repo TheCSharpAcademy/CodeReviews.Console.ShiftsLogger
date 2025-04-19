@@ -1,8 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
-using System.Text;
-using System.Text.Json;
 
 using Spectre.Console;
 
@@ -22,7 +20,7 @@ public class MainApplication
         Exit,
     }
 
-    private List<ShiftRecord>? m_AllShifts;
+    private List<ShiftRecord> m_AllShifts = new();
 
     public async Task Run()
     {
@@ -33,7 +31,7 @@ public class MainApplication
         {
             Console.Clear();
 
-            AnsiConsole.MarkupLine("[darkmagenta]Shifts Logger[/]");
+            AnsiConsole.MarkupLine($"[darkmagenta]{AppTexts.LABEL_APPTITLE}[/]");
 
             Console.WriteLine();
             PrintMostRecentShifts();
@@ -108,29 +106,16 @@ public class MainApplication
         AnsiConsole.MarkupLine($"[grey]{AppTexts.TOOLTIP_CANCEL}[/]");
 
         Console.WriteLine();
-        if (!TryPromptNewShiftDto(false, out var shiftDto))
+        if (!TryPromptNewShiftDto(false, out var shiftDto)
+            || shiftDto == null)
         {
             return false;
         }
 
-        using (var client = new HttpClient())
+        ApiHandler apiHandler = new();
+        if (await apiHandler.PostShift(shiftDto) == false)
         {
-            string url = "https://localhost:7225/api/shiftlog";
-            var serializedContent = JsonSerializer.Serialize(shiftDto);
-            StringContent content = new StringContent(serializedContent, Encoding.UTF8, "application/json");
-            try
-            {
-                var response = await client.PostAsync(url, content);
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine();
-                Console.WriteLine("HTTP Error: " + e.HttpRequestError);
-                Console.WriteLine(e.Message);
-                Console.ReadLine();
-                return false;
-            }
+            return false;
         }
 
         Console.WriteLine(AppTexts.LOG_NEWSHIFT_SUCCESS);
@@ -156,9 +141,14 @@ public class MainApplication
             return false;
         }
 
-        var shift = await GetShift(idString);
+        ApiHandler apiHandler = new();
+        var shift = await apiHandler.GetShift(idString);
         if (shift == null)
         {
+            Console.WriteLine();
+            Console.WriteLine("No shift found with this ID.");
+            Console.ReadLine();
+
             return false;
         }
 
@@ -172,24 +162,9 @@ public class MainApplication
         }
 
         var updatedRecord = new ShiftRecord(shift.id, shiftDto.WorkerId, shiftDto.StartDateTime, shiftDto.EndDateTime);
-        using (var client = new HttpClient())
+        if (await apiHandler.PutShift(updatedRecord) == false)
         {
-            string url = $"https://localhost:7225/api/shiftlog";
-            var serializedContent = JsonSerializer.Serialize(updatedRecord);
-            StringContent content = new StringContent(serializedContent, Encoding.UTF8, "application/json");
-            try
-            {
-                var response = await client.PutAsync(url, content);
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine();
-                Console.WriteLine("HTTP Error: " + e.HttpRequestError);
-                Console.WriteLine(e.Message);
-                Console.ReadLine();
-                return false;
-            }
+            return false;
         }
 
         Console.WriteLine("Shift updated successfully.");
@@ -216,9 +191,14 @@ public class MainApplication
             return false;
         }
 
-        var shift = await GetShift(idString);
+        ApiHandler apiHandler = new();
+        var shift = await apiHandler.GetShift(idString);
         if (shift == null)
         {
+            Console.WriteLine();
+            Console.WriteLine("No shift found with this ID.");
+            Console.ReadLine();
+
             return false;
         }
 
@@ -247,22 +227,9 @@ public class MainApplication
             return false;
         }
 
-        using (var client = new HttpClient())
+        if (await apiHandler.DeleteShift(idString) == false)
         {
-            string url = $"https://localhost:7225/api/shiftlog/{idString}";
-            try
-            {
-                var response = await client.DeleteAsync(url);
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine();
-                Console.WriteLine("HTTP Error: " + e.HttpRequestError);
-                Console.WriteLine(e.Message);
-                Console.ReadLine();
-                return false;
-            }
+            return false;
         }
 
         Console.WriteLine();
@@ -341,68 +308,8 @@ public class MainApplication
 
     private async Task UpdateAllShifts()
     {
-        using (var client = new HttpClient())
-        {
-            string url = "https://localhost:7225/api/shiftlog";
-            try
-            {
-                using (var stream = await client.GetStreamAsync(url))
-                {
-                    m_AllShifts = JsonSerializer.Deserialize<List<ShiftRecord>>(stream);
-                }
-
-                m_AllShifts?.Sort((s1, s2) => s2.startDateTime.CompareTo(s1.startDateTime));
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine();
-                Console.WriteLine("HTTP Error: " + e.HttpRequestError);
-                Console.WriteLine(e.Message);
-                Console.ReadLine();
-
-                m_AllShifts = null;
-            }
-        }
-    }
-
-    private async Task<ShiftRecord?> GetShift(string id)
-    {
-        ShiftRecord? shift = null;
-
-        if (string.IsNullOrEmpty(id))
-        {
-            return null;
-        }
-
-        using (var client = new HttpClient())
-        {
-            string url = $"https://localhost:7225/api/shiftlog/{id}";
-            try
-            {
-                using (var stream = await client.GetStreamAsync(url))
-                {
-                    shift = JsonSerializer.Deserialize<ShiftRecord>(stream);
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine();
-                Console.WriteLine("HTTP Error: " + e.HttpRequestError);
-                Console.WriteLine(e.Message);
-                Console.ReadLine();
-
-                return null;
-            }
-        }
-
-        if (shift == null)
-        {
-            Console.WriteLine();
-            Console.WriteLine("No shift found with this ID.");
-            Console.ReadLine();
-        }
-
-        return shift;
+        ApiHandler apiHandler = new();
+        m_AllShifts = await apiHandler.GetAllShifts();
     }
 
     private void PrintMostRecentShifts()

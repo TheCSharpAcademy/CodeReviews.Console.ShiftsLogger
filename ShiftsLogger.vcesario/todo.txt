@@ -13,7 +13,8 @@ UI
 - [x] Update shift
 - [x] C# Enum display
 - [x] Merge ShiftsManager with Main App
-- [] Data class for connections?
+- [x] Data class for connections?
 - [] Update AppTexts
+- [] Models. Record? Dto?
 - [] implement "keep" keyword for edit
 - [] Folder/Omit todo.txt
