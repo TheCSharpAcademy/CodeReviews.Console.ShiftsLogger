@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using Spectre.Console;
 
@@ -44,6 +46,12 @@ public class ShiftsManager
             {
                 case MenuOption.ViewAll:
                     ViewAllShifts();
+                    break;
+                case MenuOption.Edit:
+                    if (await TryEditShift())
+                    {
+                        await UpdateAllShifts();
+                    }
                     break;
                 case MenuOption.Remove:
                     if (await TryRemoveShift())
@@ -109,6 +117,65 @@ public class ShiftsManager
         Console.ReadLine();
     }
 
+    private async Task<bool> TryEditShift()
+    {
+        Console.Clear();
+        AnsiConsole.MarkupLine("[darkmagenta]Shifts Logger[/] Remove shift");
+
+        Console.WriteLine();
+        UserInputValidator validator = new();
+        string idString = AnsiConsole.Prompt(
+            new TextPrompt<string>("Enter ID to edit:")
+            .Validate(validator.ValidateIdOrPeriod)
+        );
+
+        if (idString.Equals("."))
+        {
+            return false;
+        }
+
+        var shift = await GetShift(idString);
+        if (shift == null)
+        {
+            return false;
+        }
+
+        DrawShiftTable(new List<ShiftRecord> { shift });
+
+        Console.WriteLine();
+        if (!m_MainApp.TryPromptNewShiftDto(true, out var shiftDto)
+            || shiftDto == null)
+        {
+            return false;
+        }
+
+        var updatedRecord = new ShiftRecord(shift.id, shiftDto.WorkerId, shiftDto.StartDateTime, shiftDto.EndDateTime);
+        using (var client = new HttpClient())
+        {
+            string url = $"https://localhost:7225/api/shiftlog";
+            var serializedContent = JsonSerializer.Serialize(updatedRecord);
+            StringContent content = new StringContent(serializedContent, Encoding.UTF8, "application/json");
+            try
+            {
+                var response = await client.PutAsync(url, content);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine();
+                Console.WriteLine("HTTP Error: " + e.HttpRequestError);
+                Console.WriteLine(e.Message);
+                Console.ReadLine();
+                return false;
+            }
+        }
+
+        Console.WriteLine("Shift updated successfully.");
+        Console.ReadLine();
+
+        return true;
+    }
+
     private async Task<bool> TryRemoveShift()
     {
         Console.Clear();
@@ -126,6 +193,37 @@ public class ShiftsManager
             return false;
         }
 
+        var shift = await GetShift(idString);
+        if (shift == null)
+        {
+            return false;
+        }
+        
+        DrawShiftTable(new List<ShiftRecord> { shift });
+
+        Console.WriteLine();
+        var confirm = AnsiConsole.Prompt(
+            new ConfirmationPrompt("Are you sure you want to delete this entry?")
+            {
+                DefaultValue = false
+            });
+
+        if (!confirm)
+        {
+            return false;
+        }
+
+        confirm = AnsiConsole.Prompt(
+            new ConfirmationPrompt(AppTexts.PROMPT_RECONFIRM)
+            {
+                DefaultValue = false
+            });
+
+        if (!confirm)
+        {
+            return false;
+        }
+
         using (var client = new HttpClient())
         {
             string url = $"https://localhost:7225/api/shiftlog/{idString}";
@@ -139,7 +237,6 @@ public class ShiftsManager
                 Console.WriteLine();
                 Console.WriteLine("HTTP Error: " + e.HttpRequestError);
                 Console.WriteLine(e.Message);
-                AnsiConsole.MarkupLine("[indianred]Check if the ID was entered correctly.[/]");
                 Console.ReadLine();
                 return false;
             }
@@ -147,9 +244,9 @@ public class ShiftsManager
 
         Console.WriteLine();
         Console.WriteLine($"Entry '{idString}' successfully removed.");
-        
+
         Console.WriteLine();
-        AnsiConsole.Markup("[grey]Press any key to return.[/]");
+        AnsiConsole.Markup($"[grey]{AppTexts.TOOLTIP_RETURN}[/]");
         Console.ReadLine();
         return true;
     }
@@ -190,5 +287,45 @@ public class ShiftsManager
 
         table.Border = TableBorder.Double;
         AnsiConsole.Write(table);
+    }
+
+    private async Task<ShiftRecord?> GetShift(string id)
+    {
+        ShiftRecord? shift = null;
+
+        if (string.IsNullOrEmpty(id))
+        {
+            return null;
+        }
+
+        using (var client = new HttpClient())
+        {
+            string url = $"https://localhost:7225/api/shiftlog/{id}";
+            try
+            {
+                using (var stream = await client.GetStreamAsync(url))
+                {
+                    shift = JsonSerializer.Deserialize<ShiftRecord>(stream);
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine();
+                Console.WriteLine("HTTP Error: " + e.HttpRequestError);
+                Console.WriteLine(e.Message);
+                Console.ReadLine();
+
+                return null;
+            }
+        }
+
+        if (shift == null)
+        {
+            Console.WriteLine();
+            Console.WriteLine("No shift found with this ID.");
+            Console.ReadLine();
+        }
+
+        return shift;
     }
 }

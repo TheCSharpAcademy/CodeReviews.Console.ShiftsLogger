@@ -3,10 +3,12 @@ public static class AppTexts
     public const string FORMAT_DATETIME = "dd/MM/yyyy HH:mm:ss";
 
     public const string PROMPT_ACTION = "What do you want to do?";
+    public const string PROMPT_RECONFIRM = "Are you REALLY sure?";
     public const string PROMPT_NEWSHIFT_WORKERID = "Enter your worker ID:";
     public const string PROMPT_NEWSHIFT_STARTDATETIME = "Start date and time of your shift:";
     public const string PROMPT_NEWSHIFT_ENDDATETIME = "End date and time of your shift:";
 
+    public const string TOOLTIP_RETURN = "Press any key to return.";
     public const string TOOLTIP_CANCEL = "Enter '.' anywhere to cancel.";
 
     public const string LOG_NEWSHIFT_SUCCESS = "Shift logged successfully.";

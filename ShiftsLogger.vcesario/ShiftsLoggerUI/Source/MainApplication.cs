@@ -61,67 +61,15 @@ public class MainApplication
         Console.WriteLine(AppTexts.OPTION_MAINMENU_NEWSHIFT);
         AnsiConsole.MarkupLine($"[grey]{AppTexts.TOOLTIP_CANCEL}[/]");
 
-        UserInputValidator validator = new();
-
         Console.WriteLine();
-        var workerIdInput = AnsiConsole.Prompt(
-            new TextPrompt<string>(AppTexts.PROMPT_NEWSHIFT_WORKERID)
-            .Validate(validator.ValidateIdOrPeriod)
-        );
-        if (workerIdInput.Equals("."))
+        if (!TryPromptNewShiftDto(false, out var shiftDto))
         {
             return;
         }
-        int workerId = int.Parse(workerIdInput);
-
-        Console.WriteLine();
-        DateTime startDatetime;
-        do
-        {
-            var startDatetimeInput = AnsiConsole.Prompt(
-                new TextPrompt<string>(AppTexts.PROMPT_NEWSHIFT_STARTDATETIME)
-                .Validate(validator.ValidateDatetimeOrPeriod)
-            );
-            if (startDatetimeInput.Equals("."))
-            {
-                return;
-            }
-
-            startDatetime = DateTime.ParseExact(startDatetimeInput, AppTexts.FORMAT_DATETIME, CultureInfo.InvariantCulture);
-            if (startDatetime >= DateTime.Now)
-            {
-                Console.WriteLine(AppTexts.ERROR_BADSTARTDATETIME);
-                continue;
-            }
-        }
-        while (false);
-
-        Console.WriteLine();
-        DateTime endDatetime;
-        do
-        {
-            var endDatetimeInput = AnsiConsole.Prompt(
-                new TextPrompt<string>(AppTexts.PROMPT_NEWSHIFT_ENDDATETIME)
-                .Validate(validator.ValidateDatetimeOrPeriod)
-            );
-            if (endDatetimeInput.Equals("."))
-            {
-                return;
-            }
-
-            endDatetime = DateTime.ParseExact(endDatetimeInput, AppTexts.FORMAT_DATETIME, CultureInfo.InvariantCulture);
-            if (endDatetime >= DateTime.Now || endDatetime <= startDatetime)
-            {
-                Console.WriteLine(AppTexts.ERROR_BADENDDATETIME);
-                continue;
-            }
-        }
-        while (false);
 
         using (var client = new HttpClient())
         {
             string url = "https://localhost:7225/api/shiftlog";
-            var shiftDto = new ShiftDto_WithoutId(workerId, startDatetime, endDatetime);
             var serializedContent = JsonSerializer.Serialize(shiftDto);
             StringContent content = new StringContent(serializedContent, Encoding.UTF8, "application/json");
             try
@@ -158,4 +106,68 @@ public class MainApplication
         }
     }
 
+    public bool TryPromptNewShiftDto(bool edit, out ShiftDto_WithoutId? newShift)
+    {
+        UserInputValidator validator = new();
+
+        var workerIdInput = AnsiConsole.Prompt(
+            new TextPrompt<string>(edit ? "Enter new Worker ID:" : AppTexts.PROMPT_NEWSHIFT_WORKERID)
+            .Validate(validator.ValidateIdOrPeriod)
+        );
+        if (workerIdInput.Equals("."))
+        {
+            newShift = null;
+            return false;
+        }
+        int workerId = int.Parse(workerIdInput);
+
+        Console.WriteLine();
+        DateTime startDatetime;
+        do
+        {
+            var startDatetimeInput = AnsiConsole.Prompt(
+                new TextPrompt<string>(edit ? "Enter new start time:" : AppTexts.PROMPT_NEWSHIFT_STARTDATETIME)
+                .Validate(validator.ValidateDatetimeOrPeriod)
+            );
+            if (startDatetimeInput.Equals("."))
+            {
+                newShift = null;
+                return false;
+            }
+
+            startDatetime = DateTime.ParseExact(startDatetimeInput, AppTexts.FORMAT_DATETIME, CultureInfo.InvariantCulture);
+            if (startDatetime >= DateTime.Now)
+            {
+                Console.WriteLine(AppTexts.ERROR_BADSTARTDATETIME);
+                continue;
+            }
+        }
+        while (false);
+
+        Console.WriteLine();
+        DateTime endDatetime;
+        do
+        {
+            var endDatetimeInput = AnsiConsole.Prompt(
+                new TextPrompt<string>(edit ? "Enter new end time:" : AppTexts.PROMPT_NEWSHIFT_ENDDATETIME)
+                .Validate(validator.ValidateDatetimeOrPeriod)
+            );
+            if (endDatetimeInput.Equals("."))
+            {
+                newShift = null;
+                return false;
+            }
+
+            endDatetime = DateTime.ParseExact(endDatetimeInput, AppTexts.FORMAT_DATETIME, CultureInfo.InvariantCulture);
+            if (endDatetime >= DateTime.Now || endDatetime <= startDatetime)
+            {
+                Console.WriteLine(AppTexts.ERROR_BADENDDATETIME);
+                continue;
+            }
+        }
+        while (false);
+
+        newShift = new ShiftDto_WithoutId(workerId, startDatetime, endDatetime);
+        return true;
+    }
 }

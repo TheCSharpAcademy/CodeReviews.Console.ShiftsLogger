@@ -10,7 +10,7 @@ CRUD operations:
 
 UI
 
-- [] Update shift
+- [x] Update shift
 - [] Merge ShiftsManager with Main App
 - [] C# Enum display
 - [] Update AppTexts
