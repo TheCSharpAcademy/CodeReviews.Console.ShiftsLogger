@@ -12,7 +12,7 @@ class Program
         WorkerService workerService = new();
         workerService.ConnectApi();
 
-        var output = await workerService.UpdateWorkerAsync
+        var output = await workerService.DeleteWorkerAsync
         (
             new Worker()
             {
@@ -20,8 +20,9 @@ class Program
                 EmployeeId = 1000,
             }
         );
-        DisplayTable.Worker([output]);
+        //DisplayTable.Worker([output]);
 
+        Console.WriteLine(output);
 
 
         // var options = new RestClientOptions("http://localhost:5295/api/");

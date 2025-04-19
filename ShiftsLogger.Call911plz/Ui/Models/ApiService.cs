@@ -100,4 +100,19 @@ public class WorkerService() : IApiService()
             return null;
         return JsonSerializer.Deserialize<Worker>(response.Content, _jsonOptions);
     }
+
+    public async Task<bool> DeleteWorkerAsync(Worker worker)
+    {
+        RestResponse? response = await ExecuteRestAsync
+        (
+            async () => await _client.DeleteAsync
+            (
+                new RestRequest($"Workers/{worker.EmployeeId}")
+            )
+        );
+
+        if (response == null)
+            return false;
+        return true;
+    }
 }
