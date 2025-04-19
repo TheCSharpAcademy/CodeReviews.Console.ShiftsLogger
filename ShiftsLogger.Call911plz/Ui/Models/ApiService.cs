@@ -37,17 +37,35 @@ public class WorkerService() : IApiService()
 {
     public async Task<List<Worker>> GetAllWorkersAsync()
     {
-        RestResponse? response = await ExecuteRestAsync(
+        RestResponse? response = await ExecuteRestAsync
+        (
             async() => await _client.GetAsync
             (
-                new RestRequest("Workers")
+                new RestRequest($"Workers")
             ) 
         );
 
         if (response == null)
             return [];
 
-        var workers = JsonSerializer.Deserialize<List<Worker>>(response.Content, _jsonOptions);
+        List<Worker>? workers = JsonSerializer.Deserialize<List<Worker>>(response.Content, _jsonOptions);
         return workers ?? [];
+    }
+
+    public async Task<Worker?> GetWorkerByIdAsync(int id)
+    {
+        RestResponse? response = await ExecuteRestAsync
+        (
+            async () => await _client.GetAsync
+            (
+                new RestRequest($"Workers/{id}")
+            )
+        );
+
+        if (response == null)
+            return null;
+        
+        Worker? worker = JsonSerializer.Deserialize<Worker>(response.Content, _jsonOptions);
+        return worker;
     }
 }

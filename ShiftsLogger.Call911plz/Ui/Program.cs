@@ -12,8 +12,8 @@ class Program
         WorkerService workerService = new();
         workerService.ConnectApi();
 
-        List<Worker> workers = await workerService.GetAllWorkersAsync();
-        DisplayTable.Worker(workers);
+        var output = await workerService.GetWorkerByIdAsync(100);
+        DisplayTable.Worker([output]);
 
         // var options = new RestClientOptions("http://localhost:5295/api/Shifts/");
         // var client = new RestClient(options);

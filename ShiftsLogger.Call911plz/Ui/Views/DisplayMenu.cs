@@ -45,6 +45,7 @@ public static class DisplayMenu
                 .UseConverter( input => { return input switch {
                     MenuEnums.Worker.CREATEWORKER => "Create worker",
                     MenuEnums.Worker.READWORKER => "Display worker",
+                    MenuEnums.Worker.READWORKERBYID => "Display specific worker",
                     MenuEnums.Worker.UPDATEWORKER => "Update worker",
                     MenuEnums.Worker.DELETEWORKER => "Delete worker",
                     MenuEnums.Worker.BACK => "Back to main",
