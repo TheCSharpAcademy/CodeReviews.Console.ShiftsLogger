@@ -68,4 +68,20 @@ public class WorkerService() : IApiService()
         Worker? worker = JsonSerializer.Deserialize<Worker>(response.Content, _jsonOptions);
         return worker;
     }
+
+    public async Task<Worker?> CreateWorkerAsync(Worker worker)
+    {
+        RestResponse? response = await ExecuteRestAsync
+        (
+            async () => await _client.PostAsync
+            (
+                new RestRequest($"Workers")
+                    .AddJsonBody(JsonSerializer.Serialize(worker))
+            )
+        );
+
+        if (response == null)
+            return null;
+        return JsonSerializer.Deserialize<Worker>(response.Content, _jsonOptions);
+    }
 }
