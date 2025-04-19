@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Data.Migrations
 {
     [DbContext(typeof(ShiftsLoggerDbContext))]
-    [Migration("20250416194444_AdjustShiftWithWorkerId")]
-    partial class AdjustShiftWithWorkerId
+    [Migration("20250419002001_RenameContext")]
+    partial class RenameContext
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
