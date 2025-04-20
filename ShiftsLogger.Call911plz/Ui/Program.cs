@@ -7,7 +7,7 @@ class Program
     static async Task Main(string[] args)
     {
         MainMenuController mainMenu = new();
-        await mainMenu.Start();
+        await mainMenu.StartAsync();
 
         // WorkerService workerService = new();
         // workerService.ConnectApi();

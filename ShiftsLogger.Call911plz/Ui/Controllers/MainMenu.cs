@@ -13,12 +13,14 @@ public class MainMenuController : MenuControllerBase
         );
     }
 
-    internal override async Task<bool> HandleMenuSelection()
+    internal override async Task<bool> HandleMenuSelectionAsync()
     {
         MenuEnums.Main input = DisplayMenu.MainMenu();
         switch (input)
         {
             case MenuEnums.Main.MANAGESHIFT:
+                ManageShiftMenuController manageShiftMenu = new();
+                await manageShiftMenu.StartAsync();
                 break;
             case MenuEnums.Main.MANAGEWORKER:
                 break;
