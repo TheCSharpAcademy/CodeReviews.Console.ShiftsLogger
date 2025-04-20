@@ -6,22 +6,25 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        WorkerService workerService = new();
-        workerService.ConnectApi();
+        // WorkerService workerService = new();
+        // workerService.ConnectApi();
 
-        ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(3));
-        shiftService.ConnectApi();
+        // ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(3));
+        // shiftService.ConnectApi();
 
-        var output = await shiftService.UpdateShiftAsync(
-            8,
-            new ShiftDto()
-            {
-                StartDateTime = DateTime.Now,
-                EndDateTime = DateTime.Now,
-            }
-        );
-        DisplayTable.Shift([output]);
+        // var output = await shiftService.UpdateShiftAsync(
+        //     8,
+        //     new ShiftDto()
+        //     {
+        //         StartDateTime = DateTime.Now,
+        //         EndDateTime = DateTime.Now,
+        //     }
+        // );
+        // DisplayTable.Shift([output]);
 
+        ShiftDto worker = GetData.GetShift();
+
+        Console.WriteLine(worker);
 
         // var options = new RestClientOptions("http://localhost:5295/api/");
         // var client = new RestClient(options);
