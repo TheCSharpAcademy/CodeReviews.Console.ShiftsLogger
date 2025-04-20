@@ -6,6 +6,9 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        MainMenuController mainMenu = new();
+        await mainMenu.Start();
+
         // WorkerService workerService = new();
         // workerService.ConnectApi();
 
@@ -21,10 +24,6 @@ class Program
         //     }
         // );
         // DisplayTable.Shift([output]);
-
-        ShiftDto worker = GetData.GetShift();
-
-        Console.WriteLine(worker);
 
         // var options = new RestClientOptions("http://localhost:5295/api/");
         // var client = new RestClient(options);
