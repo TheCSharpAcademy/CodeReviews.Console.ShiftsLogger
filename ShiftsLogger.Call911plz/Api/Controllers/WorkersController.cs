@@ -32,8 +32,8 @@ public class WorkersController : ControllerBase
     public ActionResult<Worker> CreateWorker(WorkerDto workerDto)
     {
         Worker worker = new() {
-            EmployeeName = workerDto.EmployeeName,
-            EmployeeId = workerDto.EmployeeId,
+            WorkerName = workerDto.WorkerName,
+            WorkerId = workerDto.WorkerId,
         };
         var result = _workerService.CreateWorker(worker);
         return Ok(result);
@@ -43,8 +43,8 @@ public class WorkersController : ControllerBase
     public ActionResult<Worker> UpdateWorker(WorkerDto workerDto)
     {
         Worker worker = new() {
-            EmployeeName = workerDto.EmployeeName,
-            EmployeeId = workerDto.EmployeeId,
+            WorkerName = workerDto.WorkerName,
+            WorkerId = workerDto.WorkerId,
         };
 
         var result = _workerService.UpdateWorker(worker);

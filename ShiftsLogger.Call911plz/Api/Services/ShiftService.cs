@@ -78,6 +78,6 @@ public class ShiftService : IShiftService
 
     private bool DoesWorkerExists(int workerId)
     {
-        return _dbContext.Workers.Where(worker => worker.EmployeeId == workerId).Any();
+        return _dbContext.Workers.Where(worker => worker.WorkerId == workerId).Any();
     }
 }

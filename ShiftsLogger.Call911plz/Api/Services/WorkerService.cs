@@ -28,7 +28,7 @@ public class WorkerService : IWorkerService
     {
         // check for valid worker
         Worker? savedWorker = _dbContext.Workers
-            .Where(worker => worker.EmployeeId == workerId)
+            .Where(worker => worker.WorkerId == workerId)
             .FirstOrDefault();
         if (savedWorker == null)
             return null;
@@ -55,7 +55,7 @@ public class WorkerService : IWorkerService
     public Worker? GetWorkerById(int workerId)
     {
         Worker? savedWorker = _dbContext.Workers
-            .Where(worker => worker.EmployeeId == workerId)
+            .Where(worker => worker.WorkerId == workerId)
             .FirstOrDefault();
         return savedWorker;
     }
@@ -64,7 +64,7 @@ public class WorkerService : IWorkerService
     {
         // check for valid worker
         Worker? savedWorker = _dbContext.Workers
-            .Where(w => w.EmployeeId == worker.EmployeeId)
+            .Where(w => w.WorkerId == worker.WorkerId)
             .FirstOrDefault();
         if (savedWorker == null)
             return null;
