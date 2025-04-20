@@ -84,4 +84,17 @@ public class ShiftService : IApiService
         
         return JsonSerializer.Deserialize<Shift>(response.Content, _jsonOptions);
     }
+
+    public async Task<bool> DeleteShiftAsync(int shiftId)
+    {
+        RestResponse? response = await ExecuteRestAsync(
+            async () => await _client.DeleteAsync(
+                new RestRequest($"Workers/{_worker.WorkerId}/Shifts/{shiftId}")
+            )
+        );
+
+        if (response == null)
+            return false;
+        return true;
+    }
 }
