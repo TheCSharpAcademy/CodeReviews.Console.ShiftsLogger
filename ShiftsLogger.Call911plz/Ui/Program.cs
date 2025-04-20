@@ -9,11 +9,11 @@ class Program
         WorkerService workerService = new();
         workerService.ConnectApi();
 
-        ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(3));
+        ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(1));
         shiftService.ConnectApi();
 
-        var output = await shiftService.GetAllShiftsOfWorkerAsync();
-        DisplayTable.Shift(output);
+        var output = await shiftService.GetShiftByShiftIdAsync(5);
+        DisplayTable.Shift([output]);
 
 
         // var options = new RestClientOptions("http://localhost:5295/api/");

@@ -34,8 +34,24 @@ public class ShiftService : IApiService
 
         if (response == null)
             return [];
+            
 
         List<Shift>? shifts = JsonSerializer.Deserialize<List<Shift>>(response.Content, _jsonOptions);
         return shifts ?? [];
+    }
+
+    public async Task<Shift?> GetShiftByShiftIdAsync(int shiftId)
+    {
+        RestResponse? response = await ExecuteRestAsync(
+            async () => await _client.GetAsync(
+                new RestRequest($"Workers/{_worker.EmployeeId}/Shifts/{shiftId}")
+            )
+        );
+
+        if (response == null)
+            return null;
+
+        Shift? shift = JsonSerializer.Deserialize<Shift>(response.Content, _jsonOptions);
+        return shift;
     }
 }
