@@ -5,7 +5,7 @@ public class MainMenuController : MenuControllerBase
 {
     internal override void OnReady()
     {
-        Console.Clear();
+        base.OnMake();
         AnsiConsole.Write(
             new FigletText("Shifts Logger")
                 .Centered()

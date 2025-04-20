@@ -2,6 +2,12 @@
 
 public class ManageWorkerMenuController : MenuControllerBase
 {
+    WorkerService _workerService = new();
+    internal override void OnMake()
+    {
+        base.OnMake();
+        _workerService.ConnectApi();
+    }
     internal override async Task<bool> HandleMenuSelectionAsync()
     {
         MenuEnums.Worker input = DisplayMenu.WorkersMenu();
@@ -30,7 +36,9 @@ public class ManageWorkerMenuController : MenuControllerBase
 
     private async Task CreateWorkerAsync()
     {
-        throw new NotImplementedException();
+        WorkerDto worker = GetData.GetWorker();
+
+        await _workerService.CreateWorkerAsync(worker);
     }
 
     private async Task ReadWorkerAsync()
