@@ -28,20 +28,6 @@ public class ShiftService : IShiftService
         return savedShift.Entity;
     }
 
-    public string? DeleteShift(int workerId, int id)
-    {
-        if (DoesWorkerExists(workerId) == false)
-            return null;
-
-        Shift? savedShift = _dbContext.Shifts.Find(id);
-        if (savedShift == null)
-            return null;
-        
-        _dbContext.Shifts.Remove(savedShift);
-        _dbContext.SaveChanges();
-        return $"Successfully deleted shift with id: {id}";
-    }
-
     public List<Shift>? GetShiftsByWorkerId(int workerId)
     {
         if (DoesWorkerExists(workerId) == false)
@@ -51,21 +37,30 @@ public class ShiftService : IShiftService
     }
 
     public Shift? GetShiftByShiftId(int workerId, int id)
-    {
-        if (DoesWorkerExists(workerId) == false)
+    {   
+        List<Shift>? shiftsOfWorker = GetShiftsByWorkerId(workerId);
+        if (shiftsOfWorker == null)
             return null;
 
-        // Does not need a shift check as it does not alter db
-        Shift? savedShift = _dbContext.Shifts.Find(id);
+        // Does not need a shift check as it does not alter db so can return null
+        Shift? savedShift = shiftsOfWorker.Find(shift => shift.Id == id);
         return savedShift;
+    }
+
+    public string? DeleteShift(int workerId, int id)
+    {
+        Shift? savedShift = GetShiftByShiftId(workerId, id);
+        if (savedShift == null)
+            return null; 
+        
+        _dbContext.Shifts.Remove(savedShift);
+        _dbContext.SaveChanges();
+        return $"Successfully deleted shift with id: {id}";
     }
 
     public Shift? UpdateShift(Shift shift)
     {
-        if (DoesWorkerExists(shift.WorkerId) == false)
-            return null;
-        
-        Shift? savedShift = _dbContext.Shifts.Find(shift.Id);
+        Shift? savedShift = GetShiftByShiftId(shift.WorkerId, shift.Id);
         if (savedShift == null)
             return null;
 
