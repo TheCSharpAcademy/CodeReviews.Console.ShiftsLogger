@@ -75,7 +75,7 @@ public class WorkerService() : IApiService()
         (
             async () => await _client.DeleteAsync
             (
-                new RestRequest($"Workers/{worker.EmployeeId}")
+                new RestRequest($"Workers/{worker.WorkerId}")
             )
         );
 

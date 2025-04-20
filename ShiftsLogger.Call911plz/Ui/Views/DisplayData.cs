@@ -10,7 +10,7 @@ public class DisplayTable()
 
         foreach (Worker worker in workers)
         {
-            table.AddRow(worker.Id.ToString(), worker.EmployeeId.ToString(), worker.EmployeeName);
+            table.AddRow(worker.Id.ToString(), worker.WorkerId.ToString(), worker.WorkerName);
         }
 
         AnsiConsole.Write(table);

@@ -28,7 +28,7 @@ public class ShiftService : IApiService
     {
         RestResponse? response = await ExecuteRestAsync(
             async () => await _client.GetAsync(
-                new RestRequest($"Workers/{_worker.EmployeeId}/Shifts")
+                new RestRequest($"Workers/{_worker.WorkerId}/Shifts")
             )
         );
 
@@ -44,7 +44,7 @@ public class ShiftService : IApiService
     {
         RestResponse? response = await ExecuteRestAsync(
             async () => await _client.GetAsync(
-                new RestRequest($"Workers/{_worker.EmployeeId}/Shifts/{shiftId}")
+                new RestRequest($"Workers/{_worker.WorkerId}/Shifts/{shiftId}")
             )
         );
 
