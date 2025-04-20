@@ -9,10 +9,18 @@ class Program
         WorkerService workerService = new();
         workerService.ConnectApi();
 
-        ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(1));
+        ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(3));
         shiftService.ConnectApi();
 
-        var output = await shiftService.GetShiftByShiftIdAsync(5);
+        var output = await shiftService.CreateShiftAsync(
+            new Shift()
+            {
+                Id = 7,
+                WorkerId = 5,
+                StartDateTime = DateTime.Now,
+                EndDateTime = DateTime.Now,
+            }
+        );
         DisplayTable.Shift([output]);
 
 
