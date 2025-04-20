@@ -23,6 +23,8 @@ public class MainMenuController : MenuControllerBase
                 await manageShiftMenu.StartAsync();
                 break;
             case MenuEnums.Main.MANAGEWORKER:
+                ManageWorkerMenuController manageWorkerMenu = new();
+                await manageWorkerMenu.StartAsync();
                 break;
             case MenuEnums.Main.EXIT:
                 return true;
