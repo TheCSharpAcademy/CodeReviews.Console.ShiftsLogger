@@ -55,7 +55,7 @@ public class ShiftService : IApiService
         return shift;
     }
 
-    public async Task<Shift?> CreateShiftAsync(Shift shift)
+    public async Task<Shift?> CreateShiftAsync(ShiftDto shift)
     {
         RestResponse? response = await ExecuteRestAsync(
             async () => await _client.PostAsync(
@@ -66,6 +66,22 @@ public class ShiftService : IApiService
 
         if (response == null)  
             return null;
-        return shift;
+
+        return JsonSerializer.Deserialize<Shift>(response.Content, _jsonOptions);
+    }
+
+    public async Task<Shift?> UpdateShiftAsync(int shiftId, ShiftDto shift)
+    {
+        RestResponse? response = await ExecuteRestAsync(
+            async () => await _client.PutAsync(
+                new RestRequest($"Workers/{_worker.WorkerId}/Shifts/{shiftId}")
+                    .AddJsonBody(shift)
+            )
+        );
+
+        if (response == null)
+            return null;
+        
+        return JsonSerializer.Deserialize<Shift>(response.Content, _jsonOptions);
     }
 }

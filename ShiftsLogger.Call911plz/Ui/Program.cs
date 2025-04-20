@@ -12,11 +12,10 @@ class Program
         ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(3));
         shiftService.ConnectApi();
 
-        var output = await shiftService.CreateShiftAsync(
-            new Shift()
+        var output = await shiftService.UpdateShiftAsync(
+            8,
+            new ShiftDto()
             {
-                Id = 7,
-                WorkerId = 5,
                 StartDateTime = DateTime.Now,
                 EndDateTime = DateTime.Now,
             }

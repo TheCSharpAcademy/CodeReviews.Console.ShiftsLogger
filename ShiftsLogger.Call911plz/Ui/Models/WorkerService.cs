@@ -37,7 +37,7 @@ public class WorkerService() : IApiService()
         return worker;
     }
 
-    public async Task<Worker?> CreateWorkerAsync(Worker worker)
+    public async Task<Worker?> CreateWorkerAsync(WorkerDto worker)
     {
         RestResponse? response = await ExecuteRestAsync
         (
@@ -53,7 +53,7 @@ public class WorkerService() : IApiService()
         return JsonSerializer.Deserialize<Worker>(response.Content, _jsonOptions);
     }
 
-    public async Task<Worker?> UpdateWorkerAsync(Worker worker)
+    public async Task<Worker?> UpdateWorkerAsync(WorkerDto worker)
     {
         RestResponse? response = await ExecuteRestAsync
         (
@@ -69,7 +69,7 @@ public class WorkerService() : IApiService()
         return JsonSerializer.Deserialize<Worker>(response.Content, _jsonOptions);
     }
 
-    public async Task<bool> DeleteWorkerAsync(Worker worker)
+    public async Task<bool> DeleteWorkerAsync(WorkerDto worker)
     {
         RestResponse? response = await ExecuteRestAsync
         (
