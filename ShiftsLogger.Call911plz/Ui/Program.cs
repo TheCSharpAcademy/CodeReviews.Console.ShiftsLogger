@@ -9,10 +9,10 @@ class Program
         WorkerService workerService = new();
         workerService.ConnectApi();
 
-        ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(2));
+        ShiftService shiftService = new(await workerService.GetWorkerByIdAsync(3));
         shiftService.ConnectApi();
 
-        var output = await shiftService.GetAllShiftsByWorkerIdAsync();
+        var output = await shiftService.GetAllShiftsOfWorkerAsync();
         DisplayTable.Shift(output);
 
 

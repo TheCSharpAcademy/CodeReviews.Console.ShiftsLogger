@@ -1,5 +1,3 @@
-
-
 using System.Text.Json;
 using RestSharp;
 
@@ -11,7 +9,22 @@ public class ShiftService : IApiService
         _worker = worker;
     }
 
-    public async Task<List<Shift>> GetAllShiftsByWorkerIdAsync()
+    public async Task<List<Shift>> GetAllShiftsAsync()
+    {
+        RestResponse? response = await ExecuteRestAsync(
+            async () => await _client.GetAsync(
+                new RestRequest($"Workers/0/Shifts/all")
+            )
+        );
+
+        if (response == null)
+            return [];
+        
+        List<Shift>? shifts = JsonSerializer.Deserialize<List<Shift>>(response.Content, _jsonOptions);
+        return shifts ?? [];
+    }
+
+    public async Task<List<Shift>> GetAllShiftsOfWorkerAsync()
     {
         RestResponse? response = await ExecuteRestAsync(
             async () => await _client.GetAsync(
@@ -22,7 +35,7 @@ public class ShiftService : IApiService
         if (response == null)
             return [];
 
-        List<Shift>? workers = JsonSerializer.Deserialize<List<Shift>>(response.Content, _jsonOptions);
-        return workers ?? [];
+        List<Shift>? shifts = JsonSerializer.Deserialize<List<Shift>>(response.Content, _jsonOptions);
+        return shifts ?? [];
     }
 }
