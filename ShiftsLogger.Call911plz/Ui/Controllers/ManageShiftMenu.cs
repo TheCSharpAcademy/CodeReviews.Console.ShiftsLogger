@@ -62,6 +62,9 @@ public class ManageShiftMenuController : MenuControllerBase
 
     private async Task DeleteShiftAsync()
     {
-        throw new NotImplementedException();
+        List<Shift> shifts = await _shiftService.GetAllShiftsOfWorkerAsync();
+        Shift shiftToDelete = GetData.GetShift(shifts);
+
+        await _shiftService.DeleteShiftAsync(shiftToDelete.Id);
     }
 }
