@@ -37,7 +37,7 @@ public class ManageWorkerMenuController : MenuControllerBase
     private async Task CreateWorkerAsync()
     {
         // Getting the most avaliable Id
-        var workers = await _workerService.GetAllWorkersAsync();
+        List<Worker> workers = [.. (await _workerService.GetAllWorkersAsync()).OrderBy(worker => worker.WorkerId)];
         int availableId = 1;
 
         foreach(Worker worker in workers)
