@@ -59,6 +59,9 @@ public class ManageWorkerMenuController : MenuControllerBase
 
         WorkerDto newWorker = GetData.GetWorker(newWorkerWithId);
 
+        if (workers.Find(workerId => workerId.WorkerId == newWorker.WorkerId) != null)
+            throw new Exception("Overlapping worker id");
+
         await _workerService.CreateWorkerAsync(newWorker);
     }
 

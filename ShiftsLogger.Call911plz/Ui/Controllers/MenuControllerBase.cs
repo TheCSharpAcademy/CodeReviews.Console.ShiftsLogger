@@ -10,21 +10,49 @@ public class MenuControllerBase
     internal virtual void OnExit() {}
     public async Task StartAsync()
     {
-        OnMake();
+        try
+        {
+            OnMake();
+        }
+        catch (Exception e) 
+        {
+            AnsiConsole.MarkupLine($"[bold red]Error on make: [/]{e.Message}"); 
+            AnsiConsole.MarkupLine($"[bold yellow]Press Enter to continue: [/]"); 
+            Console.Read();
+        }
         
         bool exit = false;
         while (exit == false)
         {
-            OnReady();
-            exit = await HandleMenuSelectionAsync();
-
-            if (exit != true)
+            try
             {
-                AnsiConsole.MarkupLine("[bold yellow]Press Enter to continue[/]");
+                OnReady();
+                exit = await HandleMenuSelectionAsync();
+
+                if (exit != true)
+                {
+                    AnsiConsole.MarkupLine("[bold yellow]Press Enter to continue[/]");
+                    Console.Read();
+                }
+            }
+            catch (Exception e) 
+            { 
+                AnsiConsole.MarkupLine($"[bold red]Error in loop: [/]{e.Message}"); 
+                AnsiConsole.MarkupLine($"[bold yellow]Press Enter to continue: [/]"); 
                 Console.Read();
             }
+                
         }
 
-        OnExit();
+        try 
+        {
+            OnExit();
+        }
+        catch (Exception e) 
+        { 
+            AnsiConsole.MarkupLine($"[bold red]Error on exit: [/]{e.Message}");
+            AnsiConsole.MarkupLine($"[bold yellow]Press Enter to continue: [/]"); 
+            Console.Read();    
+        }
     }
 }
