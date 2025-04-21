@@ -56,9 +56,9 @@ public class ManageWorkerMenuController : MenuControllerBase
         {
             WorkerId = availableId,
         };
-
         WorkerDto newWorker = GetData.GetWorker(newWorkerWithId);
 
+        // Error checks
         if (workers.Find(workerId => workerId.WorkerId == newWorker.WorkerId) != null)
             throw new Exception("Overlapping worker id");
 
@@ -67,7 +67,8 @@ public class ManageWorkerMenuController : MenuControllerBase
 
     private async Task ReadWorkerAsync()
     {
-        throw new NotImplementedException();
+        List<Worker> workers = await _workerService.GetAllWorkersAsync();
+        DisplayTable.Worker(workers);
     }
 
     private async Task ReadWorkerByIdAsync()
