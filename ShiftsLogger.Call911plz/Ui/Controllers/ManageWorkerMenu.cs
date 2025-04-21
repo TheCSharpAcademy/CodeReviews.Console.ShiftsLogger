@@ -36,9 +36,30 @@ public class ManageWorkerMenuController : MenuControllerBase
 
     private async Task CreateWorkerAsync()
     {
-        WorkerDto worker = GetData.GetWorker();
+        // Getting the most avaliable Id
+        var workers = await _workerService.GetAllWorkersAsync();
+        int availableId = 1;
 
-        await _workerService.CreateWorkerAsync(worker);
+        foreach(Worker worker in workers)
+        {
+            // Searches for the next worker id that is not 'in series' 
+            // ie: Ids(0, 1, 2, 4, 5) has 3 missing and will give 3
+            //     Ids(0, 1, 2, 3, 4) will give 5.
+            if (workers.Find(workerId => workerId.WorkerId == worker.WorkerId + 1) == null)
+            {
+                availableId = worker.WorkerId + 1;
+                break;
+            }
+        }
+
+        Worker newWorkerWithId = new()
+        {
+            WorkerId = availableId,
+        };
+
+        WorkerDto newWorker = GetData.GetWorker(newWorkerWithId);
+
+        await _workerService.CreateWorkerAsync(newWorker);
     }
 
     private async Task ReadWorkerAsync()
