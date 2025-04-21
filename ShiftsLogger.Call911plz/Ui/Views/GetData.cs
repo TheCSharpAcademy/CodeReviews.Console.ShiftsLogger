@@ -74,7 +74,19 @@ public class GetData
                 return ValidationResult.Success();
             return ValidationResult.Error("[bold red]Could not find given id[/]");
         });
-        
+
+        return AnsiConsole.Prompt(prompt);
+    }
+
+    public static Worker GetWorker(List<Worker> workers)
+    {
+        SelectionPrompt<Worker> prompt = new();
+        prompt.AddChoices(workers);
+        prompt.UseConverter
+        (
+            worker => worker.WorkerName
+        );
+
         return AnsiConsole.Prompt(prompt);
     }
 }

@@ -83,7 +83,9 @@ public class ManageWorkerMenuController : MenuControllerBase
 
     private async Task UpdateWorkerAsync()
     {
-        throw new NotImplementedException();
+        Worker workerToUpdate = GetData.GetWorker(_workers);
+        WorkerDto updatedWorker = GetData.GetWorker(workerToUpdate);
+        await _workerService.UpdateWorkerAsync(updatedWorker);
     }
 
     private async Task DeleteWorkerAsync()
