@@ -90,6 +90,12 @@ public class ManageWorkerMenuController : MenuControllerBase
 
     private async Task DeleteWorkerAsync()
     {
-        throw new NotImplementedException();
+        Worker workerToDelete = GetData.GetWorker(_workers);
+        WorkerDto workerDto = new()
+        {
+            WorkerId = workerToDelete.WorkerId,
+            WorkerName = workerToDelete.WorkerName,
+        };
+        await _workerService.DeleteWorkerAsync(workerDto);
     }
 }
