@@ -53,7 +53,11 @@ public class ManageShiftMenuController : MenuControllerBase
 
     private async Task UpdateShiftAsync()
     {
-        throw new NotImplementedException();
+        List<Shift> shifts = await _shiftService.GetAllShiftsOfWorkerAsync();
+        Shift shiftToUpdate = GetData.GetShift(shifts);
+        
+        ShiftDto updatedShiftInfo = GetData.GetShift(shiftToUpdate);
+        await _shiftService.UpdateShiftAsync(shiftToUpdate.Id, updatedShiftInfo);
     }
 
     private async Task DeleteShiftAsync()

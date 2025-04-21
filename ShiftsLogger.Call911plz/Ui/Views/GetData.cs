@@ -89,4 +89,16 @@ public class GetData
 
         return AnsiConsole.Prompt(prompt);
     }
+
+    public static Shift GetShift(List<Shift> shifts)
+    {
+        SelectionPrompt<Shift> prompt = new();
+        prompt.AddChoices(shifts);
+        prompt.UseConverter
+        (
+            shift => $"{shift.Id} {shift.StartDateTime} - {shift.EndDateTime}"
+        );
+
+        return AnsiConsole.Prompt(prompt);
+    }
 }
