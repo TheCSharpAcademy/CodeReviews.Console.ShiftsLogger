@@ -1,7 +1,21 @@
 
 
+using System.Threading.Tasks;
+
 public class ManageShiftMenuController : MenuControllerBase
 {
+    WorkerService _workerService = new();
+    ShiftService _shiftService;
+    internal override async Task OnMakeAsync()
+    {
+        _workerService.ConnectApi();
+        List<Worker> workers = await _workerService.GetAllWorkersAsync();
+        Worker currentWorker = GetData.GetWorker(workers);
+
+        _shiftService = new(currentWorker);
+
+         _shiftService.ConnectApi();
+    }
     internal override async Task<bool> HandleMenuSelectionAsync()
     {
         MenuEnums.Shift input = DisplayMenu.ShiftsMenu();
