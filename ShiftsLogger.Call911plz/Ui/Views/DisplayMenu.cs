@@ -11,6 +11,7 @@ public static class DisplayMenu
                 .UseConverter( input => { return input switch {
                     MenuEnums.Main.MANAGESHIFT => "Manage shifts",
                     MenuEnums.Main.MANAGEWORKER => "Manage workers",
+                    MenuEnums.Main.ADMINGETALLSHIFT => "Admin: Get all shifts",
                     MenuEnums.Main.EXIT => "Exit program",
                     _ => "Error"
                 };})

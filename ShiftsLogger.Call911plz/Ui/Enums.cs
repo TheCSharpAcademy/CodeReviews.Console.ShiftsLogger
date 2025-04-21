@@ -1,7 +1,7 @@
 using System.Net;
 public static class MenuEnums
 {
-    public enum Main { MANAGESHIFT, MANAGEWORKER, EXIT }
+    public enum Main { MANAGESHIFT, MANAGEWORKER, ADMINGETALLSHIFT, EXIT }
     public enum Shift { CREATESHIFT, READSHIFT, UPDATESHIFT, DELETESHIFT, BACK }
     public enum Worker { CREATEWORKER, READWORKER, READWORKERBYID, UPDATEWORKER, DELETEWORKER, BACK }
 }

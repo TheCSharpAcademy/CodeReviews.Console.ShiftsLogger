@@ -26,6 +26,9 @@ public class MainMenuController : MenuControllerBase
                 ManageWorkerMenuController manageWorkerMenu = new();
                 await manageWorkerMenu.StartAsync();
                 break;
+            case MenuEnums.Main.ADMINGETALLSHIFT:
+                await GetAllShiftsAsync();
+                break;
             case MenuEnums.Main.EXIT:
                 return true;
         }
@@ -40,5 +43,14 @@ public class MainMenuController : MenuControllerBase
                 .Centered()
                 .Color(Color.Green)
         );
+    }
+
+    private async Task GetAllShiftsAsync()
+    {
+        ShiftService shiftService = new(new Worker());
+        shiftService.ConnectApi();
+        List<Shift> shifts = await shiftService.GetAllShiftsAsync();
+
+        DisplayTable.Shift(shifts);
     }
 }
