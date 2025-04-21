@@ -5,6 +5,7 @@ using Spectre.Console;
 public class MenuControllerBase
 {
     internal virtual void OnMake() {}
+    internal virtual Task OnMakeAsync() { return Task.CompletedTask; }
     internal virtual void OnReady() { Console.Clear(); }
     internal virtual async Task<bool> HandleMenuSelectionAsync() { return await Task.FromResult(true); }
     internal virtual void OnExit() {}
@@ -13,6 +14,7 @@ public class MenuControllerBase
         try
         {
             OnMake();
+            await OnMakeAsync();
         }
         catch (Exception e) 
         {

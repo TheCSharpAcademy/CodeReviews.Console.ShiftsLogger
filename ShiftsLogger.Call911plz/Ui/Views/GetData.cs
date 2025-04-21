@@ -64,4 +64,17 @@ public class GetData
         _ = DateTime.TryParse(AnsiConsole.Prompt(prompt), out var output);
         return output;
     }
+
+    public static int FindWorker(List<Worker> workers)
+    {
+        TextPrompt<int> prompt = new("[bold grey]Enter worker id:[/]");
+        prompt.Validate(input => 
+        {
+            if (workers.Find(worker => worker.WorkerId == input) != null)
+                return ValidationResult.Success();
+            return ValidationResult.Error("[bold red]Could not find given id[/]");
+        });
+        
+        return AnsiConsole.Prompt(prompt);
+    }
 }

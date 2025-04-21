@@ -1,12 +1,14 @@
-
+using Spectre.Console;
 
 public class ManageWorkerMenuController : MenuControllerBase
 {
     WorkerService _workerService = new();
-    internal override void OnMake()
+
+    List<Worker> _workers;
+    internal override async Task OnMakeAsync()
     {
-        base.OnMake();
         _workerService.ConnectApi();
+        _workers = [.. (await _workerService.GetAllWorkersAsync()).OrderBy(worker => worker.WorkerId)];
     }
     internal override async Task<bool> HandleMenuSelectionAsync()
     {
@@ -37,15 +39,14 @@ public class ManageWorkerMenuController : MenuControllerBase
     private async Task CreateWorkerAsync()
     {
         // Getting the most avaliable Id
-        List<Worker> workers = [.. (await _workerService.GetAllWorkersAsync()).OrderBy(worker => worker.WorkerId)];
         int availableId = 1;
 
-        foreach(Worker worker in workers)
+        foreach(Worker worker in _workers)
         {
             // Searches for the next worker id that is not 'in series' 
             // ie: Ids(0, 1, 2, 4, 5) has 3 missing and will give 3
             //     Ids(0, 1, 2, 3, 4) will give 5.
-            if (workers.Find(workerId => workerId.WorkerId == worker.WorkerId + 1) == null)
+            if (_workers.Find(workerId => workerId.WorkerId == worker.WorkerId + 1) == null)
             {
                 availableId = worker.WorkerId + 1;
                 break;
@@ -59,7 +60,7 @@ public class ManageWorkerMenuController : MenuControllerBase
         WorkerDto newWorker = GetData.GetWorker(newWorkerWithId);
 
         // Error checks
-        if (workers.Find(workerId => workerId.WorkerId == newWorker.WorkerId) != null)
+        if (_workers.Find(workerId => workerId.WorkerId == newWorker.WorkerId) != null)
             throw new Exception("Overlapping worker id");
 
         await _workerService.CreateWorkerAsync(newWorker);
@@ -73,7 +74,11 @@ public class ManageWorkerMenuController : MenuControllerBase
 
     private async Task ReadWorkerByIdAsync()
     {
-        throw new NotImplementedException();
+        int userEnteredId = GetData.FindWorker(_workers);
+        Worker? worker = await _workerService.GetWorkerByIdAsync(userEnteredId) 
+            ?? throw new Exception("Could not find data");
+        
+        DisplayTable.Worker([worker]);
     }
 
     private async Task UpdateWorkerAsync()
