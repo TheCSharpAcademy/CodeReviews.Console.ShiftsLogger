@@ -14,7 +14,7 @@ public class ManageShiftMenuController : MenuControllerBase
 
         _shiftService = new(currentWorker);
 
-         _shiftService.ConnectApi();
+        _shiftService.ConnectApi();
     }
     internal override async Task<bool> HandleMenuSelectionAsync()
     {
@@ -41,12 +41,14 @@ public class ManageShiftMenuController : MenuControllerBase
 
     private async Task CreateShiftAsync()
     {
-        throw new NotImplementedException();
+        ShiftDto shift = GetData.GetShift();
+        await _shiftService.CreateShiftAsync(shift);
     }
 
     private async Task ReadShiftAsync()
     {
-        throw new NotImplementedException();
+        List<Shift> shifts = await _shiftService.GetAllShiftsOfWorkerAsync();
+        DisplayTable.Shift(shifts);
     }
 
     private async Task UpdateShiftAsync()
