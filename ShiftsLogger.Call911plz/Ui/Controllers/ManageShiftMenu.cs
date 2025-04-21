@@ -1,7 +1,4 @@
 
-
-using System.Threading.Tasks;
-
 public class ManageShiftMenuController : MenuControllerBase
 {
     WorkerService _workerService = new();
