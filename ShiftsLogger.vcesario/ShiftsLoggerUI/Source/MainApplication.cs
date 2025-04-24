@@ -258,6 +258,7 @@ public class MainApplication
 
         Console.WriteLine();
         DateTime startDatetime;
+        bool successfulInput = false;
         do
         {
             var startDatetimeInput = AnsiConsole.Prompt(
@@ -276,11 +277,14 @@ public class MainApplication
                 Console.WriteLine(AppTexts.ERROR_BADSTARTDATETIME);
                 continue;
             }
+
+            successfulInput = true;
         }
-        while (false);
+        while (!successfulInput);
 
         Console.WriteLine();
         DateTime endDatetime;
+        successfulInput = false;
         do
         {
             var endDatetimeInput = AnsiConsole.Prompt(
@@ -299,8 +303,10 @@ public class MainApplication
                 Console.WriteLine(AppTexts.ERROR_BADENDDATETIME);
                 continue;
             }
+
+            successfulInput = true;
         }
-        while (false);
+        while (!successfulInput);
 
         newShift = new ShiftDto(workerId, startDatetime, endDatetime);
         return true;

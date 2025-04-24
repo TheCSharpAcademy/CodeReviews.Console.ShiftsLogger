@@ -5,8 +5,8 @@ public static class AppTexts
     public const string PROMPT_ACTION = "What do you want to do?";
     public const string PROMPT_RECONFIRM = "Are you REALLY sure?";
     public const string PROMPT_NEWSHIFT_WORKERID = "Enter your worker ID:";
-    public const string PROMPT_NEWSHIFT_STARTTIME = "Start date and time of your shift:";
-    public const string PROMPT_NEWSHIFT_ENDTIME = "End date and time of your shift:";
+    public const string PROMPT_NEWSHIFT_STARTTIME = "Start time of your shift:";
+    public const string PROMPT_NEWSHIFT_ENDTIME = "End time of your shift:";
     public const string PROMPT_EDITSHIFT_ID = "Enter ID to edit:";
     public const string PROMPT_EDITSHIFT_WORKERID = "Enter new Worker ID:";
     public const string PROMPT_EDITSHIFT_STARTTIME = "Enter new start time:";
@@ -37,8 +37,8 @@ public static class AppTexts
     public const string LABEL_SHIFTTABLE_STARTTIME = "Start time";
     public const string LABEL_SHIFTTABLE_ENDTIME = "End time";
 
-    public const string ERROR_BADSTARTDATETIME = "Invalid date and time for starting a shift.";
-    public const string ERROR_BADENDDATETIME = "Invalid date and time for ending a shift.";
+    public const string ERROR_BADSTARTDATETIME = "Invalid time for starting a shift.";
+    public const string ERROR_BADENDDATETIME = "Invalid time for ending a shift.";
     public const string ERROR_USERINPUT_DATETIME = $"Couldn't parse DateTime. Use template <{FORMAT_DATETIME}>.";
     public const string ERROR_USERINPUT_NUMBER = "Couldn't parse number.";
     public const string ERROR_UNKNOWNOPTION = "Implement option: ";
