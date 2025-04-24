@@ -5,16 +5,16 @@ public class ApiHandler
 {
     private const string API_URL = "https://localhost:7225/api/shiftlog";
 
-    public async Task<List<ShiftRecord>> GetAllShifts()
+    public async Task<List<Shift>> GetAllShifts()
     {
-        List<ShiftRecord>? allShifts = null;
+        List<Shift>? allShifts = null;
         using (var client = new HttpClient())
         {
             try
             {
                 using (var stream = await client.GetStreamAsync(API_URL))
                 {
-                    allShifts = JsonSerializer.Deserialize<List<ShiftRecord>>(stream);
+                    allShifts = JsonSerializer.Deserialize<List<Shift>>(stream);
                 }
 
                 allShifts?.Sort((s1, s2) => s2.startDateTime.CompareTo(s1.startDateTime));
@@ -29,9 +29,9 @@ public class ApiHandler
         return allShifts ?? new();
     }
 
-    public async Task<ShiftRecord?> GetShift(string id)
+    public async Task<Shift?> GetShift(string id)
     {
-        ShiftRecord? shift = null;
+        Shift? shift = null;
 
         if (string.IsNullOrEmpty(id))
         {
@@ -45,7 +45,7 @@ public class ApiHandler
             {
                 using (var stream = await client.GetStreamAsync(url))
                 {
-                    shift = JsonSerializer.Deserialize<ShiftRecord>(stream);
+                    shift = JsonSerializer.Deserialize<Shift>(stream);
                 }
             }
             catch (HttpRequestException e)
@@ -60,7 +60,7 @@ public class ApiHandler
         return shift;
     }
 
-    public async Task<bool> PostShift(ShiftDto_WithoutId shiftDto)
+    public async Task<bool> PostShift(ShiftDto shiftDto)
     {
         using (var client = new HttpClient())
         {
@@ -81,7 +81,7 @@ public class ApiHandler
         return true;
     }
 
-    public async Task<bool> PutShift(ShiftRecord updatedRecord)
+    public async Task<bool> PutShift(Shift updatedRecord)
     {
         using (var client = new HttpClient())
         {

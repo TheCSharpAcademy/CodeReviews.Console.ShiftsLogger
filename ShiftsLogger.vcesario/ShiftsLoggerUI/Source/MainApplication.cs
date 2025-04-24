@@ -20,7 +20,7 @@ public class MainApplication
         Exit,
     }
 
-    private List<ShiftRecord> m_AllShifts = new();
+    private List<Shift> m_AllShifts = new();
 
     public async Task Run()
     {
@@ -70,7 +70,7 @@ public class MainApplication
                 case MenuOption.Exit:
                     break;
                 default:
-                    Console.WriteLine("Implement option: " + GetEnumDisplayName(chosenOption));
+                    Console.WriteLine(AppTexts.ERROR_UNKNOWNOPTION + GetEnumDisplayName(chosenOption));
                     Console.ReadLine();
                     break;
             }
@@ -86,7 +86,7 @@ public class MainApplication
         if (m_AllShifts == null || m_AllShifts.Count == 0)
         {
             Console.WriteLine();
-            Console.WriteLine("No shifts were found in the database.");
+            Console.WriteLine(AppTexts.LOG_VIEWSHIFT_NONEFOUND);
             Console.ReadLine();
             return;
         }
@@ -95,7 +95,7 @@ public class MainApplication
         DrawShiftTable(m_AllShifts);
 
         Console.WriteLine();
-        AnsiConsole.Markup("[grey]Press any key to return.[/]");
+        AnsiConsole.Markup($"[grey]{AppTexts.TOOLTIP_RETURN}[/]");
         Console.ReadLine();
     }
 
@@ -132,7 +132,7 @@ public class MainApplication
         Console.WriteLine();
         UserInputValidator validator = new();
         string idString = AnsiConsole.Prompt(
-            new TextPrompt<string>("Enter ID to edit:")
+            new TextPrompt<string>(AppTexts.PROMPT_EDITSHIFT_ID)
             .Validate(validator.ValidateIdOrPeriod)
         );
 
@@ -146,13 +146,13 @@ public class MainApplication
         if (shift == null)
         {
             Console.WriteLine();
-            Console.WriteLine("No shift found with this ID.");
+            Console.WriteLine(AppTexts.LOG_IDNOTFOUND);
             Console.ReadLine();
 
             return false;
         }
 
-        DrawShiftTable(new List<ShiftRecord> { shift });
+        DrawShiftTable(new List<Shift> { shift });
 
         Console.WriteLine();
         if (!TryPromptNewShiftDto(true, out var shiftDto)
@@ -161,13 +161,13 @@ public class MainApplication
             return false;
         }
 
-        var updatedRecord = new ShiftRecord(shift.id, shiftDto.WorkerId, shiftDto.StartDateTime, shiftDto.EndDateTime);
+        var updatedRecord = new Shift(shift.id, shiftDto.WorkerId, shiftDto.StartDateTime, shiftDto.EndDateTime);
         if (await apiHandler.PutShift(updatedRecord) == false)
         {
             return false;
         }
 
-        Console.WriteLine("Shift updated successfully.");
+        Console.WriteLine(AppTexts.LOG_EDITSHIFT_SUCCESS);
         Console.ReadLine();
 
         return true;
@@ -182,7 +182,7 @@ public class MainApplication
         Console.WriteLine();
         UserInputValidator validator = new();
         string idString = AnsiConsole.Prompt(
-            new TextPrompt<string>("Enter ID to remove:")
+            new TextPrompt<string>(AppTexts.PROMPT_REMOVESHIFT_ID)
             .Validate(validator.ValidateIdOrPeriod)
         );
 
@@ -196,17 +196,17 @@ public class MainApplication
         if (shift == null)
         {
             Console.WriteLine();
-            Console.WriteLine("No shift found with this ID.");
+            Console.WriteLine(AppTexts.LOG_IDNOTFOUND);
             Console.ReadLine();
 
             return false;
         }
 
-        DrawShiftTable(new List<ShiftRecord> { shift });
+        DrawShiftTable(new List<Shift> { shift });
 
         Console.WriteLine();
         var confirm = AnsiConsole.Prompt(
-            new ConfirmationPrompt("Are you sure you want to delete this entry?")
+            new ConfirmationPrompt(AppTexts.PROMPT_REMOVESHIFT_CONFIRM)
             {
                 DefaultValue = false
             });
@@ -233,7 +233,7 @@ public class MainApplication
         }
 
         Console.WriteLine();
-        Console.WriteLine($"Entry '{idString}' successfully removed.");
+        Console.WriteLine(AppTexts.LOG_REMOVESHIFT_SUCCESS);
 
         Console.WriteLine();
         AnsiConsole.Markup($"[grey]{AppTexts.TOOLTIP_RETURN}[/]");
@@ -241,12 +241,12 @@ public class MainApplication
         return true;
     }
 
-    private bool TryPromptNewShiftDto(bool edit, out ShiftDto_WithoutId? newShift)
+    private bool TryPromptNewShiftDto(bool edit, out ShiftDto? newShift)
     {
         UserInputValidator validator = new();
 
         var workerIdInput = AnsiConsole.Prompt(
-            new TextPrompt<string>(edit ? "Enter new Worker ID:" : AppTexts.PROMPT_NEWSHIFT_WORKERID)
+            new TextPrompt<string>(edit ? AppTexts.PROMPT_EDITSHIFT_WORKERID : AppTexts.PROMPT_NEWSHIFT_WORKERID)
             .Validate(validator.ValidateIdOrPeriod)
         );
         if (workerIdInput.Equals("."))
@@ -261,7 +261,7 @@ public class MainApplication
         do
         {
             var startDatetimeInput = AnsiConsole.Prompt(
-                new TextPrompt<string>(edit ? "Enter new start time:" : AppTexts.PROMPT_NEWSHIFT_STARTDATETIME)
+                new TextPrompt<string>(edit ? AppTexts.PROMPT_EDITSHIFT_STARTTIME : AppTexts.PROMPT_NEWSHIFT_STARTTIME)
                 .Validate(validator.ValidateDatetimeOrPeriod)
             );
             if (startDatetimeInput.Equals("."))
@@ -284,7 +284,7 @@ public class MainApplication
         do
         {
             var endDatetimeInput = AnsiConsole.Prompt(
-                new TextPrompt<string>(edit ? "Enter new end time:" : AppTexts.PROMPT_NEWSHIFT_ENDDATETIME)
+                new TextPrompt<string>(edit ? AppTexts.PROMPT_EDITSHIFT_ENDTIME : AppTexts.PROMPT_NEWSHIFT_ENDTIME)
                 .Validate(validator.ValidateDatetimeOrPeriod)
             );
             if (endDatetimeInput.Equals("."))
@@ -302,7 +302,7 @@ public class MainApplication
         }
         while (false);
 
-        newShift = new ShiftDto_WithoutId(workerId, startDatetime, endDatetime);
+        newShift = new ShiftDto(workerId, startDatetime, endDatetime);
         return true;
     }
 
@@ -333,7 +333,7 @@ public class MainApplication
         return string.IsNullOrEmpty(name) ? string.Empty : name;
     }
 
-    private void DrawShiftTable(List<ShiftRecord> shifts)
+    private void DrawShiftTable(List<Shift> shifts)
     {
         var table = new Table();
 
