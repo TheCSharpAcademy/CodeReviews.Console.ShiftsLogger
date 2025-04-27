@@ -1,0 +1,6 @@
+@ShiftsLogger.SpyrosZoupas_HostAddress = http://localhost:5287
+
+GET {{ShiftsLogger.SpyrosZoupas_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
