@@ -8,7 +8,6 @@
         public double DurationSeconds
         {
             get => (EndDateTime - StartDateTime).TotalSeconds;
-            private set { }
         }
     }
 }

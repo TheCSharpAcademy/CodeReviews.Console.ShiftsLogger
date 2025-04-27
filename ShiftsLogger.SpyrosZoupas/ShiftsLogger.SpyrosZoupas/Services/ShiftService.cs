@@ -25,6 +25,8 @@ namespace ShiftsLogger.SpyrosZoupas.Services
             if (existingShift == null) return null;
 
             _dbContext.Shifts.Remove(existingShift);
+            _dbContext.SaveChanges();
+
             return $"Successfully deleted Shift with Id of {id}";
         }
 
@@ -40,7 +42,7 @@ namespace ShiftsLogger.SpyrosZoupas.Services
             Shift? existingShift = _dbContext.Shifts.Find(shift.ShiftId);
             if (existingShift == null) return null;
 
-            _dbContext.Update(shift);
+            _dbContext.Entry(existingShift).CurrentValues.SetValues(shift);
             _dbContext.SaveChanges();
 
             return existingShift;   

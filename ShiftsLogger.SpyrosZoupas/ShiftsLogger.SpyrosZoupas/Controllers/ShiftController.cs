@@ -32,14 +32,14 @@ namespace ShiftsLogger.SpyrosZoupas.Controllers
         [HttpDelete("{id}")]
         public ActionResult<string> DeleteShift(int id)
         {
-            Shift? result = _shiftService.GetShiftById(id);
+            string? result = _shiftService.DeleteShift(id);
             return result != null ? Ok(result) : NotFound();
         }
 
         [HttpPut("{id}")]
         public ActionResult<Shift> UpdateShift(Shift shift)
         {
-            Shift? result = _shiftService.GetShiftById(shift.ShiftId);
+            Shift? result = _shiftService.UpdateShift(shift);
             return result != null ? Ok(result) : NotFound();
         }
     }
