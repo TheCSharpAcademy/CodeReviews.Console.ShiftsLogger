@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ShiftsLogger.SpyrosZoupas.DAL;
+using ShiftsLogger.SpyrosZoupas.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ShiftsLoggerDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// add the custom services you will create
+builder.Services.AddScoped<IShiftService, ShiftService>();
 
 var app = builder.Build();
 
