@@ -1,32 +1,49 @@
-﻿using ShiftsLogger.SpyrosZoupas.DAL.Model;
+﻿using ShiftsLogger.SpyrosZoupas.DAL;
+using ShiftsLogger.SpyrosZoupas.DAL.Model;
 
 namespace ShiftsLogger.SpyrosZoupas.Services
 {
     public class ShiftService : IShiftService
     {
-        public Shift CreateShift()
+        private readonly ShiftsLoggerDbContext _dbContext;
+
+        public ShiftService(ShiftsLoggerDbContext dbContext) 
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
         }
 
-        public string DeleteShift()
+        public Shift CreateShift(Shift shift)
         {
-            throw new NotImplementedException();
+            var savedShift = _dbContext.Add(shift);
+            _dbContext.SaveChanges();
+            return savedShift.Entity;
         }
 
-        public List<Shift> GetAllShifts()
+        public string? DeleteShift(int id)
         {
-            throw new NotImplementedException();
+            Shift? existingShift = _dbContext.Shifts.Find(id);
+            if (existingShift == null) return null;
+
+            _dbContext.Shifts.Remove(existingShift);
+            return $"Successfully deleted Shift with Id of {id}";
         }
 
-        public Shift GetShiftById(int id)
-        {
-            throw new NotImplementedException();
-        }
+        public List<Shift> GetAllShifts() =>
+            _dbContext.Shifts.ToList();
 
-        public Shift UpdateShift()
+        public Shift? GetShiftById(int id) =>
+            _dbContext.Shifts.Find(id);
+
+
+        public Shift? UpdateShift(Shift shift)
         {
-            throw new NotImplementedException();
+            Shift? existingShift = _dbContext.Shifts.Find(shift.ShiftId);
+            if (existingShift == null) return null;
+
+            _dbContext.Update(shift);
+            _dbContext.SaveChanges();
+
+            return existingShift;   
         }
     }
 }
