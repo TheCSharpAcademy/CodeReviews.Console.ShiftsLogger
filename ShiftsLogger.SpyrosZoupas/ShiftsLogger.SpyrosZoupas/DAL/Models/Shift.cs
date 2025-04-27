@@ -5,9 +5,10 @@
         public int ShiftId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
-        public int DurationSeconds
+        public double DurationSeconds
         {
-            get => (EndDateTime - StartDateTime).Seconds;
+            get => (EndDateTime - StartDateTime).TotalSeconds;
+            private set { }
         }
     }
 }

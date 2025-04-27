@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShiftsLogger.SpyrosZoupas.DAL.Model;
 using ShiftsLogger.SpyrosZoupas.Services;
 
@@ -15,24 +14,33 @@ namespace ShiftsLogger.SpyrosZoupas.Controllers
             _shiftService = shiftService;
         }
 
+        [HttpPost]
+        public ActionResult<Shift> CreateShift(Shift shift) =>
+            Ok(_shiftService.CreateShift(shift));
+
         [HttpGet]
         public ActionResult<List<Shift>> GetAllShifts() =>
             Ok(_shiftService.GetAllShifts());
 
         [HttpGet("{id}")]
-        public ActionResult<Shift> GetShiftById(int id) =>
-            Ok(_shiftService.GetShiftById(id));
-
-        [HttpPost]
-        public ActionResult<Shift> CreateShift(Shift shift) =>
-            Ok(_shiftService.CreateShift(shift));
+        public ActionResult<Shift> GetShiftById(int id)
+        {
+            Shift? result = _shiftService.GetShiftById(id);
+            return result != null ? Ok(result) : NotFound();
+        }
 
         [HttpDelete("{id}")]
-        public ActionResult<string> DeleteShift(int id) =>
-            Ok(_shiftService.DeleteShift(id));
+        public ActionResult<string> DeleteShift(int id)
+        {
+            Shift? result = _shiftService.GetShiftById(id);
+            return result != null ? Ok(result) : NotFound();
+        }
 
         [HttpPut("{id}")]
-        public ActionResult<Shift> UpdateShift(Shift shift) =>
-            Ok(_shiftService.UpdateShift(shift));
+        public ActionResult<Shift> UpdateShift(Shift shift)
+        {
+            Shift? result = _shiftService.GetShiftById(shift.ShiftId);
+            return result != null ? Ok(result) : NotFound();
+        }
     }
 }
