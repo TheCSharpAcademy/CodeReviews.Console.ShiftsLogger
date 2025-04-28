@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35828.75 d17.13
+VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLogger.SpyrosZoupas", "ShiftsLogger.SpyrosZoupas.csproj", "{960E7A0F-D360-4B0E-89B6-1542A87C1CDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "..\UserInterface\UserInterface.csproj", "{8CF7A6AE-5D00-4D5E-ADDF-BC91C557BED8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{960E7A0F-D360-4B0E-89B6-1542A87C1CDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{960E7A0F-D360-4B0E-89B6-1542A87C1CDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{960E7A0F-D360-4B0E-89B6-1542A87C1CDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CF7A6AE-5D00-4D5E-ADDF-BC91C557BED8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CF7A6AE-5D00-4D5E-ADDF-BC91C557BED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CF7A6AE-5D00-4D5E-ADDF-BC91C557BED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CF7A6AE-5D00-4D5E-ADDF-BC91C557BED8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
