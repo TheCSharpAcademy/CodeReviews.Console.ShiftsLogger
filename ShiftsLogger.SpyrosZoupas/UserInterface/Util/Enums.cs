@@ -1,4 +1,4 @@
-﻿namespace UserInterface.Util
+﻿namespace UserInterface.SpyrosZoupas.Util
 {
     public enum ShiftMenuOptions
     {

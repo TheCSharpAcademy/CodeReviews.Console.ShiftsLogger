@@ -1,13 +1,13 @@
 ﻿using Spectre.Console;
-using UserInterface.Util;
+using UserInterface.SpyrosZoupas.Util;
 
-namespace UserInterface
+namespace UserInterface.SpyrosZoupas
 {
-    public class UserInterface
+    public class MainMenu
     {
         private readonly ShiftService _shiftService;
 
-        public UserInterface(ShiftService shiftService)
+        public MainMenu(ShiftService shiftService)
         {
             _shiftService = shiftService;
         }
@@ -42,6 +42,7 @@ namespace UserInterface
                         break;
                     case ShiftMenuOptions.ViewShift:
                         var shift = _shiftService.GetShift();
+                        Console.WriteLine(shift.Result.ShiftId);
                         break;
                     case ShiftMenuOptions.ViewAllShifts:
                         _shiftService.GetAllShifts();

@@ -1,11 +1,8 @@
 ﻿using ShiftsLogger.SpyrosZoupas.DAL.Model;
 using Spectre.Console;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace UserInterface
+namespace UserInterface.SpyrosZoupas
 {
     public class ShiftService
     {
@@ -42,6 +39,7 @@ namespace UserInterface
             {
                 HttpResponseMessage response = await _httpClient.GetAsync($"/api/Shift/{shift.ShiftId}");
                 response.EnsureSuccessStatusCode();
+                var test = response.Content;
                 return await response.Content.ReadFromJsonAsync<Shift>();
             }
             catch (HttpRequestException ex)
@@ -84,10 +82,15 @@ namespace UserInterface
 
         public async Task UpdateShift()
         {
-            Shift? existingShift = GetShiftOptionInput();
+            Shift? shift = GetShiftOptionInput();
+            if (AnsiConsole.Confirm("Update start date?"))
+                shift.StartDateTime = AnsiConsole.Ask<DateTime>("Updated start date:");
+            if (AnsiConsole.Confirm("Update contact email?"))
+                shift.EndDateTime = AnsiConsole.Ask<DateTime>("Updated end date:");
+
             try
             {
-                HttpResponseMessage response = await _httpClient.PutAsJsonAsync($"/api/Shift/{existingShift.ShiftId}", existingShift);
+                HttpResponseMessage response = await _httpClient.PutAsJsonAsync($"/api/Shift/{shift.ShiftId}", shift);
                 response.EnsureSuccessStatusCode();
             }
             catch (HttpRequestException ex)
