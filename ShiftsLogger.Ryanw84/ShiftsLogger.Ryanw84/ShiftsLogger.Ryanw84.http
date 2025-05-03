@@ -1,0 +1,6 @@
+@ShiftsLogger.Ryanw84_HostAddress = http://localhost:5009
+
+GET {{ShiftsLogger.Ryanw84_HostAddress}}/shifts/
+Accept: application/json
+
+###
