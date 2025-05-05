@@ -33,7 +33,7 @@ app.MapScalarApiReference(options =>
 {
     options
         .WithTitle("Shifts Logger API")
-        .WithTheme(ScalarTheme.Laserwave)
+        .WithTheme(ScalarTheme.Saturn)
         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
         .WithModels(true)
         .WithLayout(ScalarLayout.Modern);

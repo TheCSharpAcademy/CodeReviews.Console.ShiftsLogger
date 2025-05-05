@@ -15,6 +15,7 @@ public class Shift
 
     public int WorkerId { get; set; }
     public int LocationId { get; set; }
-    public virtual Worker? Worker { get; set; } 
-    public virtual Location? Location { get; set; } 
-}
+    public virtual Worker? Worker { get; set; }
+	public virtual Location? Location { get; set; }
+
+	}

@@ -20,7 +20,7 @@ public class ShiftService : IShiftService
 
     public async Task<ApiResponseDto<Shift>> CreateShift(ShiftApiRequestDto shift)
     {
-        Shift newShift = _mapper.Map<Shift>(shift); // Use Mapper to map DTO to Flight entity
+        Shift newShift = _mapper.Map<Shift>(shift); // Use Mapper to map DTO to shift entity
         var savedShift = await _dbContext.Shift.AddAsync(newShift);
         await _dbContext.SaveChangesAsync();
         return new ApiResponseDto<Shift>
@@ -146,9 +146,7 @@ public class ShiftService : IShiftService
     public async Task<ApiResponseDto<Shift?>> GetShiftById(int id)
     {
         var result = await _dbContext
-            .Shift.Include(s => s.Location) // Include the location navigation property
-            .Include(s => s.Worker) // Include the Worker navigation property
-            .FirstOrDefaultAsync(s => s.Id == id); 
+            .Shift.FirstOrDefaultAsync(s => s.Id == id); 
 
         if (result is null)
         {
@@ -179,7 +177,7 @@ public class ShiftService : IShiftService
             };
         }
 
-        savedShift = _mapper.Map(updatedShift, savedShift); // Use Mapper to map DTO to Flight entity
+        savedShift = _mapper.Map(updatedShift, savedShift); // Use Mapper to map DTO to Shift entity
         savedShift.Id = id; // Ensure the ID is set correctly
 
         await _dbContext.SaveChangesAsync();
