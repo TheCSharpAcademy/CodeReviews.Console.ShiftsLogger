@@ -4,14 +4,17 @@ namespace ShiftsLogger.Ryanw84.Models;
 
 public class Shift
 {
-    public int ShiftId { get; set; }
-    public string Name { get; set; }
+    public int Id { get; set; }
+    public string ShiftName { get; set; } = string.Empty; 
+    public DateTimeOffset Date { get; set; }
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset EndTime { get; set; }
-    public ICollection<Worker> Workers { get; set; }
-    public ICollection<Location> Locations { get; set; }
+    public TimeSpan Duration => EndTime - StartTime;
+    public DateTimeOffset CreatedAt { get; set; } 
+    public DateTimeOffset UpdatedAt { get; set; } 
+
     public int WorkerId { get; set; }
-    public Worker Worker { get; set; }
     public int LocationId { get; set; }
-    public Location Location { get; set; }
+    public virtual Worker? Worker { get; set; } 
+    public virtual Location? Location { get; set; } 
 }

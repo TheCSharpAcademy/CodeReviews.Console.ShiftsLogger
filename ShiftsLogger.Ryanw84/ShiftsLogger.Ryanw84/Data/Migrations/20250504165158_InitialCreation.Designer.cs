@@ -12,7 +12,7 @@ using ShiftsLogger.Ryanw84.Data;
 namespace ShiftsLogger.Ryanw84.Data.Migrations
 {
     [DbContext(typeof(ShiftsDbContext))]
-    [Migration("20250503204426_InitialCreation")]
+    [Migration("20250504165158_InitialCreation")]
     partial class InitialCreation
     {
         /// <inheritdoc />
@@ -34,31 +34,26 @@ namespace ShiftsLogger.Ryanw84.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LocationId"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("WorkerId")
-                        .HasColumnType("int");
-
                     b.HasKey("LocationId");
-
-                    b.HasIndex("ShiftId");
-
-                    b.HasIndex("WorkerId");
 
                     b.ToTable("Location");
                 });
 
             modelBuilder.Entity("ShiftsLogger.Ryanw84.Models.Shift", b =>
                 {
-                    b.Property<int>("ShiftId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShiftId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("Date")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<DateTimeOffset>("EndTime")
                         .HasColumnType("datetimeoffset");
@@ -66,17 +61,16 @@ namespace ShiftsLogger.Ryanw84.Data.Migrations
                     b.Property<int>("LocationId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTimeOffset>("StartTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<int>("WorkerId")
                         .HasColumnType("int");
 
-                    b.HasKey("ShiftId");
+                    b.HasKey("Id");
 
                     b.HasIndex("LocationId");
 
@@ -93,41 +87,31 @@ namespace ShiftsLogger.Ryanw84.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WorkerId"));
 
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ShiftId")
-                        .HasColumnType("int");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("WorkerId");
 
-                    b.HasIndex("ShiftId");
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Worker");
-                });
-
-            modelBuilder.Entity("ShiftsLogger.Ryanw84.Models.Location", b =>
-                {
-                    b.HasOne("ShiftsLogger.Ryanw84.Models.Shift", null)
-                        .WithMany("Locations")
-                        .HasForeignKey("ShiftId");
-
-                    b.HasOne("ShiftsLogger.Ryanw84.Models.Worker", null)
-                        .WithMany("Locations")
-                        .HasForeignKey("WorkerId");
                 });
 
             modelBuilder.Entity("ShiftsLogger.Ryanw84.Models.Shift", b =>
                 {
                     b.HasOne("ShiftsLogger.Ryanw84.Models.Location", "Location")
-                        .WithMany("Shifts")
+                        .WithMany()
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ShiftsLogger.Ryanw84.Models.Worker", "Worker")
-                        .WithMany("Shifts")
+                        .WithMany("ShiftsWorked")
                         .HasForeignKey("WorkerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -139,28 +123,19 @@ namespace ShiftsLogger.Ryanw84.Data.Migrations
 
             modelBuilder.Entity("ShiftsLogger.Ryanw84.Models.Worker", b =>
                 {
-                    b.HasOne("ShiftsLogger.Ryanw84.Models.Shift", null)
+                    b.HasOne("ShiftsLogger.Ryanw84.Models.Location", null)
                         .WithMany("Workers")
-                        .HasForeignKey("ShiftId");
+                        .HasForeignKey("LocationId");
                 });
 
             modelBuilder.Entity("ShiftsLogger.Ryanw84.Models.Location", b =>
                 {
-                    b.Navigation("Shifts");
-                });
-
-            modelBuilder.Entity("ShiftsLogger.Ryanw84.Models.Shift", b =>
-                {
-                    b.Navigation("Locations");
-
                     b.Navigation("Workers");
                 });
 
             modelBuilder.Entity("ShiftsLogger.Ryanw84.Models.Worker", b =>
                 {
-                    b.Navigation("Locations");
-
-                    b.Navigation("Shifts");
+                    b.Navigation("ShiftsWorked");
                 });
 #pragma warning restore 612, 618
         }
