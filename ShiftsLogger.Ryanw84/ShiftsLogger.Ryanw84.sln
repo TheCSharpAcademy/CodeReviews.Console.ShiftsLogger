@@ -5,7 +5,7 @@ VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftsLogger.Ryanw84", "ShiftsLogger.Ryanw84\ShiftsLogger.Ryanw84.csproj", "{79FA55E4-8B13-4AFE-BC43-74D09BD950EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI", "UI\UI.csproj", "{0448385B-7AFA-4CD7-A545-6E8A2D9FE996}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontEnd", "UI\FrontEnd.csproj", "{0448385B-7AFA-4CD7-A545-6E8A2D9FE996}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

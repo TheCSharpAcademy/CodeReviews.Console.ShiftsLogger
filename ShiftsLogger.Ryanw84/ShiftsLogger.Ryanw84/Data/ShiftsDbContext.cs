@@ -6,12 +6,12 @@ namespace ShiftsLogger.Ryanw84.Data;
 
 public class ShiftsDbContext : DbContext
 {
-    public ShiftsDbContext(DbContextOptions<ShiftsDbContext> options)
-        : base(options) { }
-
     public DbSet<Shift> Shift { get; set; }
     public DbSet<Location> Location { get; set; }
     public DbSet<Worker> Worker { get; set; }
+
+    public ShiftsDbContext(DbContextOptions<ShiftsDbContext> options)
+        : base(options) { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -38,24 +38,24 @@ public class ShiftsDbContext : DbContext
         return loggerFactory;
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder
-            .Entity<Shift>()
-            .HasOne(s => s.Worker)
-            .WithMany(w => w.ShiftsWorked)
-            .HasForeignKey(s => s.WorkerId)
-            .OnDelete(DeleteBehavior.Cascade);
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+		modelBuilder
+			.Entity<Shift>()
+			.HasOne(s => s.Worker)
+			.WithMany() 
+			.HasForeignKey(s => s.WorkerId)
+			.OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder
-            .Entity<Shift>()
-            .HasOne(s => s.Location)
-            .WithMany()
-            .HasForeignKey(s => s.LocationId)
-            .OnDelete(DeleteBehavior.Cascade);
+		modelBuilder
+			.Entity<Shift>()
+			.HasOne(s => s.Location)
+			.WithMany() 
+			.HasForeignKey(s => s.LocationId)
+			.OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<Worker>().Property(w => w.Name).IsRequired().HasMaxLength(100);
-    }
+		modelBuilder.Entity<Worker>().Property(w => w.Name).IsRequired().HasMaxLength(100);
+		}
 
     public void SeedData()
     {
@@ -79,33 +79,33 @@ public class ShiftsDbContext : DbContext
                 Date = DateTimeOffset.Now,
                 StartTime = DateTimeOffset.Now.AddHours(5),
                 EndTime = DateTimeOffset.Now.AddHours(11),
-                Worker = worker1,
-                Location = location1,
+                Worker = (ICollection<Worker>)worker1 ,
+                Location =  (ICollection<Location>)location1,
             },
             new Shift
             {
                 Date = DateTimeOffset.Now,
                 StartTime = DateTimeOffset.Now.AddHours(8),
                 EndTime = DateTimeOffset.Now.AddHours(13),
-                Worker = worker2,
-                Location = location2,
-            },
+				Worker = (ICollection<Worker>)worker2 ,
+				Location = (ICollection<Location>)location2 ,
+				} ,
             new Shift
             {
                 Date = DateTimeOffset.Now,
                 StartTime = DateTimeOffset.Now.AddHours(4),
                 EndTime = DateTimeOffset.Now.AddHours(9),
-                Worker = worker3,
-                Location = location3,
-            },
+				Worker = (ICollection<Worker>)worker3 ,
+				Location = (ICollection<Location>)location3 ,
+				} ,
             new Shift
             {
                 Date = DateTimeOffset.Now,
                 StartTime = DateTimeOffset.Now.AddHours(12),
                 EndTime = DateTimeOffset.Now.AddHours(4),
-                Worker = worker4,
-                Location = location4,
-            }
+				Worker = (ICollection<Worker>)worker4 ,
+				Location = (ICollection<Location>)location4 ,
+				}
         );
         Location.AddRange(location1, location2, location3, location4);
         Worker.AddRange(worker1, worker2, worker3, worker4);

@@ -1,54 +1,24 @@
-using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 using ShiftsLogger.Ryanw84.Data;
 using ShiftsLogger.Ryanw84.Mapping;
 using ShiftsLogger.Ryanw84.Services;
+using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
+using ShiftsLogger.Ryanw84.Frontend.Data;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace ShiftsLogger.Ryanw84.FrontEnd;
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<IShiftService, ShiftService>();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddOpenApi();
+public class Program
+	{
+	public static void Main( )
+		{
+		var context = new ShiftsDbContext(new DbContextOptions<ShiftsDbContext>());
+		context.Database.EnsureDeleted();
+		context.Database.EnsureCreated();
 
-builder
-    .Services.AddControllers()
-    .AddJsonOptions(options =>
-        options.JsonSerializerOptions.ReferenceHandler = System
-            .Text
-            .Json
-            .Serialization
-            .ReferenceHandler
-            .IgnoreCycles
-    );
+		var dataAccess = new DataAccess(new DbContextOptions<ShiftsDbContext>());
 
-builder.Services.AddDbContext<ShiftsDbContext>(opt =>
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+		dataAccess.ConfirmConnection();
 
-var app = builder.Build();
-
-app.MapOpenApi();
-app.MapScalarApiReference(options =>
-{
-    options
-        .WithTitle("Shifts Logger API")
-        .WithTheme(ScalarTheme.Saturn)
-        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
-        .WithModels(true)
-        .WithLayout(ScalarLayout.Modern);
-});
-app.UseAuthentication();
-app.UseAuthorization();
-
-using var scope = app.Services.CreateScope();
-
-var context = scope.ServiceProvider.GetRequiredService<ShiftsDbContext>();
-
-context.Database.EnsureDeleted();
-context.Database.EnsureCreated();
-context.SeedData();
-
-app.MapControllers();
-
-app.Run();
+		
+		}
+	}
