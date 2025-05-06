@@ -1,10 +1,10 @@
-using FrontEnd.Menus;
+﻿using FrontEnd.Menus;
 
 namespace FrontEnd;
 
 public class Program
 {
-    public static void Main()
+    public Program()
     {
         UserInterface.MainMenu();
     }
