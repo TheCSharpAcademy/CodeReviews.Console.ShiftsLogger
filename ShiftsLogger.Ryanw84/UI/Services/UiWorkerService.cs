@@ -63,5 +63,7 @@ internal class UiWorkerService
 
 	public async Task<List<Worker>> GetAllWorkers( )
 		{
-		var workers = WorkerController.GetAllWorkers();
+		var workers = WorkerController.GetAllWorkers(); 
+		return workers;
 		}
+	}
