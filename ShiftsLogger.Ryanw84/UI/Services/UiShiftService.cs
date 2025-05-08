@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Net.Http;
+
+using Newtonsoft.Json;
 
 using ShiftsLogger.Ryanw84.Models;
 
@@ -13,7 +15,9 @@ public class UiShiftService
 	// Constructor to initialize the HttpClient
 	public UiShiftService(HttpClient httpClient)
 		{
+		
 		_httpClient = httpClient;
+		httpClient.BaseAddress = new Uri("https://localhost:7009");
 		}
 
 	public async Task<List<Shift>> GetAllShifts( )

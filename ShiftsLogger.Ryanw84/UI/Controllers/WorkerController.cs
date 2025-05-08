@@ -1,21 +1,22 @@
 ﻿using FrontEnd.Services;
-
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc;
+using ShiftsLogger.Ryanw84.Data;
 using ShiftsLogger.Ryanw84.Models;
 using ShiftsLogger.Ryanw84.Services;
 
 namespace FrontEnd.Controllers;
 
-internal class WorkerController()
-	{
-	
+[ApiController]
+[Microsoft.AspNetCore.Components.Route("worker")]
+public class WorkerController(IShiftService shiftService) : ControllerBase
+{
+    private readonly UiWorkerService _workerService;
 
-	internal async Task<List<Worker>> GetAllWorkers( )
-		{
-	
-		var httpClient = new HttpClient();
-		var uiShiftService = new UiShiftService(httpClient);
-		var uiWorkerService = new UiWorkerService(httpClient);
-		var workers = await uiWorkerService.GetAllWorkersAsync();
-		return workers;
-		}
-	}
+    [HttpGet]
+    public async Task<IActionResult> GetAllWorkers()
+    {
+        var workers = await _workerService.GetAllWorkersAsync();
+        return Ok(workers);
+    }
+}

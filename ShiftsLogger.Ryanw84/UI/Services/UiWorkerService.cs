@@ -25,8 +25,7 @@ internal class UiWorkerService
     {
         try
         {
-            var response = await _httpClient.GetAsync("api/workers");
-
+            var response = await _httpClient.GetAsync("worker");
             response.EnsureSuccessStatusCode();
 
             // Deserialize the response content into a list of workers

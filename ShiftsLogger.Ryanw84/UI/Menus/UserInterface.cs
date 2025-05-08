@@ -1,13 +1,15 @@
 ﻿using FrontEnd.Controllers;
 using FrontEnd.Services;
 using ShiftsLogger.Ryanw84.Models;
+using ShiftsLogger.Ryanw84.Services;
+
 using Spectre.Console;
 
 namespace FrontEnd.Menus;
 
 public static class UserInterface
 {
-    public static void MainMenu()
+    public static void MainMenu(IShiftService shiftService)
     {
         bool isRunning = true;
 
@@ -20,19 +22,15 @@ public static class UserInterface
                     .AddChoices("Add Shift", "View Shifts", "View All Workers", "Exit")
             );
 
-            // Handle the user's choice
             switch (choice)
             {
-                // case "Add Shift":
-                //     UiShiftService.GetAllShifts();
-                //     break;
                 case "View All Workers":
-                    WorkerController workerController = new WorkerController();
+                    WorkerController workerController = new WorkerController(shiftService);
                     TableVisualisationEngine tableVisualisationEngine =
                         new TableVisualisationEngine();
                     tableVisualisationEngine.DisplayTable<Worker>(
-                        workerController.GetAllWorkers().Result
-                    );
+						(List<Worker>)workerController.GetAllWorkers().Result
+					);
 
                     break;
                 case "Exit":
