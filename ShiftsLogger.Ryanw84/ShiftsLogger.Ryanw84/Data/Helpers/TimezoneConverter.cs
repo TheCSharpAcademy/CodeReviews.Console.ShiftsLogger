@@ -6,12 +6,12 @@ public class TimezoneConverter
 {
 	public void AdjustTimeZoneByLocation(Shift shift)
 		{
-		// Ensure the Location property is not null and retrieve the first location
-		var location = shift.Location?.FirstOrDefault();
+		// Ensure the LocationId property is not null and retrieve the first location
+		var location = shift.Location;
 
 		if(location == null || string.IsNullOrEmpty(location.Name))
 			{
-			Console.WriteLine("Invalid Location, Please try again!");
+			Console.WriteLine("Invalid LocationId, Please try again!");
 			AdjustTimeZoneByLocation(shift);
 			return;
 			}
@@ -38,7 +38,7 @@ public class TimezoneConverter
 			}
 		else
 			{
-			Console.WriteLine("Invalid Location, Please try again!");
+			Console.WriteLine("Invalid LocationId, Please try again!");
 			AdjustTimeZoneByLocation(shift);
 			}
 		}

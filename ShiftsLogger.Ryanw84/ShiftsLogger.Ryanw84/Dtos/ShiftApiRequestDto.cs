@@ -5,7 +5,7 @@ namespace ShiftsLogger.Ryanw84.Dtos;
 
 public class ShiftApiRequestDto
 {
-    public string WorkerName { get; set; }
+    public string? WorkerName { get; set; }
 
     public DateTime ShiftStartTime { get; set; }
 

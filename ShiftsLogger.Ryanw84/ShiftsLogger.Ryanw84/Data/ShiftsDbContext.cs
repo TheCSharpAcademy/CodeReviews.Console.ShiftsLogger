@@ -1,8 +1,10 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore;
+
 using ShiftsLogger.Ryanw84.Models;
 
-namespace ShiftsLogger.Ryanw84.Models;
+namespace ShiftsLogger.Ryanw84.Data;
 
 public class ShiftsDbContext : DbContext
 {
@@ -49,7 +51,15 @@ public class ShiftsDbContext : DbContext
             .HasForeignKey(s => s.WorkerId) // Foreign key in Shift
             .OnDelete(DeleteBehavior.Cascade);
 
-        base.OnModelCreating(modelBuilder);
+            modelBuilder
+            .Entity<Shift>()
+			.HasOne(s => s.Location) // A LocationId has many Shifts
+			.WithMany(l => l.Shifts) // A Location has many shifts
+			.HasForeignKey(s => s.LocationId) // Foreign key in Shift
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+		base.OnModelCreating(modelBuilder);
     }
 
     public void SeedData()
@@ -108,18 +118,5 @@ public class ShiftsDbContext : DbContext
     }
 }
 
-public class Shift
-{
-    public int Id { get; set; }
-    public string ShiftName { get; set; }
-    public DateTimeOffset Date { get; set; }
-    public DateTimeOffset StartTime { get; set; }
-    public DateTimeOffset EndTime { get; set; }
-    public TimeSpan Duration { get; set; }
-    public DateTimeOffset CreatedAt { get; set; }
-    public DateTimeOffset UpdatedAt { get; set; }
-    public int WorkerId { get; set; }
-    public int LocationId { get; set; }
-    public virtual Worker Worker { get; set; } // Changed from ICollection<Worker> to Worker
-    public virtual Location Location { get; set; } // Changed from ICollection<Location> to Location
-}
+
+

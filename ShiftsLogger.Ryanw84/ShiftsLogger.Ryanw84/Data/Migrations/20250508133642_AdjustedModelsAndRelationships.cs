@@ -6,52 +6,53 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ShiftsLogger.Ryanw84.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreation : Migration
+    public partial class AdjustedModelsAndRelationships : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Location",
-                columns: table => new
-                {
-                    LocationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Location", x => x.LocationId);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Worker",
                 columns: table => new
                 {
                     WorkerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    LocationId = table.Column<int>(type: "int", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Worker", x => x.WorkerId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Location",
+                columns: table => new
+                {
+                    LocationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Location", x => x.LocationId);
                     table.ForeignKey(
-                        name: "FK_Worker_Location_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Location",
-                        principalColumn: "LocationId");
+                        name: "FK_Location_Worker_WorkerId",
+                        column: x => x.WorkerId,
+                        principalTable: "Worker",
+                        principalColumn: "WorkerId");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Shift",
                 columns: table => new
                 {
-                    ShiftId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     StartTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     EndTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     WorkerId = table.Column<int>(type: "int", nullable: false),
@@ -59,7 +60,7 @@ namespace ShiftsLogger.Ryanw84.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Shift", x => x.ShiftId);
+                    table.PrimaryKey("PK_Shift", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Shift_Location_LocationId",
                         column: x => x.LocationId,
@@ -75,6 +76,11 @@ namespace ShiftsLogger.Ryanw84.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Location_WorkerId",
+                table: "Location",
+                column: "WorkerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Shift_LocationId",
                 table: "Shift",
                 column: "LocationId");
@@ -83,11 +89,6 @@ namespace ShiftsLogger.Ryanw84.Data.Migrations
                 name: "IX_Shift_WorkerId",
                 table: "Shift",
                 column: "WorkerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Worker_LocationId",
-                table: "Worker",
-                column: "LocationId");
         }
 
         /// <inheritdoc />
@@ -97,10 +98,10 @@ namespace ShiftsLogger.Ryanw84.Data.Migrations
                 name: "Shift");
 
             migrationBuilder.DropTable(
-                name: "Worker");
+                name: "Location");
 
             migrationBuilder.DropTable(
-                name: "Location");
+                name: "Worker");
         }
     }
 }

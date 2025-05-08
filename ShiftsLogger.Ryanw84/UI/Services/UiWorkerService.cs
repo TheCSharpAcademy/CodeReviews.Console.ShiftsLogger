@@ -4,66 +4,41 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-
 using FrontEnd.Controllers;
-
 using Newtonsoft.Json;
 using ShiftsLogger.Ryanw84.Models;
-
 using Spectre.Console;
 
 namespace FrontEnd.Services;
+
 internal class UiWorkerService
-	{
-	private readonly HttpClient _httpClient;
+{
+    private readonly HttpClient _httpClient;
 
-	// Constructor to initialize the HttpClient
-	public UiWorkerService(HttpClient httpClient)
-		{
-		_httpClient = httpClient;
-		}
-	public async Task<Worker?> GetWorkersInput( )
-		{
-		try
-			{
-			var response = await _httpClient.GetAsync("worker");
-			var workers = JsonConvert.DeserializeObject<List<Worker>>(await response.Content.ReadAsStringAsync());
+    // Constructor to initialize the HttpClient
+    public UiWorkerService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
 
-			if(workers == null || !workers.Any())
-				{
-				AnsiConsole.MarkupLine("[yellow]No workers found.[/]");
-				return null;
-				}
+    public async Task<List<Worker>> GetAllWorkersAsync()
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync("api/workers");
 
-			var workerArray = workers.Select(w => w.WorkerId).ToArray();
-			var option = AnsiConsole.Prompt(
-				new SelectionPrompt<int>()
-					.Title("Select a worker:")
-					.PageSize(10)
-					.MoreChoicesText("[grey](Move up and down to reveal more workers)[/]")
-					.AddChoices(workerArray)
-			);
+            response.EnsureSuccessStatusCode();
 
-			var selectedWorker = workers.FirstOrDefault(w => w.WorkerId == option);
+            // Deserialize the response content into a list of workers
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var workers = JsonConvert.DeserializeObject<List<Worker>>(jsonResponse);
 
-			if(selectedWorker == null)
-				{
-				AnsiConsole.MarkupLine("[red]Selected worker not found.[/]");
-				return null;
-				}
-
-			return selectedWorker;
-			}
-		catch(Exception ex)
-			{
-			AnsiConsole.MarkupLine($"[red]Error fetching workers: {ex.Message}[/]");
-			return null;
-			}
-		}
-
-	public async Task<List<Worker>> GetAllWorkers( )
-		{
-		var workers = WorkerController.GetAllWorkers(); 
-		return workers;
-		}
-	}
+            return workers ?? new List<Worker>();
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Error fetching workers: {ex.Message}[/]");
+            return new List<Worker>();
+        }
+    }
+}
