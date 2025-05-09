@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using ShiftsLoggerV2.RyanW84.Data;
+using ShiftsLoggerV2.RyanW84.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ShiftsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+builder.Services.AddScoped<IShiftService, ShiftService>(); //Implementing the service in the DI container
 
 var app = builder.Build();
 
