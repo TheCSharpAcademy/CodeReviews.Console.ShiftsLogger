@@ -1,59 +1,35 @@
 using Microsoft.EntityFrameworkCore;
+
 using Scalar.AspNetCore;
+
 using ShiftsLogger.Ryanw84.Data;
-using ShiftsLogger.Ryanw84.Mapping;
-using ShiftsLogger.Ryanw84.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-
-builder
-    .Services.AddControllers()
-    .AddJsonOptions(options =>
-        options.JsonSerializerOptions.ReferenceHandler = System
-            .Text
-            .Json
-            .Serialization
-            .ReferenceHandler
-            .IgnoreCycles
-    );
-
-builder.Services.AddDbContext<ShiftsDbContext>(opt =>
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<IShiftService, ShiftService>();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+builder.Services.AddDbContext<ShiftsDbContext>(options =>	
+options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
-app.MapOpenApi();
-app.MapScalarApiReference(options =>
-{
-    options
-        .WithTitle("Shifts Logger API")
-        .WithTheme(ScalarTheme.Saturn)
-        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
-        .WithModels(true)
-        .WithLayout(ScalarLayout.Modern);
-});
-app.UseAuthentication();
-
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseAuthentication();
-    app.UseAuthorization();
-
-    using var scope = app.Services.CreateScope();
-
-    var context = scope.ServiceProvider.GetRequiredService<ShiftsDbContext>();
-
-    context.SeedData();
+    app.MapOpenApi();
+    //app.UseAuthentication();
+    //app.UseAuthorization();
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .WithTitle("Shifts Logger")
+            .WithTheme(ScalarTheme.Saturn)
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+            .WithModels(true)
+            .WithLayout(ScalarLayout.Modern);
+    });
 }
-
 app.MapControllers();
-
 app.Run();
