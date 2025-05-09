@@ -20,7 +20,14 @@ public class ShiftService : IShiftService
 
     public Shift? GetShiftById(int id)
     {
-        return _dbContext.Shifts.Find(id);
+        var result = _dbContext.Shifts.Find(id);
+        if (result == null)
+        {
+            AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found.[/]");
+            return null;
+        }
+        AnsiConsole.MarkupLine($"\n[green]Successfully retrieved shift with ID: {id}[/]");
+        return result;
     }
 
     public Shift CreateShift(Shift shift)
@@ -29,7 +36,7 @@ public class ShiftService : IShiftService
         _dbContext.SaveChanges();
 
         AnsiConsole.MarkupLine(
-            $"[green]Successfully created shift with ID: {savedShift.Entity.ShiftId}[/]"
+            $"\n[green]Successfully created shift with ID: {savedShift.Entity.ShiftId}[/]"
         );
         return savedShift.Entity;
     }
@@ -40,7 +47,7 @@ public class ShiftService : IShiftService
 
         if (savedShift == null)
         {
-            AnsiConsole.MarkupLine($"[red]Shift with ID: {id} not found.[/]");
+            AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found.[/]");
             return null;
         }
 
@@ -52,7 +59,7 @@ public class ShiftService : IShiftService
 
         _dbContext.SaveChanges();
 
-        AnsiConsole.MarkupLine($"[green]Successfully updated shift with ID: {id}[/]");
+        AnsiConsole.MarkupLine($"\n[green]Successfully updated shift with ID: {id}[/]");
         return savedShift;
     }
 

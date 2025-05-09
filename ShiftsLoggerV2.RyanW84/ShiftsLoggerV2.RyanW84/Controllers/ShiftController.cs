@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Services;
+using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Controllers;
 
@@ -22,6 +23,7 @@ public class ShiftController : ControllerBase
     public ActionResult<List<Shift>> GetAllShifts()
     {
         var shifts = _shiftService.GetAllShifts();
+        AnsiConsole.MarkupLine("\n[green]Retrieved all shifts successfully.[/]");
         return Ok(shifts);
     }
 
@@ -29,34 +31,58 @@ public class ShiftController : ControllerBase
     [HttpGet("{id}")] // This will be added to the API URI (send some data during the request
     public ActionResult<Shift> GetShiftById(int id)
     {
-        var shift = _shiftService.GetShiftById(id);
-        if (shift == null)
+        var result = _shiftService.GetShiftById(id);
+
+        if (result == null)
         {
-            return NotFound();
+            AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found.[/]");
+            return NotFound($"\nShift with ID: {id} not found."); //Equivalent to 404
         }
-        return Ok(_shiftService.GetShiftById(id));
+
+        AnsiConsole.MarkupLine($"\n[green]Retrieved shift with ID: {id} successfully.[/]");
+        return Ok(result);
     }
 
     //This is the route for creating a shift
     [HttpPost]
     public ActionResult<Shift> CreateShift(Shift shift)
     {
-        {
-            return Ok(_shiftService.CreateShift(shift));
-        }
+        var createdShift = _shiftService.CreateShift(shift);
+        AnsiConsole.MarkupLine(
+            $"\n[green]Created shift with ID: {createdShift.ShiftId} successfully.[/]"
+        );
+        return Ok(createdShift);
     }
 
     //This is the route for updating a shift
     [HttpPut("{id}")]
     public ActionResult<Shift> UpdateShift(int id, Shift updatedShift)
     {
-        return Ok(_shiftService.UpdateShift(id, updatedShift));
+        var result =_shiftService.UpdateShift(id, updatedShift);
+
+        if (result == null)
+        {
+            AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found for update.[/]");
+            return NotFound($"\nShift with ID: {id} not found.");
+        }
+
+        AnsiConsole.MarkupLine($"\n[green]Updated shift with ID: {id} successfully.[/]");
+        return Ok(result);
     }
 
     //This is the route for deleting a shift
     [HttpDelete("{id}")]
     public ActionResult<string> DeleteShift(int id)
     {
-        return Ok(_shiftService.DeleteShift(id));
+        var result = _shiftService.DeleteShift(id);
+
+        if (result == null)
+        {
+            AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found for deletion.[/]");
+            return NotFound($"\nShift with ID: {id} not found.");
+        }
+
+        AnsiConsole.MarkupLine($"\n[green]{result}[/]");
+        return Ok(result);
     }
 }
