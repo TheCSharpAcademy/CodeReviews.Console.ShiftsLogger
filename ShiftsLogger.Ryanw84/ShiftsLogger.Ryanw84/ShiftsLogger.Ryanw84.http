@@ -1,6 +1,0 @@
-@ShiftsLogger.Ryanw84_HostAddress = http://localhost:5236
-
-GET {{ShiftsLogger.Ryanw84_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
