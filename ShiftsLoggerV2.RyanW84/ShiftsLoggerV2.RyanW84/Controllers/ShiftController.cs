@@ -22,67 +22,109 @@ public class ShiftController : ControllerBase
     [HttpGet]
     public ActionResult<List<Shift>> GetAllShifts()
     {
-        var shifts = _shiftService.GetAllShifts();
-        AnsiConsole.MarkupLine("\n[green]Retrieved all shifts successfully.[/]");
-        return Ok(shifts);
+        try
+            {
+            var shifts = _shiftService.GetAllShifts();
+            AnsiConsole.MarkupLine("\n[green]Retrieved all shifts successfully.[/]");
+            return Ok(shifts);
+            }
+        catch(Exception ex)
+            {
+			Console.WriteLine($"Get All Shifts failed, see Exception {ex}");
+
+			throw;
+            }
     }
 
     //This is the route for getting a shift by ID
     [HttpGet("{id}")] // This will be added to the API URI (send some data during the request
     public ActionResult<Shift> GetShiftById(int id)
     {
-        var result = _shiftService.GetShiftById(id);
-
-        if (result == null)
+        try
         {
-            AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found.[/]");
-            return NotFound($"\nShift with ID: {id} not found."); //Equivalent to 404
-        }
+            var result = _shiftService.GetShiftById(id);
 
-        AnsiConsole.MarkupLine($"\n[green]Retrieved shift with ID: {id} successfully.[/]");
-        return Ok(result);
+            if (result == null)
+            {
+                AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found.[/]");
+                return NotFound($"\nShift with ID: {id} not found."); //Equivalent to 404
+            }
+
+            AnsiConsole.MarkupLine($"\n[green]Retrieved shift with ID: {id} successfully.[/]");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+			Console.WriteLine($"Get by ID failed, see Exception {ex}");
+			throw;
+        }
     }
 
     //This is the route for creating a shift
     [HttpPost]
     public ActionResult<Shift> CreateShift(Shift shift)
     {
-        var createdShift = _shiftService.CreateShift(shift);
-        AnsiConsole.MarkupLine(
-            $"\n[green]Created shift with ID: {createdShift.ShiftId} successfully.[/]"
-        );
-        return Ok(createdShift);
+        try
+        {
+            var createdShift = _shiftService.CreateShift(shift);
+            AnsiConsole.MarkupLine(
+                $"\n[green]Created shift with ID: {createdShift.ShiftId} successfully.[/]"
+            );
+            return Ok(createdShift);
+        }
+        catch (Exception ex)
+        {
+			Console.WriteLine($"Create Shift failed, see Exception {ex}");
+
+            throw;
+        }
     }
 
     //This is the route for updating a shift
     [HttpPut("{id}")]
     public ActionResult<Shift> UpdateShift(int id, Shift updatedShift)
     {
-        var result =_shiftService.UpdateShift(id, updatedShift);
-
-        if (result == null)
+        try
         {
-            AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found for update.[/]");
-            return NotFound($"\nShift with ID: {id} not found.");
-        }
+            var result = _shiftService.UpdateShift(id, updatedShift);
 
-        AnsiConsole.MarkupLine($"\n[green]Updated shift with ID: {id} successfully.[/]");
-        return Ok(result);
+            if (result == null)
+            {
+                AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found for update.[/]");
+                return NotFound($"\nShift with ID: {id} not found.");
+            }
+
+            AnsiConsole.MarkupLine($"\n[green]Updated shift with ID: {id} successfully.[/]");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+			Console.WriteLine($"Update Shift failed, see Exception {ex}");
+			throw;
+        }
     }
 
     //This is the route for deleting a shift
     [HttpDelete("{id}")]
     public ActionResult<string> DeleteShift(int id)
     {
-        var result = _shiftService.DeleteShift(id);
-
-        if (result == null)
+        try
         {
-            AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found for deletion.[/]");
-            return NotFound($"\nShift with ID: {id} not found.");
-        }
+            var result = _shiftService.DeleteShift(id);
 
-        AnsiConsole.MarkupLine($"\n[green]{result}[/]");
-        return Ok(result);
+            if (result == null)
+            {
+                AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found for deletion.[/]");
+                return NotFound($"\nShift with ID: {id} not found.");
+            }
+
+            AnsiConsole.MarkupLine($"\n[green]{result}[/]");
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+			Console.WriteLine($"Delete Shift failed, see Exception {ex}");
+			throw;
+        }
     }
 }
