@@ -12,7 +12,7 @@ using ShiftLogger.Brozda.API.Data;
 namespace ShiftLogger.Brozda.API.Migrations
 {
     [DbContext(typeof(ShiftLoggerContext))]
-    [Migration("20250428195540_InitialCreate")]
+    [Migration("20250510174459_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -43,6 +43,8 @@ namespace ShiftLogger.Brozda.API.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ShiftTypeId");
 
                     b.HasIndex("WorkerId");
 
@@ -94,11 +96,21 @@ namespace ShiftLogger.Brozda.API.Migrations
 
             modelBuilder.Entity("ShiftLogger.Brozda.API.Models.AssignedShift", b =>
                 {
-                    b.HasOne("ShiftLogger.Brozda.API.Models.Worker", null)
+                    b.HasOne("ShiftLogger.Brozda.API.Models.ShiftType", "ShiftType")
+                        .WithMany()
+                        .HasForeignKey("ShiftTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftLogger.Brozda.API.Models.Worker", "Worker")
                         .WithMany("AssignedShifts")
                         .HasForeignKey("WorkerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ShiftType");
+
+                    b.Navigation("Worker");
                 });
 
             modelBuilder.Entity("ShiftLogger.Brozda.API.Models.Worker", b =>

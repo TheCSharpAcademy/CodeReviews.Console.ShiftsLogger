@@ -24,8 +24,8 @@ namespace ShiftLogger.Brozda.API
 
             var app = builder.Build();
 
-            //app.UseSwagger();
-            //app.UseSwaggerUI();
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.MapWorkerEndpoints();
             app.MapShiftTypeEndpoints();
             app.MapAssignedShiftsEndpoints();

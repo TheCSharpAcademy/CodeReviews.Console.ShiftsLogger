@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using ShiftLogger.Brozda.API.Models;
 using System.Text.Json;
 
@@ -19,7 +20,13 @@ namespace ShiftLogger.Brozda.API.Data
         /// <param name="optionsBuilder">A builder used to configure options for this context.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\LOCALDB;Initial Catalog=ShiftLogger;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False")
+            var configuration = new ConfigurationBuilder()
+                .AddUserSecrets<ShiftLoggerContext>()
+                .Build();
+
+            string connectionString = configuration.GetConnectionString("DefaultConnection")!;
+
+            optionsBuilder.UseSqlServer(connectionString)
                 .LogTo(Console.WriteLine, LogLevel.Information)
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()

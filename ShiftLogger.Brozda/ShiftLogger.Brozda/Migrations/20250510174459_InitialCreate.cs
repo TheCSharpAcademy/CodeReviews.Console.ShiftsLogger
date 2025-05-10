@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -53,12 +54,23 @@ namespace ShiftLogger.Brozda.API.Migrations
                 {
                     table.PrimaryKey("PK_AssignedShifts", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_AssignedShifts_ShiftTypes_ShiftTypeId",
+                        column: x => x.ShiftTypeId,
+                        principalTable: "ShiftTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_AssignedShifts_Workers_WorkerId",
                         column: x => x.WorkerId,
                         principalTable: "Workers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssignedShifts_ShiftTypeId",
+                table: "AssignedShifts",
+                column: "ShiftTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssignedShifts_WorkerId",
