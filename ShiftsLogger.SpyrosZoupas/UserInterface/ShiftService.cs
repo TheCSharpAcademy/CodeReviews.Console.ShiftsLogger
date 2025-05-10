@@ -1,6 +1,7 @@
 ﻿using ShiftsLogger.SpyrosZoupas.DAL.Model;
 using Spectre.Console;
 using System.Net.Http.Json;
+using UserInterface.SpyrosZoupas.Util;
 
 namespace UserInterface.SpyrosZoupas;
 
@@ -16,8 +17,8 @@ public class ShiftService
     public async Task InsertShift()
     {
         // add datetime validation later
-        DateTime startDate = AnsiConsole.Ask<DateTime>("Start Date:");
-        DateTime endDate = AnsiConsole.Ask<DateTime>("End Date:");
+        DateTime startDate = Validation.GetDateTimeValue("Start Date:");
+        DateTime endDate = Validation.GetDateTimeValue("End Date:");
         Shift shift = new Shift { StartDateTime = startDate, EndDateTime = endDate };
 
         try
@@ -27,7 +28,7 @@ public class ShiftService
         }
         catch (HttpRequestException ex)
         {
-            AnsiConsole.WriteLine($"[black on red]Something went wrong: {ex.Message}[/]");
+            AnsiConsole.Markup($"[black on red]Something went wrong: {ex.Message}[/]");
         }
     }
 
@@ -44,7 +45,7 @@ public class ShiftService
         }
         catch (HttpRequestException ex)
         {
-            AnsiConsole.WriteLine($"[black on red]Something went wrong: {ex.Message}[/]");
+            AnsiConsole.Markup($"[black on red]Something went wrong: {ex.Message}[/]");
         }
 
         return null;
@@ -60,7 +61,7 @@ public class ShiftService
         }
         catch (HttpRequestException ex)
         {
-            AnsiConsole.WriteLine($"[black on red]Something went wrong: {ex.Message}[/]");
+            AnsiConsole.Markup($"[black on red]Something went wrong: {ex.Message}[/]");
         }
 
         return null;
@@ -76,7 +77,7 @@ public class ShiftService
         }
         catch (HttpRequestException ex)
         {
-            AnsiConsole.WriteLine($"[black on red]Something went wrong: {ex.Message}[/]");
+            AnsiConsole.Markup($"[black on red]Something went wrong: {ex.Message}[/]");
         }
     }
 
@@ -84,9 +85,9 @@ public class ShiftService
     {
         Shift? shift = GetShiftOptionInput();
         if (AnsiConsole.Confirm("Update start date?"))
-            shift.StartDateTime = AnsiConsole.Ask<DateTime>("Updated start date:");
+            shift.StartDateTime = Validation.GetDateTimeValue("Updated start date:");
         if (AnsiConsole.Confirm("Update contact email?"))
-            shift.EndDateTime = AnsiConsole.Ask<DateTime>("Updated end date:");
+            shift.EndDateTime = Validation.GetDateTimeValue("Updated end date:");
 
         try
         {
@@ -95,7 +96,7 @@ public class ShiftService
         }
         catch (HttpRequestException ex)
         {
-            AnsiConsole.WriteLine($"[black on red]Something went wrong: {ex.Message}[/]");
+            AnsiConsole.Markup($"[black on red]Something went wrong: {ex.Message}[/]");
         }
     }
 
