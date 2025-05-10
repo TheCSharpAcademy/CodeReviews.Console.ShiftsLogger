@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35514.174
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftLogger.Brozda.API", "ShiftLogger.Brozda\ShiftLogger.Brozda.API.csproj", "{017DDA11-B9F5-4F0C-9A21-43AEFFDC5285}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftLogger.Brozda.Models", "ShiftLogger.Brozda.Models\ShiftLogger.Brozda.Models.csproj", "{6083EF96-2302-4CCD-9057-D07598680502}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShiftLogger.Brozda.UIConsole", "ShiftLogger.Brozda.UIConsole\ShiftLogger.Brozda.UIConsole.csproj", "{88F93EBC-BF79-4E9A-8880-21379D366142}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{017DDA11-B9F5-4F0C-9A21-43AEFFDC5285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{017DDA11-B9F5-4F0C-9A21-43AEFFDC5285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{017DDA11-B9F5-4F0C-9A21-43AEFFDC5285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{017DDA11-B9F5-4F0C-9A21-43AEFFDC5285}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6083EF96-2302-4CCD-9057-D07598680502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6083EF96-2302-4CCD-9057-D07598680502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6083EF96-2302-4CCD-9057-D07598680502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6083EF96-2302-4CCD-9057-D07598680502}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88F93EBC-BF79-4E9A-8880-21379D366142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88F93EBC-BF79-4E9A-8880-21379D366142}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88F93EBC-BF79-4E9A-8880-21379D366142}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88F93EBC-BF79-4E9A-8880-21379D366142}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
