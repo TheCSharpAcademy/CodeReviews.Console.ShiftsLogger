@@ -4,9 +4,9 @@ namespace ShiftsLoggerV2.RyanW84.Services;
 
 public interface IShiftService
 	{
-	public List<Shift> GetAllShifts( );
-	public Shift? GetShiftById( int id );
-	public Shift CreateShift(Shift shift );
-	public Shift? UpdateShift(int id , Shift updatedShift);
-	public string? DeleteShift(int id);
+	public  Task <List<Shift>> GetAllShifts( );
+	public  Task <Shift?> GetShiftById( int id );
+	public  Task <Shift> CreateShift(Shift shift );
+	public Task <Shift?> UpdateShift(int id , Shift updatedShift);
+	public Task <string?> DeleteShift(int id);
 	}

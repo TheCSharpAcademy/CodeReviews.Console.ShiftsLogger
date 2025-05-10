@@ -1,4 +1,5 @@
-﻿using ShiftsLoggerV2.RyanW84.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ShiftsLoggerV2.RyanW84.Data;
 using ShiftsLoggerV2.RyanW84.Models;
 using Spectre.Console;
 
@@ -13,15 +14,15 @@ public class ShiftService : IShiftService
         _dbContext = dbContext; // Injecting the context into the service so we can talk to the Database
     }
 
-    public List<Shift> GetAllShifts()
+    public async Task<List<Shift>> GetAllShifts()
     {
-        return _dbContext.Shifts.ToList();
+        return await _dbContext.Shifts.ToListAsync();
     }
 
-    public Shift? GetShiftById(int id)
+    public async Task<Shift?> GetShiftById(int id)
     {
-        var result = _dbContext.Shifts.Find(id);
-        if (result == null)
+        var result = await _dbContext.Shifts.FindAsync(id);
+        if (result is null)
         {
             AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found.[/]");
             return null;
@@ -30,10 +31,10 @@ public class ShiftService : IShiftService
         return result;
     }
 
-    public Shift CreateShift(Shift shift)
+    public async Task<Shift> CreateShift(Shift shift)
     {
-        var savedShift = _dbContext.Shifts.Add(shift);
-        _dbContext.SaveChanges();
+        var savedShift = await _dbContext.Shifts.AddAsync(shift);
+        await _dbContext.SaveChangesAsync();
 
         AnsiConsole.MarkupLine(
             $"\n[green]Successfully created shift with ID: {savedShift.Entity.ShiftId}[/]"
@@ -41,9 +42,9 @@ public class ShiftService : IShiftService
         return savedShift.Entity;
     }
 
-    public Shift? UpdateShift(int id, Shift updatedShift)
+    public async Task <Shift?> UpdateShift(int id, Shift updatedShift)
     {
-        Shift? savedShift = _dbContext.Shifts.Find(id);
+        Shift? savedShift = await _dbContext.Shifts.FindAsync(id);
 
         if (savedShift == null)
         {
@@ -57,16 +58,17 @@ public class ShiftService : IShiftService
         savedShift.EndTime = updatedShift.EndTime;
         savedShift.LocationId = updatedShift.LocationId;
 
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         AnsiConsole.MarkupLine($"\n[green]Successfully updated shift with ID: {id}[/]");
+
         return savedShift;
     }
 
-    public string DeleteShift(int id)
+    public async Task<string> DeleteShift(int id)
     {
         string result = "";
-        Shift? savedShift = _dbContext.Shifts.Find(id);
+        Shift? savedShift = await _dbContext.Shifts.FindAsync(id);
 
         if (savedShift == null)
         {
@@ -75,7 +77,7 @@ public class ShiftService : IShiftService
         }
 
         _dbContext.Shifts.Remove(savedShift);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
 
         AnsiConsole.MarkupLine($"[green]Successfully deleted shift with ID: {id}[/]");
 

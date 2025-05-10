@@ -20,11 +20,11 @@ public class ShiftController : ControllerBase
 
     //This is the route for getting all shifts
     [HttpGet (Name ="Get All Shifts") ]
-    public ActionResult<List<Shift>> GetAllShifts()
+    public async Task <ActionResult<List<Shift>>> GetAllShifts()
     {
         try
             {
-            var shifts = _shiftService.GetAllShifts();
+            var shifts = await _shiftService.GetAllShifts();
             AnsiConsole.MarkupLine("\n[green]Retrieved all shifts successfully.[/]");
             return Ok(shifts);
             }
@@ -36,13 +36,13 @@ public class ShiftController : ControllerBase
             }
     }
 
-    //This is the route for getting a shift by ID
+    //This is the route for getting a createdShift by ID
     [HttpGet("{id}")] // This will be added to the API URI (send some data during the request
-    public ActionResult<Shift> GetShiftById(int id)
+    public async Task <ActionResult<Shift>> GetShiftById(int id)
     {
         try
         {
-            var result = _shiftService.GetShiftById(id);
+            var result = await _shiftService.GetShiftById(id);
 
             if (result == null)
             {
@@ -50,7 +50,7 @@ public class ShiftController : ControllerBase
                 return NotFound($"\nShift with ID: {id} not found."); //Equivalent to 404
             }
 
-            AnsiConsole.MarkupLine($"\n[green]Retrieved shift with ID: {id} successfully.[/]");
+            AnsiConsole.MarkupLine($"\n[green]Retrieved createdShift with ID: {id} successfully.[/]");
             return Ok(result);
         }
         catch (Exception ex)
@@ -60,33 +60,22 @@ public class ShiftController : ControllerBase
         }
     }
 
-    //This is the route for creating a shift
+    //This is the route for creating a createdShift
     [HttpPost]
-    public ActionResult<Shift> CreateShift(Shift shift)
+    public async Task <ActionResult<Shift>> CreateShift(Shift shift)
     {
-        try
-        {
-            var createdShift = _shiftService.CreateShift(shift);
-            AnsiConsole.MarkupLine(
-                $"\n[green]Created shift with ID: {createdShift.ShiftId} successfully.[/]"
-            );
-            return Ok(createdShift);
-        }
-        catch (Exception ex)
-        {
-			Console.WriteLine($"Create Shift failed, see Exception {ex}");
+       var createdShift = await _shiftService.CreateShift(shift);
+       
+       return new ObjectResult (createdShift){ StatusCode = 201 }; //201 is the status code for created
+		}
 
-            throw;
-        }
-    }
-
-    //This is the route for updating a shift
+    //This is the route for updating a createdShift
     [HttpPut("{id}")]
-    public ActionResult<Shift> UpdateShift(int id, Shift updatedShift)
+    public async Task<ActionResult<Shift>> UpdateShift(int id, Shift updatedShift)
     {
         try
         {
-            var result = _shiftService.UpdateShift(id, updatedShift);
+            var result = await _shiftService.UpdateShift(id, updatedShift);
 
             if (result == null)
             {
@@ -94,7 +83,7 @@ public class ShiftController : ControllerBase
                 return NotFound($"\nShift with ID: {id} not found.");
             }
 
-            AnsiConsole.MarkupLine($"\n[green]Updated shift with ID: {id} successfully.[/]");
+            AnsiConsole.MarkupLine($"\n[green]Updated createdShift with ID: {id} successfully.[/]");
             return Ok(result);
         }
         catch (Exception ex)
@@ -104,13 +93,13 @@ public class ShiftController : ControllerBase
         }
     }
 
-    //This is the route for deleting a shift
+    //This is the route for deleting a createdShift
     [HttpDelete("{id}")]
-    public ActionResult<string> DeleteShift(int id)
+    public async Task<ActionResult<string>> DeleteShift(int id)
     {
         try
         {
-            var result = _shiftService.DeleteShift(id);
+            var result = await _shiftService.DeleteShift(id);
 
             if (result == null)
             {
@@ -119,8 +108,8 @@ public class ShiftController : ControllerBase
             }
 
             AnsiConsole.MarkupLine($"\n[green]{result}[/]");
-            return Ok(result);
-        }
+            return new ObjectResult(result) { StatusCode = 200 }; //200 is the status code for OK
+			}
         catch (Exception ex)
         {
 			Console.WriteLine($"Delete Shift failed, see Exception {ex}");
