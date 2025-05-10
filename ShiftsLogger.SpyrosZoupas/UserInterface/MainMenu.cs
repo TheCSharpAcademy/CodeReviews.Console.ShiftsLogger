@@ -1,4 +1,5 @@
-﻿using ShiftsLogger.SpyrosZoupas.DAL.Model;
+﻿using Microsoft.IdentityModel.Tokens;
+using ShiftsLogger.SpyrosZoupas.DAL.Model;
 using Spectre.Console;
 using UserInterface.SpyrosZoupas.Util;
 
@@ -13,7 +14,7 @@ public class MainMenu
         _shiftService = shiftService;
     }
 
-    public void ShiftsMenu()
+    public async Task ShiftsMenu()
     {
         var isContactMenuRunning = true;
         while (isContactMenuRunning)
@@ -21,7 +22,7 @@ public class MainMenu
             Console.Clear();
             var option = AnsiConsole.Prompt(
             new SelectionPrompt<ShiftMenuOptions>()
-            .Title("Products Menu")
+            .Title("Shifts Menu")
             .AddChoices(
                 ShiftMenuOptions.AddShift,
                 ShiftMenuOptions.DeleteShift,
@@ -33,19 +34,19 @@ public class MainMenu
             switch (option)
             {
                 case ShiftMenuOptions.AddShift:
-                    _shiftService.InsertShift();
+                    await _shiftService.InsertShift();
                     break;
                 case ShiftMenuOptions.DeleteShift:
-                    _shiftService.DeleteShift();
+                    await _shiftService.DeleteShift();
                     break;
                 case ShiftMenuOptions.UpdateShift:
-                    _shiftService.UpdateShift();
+                    await _shiftService.UpdateShift();
                     break;
                 case ShiftMenuOptions.ViewShift:
-                    ShowShift(_shiftService.GetShift().Result);
+                    ShowShift(await _shiftService.GetShift());
                     break;
                 case ShiftMenuOptions.ViewAllShifts:
-                    ShowShiftTable(_shiftService.GetAllShifts().Result);
+                    ShowShiftTable(await _shiftService.GetAllShifts());
                     break;
                 case ShiftMenuOptions.Quit:
                     isContactMenuRunning = false;
@@ -56,7 +57,7 @@ public class MainMenu
 
     private void ShowShiftTable(List<Shift> shifts)
     {
-        if (shifts.Count == 0)
+        if (shifts.IsNullOrEmpty())
         {
             AnsiConsole.MarkupLine("[red]No data to display.[/]");
         }
@@ -85,7 +86,7 @@ public class MainMenu
         Console.Clear();
     }
 
-    private void ShowShift(Shift shift)
+    private void ShowShift(Shift? shift)
     {
         if (shift == null)
         {

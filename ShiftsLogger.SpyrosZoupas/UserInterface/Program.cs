@@ -7,4 +7,4 @@ client.DefaultRequestHeaders.Accept.Clear();
 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 ShiftService shiftService = new ShiftService(client);
 MainMenu mainMenu = new MainMenu(shiftService);
-mainMenu.ShiftsMenu();
+await mainMenu.ShiftsMenu();
