@@ -1,6 +1,6 @@
 ﻿namespace ShiftsLoggerV2.RyanW84.Dtos;
 
-public class ShiftApiRequestDTO
+public class ShiftApiRequestDto
 	{
 	public int WorkerId { get; set; }
 	public DateTimeOffset StartTime { get; set; }

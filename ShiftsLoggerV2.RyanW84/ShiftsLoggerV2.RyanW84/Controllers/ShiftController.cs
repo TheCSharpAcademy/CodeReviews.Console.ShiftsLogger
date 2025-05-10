@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
 using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Services;
-
 using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Controllers;
@@ -11,30 +9,28 @@ namespace ShiftsLoggerV2.RyanW84.Controllers;
 [ApiController]
 //http://localhost:5009/api/shiftcontroller/ this is what the route will look like
 [Route("api/[controller]")]
-public class ShiftController(IShiftService shiftService): ControllerBase
+public class ShiftController(IShiftService shiftService) : ControllerBase
 {
-
-	//This is the route for getting all shifts
-	[HttpGet (Name ="Get All Shifts") ]
-    public async Task <ActionResult<List<Shift>>> GetAllShifts()
+    //This is the route for getting all shifts
+    [HttpGet(Name = "Get All Shifts")]
+    public async Task<ActionResult<List<Shift>>> GetAllShifts()
     {
         try
-            {
+        {
             var shifts = await shiftService.GetAllShifts();
-            AnsiConsole.MarkupLine("\n[green]Retrieved all shifts successfully.[/]");
-            return Ok(shifts);
-            }
-        catch(Exception ex)
-            {
-			Console.WriteLine($"Get All Shifts failed, see Exception {ex}");
+            return Ok(await shiftService.GetAllShifts());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Get All Shifts failed, see Exception {ex}");
 
-			throw;
-            }
+            throw;
+        }
     }
 
     //This is the route for getting a createdShift by ID
     [HttpGet("{id}")] // This will be added to the API URI (send some data during the request
-    public async Task <ActionResult<Shift>> GetShiftById(int id)
+    public async Task<ActionResult<Shift>> GetShiftById(int id)
     {
         try
         {
@@ -42,58 +38,52 @@ public class ShiftController(IShiftService shiftService): ControllerBase
 
             if (result == null)
             {
-                AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found.[/]");
-                return NotFound($"\nShift with ID: {id} not found."); //Equivalent to 404
+                return NotFound(); //Equivalent to 404
             }
 
-            AnsiConsole.MarkupLine($"\n[green]Retrieved createdShift with ID: {id} successfully.[/]");
             return Ok(result);
         }
         catch (Exception ex)
         {
-			Console.WriteLine($"Get by ID failed, see Exception {ex}");
-			throw;
+            Console.WriteLine($"Get by ID failed, see Exception {ex}");
+            throw;
         }
     }
 
     //This is the route for creating a createdShift
     [HttpPost]
-    public async Task <ActionResult<Shift>> CreateShift(ShiftApiRequestDTO shift)
+    public async Task<ActionResult<Shift>> CreateShift(ShiftApiRequestDto shift)
     {
         try
-            {
-            var createdShift = await shiftService.CreateShift(shift);
-
-            return new ObjectResult(createdShift) { StatusCode = 201 }; //201 is the status code for created
-            }
-        catch(Exception ex)
-            {
-			Console.WriteLine($"Create Shift failed, see Exception {ex}");
+        {
+            return new ObjectResult(await shiftService.CreateShift(shift)) { StatusCode = 201 }; //201 is the status code for Created
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Create Shift failed, see Exception {ex}");
             throw;
-            }
-		}
+        }
+    }
 
     //This is the route for updating a createdShift
     [HttpPut("{id}")]
-    public async Task<ActionResult<Shift>> UpdateShift(int id, ShiftApiRequestDTO updatedShift)
+    public async Task<ActionResult<Shift>> UpdateShift(int id, ShiftApiRequestDto updatedShift)
     {
         try
         {
             var result = await shiftService.UpdateShift(id, updatedShift);
 
-            if (result == null)
+            if (result is null)
             {
-                AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found for update.[/]");
-                return NotFound($"\nShift with ID: {id} not found.");
-            }
+                return NotFound(); //Equivalent to 404
+				}
 
-            AnsiConsole.MarkupLine($"\n[green]Updated createdShift with ID: {id} successfully.[/]");
             return Ok(result);
         }
         catch (Exception ex)
         {
-			Console.WriteLine($"Update Shift failed, see Exception {ex}");
-			throw;
+            Console.WriteLine($"Update Shift failed, see Exception {ex}");
+            throw;
         }
     }
 
@@ -107,17 +97,14 @@ public class ShiftController(IShiftService shiftService): ControllerBase
 
             if (result == null)
             {
-                AnsiConsole.MarkupLine($"\n[red]Shift with ID: {id} not found for deletion.[/]");
-                return NotFound($"\nShift with ID: {id} not found.");
+                return NotFound();
             }
-
-            AnsiConsole.MarkupLine($"\n[green]{result}[/]");
-            return new ObjectResult(result) { StatusCode = 200 }; //200 is the status code for OK
+            return NoContent(); //Equivalent to 204
 			}
         catch (Exception ex)
         {
-			Console.WriteLine($"Delete Shift failed, see Exception {ex}");
-			throw;
+            Console.WriteLine($"Delete Shift failed, see Exception {ex}");
+            throw;
         }
     }
 }

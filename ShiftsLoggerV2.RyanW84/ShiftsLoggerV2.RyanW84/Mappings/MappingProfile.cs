@@ -9,8 +9,8 @@ public class MappingProfile: Profile
 	{
 	public MappingProfile( )
 		{
-		CreateMap<Shift , ShiftApiRequestDTO>();
-		CreateMap<ShiftApiRequestDTO , Shift>();
+		CreateMap<Shift , ShiftApiRequestDto>();
+		CreateMap<ShiftApiRequestDto , Shift>();
 		}
 	}
 	
