@@ -19,7 +19,7 @@ public class ShiftController : ControllerBase
     }
 
     //This is the route for getting all shifts
-    [HttpGet]
+    [HttpGet (Name ="Get All Shifts") ]
     public ActionResult<List<Shift>> GetAllShifts()
     {
         try

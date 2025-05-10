@@ -19,6 +19,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     Console.WriteLine("Development Mode");
+
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ShiftsDbContext>();
+    dbContext.Database.EnsureDeleted();
+    dbContext.Database.EnsureCreated();
+    dbContext.SeedData();
+    Console.WriteLine("Database seeded");
 }
 
 app.MapOpenApi();
