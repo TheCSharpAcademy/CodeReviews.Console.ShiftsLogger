@@ -12,7 +12,8 @@ This is a shifts logger application developed using C#, ASP.NET Core, Entity Fra
 
 ## Before using the application
 * After cloning the application, update the *DefaultConnection* property in appsettings.json with your connection string to target your SQL Server
-* Before starting the application, make sure the selected Startup project is the console project.
+* Start the application, making sure the selected startup project is the API project.
+* While the API is running in the background, open another instance of the app solution, start it again this time with the startup project being the console application.
 
 ## General Info
 * The console application consists of menu presenting CRUD options for Shifts.

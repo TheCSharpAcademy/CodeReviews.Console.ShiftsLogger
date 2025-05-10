@@ -1,12 +1,11 @@
-﻿namespace UserInterface.SpyrosZoupas.Util
+﻿namespace UserInterface.SpyrosZoupas.Util;
+
+public enum ShiftMenuOptions
 {
-    public enum ShiftMenuOptions
-    {
-        AddShift,
-        DeleteShift,
-        UpdateShift,
-        ViewShift,
-        ViewAllShifts,
-        Quit
-    }
+    AddShift,
+    DeleteShift,
+    UpdateShift,
+    ViewShift,
+    ViewAllShifts,
+    Quit
 }
