@@ -13,6 +13,7 @@ builder.Services.AddDbContext<ShiftsDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 builder.Services.AddScoped<IShiftService, ShiftService>(); //Implementing the service in the DI container
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

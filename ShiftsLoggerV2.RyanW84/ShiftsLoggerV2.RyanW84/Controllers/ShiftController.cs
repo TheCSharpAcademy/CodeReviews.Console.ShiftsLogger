@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
+using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Services;
+
 using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Controllers;
@@ -8,23 +11,16 @@ namespace ShiftsLoggerV2.RyanW84.Controllers;
 [ApiController]
 //http://localhost:5009/api/shiftcontroller/ this is what the route will look like
 [Route("api/[controller]")]
-public class ShiftController : ControllerBase
+public class ShiftController(IShiftService shiftService): ControllerBase
 {
-    private readonly IShiftService _shiftService;
 
-    //We need to inject the IShiftService into the controller so we can use it
-    public ShiftController(IShiftService shiftService)
-    {
-        _shiftService = shiftService;
-    }
-
-    //This is the route for getting all shifts
-    [HttpGet (Name ="Get All Shifts") ]
+	//This is the route for getting all shifts
+	[HttpGet (Name ="Get All Shifts") ]
     public async Task <ActionResult<List<Shift>>> GetAllShifts()
     {
         try
             {
-            var shifts = await _shiftService.GetAllShifts();
+            var shifts = await shiftService.GetAllShifts();
             AnsiConsole.MarkupLine("\n[green]Retrieved all shifts successfully.[/]");
             return Ok(shifts);
             }
@@ -42,7 +38,7 @@ public class ShiftController : ControllerBase
     {
         try
         {
-            var result = await _shiftService.GetShiftById(id);
+            var result = await shiftService.GetShiftById(id);
 
             if (result == null)
             {
@@ -62,20 +58,28 @@ public class ShiftController : ControllerBase
 
     //This is the route for creating a createdShift
     [HttpPost]
-    public async Task <ActionResult<Shift>> CreateShift(Shift shift)
+    public async Task <ActionResult<Shift>> CreateShift(ShiftApiRequestDTO shift)
     {
-       var createdShift = await _shiftService.CreateShift(shift);
-       
-       return new ObjectResult (createdShift){ StatusCode = 201 }; //201 is the status code for created
+        try
+            {
+            var createdShift = await shiftService.CreateShift(shift);
+
+            return new ObjectResult(createdShift) { StatusCode = 201 }; //201 is the status code for created
+            }
+        catch(Exception ex)
+            {
+			Console.WriteLine($"Create Shift failed, see Exception {ex}");
+            throw;
+            }
 		}
 
     //This is the route for updating a createdShift
     [HttpPut("{id}")]
-    public async Task<ActionResult<Shift>> UpdateShift(int id, Shift updatedShift)
+    public async Task<ActionResult<Shift>> UpdateShift(int id, ShiftApiRequestDTO updatedShift)
     {
         try
         {
-            var result = await _shiftService.UpdateShift(id, updatedShift);
+            var result = await shiftService.UpdateShift(id, updatedShift);
 
             if (result == null)
             {
@@ -99,7 +103,7 @@ public class ShiftController : ControllerBase
     {
         try
         {
-            var result = await _shiftService.DeleteShift(id);
+            var result = await shiftService.DeleteShift(id);
 
             if (result == null)
             {

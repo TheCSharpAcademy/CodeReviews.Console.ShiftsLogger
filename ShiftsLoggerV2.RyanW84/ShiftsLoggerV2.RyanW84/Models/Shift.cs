@@ -6,7 +6,7 @@ public class Shift
 {
 [Key]
     public int ShiftId { get; set; }
-    public int workerId { get; set; }
+    public int WorkerId { get; set; }
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset EndTime { get; set; }
     public int LocationId { get; set; }

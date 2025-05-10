@@ -9,11 +9,11 @@ using ShiftsLoggerV2.RyanW84.Data;
 
 #nullable disable
 
-namespace ShiftsLoggerV2.RyanW84.Data.Models
+namespace ShiftsLoggerV2.RyanW84.Data.Migrations
 {
     [DbContext(typeof(ShiftsDbContext))]
-    [Migration("20250510115225_UpdatedModelWithKeyAnnoytation")]
-    partial class UpdatedModelWithKeyAnnoytation
+    [Migration("20250510125101_CorrectedWorkerIdNamingConvention")]
+    partial class CorrectedWorkerIdNamingConvention
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,7 @@ namespace ShiftsLoggerV2.RyanW84.Data.Models
                     b.Property<DateTimeOffset>("StartTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("workerId")
+                    b.Property<int>("WorkerId")
                         .HasColumnType("int");
 
                     b.HasKey("ShiftId");

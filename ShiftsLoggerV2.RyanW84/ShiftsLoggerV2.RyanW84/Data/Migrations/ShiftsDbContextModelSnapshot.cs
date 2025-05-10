@@ -39,7 +39,7 @@ namespace ShiftsLoggerV2.RyanW84.Data.Migrations
                     b.Property<DateTimeOffset>("StartTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("workerId")
+                    b.Property<int>("WorkerId")
                         .HasColumnType("int");
 
                     b.HasKey("ShiftId");
