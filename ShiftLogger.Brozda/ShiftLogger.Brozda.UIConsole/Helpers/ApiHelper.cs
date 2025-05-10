@@ -2,7 +2,6 @@
 using ShiftLogger.Brozda.UIConsole.InputOutput;
 using ShiftLogger.Brozda.UIConsole.Models;
 
-using System.Net;
 
 namespace ShiftLogger.Brozda.UIConsole.Helpers
 {
@@ -65,12 +64,12 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
                     return ApiResult<T>.Success(response.Data);
                 }
 
-                if (response.StatusCode == HttpStatusCode.NotFound)
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     return ApiResult<T>.NotFound();
                 }
 
-                if (response.StatusCode == HttpStatusCode.BadRequest)
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                 {
                     string error;
 
@@ -79,7 +78,7 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
                     else
                         error = "n/a";
 
-                    return ApiResult<T>.Fail($"Bad request: {error} ", (int)HttpStatusCode.BadRequest);
+                    return ApiResult<T>.Fail($"Bad request: {error} ", (int)System.Net.HttpStatusCode.BadRequest);
                 }
 
                 if (response.Data is null)

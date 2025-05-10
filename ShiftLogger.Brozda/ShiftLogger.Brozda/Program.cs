@@ -8,14 +8,13 @@ namespace ShiftLogger.Brozda.API
     {
         public static void Main(string[] args)
         {
-            var path = Path.Combine(AppContext.BaseDirectory, "Resources", "SeedData.json");
 
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            //.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<ShiftLoggerContext>();
             builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();

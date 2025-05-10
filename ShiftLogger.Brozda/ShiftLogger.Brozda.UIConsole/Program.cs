@@ -11,7 +11,7 @@ namespace ShiftLogger.Brozda.UIConsole
 {
     internal class Program
     {
-        private static async Task Main(string[] args)
+        private static async Task Main()
         {
             string baseUrl = "http://localhost:5181";
 
