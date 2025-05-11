@@ -5,7 +5,7 @@ namespace ShiftsLoggerV2.RyanW84.Services;
 
 public interface IShiftService
 	{
-	public  Task<ApiResponseDto<List<Shift>>> GetAllShifts( );
+	public  Task<ApiResponseDto<List<Shift>>> GetAllShifts(ShiftFilterOptions filterOptions);
 	public  Task <ApiResponseDto<Shift?>> GetShiftById( int id );
 	public  Task <ApiResponseDto<Shift>> CreateShift(ShiftApiRequestDto shift );
 	public Task <ApiResponseDto<Shift?>> UpdateShift(int id , ShiftApiRequestDto updatedShift);

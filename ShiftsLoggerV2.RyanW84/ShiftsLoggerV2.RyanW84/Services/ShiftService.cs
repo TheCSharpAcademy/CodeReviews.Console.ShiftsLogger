@@ -10,11 +10,31 @@ namespace ShiftsLoggerV2.RyanW84.Services;
 
 public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftService
 {
-    public async Task<ApiResponseDto<List<Shift>>> GetAllShifts()
+    public async Task<ApiResponseDto<List<Shift>>> GetAllShifts(ShiftFilterOptions filterOptions)
     {
         var shifts = await dbContext.Shifts.ToListAsync();
+        var query = dbContext.Shifts.AsQueryable(); // Allow for filtering
 
-        if (shifts is null || shifts.Count == 0)
+        if (!string.IsNullOrEmpty(filterOptions.WorkerId.ToString()))
+		{
+			query = query.Where(s => s.WorkerId.ToString() == filterOptions.WorkerId.ToString());
+		}
+		if (filterOptions.StartTime != null)
+		{
+			query = query.Where(s => s.StartTime <= filterOptions.StartTime);
+		}
+		if (filterOptions.EndTime != null)
+		{
+			query = query.Where(s => s.EndTime <=filterOptions.EndTime);
+		}
+		if (filterOptions.LocationId != null)
+		{
+			query = query.Where(s => s.LocationId.ToString() == filterOptions.LocationId.ToString());
+		}
+		shifts = await query.ToListAsync();
+		// Check if any shifts were found
+
+		if (shifts is null || shifts.Count == 0)
         {
             return new ApiResponseDto<List<Shift>>
             {
