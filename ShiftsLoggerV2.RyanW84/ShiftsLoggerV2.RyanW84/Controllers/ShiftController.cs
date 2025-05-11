@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Services;
 using Spectre.Console;
-
-using System.Net;
 
 namespace ShiftsLoggerV2.RyanW84.Controllers;
 
@@ -58,7 +57,14 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
     {
         try
         {
-            return new ObjectResult(await shiftService.CreateShift(shift)) { StatusCode = 201 }; //201 is the status code for Created
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            else
+            {
+                return new ObjectResult(await shiftService.CreateShift(shift)) { StatusCode = 201 }; //201 is the status code for Created
+            }
         }
         catch (Exception ex)
         {
@@ -78,7 +84,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
             if (result is null)
             {
                 return NotFound(); // Equivalent to 404
-				}
+            }
 
             return Ok(result);
         }
@@ -89,26 +95,26 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
     }
 
-	// Fix for CS0019 and CS1525 errors in the DeleteShift method
-	[HttpDelete("{id}")]
-	public async Task<ActionResult<string>> DeleteShift(int id)
-	{
-		try
-		{
-			var result = await shiftService.DeleteShift(id);
+    // Fix for CS0019 and CS1525 errors in the DeleteShift method
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<string>> DeleteShift(int id)
+    {
+        try
+        {
+            var result = await shiftService.DeleteShift(id);
 
-			// Corrected the condition to check the ResponseCode property of the result
-			if (result.ResponseCode == HttpStatusCode.NotFound || result is null)
-			{
-				return NotFound();
-			}
+            // Corrected the condition to check the ResponseCode property of the result
+            if (result.ResponseCode == HttpStatusCode.NotFound || result is null)
+            {
+                return NotFound();
+            }
 
-			return NoContent(); // Equivalent to 204
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Delete Shift failed, see Exception {ex}");
-			throw;
-		}
-	}
+            return NoContent(); // Equivalent to 204
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Delete Shift failed, see Exception {ex}");
+            throw;
+        }
+    }
 }
