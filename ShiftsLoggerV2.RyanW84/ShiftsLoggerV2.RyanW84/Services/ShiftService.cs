@@ -16,25 +16,36 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
         var query = dbContext.Shifts.AsQueryable(); // Allow for filtering
 
         if (!string.IsNullOrEmpty(filterOptions.WorkerId.ToString()))
-		{
-			query = query.Where(s => s.WorkerId.ToString() == filterOptions.WorkerId.ToString());
-		}
+        {
+            query = query.Where(s => s.WorkerId.ToString() == filterOptions.WorkerId.ToString());
+        }
+        if (filterOptions.StartTime != null)
+        {
+            query = query.Where(s => s.StartTime <= filterOptions.StartTime);
+        }
+        if (filterOptions.EndTime != null)
+        {
+            query = query.Where(s => s.EndTime <= filterOptions.EndTime);
+        }
+        if (filterOptions.LocationId != null)
+        {
+            query = query.Where(s =>
+                s.LocationId.ToString() == filterOptions.LocationId.ToString()
+            );
+        }
 		if (filterOptions.StartTime != null)
 		{
-			query = query.Where(s => s.StartTime <= filterOptions.StartTime);
+			query = query.Where(s => s.StartTime.Date >= filterOptions.StartTime.Value.Date); // allows for filtering by just date (have to use StartTime.Date in the query)
 		}
 		if (filterOptions.EndTime != null)
 		{
-			query = query.Where(s => s.EndTime <=filterOptions.EndTime);
+			query = query.Where(s => s.EndTime.Date <= filterOptions.EndTime.Value.Date); // allows for filtering by just date (have to use EndTime.Date in the query)
 		}
-		if (filterOptions.LocationId != null)
-		{
-			query = query.Where(s => s.LocationId.ToString() == filterOptions.LocationId.ToString());
-		}
-		shifts = await query.ToListAsync();
-		// Check if any shifts were found
 
-		if (shifts is null || shifts.Count == 0)
+        shifts = await query.ToListAsync();
+        // Check if any shifts were found
+
+        if (shifts is null || shifts.Count == 0)
         {
             return new ApiResponseDto<List<Shift>>
             {
