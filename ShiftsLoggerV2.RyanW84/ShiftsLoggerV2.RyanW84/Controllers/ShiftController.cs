@@ -4,6 +4,8 @@ using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Services;
 using Spectre.Console;
 
+using System.Net;
+
 namespace ShiftsLoggerV2.RyanW84.Controllers;
 
 [ApiController]
@@ -11,7 +13,7 @@ namespace ShiftsLoggerV2.RyanW84.Controllers;
 [Route("api/[controller]")]
 public class ShiftController(IShiftService shiftService) : ControllerBase
 {
-    //This is the route for getting all shifts
+    // This is the route for getting all shifts
     [HttpGet(Name = "Get All Shifts")]
     public async Task<ActionResult<List<Shift>>> GetAllShifts()
     {
@@ -28,7 +30,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
     }
 
-    //This is the route for getting a createdShift by ID
+    // This is the route for getting a createdShift by ID
     [HttpGet("{id}")] // This will be added to the API URI (send some data during the request
     public async Task<ActionResult<Shift>> GetShiftById(int id)
     {
@@ -38,7 +40,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
 
             if (result == null)
             {
-                return NotFound(); //Equivalent to 404
+                return NotFound(); // Equivalent to 404
             }
 
             return Ok(result);
@@ -50,7 +52,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
     }
 
-    //This is the route for creating a createdShift
+    // This is the route for creating a createdShift
     [HttpPost]
     public async Task<ActionResult<Shift>> CreateShift(ShiftApiRequestDto shift)
     {
@@ -65,7 +67,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
     }
 
-    //This is the route for updating a createdShift
+    // This is the route for updating a createdShift
     [HttpPut("{id}")]
     public async Task<ActionResult<Shift>> UpdateShift(int id, ShiftApiRequestDto updatedShift)
     {
@@ -75,7 +77,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
 
             if (result is null)
             {
-                return NotFound(); //Equivalent to 404
+                return NotFound(); // Equivalent to 404
 				}
 
             return Ok(result);
@@ -87,24 +89,26 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
     }
 
-    //This is the route for deleting a createdShift
-    [HttpDelete("{id}")]
-    public async Task<ActionResult<string>> DeleteShift(int id)
-    {
-        try
-        {
-            var result = await shiftService.DeleteShift(id);
+	// Fix for CS0019 and CS1525 errors in the DeleteShift method
+	[HttpDelete("{id}")]
+	public async Task<ActionResult<string>> DeleteShift(int id)
+	{
+		try
+		{
+			var result = await shiftService.DeleteShift(id);
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-            return NoContent(); //Equivalent to 204
+			// Corrected the condition to check the ResponseCode property of the result
+			if (result.ResponseCode == HttpStatusCode.NotFound || result is null)
+			{
+				return NotFound();
 			}
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Delete Shift failed, see Exception {ex}");
-            throw;
-        }
-    }
+
+			return NoContent(); // Equivalent to 204
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Delete Shift failed, see Exception {ex}");
+			throw;
+		}
+	}
 }

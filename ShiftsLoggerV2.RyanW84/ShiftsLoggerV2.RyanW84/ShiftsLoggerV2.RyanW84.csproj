@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Description>A WebAPI based app for recording shifts, storing them and accessing via SQL Server and actioning them through an API</Description>
   </PropertyGroup>
 
   <ItemGroup>
