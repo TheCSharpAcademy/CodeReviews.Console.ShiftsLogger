@@ -18,14 +18,14 @@ public class ShiftsDbContext(DbContextOptions options): DbContext(options)
             {
                 WorkerId = 1,
                 StartTime = DateTimeOffset.UtcNow,
-                EndTime = DateTimeOffset.UtcNow.AddHours(8),
+                EndTime = DateTimeOffset.UtcNow.AddHours(10),
                 LocationId = 1,
             },
             new Shift
             {
                 WorkerId = 2,
                 StartTime = DateTimeOffset.UtcNow,
-                EndTime = DateTimeOffset.UtcNow.AddHours(8),
+                EndTime = DateTimeOffset.UtcNow.AddHours(5),
                 LocationId = 2,
             },
             new Shift

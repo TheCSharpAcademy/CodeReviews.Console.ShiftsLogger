@@ -33,14 +33,63 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
                 s.LocationId.ToString() == filterOptions.LocationId.ToString()
             );
         }
-		if (filterOptions.StartTime != null)
-		{
-			query = query.Where(s => s.StartTime.Date >= filterOptions.StartTime.Value.Date); // allows for filtering by just date (have to use StartTime.Date in the query)
-		}
-		if (filterOptions.EndTime != null)
-		{
-			query = query.Where(s => s.EndTime.Date <= filterOptions.EndTime.Value.Date); // allows for filtering by just date (have to use EndTime.Date in the query)
-		}
+        if (filterOptions.StartTime != null)
+        {
+            query = query.Where(s => s.StartTime.Date >= filterOptions.StartTime.Value.Date); // allows for filtering by just date (have to use StartTime.Date in the query)
+        }
+        if (filterOptions.EndTime != null)
+        {
+            query = query.Where(s => s.EndTime.Date <= filterOptions.EndTime.Value.Date); // allows for filtering by just date (have to use EndTime.Date in the query)
+        }
+        if (filterOptions.SortBy == "shift_id" || !string.IsNullOrEmpty(filterOptions.SortBy))
+        {
+            switch (filterOptions.SortOrder)
+            {
+                case "Shift_Id":
+                    query = filterOptions.SortOrder.Equals(
+                        "ASC",
+                        StringComparison.CurrentCultureIgnoreCase
+                    )
+                        ? query.OrderBy(s => s.ShiftId)
+                        : query.OrderByDescending(s => s.ShiftId);
+                    break;
+                case "start_Time":
+                    query = filterOptions.SortOrder.Equals(
+                        "ASC",
+                        StringComparison.CurrentCultureIgnoreCase
+                    )
+                        ? query.OrderBy(s => s.StartTime)
+                        : query.OrderByDescending(s => s.StartTime);
+                    break;
+                case "end_Time":
+                    query = filterOptions.SortOrder.Equals(
+                        "ASC",
+                        StringComparison.CurrentCultureIgnoreCase
+                    )
+                        ? query.OrderBy(s => s.EndTime)
+                        : query.OrderByDescending(s => s.EndTime);
+                    break;
+                case "worker_Id":
+                    query = filterOptions.SortOrder.Equals(
+                        "ASC",
+                        StringComparison.CurrentCultureIgnoreCase
+                    )
+                        ? query.OrderBy(s => s.WorkerId)
+                        : query.OrderByDescending(s => s.WorkerId);
+                    break;
+                case "location_Id":
+                    query = filterOptions.SortOrder.Equals(
+                        "ASC",
+                        StringComparison.CurrentCultureIgnoreCase
+                    )
+                        ? query.OrderBy(s => s.LocationId)
+                        : query.OrderByDescending(s => s.LocationId);
+                    break;
+                default:
+                    query = query.OrderBy(s => s.ShiftId);
+                    break;
+            }
+        }
 
         shifts = await query.ToListAsync();
         // Check if any shifts were found
