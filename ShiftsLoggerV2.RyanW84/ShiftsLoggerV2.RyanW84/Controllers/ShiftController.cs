@@ -14,12 +14,12 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
 {
     // This is the route for getting all shifts
     [HttpGet(Name = "Get All Shifts")]
-    public async Task<ActionResult<List<Shift>>> GetAllShifts(ShiftFilterOptions filterOptions)
+    public async Task<ActionResult<List<Shift>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {
         try
         {
          
-            return Ok(await shiftService.GetAllShifts(filterOptions));
+            return Ok(await shiftService.GetAllShifts(shiftOptions));
         }
         catch (Exception ex)
         {

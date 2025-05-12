@@ -27,4 +27,7 @@ public class ShiftFilterOptions
 
     [FromQuery(Name = "sort_order")]
     public string SortOrder { get; set; } = "ASC"; // Use string for sorting options
+
+    [FromQuery(Name = "search")]
+	public string Search { get; set; } = string.Empty; // Use string for search options
 }

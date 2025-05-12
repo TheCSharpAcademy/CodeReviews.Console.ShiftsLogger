@@ -10,85 +10,92 @@ namespace ShiftsLoggerV2.RyanW84.Services;
 
 public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftService
 {
-    public async Task<ApiResponseDto<List<Shift>>> GetAllShifts(ShiftFilterOptions filterOptions)
+    public async Task<ApiResponseDto<List<Shift>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {
-        var shifts = await dbContext.Shifts.ToListAsync();
+        //var shifts = await dbContext.Shifts.ToListAsync();
         var query = dbContext.Shifts.AsQueryable(); // Allow for filtering
+        List<Shift>? shifts;
 
-        if (!string.IsNullOrEmpty(filterOptions.WorkerId.ToString()))
+        if (!string.IsNullOrEmpty(shiftOptions.WorkerId.ToString()))
         {
-            query = query.Where(s => s.WorkerId.ToString() == filterOptions.WorkerId.ToString());
+            query = query.Where(s => s.WorkerId.ToString() == shiftOptions.WorkerId.ToString());
         }
-        if (filterOptions.StartTime != null)
+        if (shiftOptions.StartTime != null)
         {
-            query = query.Where(s => s.StartTime <= filterOptions.StartTime);
+            query = query.Where(s => s.StartTime <= shiftOptions.StartTime);
         }
-        if (filterOptions.EndTime != null)
+        if (shiftOptions.EndTime != null)
         {
-            query = query.Where(s => s.EndTime <= filterOptions.EndTime);
+            query = query.Where(s => s.EndTime <= shiftOptions.EndTime);
         }
-        if (filterOptions.LocationId != null)
+        if (shiftOptions.LocationId != null)
         {
-            query = query.Where(s =>
-                s.LocationId.ToString() == filterOptions.LocationId.ToString()
-            );
+            query = query.Where(s => s.LocationId.ToString() == shiftOptions.LocationId.ToString());
         }
-        if (filterOptions.StartTime != null)
+        if (shiftOptions.StartTime != null)
         {
-            query = query.Where(s => s.StartTime.Date >= filterOptions.StartTime.Value.Date); // allows for filtering by just date (have to use StartTime.Date in the query)
+            query = query.Where(s => s.StartTime.Date >= shiftOptions.StartTime.Value.Date); // allows for filtering by just date (have to use StartTime.Date in the query)
         }
-        if (filterOptions.EndTime != null)
+        if (shiftOptions.EndTime != null)
         {
-            query = query.Where(s => s.EndTime.Date <= filterOptions.EndTime.Value.Date); // allows for filtering by just date (have to use EndTime.Date in the query)
+            query = query.Where(s => s.EndTime.Date <= shiftOptions.EndTime.Value.Date); // allows for filtering by just date (have to use EndTime.Date in the query)
         }
-        if (filterOptions.SortBy == "shift_id" || !string.IsNullOrEmpty(filterOptions.SortBy))
+        if (shiftOptions.SortBy == "shift_id" || !string.IsNullOrEmpty(shiftOptions.SortBy))
         {
-            if (!string.IsNullOrEmpty(filterOptions.SortBy))
+            if (!string.IsNullOrEmpty(shiftOptions.SortBy))
             {
-                var sortBy = filterOptions.SortBy.ToLowerInvariant();
-                var sortOrder = filterOptions.SortOrder?.ToLowerInvariant() ?? "asc";
+                var sortBy = shiftOptions.SortBy.ToLowerInvariant();
+                var sortOrder = shiftOptions.SortOrder?.ToLowerInvariant() ?? "asc";
 
                 switch (sortBy)
                 {
                     case "shift_id":
                         query =
-                            filterOptions.SortOrder.ToUpper() == "ASC"
+                            shiftOptions.SortOrder.ToUpper() == "ASC"
                                 ? query.OrderBy(s => s.ShiftId)
                                 : query.OrderByDescending(s => s.ShiftId);
                         break;
                     case "start_time":
                         query =
-                            filterOptions.SortOrder.ToUpper() == "ASC"
+                            shiftOptions.SortOrder.ToUpper() == "ASC"
                                 ? query.OrderBy(s => s.StartTime)
                                 : query.OrderByDescending(s => s.StartTime);
                         break;
                     case "end_time":
                         query =
-                            filterOptions.SortOrder.ToUpper() == "ASC"
+                            shiftOptions.SortOrder.ToUpper() == "ASC"
                                 ? query.OrderBy(s => s.EndTime)
                                 : query.OrderByDescending(s => s.EndTime);
                         break;
                     case "worker_id":
                         query =
-                            filterOptions.SortOrder.ToUpper() == "ASC"
+                            shiftOptions.SortOrder.ToUpper() == "ASC"
                                 ? query.OrderBy(s => s.WorkerId)
                                 : query.OrderByDescending(s => s.WorkerId);
                         break;
                     case "location_id":
                         query =
-                            filterOptions.SortOrder.ToUpper() == "ASC"
+                            shiftOptions.SortOrder.ToUpper() == "ASC"
                                 ? query.OrderBy(s => s.LocationId)
                                 : query.OrderByDescending(s => s.LocationId);
                         break;
                     default:
                         query =
-                            filterOptions.SortOrder.ToUpper() == "ASC"
+                            shiftOptions.SortOrder.ToUpper() == "ASC"
                                 ? query.OrderBy(s => s.ShiftId)
                                 : query.OrderByDescending(s => s.ShiftId);
                         break;
                 }
             }
         }
+
+        if (!string.IsNullOrEmpty(shiftOptions.Search))
+        {
+            string searchLower = shiftOptions.Search.ToLower();
+            var searchChars = searchLower.ToCharArray();
+
+            var data = await query.ToListAsync();
+		}
 
         shifts = await query.ToListAsync();
         // Check if any shifts were found
