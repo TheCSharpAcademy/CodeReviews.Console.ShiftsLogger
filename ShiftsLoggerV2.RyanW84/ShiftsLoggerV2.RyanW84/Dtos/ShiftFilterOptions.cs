@@ -23,8 +23,8 @@ public class ShiftFilterOptions
     public int? LocationId { get; set; }
 
     [FromQuery(Name = "sort_by")]
-    public string? SortBy { get; set; } = "shift_id"; // Use string for sorting options
+    public string SortBy { get; set; } = "shift_id"; // Use string for sorting options
 
     [FromQuery(Name = "sort_order")]
-    public string? SortOrder { get; set; } = "ASC"; // Use string for sorting options
+    public string SortOrder { get; set; } = "ASC"; // Use string for sorting options
 }

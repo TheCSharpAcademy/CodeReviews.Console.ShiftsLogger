@@ -43,51 +43,50 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
         }
         if (filterOptions.SortBy == "shift_id" || !string.IsNullOrEmpty(filterOptions.SortBy))
         {
-            switch (filterOptions.SortOrder)
+            if (!string.IsNullOrEmpty(filterOptions.SortBy))
             {
-                case "Shift_Id":
-                    query = filterOptions.SortOrder.Equals(
-                        "ASC",
-                        StringComparison.CurrentCultureIgnoreCase
-                    )
-                        ? query.OrderBy(s => s.ShiftId)
-                        : query.OrderByDescending(s => s.ShiftId);
-                    break;
-                case "start_Time":
-                    query = filterOptions.SortOrder.Equals(
-                        "ASC",
-                        StringComparison.CurrentCultureIgnoreCase
-                    )
-                        ? query.OrderBy(s => s.StartTime)
-                        : query.OrderByDescending(s => s.StartTime);
-                    break;
-                case "end_Time":
-                    query = filterOptions.SortOrder.Equals(
-                        "ASC",
-                        StringComparison.CurrentCultureIgnoreCase
-                    )
-                        ? query.OrderBy(s => s.EndTime)
-                        : query.OrderByDescending(s => s.EndTime);
-                    break;
-                case "worker_Id":
-                    query = filterOptions.SortOrder.Equals(
-                        "ASC",
-                        StringComparison.CurrentCultureIgnoreCase
-                    )
-                        ? query.OrderBy(s => s.WorkerId)
-                        : query.OrderByDescending(s => s.WorkerId);
-                    break;
-                case "location_Id":
-                    query = filterOptions.SortOrder.Equals(
-                        "ASC",
-                        StringComparison.CurrentCultureIgnoreCase
-                    )
-                        ? query.OrderBy(s => s.LocationId)
-                        : query.OrderByDescending(s => s.LocationId);
-                    break;
-                default:
-                    query = query.OrderBy(s => s.ShiftId);
-                    break;
+                var sortBy = filterOptions.SortBy.ToLowerInvariant();
+                var sortOrder = filterOptions.SortOrder?.ToLowerInvariant() ?? "asc";
+
+                switch (sortBy)
+                {
+                    case "shift_id":
+                        query =
+                            filterOptions.SortOrder.ToUpper() == "ASC"
+                                ? query.OrderBy(s => s.ShiftId)
+                                : query.OrderByDescending(s => s.ShiftId);
+                        break;
+                    case "start_time":
+                        query =
+                            filterOptions.SortOrder.ToUpper() == "ASC"
+                                ? query.OrderBy(s => s.StartTime)
+                                : query.OrderByDescending(s => s.StartTime);
+                        break;
+                    case "end_time":
+                        query =
+                            filterOptions.SortOrder.ToUpper() == "ASC"
+                                ? query.OrderBy(s => s.EndTime)
+                                : query.OrderByDescending(s => s.EndTime);
+                        break;
+                    case "worker_id":
+                        query =
+                            filterOptions.SortOrder.ToUpper() == "ASC"
+                                ? query.OrderBy(s => s.WorkerId)
+                                : query.OrderByDescending(s => s.WorkerId);
+                        break;
+                    case "location_id":
+                        query =
+                            filterOptions.SortOrder.ToUpper() == "ASC"
+                                ? query.OrderBy(s => s.LocationId)
+                                : query.OrderByDescending(s => s.LocationId);
+                        break;
+                    default:
+                        query =
+                            filterOptions.SortOrder.ToUpper() == "ASC"
+                                ? query.OrderBy(s => s.ShiftId)
+                                : query.OrderByDescending(s => s.ShiftId);
+                        break;
+                }
             }
         }
 
