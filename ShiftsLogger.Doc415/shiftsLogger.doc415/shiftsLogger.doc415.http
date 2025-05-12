@@ -1,6 +1,0 @@
-@shiftsLogger.doc415_HostAddress = http://localhost:5170
-
-GET {{shiftsLogger.doc415_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

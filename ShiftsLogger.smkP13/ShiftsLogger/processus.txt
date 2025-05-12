@@ -1,0 +1,57 @@
+﻿Web API:
+- SQL server and db
+Shifts:
+	- GetAll
+	- GetById
+	- Post
+	- Put/Patch?
+	- Delete
+Users:
+	- PostUser
+	- DeleteUser
+	- Put/PatchUser
+
+UI:
+Menu:
+	See resumes:
+		- See users shift resume
+		- See specific user shifts and resume
+	manage shifts for user:
+		- Add a shift
+		- Update a shift
+		- Delete a shift
+	Manage Users:
+		- Add User
+		- Delete User
+		- Update User
+User inputs:
+	- Get DateTime
+	- Get User firstname and lastname
+	- validation
+Models:
+	User:
+		- firstName
+		- lastName
+	Shift:
+		- start
+		- end
+		- User
+Controllers:
+	- call associated controller in the Web API:
+		- See users shift resume = GetAll
+		- See specific user shifts and resume = GetById
+		- Add a shift = PostShift
+		- Modify a shift = Put/Patch
+		- Delete a shift = Delete
+		- Add User = PostUser
+		- Delete User = DeleteUser
+		- Update user = Put/PatchUser
+Services:
+	- See users shift resumes
+	- See specific user shifts and resume
+	- Add a shift
+	- Modify a shift
+	- Delete a shift
+	- Add User
+	- Delete User
+	- Update user
