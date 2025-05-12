@@ -28,7 +28,6 @@ public class ShiftService : IShiftService
         {
             EntityEntry<Shift> newShift = _dbContext.Add(shift);
             _dbContext.SaveChanges();
-            var test = _dbContext.Shifts.ToList<Shift>();
             return newShift.Entity;
         }
         return null;
