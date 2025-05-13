@@ -1,3 +1,0 @@
-﻿using ShiftLoggerUI;
-
-new Manager();
