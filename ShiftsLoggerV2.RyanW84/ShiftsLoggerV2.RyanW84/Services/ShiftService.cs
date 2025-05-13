@@ -50,40 +50,52 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
                 switch (sortBy)
                 {
                     case "shift_id":
-                        query =
-                            shiftOptions.SortOrder.ToUpper() == "ASC"
-                                ? query.OrderBy(s => s.ShiftId)
-                                : query.OrderByDescending(s => s.ShiftId);
+                        query = shiftOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
+                            ? query.OrderBy(s => s.ShiftId)
+                            : query.OrderByDescending(s => s.ShiftId);
                         break;
                     case "start_time":
-                        query =
-                            shiftOptions.SortOrder.ToUpper() == "ASC"
-                                ? query.OrderBy(s => s.StartTime)
-                                : query.OrderByDescending(s => s.StartTime);
+                        query = shiftOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
+                            ? query.OrderBy(s => s.StartTime)
+                            : query.OrderByDescending(s => s.StartTime);
                         break;
                     case "end_time":
-                        query =
-                            shiftOptions.SortOrder.ToUpper() == "ASC"
-                                ? query.OrderBy(s => s.EndTime)
-                                : query.OrderByDescending(s => s.EndTime);
+                        query = shiftOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
+                            ? query.OrderBy(s => s.EndTime)
+                            : query.OrderByDescending(s => s.EndTime);
                         break;
                     case "worker_id":
-                        query =
-                            shiftOptions.SortOrder.ToUpper() == "ASC"
-                                ? query.OrderBy(s => s.WorkerId)
-                                : query.OrderByDescending(s => s.WorkerId);
+                        query = shiftOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
+                            ? query.OrderBy(s => s.WorkerId)
+                            : query.OrderByDescending(s => s.WorkerId);
                         break;
                     case "location_id":
-                        query =
-                            shiftOptions.SortOrder.ToUpper() == "ASC"
-                                ? query.OrderBy(s => s.LocationId)
-                                : query.OrderByDescending(s => s.LocationId);
+                        query = shiftOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
+                            ? query.OrderBy(s => s.LocationId)
+                            : query.OrderByDescending(s => s.LocationId);
                         break;
                     default:
-                        query =
-                            shiftOptions.SortOrder.ToUpper() == "ASC"
-                                ? query.OrderBy(s => s.ShiftId)
-                                : query.OrderByDescending(s => s.ShiftId);
+                        query = shiftOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
+                            ? query.OrderBy(s => s.ShiftId)
+                            : query.OrderByDescending(s => s.ShiftId);
                         break;
                 }
             }
@@ -95,10 +107,25 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
             var searchChars = searchLower.ToCharArray();
 
             var data = await query.ToListAsync();
-		}
 
-        shifts = await query.ToListAsync();
-        // Check if any shifts were found
+            shifts = data.Where(s =>
+                    s.WorkerId.ToString().Contains(searchLower)
+                    || s.StartTime.ToString().Contains(searchLower)
+                    || s.EndTime.ToString().Contains(searchLower)
+                    || s.LocationId.ToString().Contains(searchLower)
+                    || searchChars.All(c =>
+                        s.StartTime.ToString("yyyy-MM-ddTHH:mm:ss").ToLower().Contains(c)
+                    )
+                    || searchChars.All(c =>
+                        s.EndTime.ToString("yyyy-MM-ddTHH:mm:ss").ToLower().Contains(c)
+                    )
+                )
+                .ToList();
+        }
+        else
+        {
+            shifts = await query.ToListAsync();
+        }
 
         if (shifts is null || shifts.Count == 0)
         {

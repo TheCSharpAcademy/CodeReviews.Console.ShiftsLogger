@@ -17,23 +17,23 @@ public class ShiftsDbContext(DbContextOptions options): DbContext(options)
             new Shift
             {
                 WorkerId = 1,
-                StartTime = DateTimeOffset.UtcNow,
+                StartTime = DateTimeOffset.UtcNow.AddHours(2),
                 EndTime = DateTimeOffset.UtcNow.AddHours(10),
-                LocationId = 1,
+                LocationId = 105,
             },
             new Shift
             {
                 WorkerId = 2,
-                StartTime = DateTimeOffset.UtcNow,
+                StartTime = DateTimeOffset.UtcNow.AddHours(1),
                 EndTime = DateTimeOffset.UtcNow.AddHours(5),
-                LocationId = 2,
+                LocationId = 205,
             },
             new Shift
             {
                 WorkerId = 3,
-                StartTime = DateTimeOffset.UtcNow,
+                StartTime = DateTimeOffset.UtcNow.AddHours(3),
                 EndTime = DateTimeOffset.UtcNow.AddHours(8),
-                LocationId = 3,
+                LocationId = 305,
             }
         );
         SaveChanges();
