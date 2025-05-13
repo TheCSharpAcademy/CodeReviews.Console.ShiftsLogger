@@ -1,0 +1,6 @@
+@ShiftsLogger.weakiepedia_HostAddress = http://localhost:5249
+
+GET {{ShiftsLogger.weakiepedia_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
