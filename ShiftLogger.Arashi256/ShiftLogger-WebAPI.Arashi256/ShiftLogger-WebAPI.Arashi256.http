@@ -1,6 +1,0 @@
-@ShiftLogger_WebAPI.Arashi256_HostAddress = http://localhost:5294
-
-GET {{ShiftLogger_WebAPI.Arashi256_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
