@@ -127,8 +127,11 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
                     || s.StartTime.ToString().Contains(searchLower)
                     || s.EndTime.ToString().Contains(searchLower)
                     || s.LocationId.ToString().Contains(searchLower)
-					|| s.Location.Name.ToLower().Contains(searchLower)
-					|| searchChars.All(c =>
+                    || s.Location.Name.ToLower().Contains(searchLower)
+                    || s.Location.TownOrCity.ToLower().Contains(searchLower)
+                    || s.Location.StateOrCounty.ToLower().Contains(searchLower)
+                    || s.Location.Country.ToLower().Contains(searchLower)
+                    || searchChars.All(c =>
                         s.StartTime.ToString("yyyy-MM-ddTHH:mm:ss").ToLower().Contains(c)
                     )
                     || searchChars.All(c =>
@@ -171,20 +174,20 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
             {
                 RequestFailed = true,
                 ResponseCode = System.Net.HttpStatusCode.NotFound,
-                Message = $"Shift with ID: {id} not found.",
+                Message = $"Shifts with ID: {id} not found.",
             };
         }
         return new ApiResponseDto<Shift?>
         {
             Data = shift,
-            Message = "Shift retrieved successfully",
+            Message = "Shifts retrieved successfully",
             ResponseCode = System.Net.HttpStatusCode.OK,
         };
     }
 
     public async Task<ApiResponseDto<Shift>> CreateShift(ShiftApiRequestDto shift)
     {
-        Shift newShift = mapper.Map<Shift>(shift); // Map the DTO to the Shift entity
+        Shift newShift = mapper.Map<Shift>(shift); // Map the DTO to the Shifts entity
         var savedShift = await dbContext.Shifts.AddAsync(newShift);
         await dbContext.SaveChangesAsync();
 
@@ -194,7 +197,7 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
         return new ApiResponseDto<Shift>
         {
             Data = savedShift.Entity,
-            Message = "Shift created successfully",
+            Message = "Shifts created successfully",
             ResponseCode = System.Net.HttpStatusCode.Created,
         };
     }
@@ -209,7 +212,7 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
             {
                 RequestFailed = true,
                 ResponseCode = System.Net.HttpStatusCode.NotFound,
-                Message = $"Shift with ID: {id} not found.",
+                Message = $"Shifts with ID: {id} not found.",
             };
         }
 
@@ -225,7 +228,7 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
         {
             RequestFailed = false,
             ResponseCode = System.Net.HttpStatusCode.OK,
-            Message = $"Shift with ID: {id} updated successfully.",
+            Message = $"Shifts with ID: {id} updated successfully.",
             Data = savedShift,
         };
     }
@@ -240,7 +243,7 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
             {
                 RequestFailed = true,
                 ResponseCode = System.Net.HttpStatusCode.NotFound,
-                Message = $"Shift with ID: {id} not found.",
+                Message = $"Shifts with ID: {id} not found.",
             };
         }
 
@@ -251,7 +254,7 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
         {
             RequestFailed = false,
             ResponseCode = System.Net.HttpStatusCode.NoContent,
-            Message = $"Shift with ID: {id} deleted successfully.",
+            Message = $"Shifts with ID: {id} deleted successfully.",
         };
     }
 }

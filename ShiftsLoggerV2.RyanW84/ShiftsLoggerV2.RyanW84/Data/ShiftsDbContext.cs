@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerV2.RyanW84.Models;
 
 namespace ShiftsLoggerV2.RyanW84.Data;
@@ -7,23 +8,32 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<Location> Locations { get; set; }
+    public DbSet<Worker> Workers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .Entity<Shift>()
-            .HasOne(s => s.Location)
-            .WithOne(l => l.Shift)
-            .HasForeignKey<Location>(L => L.LocationId)
-            .OnDelete(DeleteBehavior.Cascade);
-    }
+		modelBuilder
+			.Entity<Shift>()
+			.HasOne(s => s.Worker) // A Shifts has one Worker
+			.WithMany(static w => w.Shifts) // A Worker has many Shifts
+			.HasForeignKey(s => s.WorkerId) // Foreign key in Shifts
+			.OnDelete(DeleteBehavior.Cascade);
+
+		modelBuilder
+		.Entity<Shift>()
+		.HasOne(s => s.Location) // A LocationId has many Shifts
+		.WithMany(l => l.Shifts) // A Location has many shifts
+		.HasForeignKey(s => s.LocationId) // Foreign key in Shifts
+		.OnDelete(DeleteBehavior.Cascade);
+	}
 
     public void SeedData()
     {
         Shifts.RemoveRange(Shifts);
         Locations.RemoveRange(Locations);
+		Workers.RemoveRange(Workers);
 
-        var locations = new List<Location>()
+		var locations = new List<Location>()
         {
             new Location
             {
@@ -56,8 +66,33 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
 
         Locations.AddRange(locations);
 
-        // Seed the database with some initial data
-        Shifts.AddRange(
+       
+
+        var workers = new List<Worker>()
+        {
+            new Worker()
+            {
+                Name = "John Doe",
+                Phone = "123-456-7890",
+                Email = "John@Doe.com",
+            },
+            new Worker()
+            {
+                Name = "Jane Doe",
+                Phone = "123-456-7892",
+                Email = "Jane@Doe.com",
+            },
+            new Worker()
+            {
+                Name = "Jim Doe",
+				Phone = "123-456-7893",
+                Email = "Jim@yahoo.com",
+			}
+        };
+		Workers.AddRange(workers);
+
+		// Seed the database with some initial data
+		Shifts.AddRange(
             new Shift
             {
                 WorkerId = 1,

@@ -68,7 +68,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Create Shift failed, see Exception {ex}");
+            Console.WriteLine($"Create Shifts failed, see Exception {ex}");
             throw;
         }
     }
@@ -90,7 +90,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Update Shift failed, see Exception {ex}");
+            Console.WriteLine($"Update Shifts failed, see Exception {ex}");
             throw;
         }
     }
@@ -113,7 +113,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Delete Shift failed, see Exception {ex}");
+            Console.WriteLine($"Delete Shifts failed, see Exception {ex}");
             throw;
         }
     }
