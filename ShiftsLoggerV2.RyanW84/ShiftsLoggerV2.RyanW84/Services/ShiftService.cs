@@ -13,7 +13,7 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
     public async Task<ApiResponseDto<List<Shift>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {
         //var shifts = await dbContext.Shifts.ToListAsync();
-        var query = dbContext.Shifts.AsQueryable(); // Allow for filtering
+        var query = dbContext.Shifts.Include(s => s.Location).AsQueryable(); // Allow for filtering
         List<Shift>? shifts;
 
         if (!string.IsNullOrEmpty(shiftOptions.WorkerId.ToString()))
@@ -31,6 +31,12 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
         if (shiftOptions.LocationId != null)
         {
             query = query.Where(s => s.LocationId.ToString() == shiftOptions.LocationId.ToString());
+        }
+        if (!string.IsNullOrEmpty(shiftOptions.LocationName))
+        {
+            query = query.Where(s =>
+                s.Location.Name.ToLower().Contains(shiftOptions.LocationName.ToLower())
+            );
         }
         if (shiftOptions.StartTime != null)
         {
@@ -89,6 +95,14 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
                             ? query.OrderBy(s => s.LocationId)
                             : query.OrderByDescending(s => s.LocationId);
                         break;
+                    case "location_name":
+                        query = shiftOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
+                            ? query.OrderBy(s => s.Location.Name)
+                            : query.OrderByDescending(s => s.Location.Name);
+                        break;
                     default:
                         query = shiftOptions.SortOrder.Equals(
                             "ASC",
@@ -113,7 +127,8 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
                     || s.StartTime.ToString().Contains(searchLower)
                     || s.EndTime.ToString().Contains(searchLower)
                     || s.LocationId.ToString().Contains(searchLower)
-                    || searchChars.All(c =>
+					|| s.Location.Name.ToLower().Contains(searchLower)
+					|| searchChars.All(c =>
                         s.StartTime.ToString("yyyy-MM-ddTHH:mm:ss").ToLower().Contains(c)
                     )
                     || searchChars.All(c =>
@@ -147,7 +162,9 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
 
     public async Task<ApiResponseDto<Shift?>> GetShiftById(int id)
     {
-        Shift? shift = await dbContext.Shifts.FindAsync(id);
+        Shift? shift = await dbContext
+            .Shifts.Include(s => s.Location)
+            .FirstOrDefaultAsync(s => s.ShiftId == id);
         if (shift is null)
         {
             return new ApiResponseDto<Shift?>

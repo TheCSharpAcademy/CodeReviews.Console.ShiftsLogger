@@ -1,5 +1,6 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi;
+using Newtonsoft.Json;
 using Scalar.AspNetCore;
 using ShiftsLoggerV2.RyanW84.Data;
 using ShiftsLoggerV2.RyanW84.Services;
@@ -8,9 +9,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
-builder.Services.AddDbContext<ShiftsDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+
+// Prevents circular dependency issues
+builder
+    .Services.AddControllers()
+    .AddJsonOptions(opts =>
+        opts.JsonSerializerOptions.ReferenceHandler = System
+            .Text
+            .Json
+            .Serialization
+            .ReferenceHandler
+            .IgnoreCycles
+    );
+
+builder.Services.AddDbContext<ShiftsDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 builder.Services.AddScoped<IShiftService, ShiftService>(); //Implementing the service in the DI container
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

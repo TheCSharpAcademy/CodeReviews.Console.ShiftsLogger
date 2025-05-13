@@ -12,4 +12,6 @@ public class Shift
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset EndTime { get; set; }
     public int LocationId { get; set; }
+
+	public virtual Location? Location { get; set; } = null!; // Navigation property to the Location entity
 }
