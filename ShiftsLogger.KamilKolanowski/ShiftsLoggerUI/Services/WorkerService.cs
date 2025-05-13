@@ -6,6 +6,7 @@ namespace ShiftsLogger.KamilKolanowski.Services;
 
 internal class WorkerService
 {
+    private readonly ShiftsLoggerDb.ShiftsLoggerDbContext _context;
     internal void AddWorker()
     {
         using (var context = new ShiftsLoggerDb.ShiftsLoggerDbContext())
@@ -18,7 +19,7 @@ internal class WorkerService
         ReturnStatusMessage("added");
     }
 
-    internal Worker CreateWorker()
+    private Worker CreateWorker()
     {
         var firstName = AnsiConsole.Ask<string>("Enter first name:");
         var lastName = AnsiConsole.Ask<string>("Enter first name:");
@@ -34,7 +35,11 @@ internal class WorkerService
         };
     }
 
-    internal void ReturnStatusMessage(string message)
+    private Worker EditWorker(Worker worker)
+    {
+        return worker;
+    }
+    private void ReturnStatusMessage(string message)
     {
         AnsiConsole.MarkupLine($"[green]Successfully {message} worker![/]");
         AnsiConsole.MarkupLine("Press any key to continue...");
