@@ -1,12 +1,12 @@
-﻿using ShiftsLogger.KamilKolanowski.View;
+﻿using ShiftsLoggerUI.View;
 
 namespace ShiftsLoggerUI;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         MainView mainView = new MainView();
-        mainView.MainMenu();
+        await mainView.Start();
     }
 }

@@ -7,9 +7,7 @@ namespace ShiftsLogger.KamilKolanowski.Models.Data;
 internal class ShiftsLoggerDbContext : DbContext
 {
     public ShiftsLoggerDbContext(DbContextOptions<ShiftsLoggerDbContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<ShiftType> ShiftTypes { get; set; }

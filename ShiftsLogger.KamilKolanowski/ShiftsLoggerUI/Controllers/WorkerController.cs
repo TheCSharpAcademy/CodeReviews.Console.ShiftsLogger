@@ -1,11 +1,15 @@
+using ShiftsLogger.KamilKolanowski.Services;
 using Spectre.Console;
 
 namespace ShiftsLogger.KamilKolanowski.Controllers;
 
 internal class WorkerController
 {
-    internal void Operate()
+    private readonly WorkerService _workerService = new();
+
+    internal async Task Operate()
     {
-        Console.WriteLine("Im a worker");
+        var workers = await _workerService.GetWorkersAsync();
+        await _workerService.CreateTable(workers);
     }
 }

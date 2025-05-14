@@ -5,7 +5,8 @@ internal class ShiftsLoggerMenu
     internal enum MainMenu
     {
         Worker,
-        Shift
+        Shift,
+        Exit,
     }
 
     internal enum WorkerMenu
@@ -15,12 +16,13 @@ internal class ShiftsLoggerMenu
         DeleteWorker,
     }
 
-    internal static Dictionary<WorkerMenu, string> WorkerMenuType { get; } = new()
-    {
-        { WorkerMenu.AddWorker, "Add Worker" },
-        { WorkerMenu.EditWorker, "Edit Worker" },
-        { WorkerMenu.DeleteWorker, "Delete Worker" },
-    };
+    internal static Dictionary<WorkerMenu, string> WorkerMenuType { get; } =
+        new()
+        {
+            { WorkerMenu.AddWorker, "Add Worker" },
+            { WorkerMenu.EditWorker, "Edit Worker" },
+            { WorkerMenu.DeleteWorker, "Delete Worker" },
+        };
 
     internal enum ShiftMenu
     {
@@ -29,10 +31,11 @@ internal class ShiftsLoggerMenu
         DeleteShift,
     }
 
-    internal static Dictionary<ShiftMenu, string> ShiftMenuType { get; } = new()
-    {
-        { ShiftMenu.AddShift, "Add Shift" },
-        { ShiftMenu.EditShift, "Edit Shift" },
-        { ShiftMenu.DeleteShift, "Delete Shift" },
-    };
+    internal static Dictionary<ShiftMenu, string> ShiftMenuType { get; } =
+        new()
+        {
+            { ShiftMenu.AddShift, "Add Shift" },
+            { ShiftMenu.EditShift, "Edit Shift" },
+            { ShiftMenu.DeleteShift, "Delete Shift" },
+        };
 }

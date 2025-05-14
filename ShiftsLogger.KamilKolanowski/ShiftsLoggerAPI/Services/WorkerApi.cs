@@ -7,7 +7,7 @@ namespace ShiftsLoggerAPI.Services;
 internal class WorkerApi
 {
     private readonly WorkerDbService _workerDbService;
-    
+
     public WorkerApi(WorkerDbService workerDbService)
     {
         _workerDbService = workerDbService;

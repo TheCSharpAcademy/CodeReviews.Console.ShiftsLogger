@@ -1,15 +1,15 @@
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ShiftsLogger.KamilKolanowski.Models;
 using ShiftsLogger.KamilKolanowski.Models.Data;
 using ShiftsLoggerAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace ShiftsLoggerAPI.Services;
 
 internal class WorkerDbService
 {
     private readonly ShiftsLoggerDbContext _context;
-    
+
     public WorkerDbService(ShiftsLoggerDbContext context)
     {
         _context = context;
@@ -27,7 +27,7 @@ internal class WorkerDbService
             Console.WriteLine($"Failed to add worker due to: {ex.Message}");
         }
     }
-    
+
     internal async Task UpdateWorkerAsync(Worker worker)
     {
         try
@@ -40,7 +40,7 @@ internal class WorkerDbService
             Console.WriteLine($"Failed to edit worker due to: {ex.Message}");
         }
     }
-    
+
     internal async Task DeleteWorkerAsync(int workerId)
     {
         try
@@ -57,7 +57,7 @@ internal class WorkerDbService
             Console.WriteLine($"Failed to delete worker due to: {ex.Message}");
         }
     }
-    
+
     internal async Task<Worker?> ReadWorkerAsync(int id)
     {
         try
@@ -70,7 +70,7 @@ internal class WorkerDbService
             return null;
         }
     }
-    
+
     internal async Task<List<Worker>> ReadAllWorkersAsync()
     {
         try
