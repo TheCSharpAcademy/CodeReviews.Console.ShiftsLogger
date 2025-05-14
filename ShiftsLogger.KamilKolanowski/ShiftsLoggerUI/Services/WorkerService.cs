@@ -1,32 +1,18 @@
 using ShiftsLogger.KamilKolanowski.Models;
-using ShiftsLogger.KamilKolanowski.Models.Data;
 using Spectre.Console;
 
 namespace ShiftsLogger.KamilKolanowski.Services;
 
 internal class WorkerService
 {
-    private readonly ShiftsLoggerDb.ShiftsLoggerDbContext _context;
-    internal void AddWorker()
-    {
-        using (var context = new ShiftsLoggerDb.ShiftsLoggerDbContext())
-        {
-            var newWorker = CreateWorker();
-            context.Workers.Add(newWorker);
-            context.SaveChanges();
-        }
-
-        ReturnStatusMessage("added");
-    }
-
-    private Worker CreateWorker()
+    internal WorkerDto CreateWorker()
     {
         var firstName = AnsiConsole.Ask<string>("Enter first name:");
         var lastName = AnsiConsole.Ask<string>("Enter first name:");
         var mail = firstName.ToLower() + "." + lastName.ToLower() + "@thecsharpacademy.com";
         var role = AnsiConsole.Ask<string>("Enter role:");
 
-        return new Worker
+        return new WorkerDto
         {
             FirstName = firstName,
             LastName = lastName,
@@ -35,14 +21,15 @@ internal class WorkerService
         };
     }
 
-    private Worker EditWorker(Worker worker)
+    internal WorkerDto UpdateWorker(WorkerDto workerDto)
     {
-        return worker;
+        return new WorkerDto
+        {
+            FirstName = workerDto.FirstName,
+            LastName = workerDto.LastName,
+            Email = workerDto.Email,
+            Role = workerDto.Role
+        };
     }
-    private void ReturnStatusMessage(string message)
-    {
-        AnsiConsole.MarkupLine($"[green]Successfully {message} worker![/]");
-        AnsiConsole.MarkupLine("Press any key to continue...");
-        Console.ReadKey();
-    }
+    
 }

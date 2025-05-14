@@ -9,11 +9,11 @@ using ShiftsLogger.KamilKolanowski.Models.Data;
 
 #nullable disable
 
-namespace ShiftsLogger.KamilKolanowski.Migrations
+namespace ShiftsLoggerAPI.Migrations
 {
-    [DbContext(typeof(ShiftsLoggerDb.ShiftsLoggerDbContext))]
-    [Migration("20250512134532_initCreate")]
-    partial class initCreate
+    [DbContext(typeof(ShiftsLoggerDbContext))]
+    [Migration("20250514103102_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,25 +21,10 @@ namespace ShiftsLogger.KamilKolanowski.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("TCSA")
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ShiftWorker", b =>
-                {
-                    b.Property<int>("ShiftsShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkersWorkerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ShiftsShiftId", "WorkersWorkerId");
-
-                    b.HasIndex("WorkersWorkerId");
-
-                    b.ToTable("ShiftWorker", "TCSA");
-                });
 
             modelBuilder.Entity("ShiftsLogger.KamilKolanowski.Models.Shift", b =>
                 {
@@ -60,6 +45,9 @@ namespace ShiftsLogger.KamilKolanowski.Migrations
 
                     b.Property<double>("WorkedHours")
                         .HasColumnType("float");
+
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
 
                     b.HasKey("ShiftId");
 
@@ -112,21 +100,6 @@ namespace ShiftsLogger.KamilKolanowski.Migrations
                     b.HasKey("WorkerId");
 
                     b.ToTable("Workers", "TCSA");
-                });
-
-            modelBuilder.Entity("ShiftWorker", b =>
-                {
-                    b.HasOne("ShiftsLogger.KamilKolanowski.Models.Shift", null)
-                        .WithMany()
-                        .HasForeignKey("ShiftsShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShiftsLogger.KamilKolanowski.Models.Worker", null)
-                        .WithMany()
-                        .HasForeignKey("WorkersWorkerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ShiftsLogger.KamilKolanowski.Models.Shift", b =>

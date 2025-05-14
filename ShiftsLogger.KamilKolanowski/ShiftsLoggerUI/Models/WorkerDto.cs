@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShiftsLogger.KamilKolanowski.Models;
 
-public class Worker
+public class WorkerDto
 {
     [Key]
     public int WorkerId { get; set; }
@@ -12,5 +12,5 @@ public class Worker
     public string Email { get; set; } = String.Empty;
     public string Role { get; set; } = String.Empty;
     
-    public List<Shift> Shifts { get; set; } 
+    public List<ShiftDto> Shifts { get; set; } 
 }

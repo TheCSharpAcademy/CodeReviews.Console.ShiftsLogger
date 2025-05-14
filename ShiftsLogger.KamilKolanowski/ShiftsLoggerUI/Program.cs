@@ -1,9 +1,12 @@
-﻿namespace ShiftsLoggerUI;
+﻿using ShiftsLogger.KamilKolanowski.View;
+
+namespace ShiftsLoggerUI;
 
 class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        MainView mainView = new MainView();
+        mainView.MainMenu();
     }
 }

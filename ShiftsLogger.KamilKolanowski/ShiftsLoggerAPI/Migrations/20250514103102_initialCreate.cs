@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace ShiftsLogger.KamilKolanowski.Migrations
+namespace ShiftsLoggerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class initCreate : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,6 +53,7 @@ namespace ShiftsLogger.KamilKolanowski.Migrations
                     ShiftId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ShiftTypeId = table.Column<int>(type: "int", nullable: false),
+                    WorkerId = table.Column<int>(type: "int", nullable: false),
                     WorkedHours = table.Column<double>(type: "float", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -69,53 +70,16 @@ namespace ShiftsLogger.KamilKolanowski.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ShiftWorker",
-                schema: "TCSA",
-                columns: table => new
-                {
-                    ShiftsShiftId = table.Column<int>(type: "int", nullable: false),
-                    WorkersWorkerId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ShiftWorker", x => new { x.ShiftsShiftId, x.WorkersWorkerId });
-                    table.ForeignKey(
-                        name: "FK_ShiftWorker_Shifts_ShiftsShiftId",
-                        column: x => x.ShiftsShiftId,
-                        principalSchema: "TCSA",
-                        principalTable: "Shifts",
-                        principalColumn: "ShiftId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ShiftWorker_Workers_WorkersWorkerId",
-                        column: x => x.WorkersWorkerId,
-                        principalSchema: "TCSA",
-                        principalTable: "Workers",
-                        principalColumn: "WorkerId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Shifts_ShiftTypeId",
                 schema: "TCSA",
                 table: "Shifts",
                 column: "ShiftTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ShiftWorker_WorkersWorkerId",
-                schema: "TCSA",
-                table: "ShiftWorker",
-                column: "WorkersWorkerId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ShiftWorker",
-                schema: "TCSA");
-
             migrationBuilder.DropTable(
                 name: "Shifts",
                 schema: "TCSA");
