@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShiftsLoggerV2.RyanW84.Data;
 
@@ -11,9 +12,11 @@ using ShiftsLoggerV2.RyanW84.Data;
 namespace ShiftsLoggerV2.RyanW84.Data.Migrations
 {
     [DbContext(typeof(ShiftsDbContext))]
-    partial class ShiftsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514190848_AmendedWorkerModel")]
+    partial class AmendedWorkerModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,9 +102,6 @@ namespace ShiftsLoggerV2.RyanW84.Data.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LocationId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -109,9 +109,10 @@ namespace ShiftsLoggerV2.RyanW84.Data.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("WorkerId");
+                    b.Property<int>("shiftId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("LocationId");
+                    b.HasKey("WorkerId");
 
                     b.ToTable("Workers");
                 });
@@ -135,18 +136,9 @@ namespace ShiftsLoggerV2.RyanW84.Data.Migrations
                     b.Navigation("Worker");
                 });
 
-            modelBuilder.Entity("ShiftsLoggerV2.RyanW84.Models.Worker", b =>
-                {
-                    b.HasOne("ShiftsLoggerV2.RyanW84.Models.Location", null)
-                        .WithMany("Workers")
-                        .HasForeignKey("LocationId");
-                });
-
             modelBuilder.Entity("ShiftsLoggerV2.RyanW84.Models.Location", b =>
                 {
                     b.Navigation("Shifts");
-
-                    b.Navigation("Workers");
                 });
 
             modelBuilder.Entity("ShiftsLoggerV2.RyanW84.Models.Worker", b =>

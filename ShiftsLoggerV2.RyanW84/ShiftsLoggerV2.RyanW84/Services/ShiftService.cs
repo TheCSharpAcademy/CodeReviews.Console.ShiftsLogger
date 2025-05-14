@@ -13,7 +13,7 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
     public async Task<ApiResponseDto<List<Shift>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {
         //var shifts = await dbContext.Shifts.ToListAsync();
-        var query = dbContext.Shifts.Include(s => s.Location).AsQueryable(); // Allow for filtering
+        var query = dbContext.Shifts.Include(s => s.Location).Include(s=>s.Worker).AsQueryable(); // Allow for filtering
         List<Shift>? shifts;
 
         if (!string.IsNullOrEmpty(shiftOptions.WorkerId.ToString()))
@@ -166,8 +166,8 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
     public async Task<ApiResponseDto<Shift?>> GetShiftById(int id)
     {
         Shift? shift = await dbContext
-            .Shifts.Include(s => s.Location)
-            .FirstOrDefaultAsync(s => s.ShiftId == id);
+            .Shifts.Include(s => s.Location).Include(s => s.Worker)
+			.FirstOrDefaultAsync(s => s.ShiftId == id);
         if (shift is null)
         {
             return new ApiResponseDto<Shift?>

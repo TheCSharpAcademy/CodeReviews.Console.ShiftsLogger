@@ -13,5 +13,6 @@ public class Location
     public string ZipOrPostCode { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
 
-    public virtual ICollection<Shift?> Shifts { get; set; } = null!; // Navigation property to the Shifts entity
+    public virtual ICollection<Shift?> Shifts { get; set; } // Navigation property to the Shifts entity
+    public virtual ICollection<Worker?> Workers { get; set; } // Navigation property to the Workers entity
 }
