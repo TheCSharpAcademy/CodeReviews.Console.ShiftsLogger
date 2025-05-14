@@ -17,7 +17,6 @@ public class ShiftService
 
     public async Task InsertShift()
     {
-        // add datetime validation later
         DateTime startDate = Validation.GetDateTimeValue("Start Date:");
         DateTime endDate = Validation.GetDateTimeValue("End Date:");
         Shift shift = new Shift { StartDateTime = startDate, EndDateTime = endDate };
