@@ -1,7 +1,9 @@
 using ShiftsLogger.KamilKolanowski.Models;
+using ShiftsLogger.KamilKolanowski.Services;
+using ShiftsLoggerUI.Models;
 using Spectre.Console;
 
-namespace ShiftsLogger.KamilKolanowski.Services;
+namespace ShiftsLoggerUI.Services;
 
 internal class WorkerService
 {
@@ -24,7 +26,7 @@ internal class WorkerService
         };
     }
 
-    internal WorkerDto UpdateWorker(WorkerDto workerDto)
+    internal async Task<WorkerDto> UpdateWorker(WorkerDto workerDto)
     {
         return new WorkerDto
         {
@@ -43,6 +45,13 @@ internal class WorkerService
         );
 
         return workerDtos;
+    }
+
+    internal async Task<WorkerDto> GetWorkerAsync(int id)
+    {
+        string response = await _dataFetcher.GetAsync($"workers/{id}");
+        WorkerDto workerDto = await _deserializeJson.DeserializeAsync<WorkerDto>(response);
+        return workerDto;
     }
 
     internal async Task CreateTable(List<WorkerDto> workerDtos)

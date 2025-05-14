@@ -1,5 +1,6 @@
 using ShiftsLogger.KamilKolanowski.Controllers;
 using ShiftsLogger.KamilKolanowski.Enums;
+using ShiftsLoggerUI.Controllers;
 using Spectre.Console;
 
 namespace ShiftsLoggerUI.View;

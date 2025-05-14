@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace ShiftsLogger.KamilKolanowski.Models;
+namespace ShiftsLoggerUI.Models;
 
 public class WorkerDto
 {
+    [JsonPropertyName("workerId")]
+    public int WorkerId { get; set; }
     [JsonPropertyName("firstName")]
     public string FirstName { get; set; } = String.Empty;
 

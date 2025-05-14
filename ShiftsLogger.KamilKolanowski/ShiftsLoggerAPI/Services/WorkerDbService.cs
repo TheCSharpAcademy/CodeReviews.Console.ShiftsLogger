@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ShiftsLogger.KamilKolanowski.Models;
 using ShiftsLogger.KamilKolanowski.Models.Data;
 using ShiftsLoggerAPI.Models;
 
