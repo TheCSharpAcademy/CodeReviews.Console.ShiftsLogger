@@ -1,3 +1,6 @@
+using System.Net.Http.Json;
+using ShiftsLoggerUI.Models;
+
 namespace ShiftsLogger.KamilKolanowski.Services;
 
 internal class DataFetcher
@@ -10,10 +13,26 @@ internal class DataFetcher
     internal async Task<string> GetAsync(string endpoint)
     {
         using HttpResponseMessage response = await sharedClient.GetAsync(endpoint);
-
         response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
 
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-        return jsonResponse;
+    internal async Task PutAsync(WorkerDto worker)
+    {
+        var response = await sharedClient.PutAsJsonAsync("workers", worker);
+        response.EnsureSuccessStatusCode();
+    }
+
+    internal async Task PostAsync(WorkerDto worker)
+    {
+        var response = await sharedClient.PostAsJsonAsync("workers", worker);
+        response.EnsureSuccessStatusCode();
+    }
+
+    internal async Task DeleteAsync(string endpoint)
+    {
+        var response = await sharedClient.DeleteAsync(endpoint);
+        response.EnsureSuccessStatusCode();
     }
 }
+

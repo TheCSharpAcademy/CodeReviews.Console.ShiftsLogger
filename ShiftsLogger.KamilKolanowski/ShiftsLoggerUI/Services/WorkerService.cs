@@ -26,15 +26,9 @@ internal class WorkerService
         };
     }
 
-    internal async Task<WorkerDto> UpdateWorker(WorkerDto workerDto)
+    internal async Task UpdateWorker(WorkerDto workerDto)
     {
-        return new WorkerDto
-        {
-            FirstName = workerDto.FirstName,
-            LastName = workerDto.LastName,
-            Email = workerDto.Email,
-            Role = workerDto.Role,
-        };
+        await _dataFetcher.PutAsync(workerDto);
     }
 
     internal async Task<List<WorkerDto>> GetWorkersAsync()
