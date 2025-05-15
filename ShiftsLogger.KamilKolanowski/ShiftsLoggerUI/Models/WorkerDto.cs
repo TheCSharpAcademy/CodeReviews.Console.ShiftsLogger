@@ -7,6 +7,7 @@ public class WorkerDto
 {
     [JsonPropertyName("workerId")]
     public int WorkerId { get; set; }
+
     [JsonPropertyName("firstName")]
     public string FirstName { get; set; } = String.Empty;
 

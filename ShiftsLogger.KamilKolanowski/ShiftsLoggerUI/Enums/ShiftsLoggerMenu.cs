@@ -14,6 +14,7 @@ internal class ShiftsLoggerMenu
         AddWorker,
         EditWorker,
         DeleteWorker,
+        ViewWorkers,
     }
 
     internal static Dictionary<WorkerMenu, string> WorkerMenuType { get; } =
@@ -22,6 +23,7 @@ internal class ShiftsLoggerMenu
             { WorkerMenu.AddWorker, "Add Worker" },
             { WorkerMenu.EditWorker, "Edit Worker" },
             { WorkerMenu.DeleteWorker, "Delete Worker" },
+            { WorkerMenu.ViewWorkers, "View Workers" },
         };
 
     internal enum ShiftMenu

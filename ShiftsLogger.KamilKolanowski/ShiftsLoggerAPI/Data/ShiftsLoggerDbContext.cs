@@ -10,7 +10,6 @@ internal class ShiftsLoggerDbContext : DbContext
         : base(options) { }
 
     public DbSet<Shift> Shifts { get; set; }
-    public DbSet<ShiftType> ShiftTypes { get; set; }
     public DbSet<Worker> Workers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

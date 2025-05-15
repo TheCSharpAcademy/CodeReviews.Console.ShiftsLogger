@@ -1,4 +1,4 @@
-using ShiftsLoggerUI.Models;
+using ShiftsLogger.KamilKolanowski.Enums;
 using ShiftsLoggerUI.Services;
 using Spectre.Console;
 
@@ -10,40 +10,52 @@ internal class WorkerController
 
     internal async Task Operate()
     {
-        // var workers = await _workerService.GetWorkersAsync();
-        // await _workerService.CreateTable(workers);
-
-        var editedWorker = await EditWorker();
-        await _workerService.UpdateWorker(editedWorker);
-    }
-
-    private async Task<WorkerDto> EditWorker()
-    {
-        var workerDtoToUpdate = await _workerService.GetWorkerAsync(1);
-
-        var columnToUpdate = AnsiConsole.Prompt(
+        var selectOption = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
-                .Title("Choose the property to edit")
-                .AddChoices("FirstName", "LastName", "Email", "Role"));
+                .Title("Choose an option:")
+                .AddChoices(ShiftsLoggerMenu.WorkerMenuType.Values)
+        );
 
-        var newValue = AnsiConsole.Ask<string>($"Provide new value for {columnToUpdate} property: ");
+        var selectedOption = ShiftsLoggerMenu
+            .WorkerMenuType.FirstOrDefault(o => o.Value == selectOption)
+            .Key;
 
-        switch (columnToUpdate)
+        switch (selectedOption)
         {
-            case "FirstName":
-                workerDtoToUpdate.FirstName = newValue;
+            case ShiftsLoggerMenu.WorkerMenu.AddWorker:
+                await AddWorker();
                 break;
-            case "LastName":
-                workerDtoToUpdate.LastName = newValue;
+            case ShiftsLoggerMenu.WorkerMenu.EditWorker:
+                await UpdateWorker();
                 break;
-            case "Email":
-                workerDtoToUpdate.Email = newValue;
+            case ShiftsLoggerMenu.WorkerMenu.DeleteWorker:
+                await DeleteWorker();
                 break;
-            case "Role":
-                workerDtoToUpdate.Role = newValue;
+            case ShiftsLoggerMenu.WorkerMenu.ViewWorkers:
+                await ViewWorkers();
                 break;
         }
+    }
 
-        return workerDtoToUpdate;
+    private async Task AddWorker()
+    {
+        await _workerService.CreateWorker();
+    }
+
+    private async Task UpdateWorker()
+    {
+        await _workerService.EditWorker();
+    }
+
+    private async Task DeleteWorker()
+    {
+        await _workerService.DeleteWorker();
+    }
+
+    private async Task ViewWorkers()
+    {
+        await _workerService.CreateWorkersTable();
+        
+        AnsiConsole.MarkupLine("\nPress any key to continue...");
     }
 }
