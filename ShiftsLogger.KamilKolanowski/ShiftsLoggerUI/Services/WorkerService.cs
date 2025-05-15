@@ -15,6 +15,15 @@ internal class WorkerService
         try
         {
             var worker = GetUserInputForWorkerCreation();
+            if (await CheckIfWorkerExists(worker))
+            {
+                var numberForMail = GetNumberForWorkerMail(worker.Email);
+
+                if (numberForMail > 0)
+                {
+                    worker.Email = worker.FirstName.ToLower() + "." + worker.LastName.ToLower() + numberForMail + "@thecsharpacademy.com"; // fix this validation
+                }
+            }
             await _apiDataService.PostWorkerAsync(worker);
 
             AnsiConsole.MarkupLine("\n[green]Successfully added worker![/]\nPress any key to continue...");
@@ -177,4 +186,33 @@ internal class WorkerService
             Role = role,
         };
     }
+
+    private async Task<bool> CheckIfWorkerExists(WorkerDto workerDto)
+    {
+        List<WorkerDto> workers = await GetWorkersAsync();
+
+        if (workers.Contains(workerDto))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private int GetNumberForWorkerMail(string mail)
+    {
+        int atIndex = mail.IndexOf('@');
+
+        if (atIndex > 0)
+        {
+            char beforeAt = mail[atIndex - 1];
+            if (char.IsDigit(beforeAt))
+            {
+                int digit = int.Parse(beforeAt.ToString());
+                int incremented = digit + 1;
+                return incremented;
+            }
+        }
+        return 0;
+    }
+
 }
