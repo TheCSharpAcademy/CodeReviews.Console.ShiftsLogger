@@ -1,0 +1,6 @@
+@ShiftsLogger.WebApi_HostAddress = http://localhost:5218
+
+GET {{ShiftsLogger.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
