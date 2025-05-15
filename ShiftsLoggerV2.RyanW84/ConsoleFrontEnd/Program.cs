@@ -1,5 +1,14 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+
+using ShiftsLoggerV2.RyanW84.Dtos;
+using ShiftsLoggerV2.RyanW84.Models;
+
 using Spectre.Console;
+
+using System.Net.Http.Json;
+using System.Threading.Channels;
 
 class Program
 {
@@ -31,21 +40,21 @@ class Program
 
             switch (choice)
             {
-                case "Add Worker":
-                    await AddWorker(httpClient);
-                    break;
-                case "Add Location":
-                    await AddLocation(httpClient);
-                    break;
-                case "Add Shift":
-                    await AddShift(httpClient);
-                    break;
-                case "View Workers":
-                    await ViewWorkers(httpClient);
-                    break;
-                case "View Locations":
-                    await ViewLocations(httpClient);
-                    break;
+                //case "Add Worker":
+                //    await AddWorker(httpClient);
+                //    break;
+                //case "Add Location":
+                //    await AddLocation(httpClient);
+                //    break;
+                //case "Add Shift":
+                //    await AddShift(httpClient);
+                //    break;
+                //case "View Workers":
+                //    await ViewWorkers(httpClient);
+                //    break;
+                //case "View Locations":
+                //    await ViewLocations(httpClient);
+                //    break;
                 case "View Shifts":
                     await ViewShifts(httpClient);
                     break;
@@ -59,22 +68,47 @@ class Program
     {
         try
         {
-            // Attempt to send a GET request to the base address or a health-check endpoint
-            var response = await httpClient.GetAsync("api/Shift");
-            if (response.IsSuccessStatusCode)
+            for (int i = 0; i <= 3; i++)
             {
-                AnsiConsole.MarkupLine("[green]Successfully connected to the API.[/]");
-                return true;
+                var response = await httpClient.GetAsync("api/Shift");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    AnsiConsole.MarkupLine("[green]Successfully connected to the API.[/]");
+                    return true;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    AnsiConsole.MarkupLine("[yellow]API is unavailable. Retrying...[/]");
+                    await Task.Delay(2000); // Wait for 2 seconds before retrying
+                    continue;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    AnsiConsole.MarkupLine("[red]API endpoint not found. Please check the URL.[/]");
+                    return false;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    AnsiConsole.MarkupLine(
+                        "[red]Unauthorized access. Please check your credentials.[/]"
+                    );
+                    return false;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            else
-            {
-                AnsiConsole.MarkupLine($"[red]Failed to connect to the API. Status Code: {response.StatusCode}[/]");
-                return false;
-            }
+            AnsiConsole.MarkupLine("[red]Failed to connect to the API after multiple attempts.[/]");
+            return false;
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Error connecting to the API: {ex.Message}[/]");
+            AnsiConsole.MarkupLine(
+                $"[red]Error connecting to the API after three attempts: {ex.Message}[/]"
+            );
+            Console.ReadKey();
             return false;
         }
     }
@@ -114,7 +148,7 @@ class Program
         var country = AnsiConsole.Ask<string>("Enter [green]Country[/]:");
 
         var response = await httpClient.PostAsJsonAsync(
-            "api/locations",
+            "api/shifts",
             new
             {
                 Name = name,
@@ -158,13 +192,13 @@ class Program
         }
         else
         {
-            AnsiConsole.MarkupLine("[red]Failed to add shift.[/]");
+            AnsiConsole.MarkupLine("[red]Failed to add location.[/]");
         }
     }
 
     static async Task ViewWorkers(HttpClient httpClient)
     {
-        var workers = await httpClient.GetFromJsonAsync<List<dynamic>>("api/Worker");
+        var workers = await httpClient.GetFromJsonAsync<List<dynamic>>("api/Shift");
         if (workers != null)
         {
             var table = new Table()
@@ -189,72 +223,98 @@ class Program
         }
     }
 
-    static async Task ViewLocations(HttpClient httpClient)
+    //static async Task<ActionResult<Shift>> ViewLocations(HttpClient httpClient)
+    //{
+    //    try
+    //    {
+    //        var response = await httpClient.GetFromJsonAsync Task <ActionResult<Shift<ApiResponseDto>>>(
+    //            "api/Shift"
+    //        );
+    //        if (response != null && response.Data != null && !response.RequestFailed)
+    //        {
+    //            var table = new Table()
+    //    .AddColumn("ID")
+    //    .AddColumn("Name")
+    //    .AddColumn("Address")
+    //    .AddColumn("City")
+    //    .AddColumn("State")
+    //    .AddColumn("Zip")
+    //    .AddColumn("Country");
+    //            foreach (var location in response.Data)
+    //            {
+    //                table.AddRow(
+    //                    ((int)location.LocationId).ToString() ,
+    //                    (string)location.Address,
+    //                    (string)location.City ,
+    //                    (string)location.State ,
+    //                    (string)location.Zip ,
+    //                    (string)location.Country
+    //                );
+    //            }
+    //            AnsiConsole.Write(table);
+    //        }
+    //        else
+    //        {
+    //            AnsiConsole.MarkupLine(
+    //                $"[red]Failed to retrieve shifts: {response?.Message ?? "Unknown error"}[/]"
+    //            );
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Console.WriteLine($"[red]Get All Shifts failed, see Exception: {ex.Message}[/]");
+    //    }
+
+    //    return null;
+    //}
+
+    public class ShiftDto
     {
-        var locations = await httpClient.GetFromJsonAsync<List<dynamic>>("api/Location");
-        if (locations != null)
-        {
-            var table = new Table()
-                .AddColumn("ID")
-                .AddColumn("Name")
-                .AddColumn("Address")
-                .AddColumn("City")
-                .AddColumn("State")
-                .AddColumn("Zip")
-                .AddColumn("Country");
-            foreach (var location in locations)
-            {
-                table.AddRow(
-                    ((int)location.Id).ToString(),
-                    (string)location.Name,
-                    (string)location.Address,
-                    (string)location.City,
-                    (string)location.State,
-                    (string)location.Zip,
-                    (string)location.Country
-                );
-            }
-            AnsiConsole.Write(table);
-        }
-        else
-        {
-            AnsiConsole.MarkupLine("[red]Failed to retrieve locations.[/]");
-        }
+        public int ShiftId { get; set; }
+        public int WorkerId { get; set; }
+        public int LocationId { get; set; }
+        public DateTimeOffset StartTime { get; set; }
+        public DateTimeOffset EndTime { get; set; }
     }
 
-	static async Task ViewShifts(HttpClient httpClient)
-	{
-		try
-		{
-			var shifts = await httpClient.GetFromJsonAsync<List<dynamic>>("api/Shift");
-			if (shifts != null)
-			{
-				var table = new Table()
-					.AddColumn("ID")
-					.AddColumn("Worker ID")
-					.AddColumn("Location ID")
-					.AddColumn("Start Time")
-					.AddColumn("End Time");
-				foreach (var shift in shifts)
-				{
-					table.AddRow(
-						((int)shift.Id).ToString() ,
-						((int)shift.WorkerId).ToString() ,
-						((int)shift.LocationId).ToString() ,
-						((DateTime)shift.StartTime).ToString("yyyy-MM-dd HH:mm") ,
-						((DateTime)shift.EndTime).ToString("yyyy-MM-dd HH:mm")
-					);
-				}
-				AnsiConsole.Write(table);
-			}
-			else
-			{
-				AnsiConsole.MarkupLine("[red]Failed to retrieve shifts.[/]");
-			}
-		}
-		catch (Exception ex)
-		{
-			AnsiConsole.MarkupLine($"[red]Error retrieving shifts: {ex.Message}[/]");
-		}
-	}
+    static async Task ViewShifts(HttpClient httpClient)
+    {
+        try
+        {
+            var response = await httpClient.GetFromJsonAsync<ApiResponseDto<List<ShiftDto>>>(
+                "api/Shift"
+            );
+            if (response != null && response.Data != null && !response.RequestFailed)
+            {
+                var table = new Table()
+                    .AddColumn("ID")
+                    .AddColumn("Worker ID")
+                    .AddColumn("Location ID")
+                    .AddColumn("Start Time")
+                    .AddColumn("End Time");
+
+                foreach (var shift in response.Data)
+                {
+                    table.AddRow(
+                        shift.ShiftId.ToString(),
+                        shift.WorkerId.ToString(),
+                        shift.LocationId.ToString(),
+                        shift.StartTime.ToString("u"),
+                        shift.EndTime.ToString("u")
+                    );
+                }
+                AnsiConsole.Write(table);
+            }
+            else
+            {
+                AnsiConsole.MarkupLine(
+                    $"[red]Failed to retrieve shifts: {response?.Message ?? "Unknown error"}[/]"
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[red]Get All Shifts failed, see Exception: {ex.Message}[/]");
+        }
+    }
 }
