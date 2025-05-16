@@ -1,3 +1,5 @@
+using System.Net.Mail;
+using System.Text.RegularExpressions;
 using ShiftsLogger.KamilKolanowski.Services;
 using ShiftsLoggerUI.Models;
 using Spectre.Console;
@@ -14,12 +16,14 @@ internal class WorkerService
         try
         {
             var worker = GetUserInputForWorkerCreation();
-            
+
             worker.Email = await GenerateUniqueEmail(worker.FirstName, worker.LastName);
-            
+
             await _apiDataService.PostWorkerAsync(worker);
 
-            AnsiConsole.MarkupLine("\n[green]Successfully added worker![/]\nPress any key to continue...");
+            AnsiConsole.MarkupLine(
+                "\n[green]Successfully added worker![/]\nPress any key to continue..."
+            );
         }
         catch (Exception ex)
         {
@@ -33,7 +37,8 @@ internal class WorkerService
         try
         {
             var idMap = await CreateWorkersTable();
-            
+            var workers = await GetWorkersAsync();
+
             while (true)
             {
                 var workerId = AnsiConsole.Ask<int>("Choose [yellow2]worker id[/] to edit:");
@@ -45,16 +50,35 @@ internal class WorkerService
                 }
 
                 var workerDtoToUpdate = await GetWorkerAsync(dbId);
-        
+
                 var columnToUpdate = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Choose the property to edit")
                         .AddChoices("FirstName", "LastName", "Email", "Role")
                 );
+                string newValue = String.Empty;
+                if (columnToUpdate == "Email")
+                {
+                    newValue = AnsiConsole.Prompt(
+                        new TextPrompt<string>(
+                            "Enter email address [yellow](e.g. john.doe@gmail.com)[/]: "
+                        ).Validate(input =>
+                        {
+                            var formatValidation = ValidateEmail(input);
+                            if (!formatValidation.Successful)
+                                return formatValidation;
 
-                var newValue = AnsiConsole.Ask<string>(
-                    $"Provide new value for {columnToUpdate} property: "
-                );
+                            var existsValidation = ValidateIfUserWithEmailExists(workers, input);
+                            return existsValidation;
+                        })
+                    );
+                }
+                else
+                {
+                    newValue = AnsiConsole.Ask<string>(
+                        $"Provide new value for {columnToUpdate} property: "
+                    );
+                }
 
                 switch (columnToUpdate)
                 {
@@ -71,13 +95,14 @@ internal class WorkerService
                         workerDtoToUpdate.Role = newValue;
                         break;
                 }
-            
+
                 await _apiDataService.PutWorkerAsync(workerDtoToUpdate);
 
-                AnsiConsole.MarkupLine("\n[green]Successfully edited worker![/]\nPress any key to continue...");
+                AnsiConsole.MarkupLine(
+                    "\n[green]Successfully edited worker![/]\nPress any key to continue..."
+                );
                 return;
             }
-            
         }
         catch (Exception ex)
         {
@@ -91,7 +116,7 @@ internal class WorkerService
         try
         {
             var idMap = await CreateWorkersTable();
-            
+
             while (true)
             {
                 var workerId = AnsiConsole.Ask<int>("Choose [yellow2]worker id[/] to delete:");
@@ -101,12 +126,13 @@ internal class WorkerService
                     AnsiConsole.MarkupLine("[red]There is no worker with the specified id![/]");
                     continue;
                 }
-            
+
                 await _apiDataService.DeleteWorkerAsync(dbId);
-                AnsiConsole.MarkupLine("\n[green]Successfully deleted worker![/]\nPress any key to continue...");
+                AnsiConsole.MarkupLine(
+                    "\n[green]Successfully deleted worker![/]\nPress any key to continue..."
+                );
                 return;
             }
-            
         }
         catch (Exception ex)
         {
@@ -169,7 +195,7 @@ internal class WorkerService
         var firstName = AnsiConsole.Ask<string>("Enter first name:");
         var lastName = AnsiConsole.Ask<string>("Enter first name:");
         var role = AnsiConsole.Ask<string>("Enter role:");
-        
+
         return new WorkerDto
         {
             FirstName = firstName,
@@ -196,5 +222,32 @@ internal class WorkerService
         return email;
     }
 
+    private ValidationResult ValidateIfUserWithEmailExists(List<WorkerDto> workers, string email)
+    {
+        var emailExists = workers.Any(w =>
+            string.Equals(w.Email, email, StringComparison.OrdinalIgnoreCase)
+        );
 
+        return emailExists
+            ? ValidationResult.Error("[red]Worker with such email already exists![/]")
+            : ValidationResult.Success();
+    }
+
+    private ValidationResult ValidateEmail(string emailAddress)
+    {
+        emailAddress = emailAddress.Trim();
+        try
+        {
+            var addr = new MailAddress(emailAddress);
+            if (!addr.Host.Contains('.'))
+                return ValidationResult.Error("[red]Email domain must contain a dot.[/]");
+            if (!Regex.IsMatch(addr.Host, @"\.[a-zA-Z]{2,}$"))
+                return ValidationResult.Error("[red]Email must have a valid domain suffix.[/]");
+            return ValidationResult.Success();
+        }
+        catch
+        {
+            return ValidationResult.Error("[red]Provided Email is not valid, please try again.[/]");
+        }
+    }
 }

@@ -55,7 +55,7 @@ internal class WorkerController
     private async Task ViewWorkers()
     {
         await _workerService.CreateWorkersTable();
-        
+
         AnsiConsole.MarkupLine("\nPress any key to continue...");
     }
 }
