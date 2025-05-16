@@ -76,9 +76,9 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
                     if (response.ErrorException is not null && response.ErrorException.Message is not null)
                         error = response.ErrorException.Message;
                     else
-                        error = "n/a";
+                        error = AppConstants.NotAvailable;
 
-                    return ApiResult<T>.Fail($"Bad request: {error} ", (int)System.Net.HttpStatusCode.BadRequest);
+                    return ApiResult<T>.Fail($"{AppConstants.BadRequest}: {error} ", (int)System.Net.HttpStatusCode.BadRequest);
                 }
 
                 if (response.Data is null)
@@ -88,19 +88,19 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
                     if (response.ErrorException is not null && response.ErrorException.Message is not null)
                         error = response.ErrorException.Message;
                     else
-                        error = "Unknown deserialization failure";
+                        error = AppConstants.DeserializationFailure;
 
-                    return ApiResult<T>.Fail($"Response format exception: {error}");
+                    return ApiResult<T>.Fail($"{AppConstants.ResponseFormatException}: {error}");
                 }
 
-                return ApiResult<T>.Fail($"Server error: " +
+                return ApiResult<T>.Fail($"{AppConstants.ServerError}: " +
                     $"{response.StatusCode}; {response.StatusDescription}",
                     (int)response.StatusCode
                     );
             }
             catch (Exception ex)
             {
-                return ApiResult<T>.Fail($"Unhandled Server error: {ex.Message}");
+                return ApiResult<T>.Fail($"{AppConstants.UnhandedServerError}: {ex.Message}");
             }
         }
     }

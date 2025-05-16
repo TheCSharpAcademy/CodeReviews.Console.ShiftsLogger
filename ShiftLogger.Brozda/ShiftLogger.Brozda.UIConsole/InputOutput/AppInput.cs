@@ -51,15 +51,15 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
 
             if (dto is null)
             {
-                name = GetName("Please enter a shift type name: ", nameRegex);
-                description = GetDescription("Please enter description, you can leave it blank to not set it: ", descriptionRegex);
+                name = GetName(AppConstants.InputShiftName, nameRegex);
+                description = GetDescription(AppConstants.InputDescription, descriptionRegex);
                 startTime = GetTimeSpan(true);
                 endTime = GetTimeSpan(false);
             }
             else
             {
-                name = GetName("Please enter a shift type name: ", nameRegex, dto.Name);
-                description = GetDescription("Please enter description, you can leave it blank to not set it: ", descriptionRegex, dto.Description);
+                name = GetName(AppConstants.InputShiftName, nameRegex, dto.Name);
+                description = GetDescription(AppConstants.InputDescription, descriptionRegex, dto.Description);
                 startTime = GetTimeSpan(true, dto.StartTime);
                 endTime = GetTimeSpan(false, dto.EndTime);
             }
@@ -84,13 +84,13 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
 
             if (toBeUpdated is null)
             {
-                name = GetName("Enter new worker name: ", nameRegex);
+                name = GetName(AppConstants.InputWorkerName, nameRegex);
 
                 return new WorkerDto() { Name = name };
             }
             else
             {
-                name = GetName("Enter new worker name: ", nameRegex, toBeUpdated.Name);
+                name = GetName(AppConstants.InputWorkerName, nameRegex, toBeUpdated.Name);
                 toBeUpdated.Name = name;
 
                 return toBeUpdated;
@@ -104,20 +104,20 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         /// <returns><see cref="DateTime"/> from user input in specified format</returns>
         public static DateTime GetDate(DateTime? currentDate = null)
         {
-            var textPrompt = new TextPrompt<string>("Enter a date in format yyyy-mm-dd")
+            var textPrompt = new TextPrompt<string>(AppConstants.InputDate)
                 .Validate(x =>
-                    DateTime.TryParseExact(x.ToString(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
+                    DateTime.TryParseExact(x.ToString(), AppConstants.InputDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
                     ? ValidationResult.Success()
-                    : ValidationResult.Error("[red]Invalid date format[/]"));
+                    : ValidationResult.Error(AppConstants.InputInvalidDate));
 
             if (currentDate is not null)
             {
-                textPrompt.DefaultValue(currentDate.Value.ToString("yyyy-MM-dd"));
+                textPrompt.DefaultValue(currentDate.Value.ToString(AppConstants.InputDateFormat));
             }
 
             string date = AnsiConsole.Prompt(textPrompt);
 
-            return DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(date, AppConstants.InputDateFormat, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -135,13 +135,13 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
             if (allowCancel)
             {
                 ids.Add(AppConstants.CancelledID);
-                prompt = "Enter a ID of record you wish to select, alternatively you can enter 0 to return: ";
-                errorMsg = "Input must be valid Id or 0";
+                prompt = AppConstants.InputRecordId;
+                errorMsg = AppConstants.InputErrorRecordId;
             }
             else
             {
-                prompt = "Enter a ID of record you wish to select: ";
-                errorMsg = "Input must be valid Id";
+                prompt = AppConstants.InputSelectRecordId;
+                errorMsg = AppConstants.InputErrorRecordId;
             }
 
             var textPrompt = new TextPrompt<int>(prompt)
@@ -170,7 +170,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         {
             var textPrompt = new TextPrompt<string>(prompt)
                 .Validate(x => validator.IsMatch(x))
-                .ValidationErrorMessage("Name can contain only letters separated with space");
+                .ValidationErrorMessage(AppConstants.InputErrorName);
 
             if (defaultValue is not null)
             {
@@ -195,7 +195,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
             var textPrompt = new TextPrompt<string>(prompt)
                 .AllowEmpty()
                 .Validate(x => validator.IsMatch(x) || x == string.Empty)
-                .ValidationErrorMessage("Name can contain only alphanumeric characters along with space, - and _");
+                .ValidationErrorMessage(AppConstants.InputErrorDescription);
 
             if (defaultValue is not null)
             {
@@ -216,15 +216,17 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         /// <returns><see cref="TimeSpan"/> based on user input</returns>
         private static TimeSpan GetTimeSpan(bool startTime, TimeSpan? defaultValue = null)
         {
-            string startEnd = startTime ? "starting" : "ending";
+            string promptHour = startTime ? AppConstants.InputTimeHoursStart : AppConstants.InputTimeHoursEnd;
+            string promptMinute = startTime ? AppConstants.InputTimeMinutesStart : AppConstants.InputTimeMinutesEnd;
 
-            var hourPrompt = new TextPrompt<int>($"Enter {startEnd} hour: ")
+
+            var hourPrompt = new TextPrompt<int>(promptHour)
                 .Validate(x => x >= 0 && x <= 23)
-                .ValidationErrorMessage("Hour value must be number between 0 and 23: ");
+                .ValidationErrorMessage(AppConstants.InputErrorTimeHour);
 
-            var minutePrompt = new TextPrompt<int>($"Enter {startEnd} minute: ")
+            var minutePrompt = new TextPrompt<int>(promptMinute)
                 .Validate(x => x >= 0 && x <= 59)
-                .ValidationErrorMessage("Hour value must be number between 0 and 59: ");
+                .ValidationErrorMessage(AppConstants.InputErrorTimeMinute);
 
             if (defaultValue is not null)
             {

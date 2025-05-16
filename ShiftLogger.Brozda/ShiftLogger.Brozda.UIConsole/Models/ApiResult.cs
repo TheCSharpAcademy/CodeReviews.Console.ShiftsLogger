@@ -1,4 +1,6 @@
-﻿namespace ShiftLogger.Brozda.UIConsole.Models
+﻿using ShiftLogger.Brozda.UIConsole.Helpers;
+
+namespace ShiftLogger.Brozda.UIConsole.Models
 {
     /// <summary>
     /// Model representing result of an API call
@@ -39,7 +41,7 @@
             {
                 IsSuccessful = false,
                 StatusCode = 404,
-                ErrorMessage = "Your request did not match any record in the database",
+                ErrorMessage = AppConstants.ResultNoRecord,
             };
         }
 
@@ -69,7 +71,7 @@
             {
                 IsSuccessful = false,
                 Data = default(T),
-                ErrorMessage = "Invalid data passed"
+                ErrorMessage = AppConstants.ResultInvalidDataInRequest
             };
         }
     }

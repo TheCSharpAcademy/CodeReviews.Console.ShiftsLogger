@@ -34,8 +34,8 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
         /// </summary>
         protected Dictionary<int, (string label, Func<Task> action)> _menuItems = new()
         {
-            {(int)CommonMenuOptions.ReturnToMainMenu, ("Return to main menu", () => Task.CompletedTask) },
-            {(int)CommonMenuOptions.ExitApp, ("Exit the application", ()=> {Environment.Exit(0); return Task.CompletedTask;})}
+            {(int)CommonMenuOptions.ReturnToMainMenu, (AppConstants.BaseMenuReturnToMainMenu, () => Task.CompletedTask) },
+            {(int)CommonMenuOptions.ExitApp, (AppConstants.BaseMenuExitApp, ()=> {Environment.Exit(0); return Task.CompletedTask;})}
         };
 
         /// <summary>
