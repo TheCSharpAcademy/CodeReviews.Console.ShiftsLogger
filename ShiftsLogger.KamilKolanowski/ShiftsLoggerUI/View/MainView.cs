@@ -1,4 +1,3 @@
-using ShiftsLogger.KamilKolanowski.Controllers;
 using ShiftsLogger.KamilKolanowski.Enums;
 using ShiftsLoggerUI.Controllers;
 using Spectre.Console;
@@ -29,7 +28,8 @@ internal class MainView
                     Console.ReadKey();
                     break;
                 case ShiftsLoggerMenu.MainMenu.Shift:
-                    _shiftController.Operate();
+                    await _shiftController.Operate();
+                    Console.ReadKey();
                     break;
                 case ShiftsLoggerMenu.MainMenu.Exit:
                     Environment.Exit(0);

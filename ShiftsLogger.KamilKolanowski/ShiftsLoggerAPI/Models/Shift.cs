@@ -8,12 +8,12 @@ public class Shift
     public int ShiftId { get; set; }
 
     [Required]
-    public int ShiftType { get; set; }
+    public string ShiftType { get; set; }
 
     [Required]
     public int WorkerId { get; set; }
 
-    public double WorkedHours { get; set; }
+    public string WorkedHours { get; set; }
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
 }

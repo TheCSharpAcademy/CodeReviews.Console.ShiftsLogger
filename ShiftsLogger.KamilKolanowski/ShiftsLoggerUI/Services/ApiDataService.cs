@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using ShiftsLogger.KamilKolanowski.Models;
 using ShiftsLoggerUI.Models;
 
 namespace ShiftsLoggerUI.Services;
@@ -10,7 +11,7 @@ internal class ApiDataService
         BaseAddress = new Uri("http://localhost:5000/"),
     };
 
-    internal async Task<string> GetAsync(string endpoint)
+    internal async Task<string> GetWorkerAsync(string endpoint)
     {
         using HttpResponseMessage response = await _sharedClient.GetAsync(endpoint);
         response.EnsureSuccessStatusCode();
@@ -32,6 +33,31 @@ internal class ApiDataService
     internal async Task DeleteWorkerAsync(int workerId)
     {
         var response = await _sharedClient.DeleteAsync($"workers/{workerId}");
+        response.EnsureSuccessStatusCode();
+    }
+
+    internal async Task<string> GetShiftAsync(string endpoint)
+    {
+        using HttpResponseMessage response = await _sharedClient.GetAsync(endpoint);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    internal async Task PutShiftAsync(ShiftDto shift)
+    {
+        var response = await _sharedClient.PutAsJsonAsync("shifts", shift);
+        response.EnsureSuccessStatusCode();
+    }
+
+    internal async Task PostShiftAsync(ShiftDto shift)
+    {
+        var response = await _sharedClient.PostAsJsonAsync("shifts", shift);
+        response.EnsureSuccessStatusCode();
+    }
+
+    internal async Task DeleteShiftAsync(int shiftId)
+    {
+        var response = await _sharedClient.DeleteAsync($"shifts/{shiftId}");
         response.EnsureSuccessStatusCode();
     }
 }

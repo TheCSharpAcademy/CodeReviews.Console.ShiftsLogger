@@ -1,6 +1,5 @@
 using System.Net.Mail;
 using System.Text.RegularExpressions;
-using ShiftsLogger.KamilKolanowski.Services;
 using ShiftsLoggerUI.Models;
 using Spectre.Console;
 
@@ -173,9 +172,9 @@ internal class WorkerService
         return idMap;
     }
 
-    private async Task<List<WorkerDto>> GetWorkersAsync()
+    internal async Task<List<WorkerDto>> GetWorkersAsync()
     {
-        string response = await _apiDataService.GetAsync("workers");
+        string response = await _apiDataService.GetWorkerAsync("workers");
         List<WorkerDto> workerDtos = await _deserializeJson.DeserializeAsync<List<WorkerDto>>(
             response
         );
@@ -185,7 +184,7 @@ internal class WorkerService
 
     private async Task<WorkerDto> GetWorkerAsync(int id)
     {
-        string response = await _apiDataService.GetAsync($"workers/{id}");
+        string response = await _apiDataService.GetWorkerAsync($"workers/{id}");
         WorkerDto workerDto = await _deserializeJson.DeserializeAsync<WorkerDto>(response);
         return workerDto;
     }

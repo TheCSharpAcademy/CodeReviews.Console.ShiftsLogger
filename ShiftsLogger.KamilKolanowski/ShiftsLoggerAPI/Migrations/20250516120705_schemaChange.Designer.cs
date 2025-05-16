@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShiftsLogger.KamilKolanowski.Models.Data;
 
@@ -11,9 +12,11 @@ using ShiftsLogger.KamilKolanowski.Models.Data;
 namespace ShiftsLoggerAPI.Migrations
 {
     [DbContext(typeof(ShiftsLoggerDbContext))]
-    partial class ShiftsLoggerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250516120705_schemaChange")]
+    partial class schemaChange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,9 +44,8 @@ namespace ShiftsLoggerAPI.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("WorkedHours")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("WorkedHours")
+                        .HasColumnType("float");
 
                     b.Property<int>("WorkerId")
                         .HasColumnType("int");

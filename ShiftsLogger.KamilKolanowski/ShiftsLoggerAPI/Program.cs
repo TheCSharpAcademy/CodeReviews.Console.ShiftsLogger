@@ -15,12 +15,17 @@ public class Program
         );
 
         builder.Services.AddScoped<WorkerDbService>();
+        builder.Services.AddScoped<ShiftDbService>();
         builder.Services.AddScoped<WorkerApi>();
+        builder.Services.AddScoped<ShiftApi>();
 
         var app = builder.Build();
 
-        var api = app.Services.GetRequiredService<WorkerApi>();
-        api.Configure(app);
+        var workerApi = app.Services.GetRequiredService<WorkerApi>();
+        var shiftApi = app.Services.GetRequiredService<ShiftApi>();
+
+        workerApi.Configure(app);
+        shiftApi.Configure(app);
 
         await app.RunAsync();
     }

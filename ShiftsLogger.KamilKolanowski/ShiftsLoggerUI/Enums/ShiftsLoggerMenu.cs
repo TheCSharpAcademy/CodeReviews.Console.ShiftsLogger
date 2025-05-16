@@ -31,6 +31,7 @@ internal class ShiftsLoggerMenu
         AddShift,
         EditShift,
         DeleteShift,
+        ViewShifts,
     }
 
     internal static Dictionary<ShiftMenu, string> ShiftMenuType { get; } =
@@ -39,5 +40,6 @@ internal class ShiftsLoggerMenu
             { ShiftMenu.AddShift, "Add Shift" },
             { ShiftMenu.EditShift, "Edit Shift" },
             { ShiftMenu.DeleteShift, "Delete Shift" },
+            { ShiftMenu.ViewShifts, "View Shifts" },
         };
 }

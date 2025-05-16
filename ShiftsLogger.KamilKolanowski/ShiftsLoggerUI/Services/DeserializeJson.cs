@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace ShiftsLogger.KamilKolanowski.Services;
+namespace ShiftsLoggerUI.Services;
 
 internal class DeserializeJson
 {
