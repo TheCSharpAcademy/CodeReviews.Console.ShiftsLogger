@@ -34,28 +34,37 @@ internal class WorkerController
             case ShiftsLoggerMenu.WorkerMenu.ViewWorkers:
                 await ViewWorkers();
                 break;
+            case ShiftsLoggerMenu.WorkerMenu.GoBack:
+                return;
         }
     }
 
     private async Task AddWorker()
     {
         await _workerService.CreateWorker();
+
+        Console.ReadKey();
     }
 
     private async Task UpdateWorker()
     {
         await _workerService.EditWorker();
+
+        Console.ReadKey();
     }
 
     private async Task DeleteWorker()
     {
         await _workerService.DeleteWorker();
+
+        Console.ReadKey();
     }
 
     private async Task ViewWorkers()
     {
         await _workerService.CreateWorkersTable();
 
-        AnsiConsole.MarkupLine("\nPress any key to continue...");
+        AnsiConsole.MarkupLine("Press any key to continue...");
+        Console.ReadKey();
     }
 }

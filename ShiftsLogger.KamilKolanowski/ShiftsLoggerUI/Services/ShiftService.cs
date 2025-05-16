@@ -1,4 +1,5 @@
 using ShiftsLogger.KamilKolanowski.Models;
+using ShiftsLoggerUI.Models;
 using Spectre.Console;
 
 namespace ShiftsLoggerUI.Services;
@@ -13,13 +14,24 @@ internal class ShiftService
     {
         try
         {
+            var shifts = await GetShiftsAsync();
             var shift = await GetUserInputForShiftCreation();
 
-            await _apiDataService.PostShiftAsync(shift);
+            if (shifts.Any(s => s.WorkerId == shift.WorkerId &&
+                                s.StartTime == shift.StartTime &&
+                                s.EndTime == shift.EndTime))
+            {
+                AnsiConsole.MarkupLine("[red]Shift already logged![/]");
+                AnsiConsole.MarkupLine("Press any key to continue...");
+            }
+            else
+            {
+                await _apiDataService.PostShiftAsync(shift);
 
-            AnsiConsole.MarkupLine(
-                "\n[green]Successfully added shift![/]\nPress any key to continue..."
-            );
+                AnsiConsole.MarkupLine(
+                    "\n[green]Successfully added shift![/]\nPress any key to continue..."
+                );
+            }
         }
         catch (Exception ex)
         {
@@ -28,26 +40,104 @@ internal class ShiftService
         }
     }
 
-    internal async Task EditWorker()
+    internal async Task EditShift()
     {
         try
         {
-            // var shiftDtoToUpdate = new ShiftDto();
-            // await _apiDataService.PutWorkerAsync(shiftDtoToUpdate);
+            var idMap = await CreateShiftsTable();
+            var shifts = await GetShiftsAsync();
 
-            AnsiConsole.MarkupLine(
-                "\n[green]Successfully edited worker![/]\nPress any key to continue..."
-            );
-            
+            while (true)
+            {
+                var shiftId = AnsiConsole.Ask<int>("Choose [yellow2]shift id[/] to edit:");
+                
+                if (!idMap.TryGetValue(shiftId, out var dbId))
+                {
+                    AnsiConsole.MarkupLine("[red]There is no shift with the specified id![/]");
+                    continue;
+                }
+
+                var shiftDtoToUpdate = await GetShiftAsync(dbId);
+                
+                var columnToUpdate = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Choose the property to edit")
+                        .AddChoices("StartTime", "EndTime")
+                );
+                
+                var newValue = String.Empty;
+                
+                if (columnToUpdate == "StartTime")
+                {
+                    DateTime startTime = AnsiConsole.Prompt(
+                        new TextPrompt<DateTime>(
+                            "Enter shift start date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
+                        ).Validate(input =>
+                            input > DateTime.MinValue
+                                ? ValidationResult.Success()
+                                : ValidationResult.Error("[red]Invalid date.[/]")
+                        )
+                    );
+
+                    newValue = startTime.ToString("yyyy-MM-dd HH:mm");
+                }
+                else if (columnToUpdate == "EndTime")
+                {
+                    DateTime endTime = AnsiConsole.Prompt(
+                        new TextPrompt<DateTime>("Enter shift end date and time [yellow](e.g. 2025-05-16 14:30)[/]:")
+                            .Validate(input =>
+                                input > shiftDtoToUpdate.StartTime
+                                    ? ValidationResult.Success()
+                                    : ValidationResult.Error(
+                                        "[red]Invalid date (end date must be greater than start date).[/]")
+                            ));
+                    
+                    newValue = endTime.ToString("yyyy-MM-dd HH:mm");
+                }
+
+                switch (columnToUpdate)
+                {
+                    case "StartTime":
+                        shiftDtoToUpdate.StartTime = DateTime.Parse(newValue);
+                        break;
+                    case "EndTime":
+                        shiftDtoToUpdate.EndTime = DateTime.Parse(newValue);
+                        break;
+                }
+
+                shiftDtoToUpdate.ShiftType = shiftDtoToUpdate.StartTime.TimeOfDay >= TimeSpan.FromHours(8) && shiftDtoToUpdate.StartTime.TimeOfDay < TimeSpan.FromHours(16)
+                    ? "Day Shift"
+                    : shiftDtoToUpdate.StartTime.TimeOfDay >= TimeSpan.FromHours(16) && shiftDtoToUpdate.StartTime.TimeOfDay < TimeSpan.FromHours(24)
+                        ? "Swing Shift"
+                        : "Graveyard Shift";
+
+                if (shifts.Any(s => s.WorkerId == shiftDtoToUpdate.WorkerId &&
+                                    s.StartTime == shiftDtoToUpdate.StartTime &&
+                                    s.EndTime == shiftDtoToUpdate.EndTime))
+                {
+                    AnsiConsole.MarkupLine("[red]Shift already logged![/]");
+                    AnsiConsole.MarkupLine("Press any key to continue...");
+                    return;
+                }
+                else
+                {
+                    await _apiDataService.PutShiftAsync(shiftDtoToUpdate);
+                
+                    AnsiConsole.MarkupLine(
+                        "\n[green]Successfully edited shift![/]\nPress any key to continue..."
+                    );
+                    break;
+                }
+            }
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Failed to edit worker, due to:[/] {ex.Message}");
+            AnsiConsole.MarkupLine($"[red]Failed to edit shift, due to:[/] {ex.Message}");
             AnsiConsole.MarkupLine("Press any key to continue...");
         }
     }
 
-    internal async Task DeleteWorker()
+    internal async Task DeleteShift()
     {
         try
         {
@@ -55,24 +145,24 @@ internal class ShiftService
 
             while (true)
             {
-                var workerId = AnsiConsole.Ask<int>("Choose [yellow2]worker id[/] to delete:");
+                var shiftId = AnsiConsole.Ask<int>("Choose [yellow2]shift id[/] to delete:");
 
-                if (!idMap.TryGetValue(workerId, out var dbId))
+                if (!idMap.TryGetValue(shiftId, out var dbId))
                 {
-                    AnsiConsole.MarkupLine("[red]There is no worker with the specified id![/]");
+                    AnsiConsole.MarkupLine("[red]There is no shift with the specified id![/]");
                     continue;
                 }
 
-                await _apiDataService.DeleteWorkerAsync(dbId);
+                await _apiDataService.DeleteShiftAsync(dbId);
                 AnsiConsole.MarkupLine(
-                    "\n[green]Successfully deleted worker![/]\nPress any key to continue..."
+                    "\n[green]Successfully deleted shift![/]\nPress any key to continue..."
                 );
                 return;
             }
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Failed to delete worker, due to:[/] {ex.Message}");
+            AnsiConsole.MarkupLine($"[red]Failed to delete shift, due to:[/] {ex.Message}");
             AnsiConsole.MarkupLine("Press any key to continue...");
         }
     }
@@ -90,6 +180,7 @@ internal class ShiftService
 
         var shifts = await GetShiftsAsync();
         var idMap = new Dictionary<int, int>();
+   
         int idx = 1;
         foreach (var shiftDto in shifts)
         {
@@ -97,17 +188,18 @@ internal class ShiftService
                 idx.ToString(),
                 shiftDto.ShiftType,
                 shiftDto.WorkerId.ToString(),
-                shiftDto.WorkedHours,
                 shiftDto.StartTime.ToString("yyyy-MM-dd HH:mm:ss"),
-                shiftDto.EndTime.ToString("yyyy-MM-dd HH:mm:ss")
+                shiftDto.EndTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                shiftDto.WorkedHours
             );
             idMap[idx] = shiftDto.ShiftId; // Mapping real id from database to artificial in the app
             idx++;
         }
-
+        
         table.Border(TableBorder.HeavyEdge);
-
+        
         AnsiConsole.Write(table);
+        
         return idMap;
     }
 
@@ -131,16 +223,34 @@ internal class ShiftService
     private async Task<ShiftDto> GetUserInputForShiftCreation()
     {
         var workers = await _workerService.GetWorkersAsync();
-        var workerEmail = AnsiConsole.Ask<string>("Provide your email to register shift:");
-        var workerId = workers
-            .Where(w => w.Email == workerEmail)
-            .Select(w => w.WorkerId)
-            .FirstOrDefault();
-        var shiftType = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("Choose ShiftType")
-                .AddChoices("Day Shift", "Swing Shift", "Graveyard Shift")
+        var workerEmail = AnsiConsole.Prompt(
+            new TextPrompt<string>(
+                "Provide your email to register shift: [yellow](e.g. john.doe@gmail.com)[/]: "
+            ).Validate(input =>
+            {
+                var formatValidation = _workerService.ValidateEmail(input);
+                return formatValidation.Successful
+                    ? ValidationResult.Success()
+                    : ValidationResult.Error(formatValidation.Message);
+            })
         );
+
+        var notExistsValidation = _workerService.ValidateIfUserWithEmailExists(workers, workerEmail);
+        WorkerDto? createdWorker = null;
+
+        if (notExistsValidation.Successful)
+        {
+            AnsiConsole.MarkupLine("[red]You're not registered yet![/]\nPlease create an account");
+            createdWorker = await _workerService.CreateWorker(workerEmail); // ← You need this assignment
+        }
+
+        int workerId = createdWorker != null
+            ? createdWorker.WorkerId
+            : workers
+                .Where(w => w.Email == workerEmail)
+                .Select(w => w.WorkerId)
+                .FirstOrDefault();
+        
         var startTime = AnsiConsole.Prompt(
             new TextPrompt<DateTime>(
                 "Enter shift start date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
@@ -150,15 +260,23 @@ internal class ShiftService
                     : ValidationResult.Error("[red]Invalid date.[/]")
             )
         );
+        
         var endTime = AnsiConsole.Prompt(
             new TextPrompt<DateTime>(
                 "Enter shift end date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
             ).Validate(input =>
-                input > DateTime.MinValue
+                input > startTime
                     ? ValidationResult.Success()
-                    : ValidationResult.Error("[red]Invalid date.[/]")
+                    : ValidationResult.Error("[red]Invalid date (end date must be greater than start date).[/]")
             )
         );
+        
+        var shiftType = startTime.TimeOfDay >= TimeSpan.FromHours(8) && startTime.TimeOfDay < TimeSpan.FromHours(16)
+            ? "Day Shift"
+            : startTime.TimeOfDay >= TimeSpan.FromHours(16) && startTime.TimeOfDay < TimeSpan.FromHours(24)
+                ? "Swing Shift"
+                : "Graveyard Shift";
+
 
         TimeSpan difference = endTime - startTime;
         string workedHours =

@@ -24,10 +24,13 @@ internal class ApiDataService
         response.EnsureSuccessStatusCode();
     }
 
-    internal async Task PostWorkerAsync(WorkerDto worker)
+    internal async Task<WorkerDto> PostWorkerAsync(WorkerDto worker)
     {
         var response = await _sharedClient.PostAsJsonAsync("workers", worker);
         response.EnsureSuccessStatusCode();
+        
+        var createdWorker = await response.Content.ReadFromJsonAsync<WorkerDto>();
+        return createdWorker!;
     }
 
     internal async Task DeleteWorkerAsync(int workerId)

@@ -34,28 +34,37 @@ internal class ShiftController
             case ShiftsLoggerMenu.ShiftMenu.ViewShifts:
                 await ViewShifts();
                 break;
+            case ShiftsLoggerMenu.ShiftMenu.GoBack:
+                return;
         }
     }
 
     private async Task AddShift()
     {
         await _shiftService.CreateShift();
+        
+        Console.ReadKey();
     }
 
     private async Task UpdateShift()
     {
-        await _shiftService.EditWorker();
+        await _shiftService.EditShift();
+        
+        Console.ReadKey();
     }
 
     private async Task DeleteShift()
     {
-        await _shiftService.DeleteWorker();
+        await _shiftService.DeleteShift();
+        
+        Console.ReadKey();
     }
 
     private async Task ViewShifts()
     {
         await _shiftService.CreateShiftsTable();
-
-        AnsiConsole.MarkupLine("\nPress any key to continue...");
+        
+        AnsiConsole.MarkupLine("Press any key to continue...");
+        Console.ReadKey();
     }
 }

@@ -10,24 +10,28 @@ internal class WorkerService
     private readonly ApiDataService _apiDataService = new();
     private readonly DeserializeJson _deserializeJson = new();
 
-    internal async Task CreateWorker()
+    internal async Task<WorkerDto?> CreateWorker(string customEmail = "")
     {
         try
         {
             var worker = GetUserInputForWorkerCreation();
 
-            worker.Email = await GenerateUniqueEmail(worker.FirstName, worker.LastName);
-
-            await _apiDataService.PostWorkerAsync(worker);
+            worker.Email = customEmail != "" 
+                ? customEmail 
+                : await GenerateUniqueEmail(worker.FirstName, worker.LastName);
+            
+            var createdWorker = await _apiDataService.PostWorkerAsync(worker);
 
             AnsiConsole.MarkupLine(
                 "\n[green]Successfully added worker![/]\nPress any key to continue..."
             );
+            return createdWorker;
         }
         catch (Exception ex)
         {
             AnsiConsole.MarkupLine($"[red]Failed to add worker due to:[/] {ex.Message}");
             AnsiConsole.MarkupLine("Press any key to continue...");
+            return null;
         }
     }
 
@@ -35,27 +39,27 @@ internal class WorkerService
     {
         try
         {
-            var idMap = await CreateWorkersTable();
+            await CreateWorkersTable();
             var workers = await GetWorkersAsync();
 
             while (true)
             {
                 var workerId = AnsiConsole.Ask<int>("Choose [yellow2]worker id[/] to edit:");
 
-                if (!idMap.TryGetValue(workerId, out var dbId))
+                if (!workers.Any(w => w.WorkerId == workerId))
                 {
                     AnsiConsole.MarkupLine("[red]There is no worker with the specified id![/]");
                     continue;
                 }
 
-                var workerDtoToUpdate = await GetWorkerAsync(dbId);
+                var workerDtoToUpdate = await GetWorkerAsync(workerId);
 
                 var columnToUpdate = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Choose the property to edit")
                         .AddChoices("FirstName", "LastName", "Email", "Role")
                 );
-                string newValue = String.Empty;
+                var newValue = String.Empty;
                 if (columnToUpdate == "Email")
                 {
                     newValue = AnsiConsole.Prompt(
@@ -114,19 +118,20 @@ internal class WorkerService
     {
         try
         {
-            var idMap = await CreateWorkersTable();
+            await CreateWorkersTable();
+            var workers = await GetWorkersAsync();
 
             while (true)
             {
                 var workerId = AnsiConsole.Ask<int>("Choose [yellow2]worker id[/] to delete:");
 
-                if (!idMap.TryGetValue(workerId, out var dbId))
+                if (!workers.Any(w => w.WorkerId == workerId))
                 {
                     AnsiConsole.MarkupLine("[red]There is no worker with the specified id![/]");
                     continue;
                 }
 
-                await _apiDataService.DeleteWorkerAsync(dbId);
+                await _apiDataService.DeleteWorkerAsync(workerId);
                 AnsiConsole.MarkupLine(
                     "\n[green]Successfully deleted worker![/]\nPress any key to continue..."
                 );
@@ -140,36 +145,33 @@ internal class WorkerService
         }
     }
 
-    internal async Task<Dictionary<int, int>> CreateWorkersTable()
+    internal async Task CreateWorkersTable()
     {
         var table = new Table { Title = new TableTitle("[yellow]Workers[/]") };
 
-        table.AddColumn("[cyan2]Id[/]");
+        table.AddColumn("[cyan2]Worker Id[/]");
         table.AddColumn("[cyan2]FirstName[/]");
         table.AddColumn("[cyan2]LastName[/]");
         table.AddColumn("[cyan2]Email[/]");
         table.AddColumn("[cyan2]Role[/]");
 
         var workers = await GetWorkersAsync();
-        var idMap = new Dictionary<int, int>();
-        int idx = 1;
+        
         foreach (var workerDto in workers)
         {
             table.AddRow(
-                idx.ToString(),
+                workerDto.WorkerId.ToString(),
                 workerDto.FirstName,
                 workerDto.LastName,
                 workerDto.Email,
                 workerDto.Role
             );
-            idMap[idx] = workerDto.WorkerId; // Mapping real id from database to artificial in the app
-            idx++;
+            
         }
 
         table.Border(TableBorder.HeavyEdge);
 
         AnsiConsole.Write(table);
-        return idMap;
     }
 
     internal async Task<List<WorkerDto>> GetWorkersAsync()
@@ -192,7 +194,7 @@ internal class WorkerService
     private WorkerDto GetUserInputForWorkerCreation()
     {
         var firstName = AnsiConsole.Ask<string>("Enter first name:");
-        var lastName = AnsiConsole.Ask<string>("Enter first name:");
+        var lastName = AnsiConsole.Ask<string>("Enter last name:");
         var role = AnsiConsole.Ask<string>("Enter role:");
 
         return new WorkerDto
@@ -207,10 +209,10 @@ internal class WorkerService
     {
         var workers = await GetWorkersAsync();
 
-        string baseEmail = $"{firstName.ToLower()}.{lastName.ToLower()}";
-        string domain = "@thecsharpacademy.com";
-        string email = baseEmail + domain;
-        int counter = 1;
+        var baseEmail = $"{firstName.ToLower()}.{lastName.ToLower()}";
+        var domain = "@thecsharpacademy.com";
+        var email = baseEmail + domain;
+        var counter = 1;
 
         while (workers.Any(w => string.Equals(w.Email, email, StringComparison.OrdinalIgnoreCase)))
         {
@@ -221,7 +223,7 @@ internal class WorkerService
         return email;
     }
 
-    private ValidationResult ValidateIfUserWithEmailExists(List<WorkerDto> workers, string email)
+    internal ValidationResult ValidateIfUserWithEmailExists(List<WorkerDto> workers, string email)
     {
         var emailExists = workers.Any(w =>
             string.Equals(w.Email, email, StringComparison.OrdinalIgnoreCase)
@@ -232,7 +234,7 @@ internal class WorkerService
             : ValidationResult.Success();
     }
 
-    private ValidationResult ValidateEmail(string emailAddress)
+    internal ValidationResult ValidateEmail(string emailAddress)
     {
         emailAddress = emailAddress.Trim();
         try

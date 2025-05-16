@@ -17,7 +17,7 @@ internal class MainView
 
             var selectOption = AnsiConsole.Prompt(
                 new SelectionPrompt<ShiftsLoggerMenu.MainMenu>()
-                    .Title("Choose area")
+                    .Title("Manage Areas")
                     .AddChoices(Enum.GetValues<ShiftsLoggerMenu.MainMenu>())
             );
 
@@ -25,11 +25,9 @@ internal class MainView
             {
                 case ShiftsLoggerMenu.MainMenu.Worker:
                     await _workerController.Operate();
-                    Console.ReadKey();
                     break;
                 case ShiftsLoggerMenu.MainMenu.Shift:
                     await _shiftController.Operate();
-                    Console.ReadKey();
                     break;
                 case ShiftsLoggerMenu.MainMenu.Exit:
                     Environment.Exit(0);
