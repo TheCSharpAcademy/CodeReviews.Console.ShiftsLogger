@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using ShiftsLogger.KamilKolanowski.Services;
 using ShiftsLoggerUI.Models;
 using Spectre.Console;
@@ -15,15 +14,9 @@ internal class WorkerService
         try
         {
             var worker = GetUserInputForWorkerCreation();
-            if (await CheckIfWorkerExists(worker))
-            {
-                var numberForMail = GetNumberForWorkerMail(worker.Email);
-
-                if (numberForMail > 0)
-                {
-                    worker.Email = worker.FirstName.ToLower() + "." + worker.LastName.ToLower() + numberForMail + "@thecsharpacademy.com"; // fix this validation
-                }
-            }
+            
+            worker.Email = await GenerateUniqueEmail(worker.FirstName, worker.LastName);
+            
             await _apiDataService.PostWorkerAsync(worker);
 
             AnsiConsole.MarkupLine("\n[green]Successfully added worker![/]\nPress any key to continue...");
@@ -175,44 +168,33 @@ internal class WorkerService
     {
         var firstName = AnsiConsole.Ask<string>("Enter first name:");
         var lastName = AnsiConsole.Ask<string>("Enter first name:");
-        var mail = firstName.ToLower() + "." + lastName.ToLower() + "@thecsharpacademy.com";
         var role = AnsiConsole.Ask<string>("Enter role:");
         
         return new WorkerDto
         {
             FirstName = firstName,
             LastName = lastName,
-            Email = mail,
             Role = role,
         };
     }
 
-    private async Task<bool> CheckIfWorkerExists(WorkerDto workerDto)
+    private async Task<string> GenerateUniqueEmail(string firstName, string lastName)
     {
-        List<WorkerDto> workers = await GetWorkersAsync();
+        var workers = await GetWorkersAsync();
 
-        if (workers.Contains(workerDto))
+        string baseEmail = $"{firstName.ToLower()}.{lastName.ToLower()}";
+        string domain = "@thecsharpacademy.com";
+        string email = baseEmail + domain;
+        int counter = 1;
+
+        while (workers.Any(w => string.Equals(w.Email, email, StringComparison.OrdinalIgnoreCase)))
         {
-            return true;
+            email = $"{baseEmail}{counter}{domain}";
+            counter++;
         }
-        return false;
+
+        return email;
     }
 
-    private int GetNumberForWorkerMail(string mail)
-    {
-        int atIndex = mail.IndexOf('@');
-
-        if (atIndex > 0)
-        {
-            char beforeAt = mail[atIndex - 1];
-            if (char.IsDigit(beforeAt))
-            {
-                int digit = int.Parse(beforeAt.ToString());
-                int incremented = digit + 1;
-                return incremented;
-            }
-        }
-        return 0;
-    }
 
 }
