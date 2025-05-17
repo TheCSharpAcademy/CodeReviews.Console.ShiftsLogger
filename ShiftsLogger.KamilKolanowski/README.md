@@ -1,21 +1,22 @@
 # Shifts Logger Application
 
-The **Shifts Logger Application** is a powerful C# .NET application designed to help users track their work shifts efficiently. It leverages **Entity Framework Core** for database operations and uses **SQL Server** as the backend database. The application automatically creates an account for users who do not exist in the system, ensuring they can start managing their shifts seamlessly.
-
----
+The **Shifts Logger Application** is a powerful C# .NET application designed to help users track their work shifts efficiently. It leverages **Entity Framework Core** for database operations and uses **SQL Server** as the backend database. The application allows to create an account for users who do not exist in the system, ensuring they can start managing their shifts seamlessly.
 
 ## Features
 
-- **Automatic User Account Creation**: If a user doesn't exist in the database, the application automatically creates an account for them.
+- **User Account Creation**: If a user doesn't exist in the database, the application lets user create an account for them.
 - **CRUD Operations on Shifts**:
     - **Create**: Add new shifts for work.
     - **Read**: View all logged shifts.
     - **Update**: Edit details of existing shifts.
     - **Delete**: Remove unwanted or incorrect shift entries.
+- **CRUD Operations on Workers**:
+    - **Create**: Add new workers.
+    - **Read**: View all workers.
+    - **Update**: Edit details of existing workers.
+    - **Delete**: Remove unwanted or incorrect workers.
 - **Entity Framework Core**: Provides a robust and scalable data access layer.
 - **SQL Server Integration**: Ensures secure and reliable shift data storage.
-
----
 
 ## Getting Started
 
@@ -31,18 +32,16 @@ To run the Shifts Logger Application, ensure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/KamilKolanowski/shifts-logger.git
+   git clone https://github.com/KamilKolanowski/CodeReviews.Console.ShiftsLogger.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd shifts-logger
+   cd ShiftsLogger.KamilKolanowski
    ```
 3. Restore dependencies:
    ```bash
    dotnet restore
    ```
-
----
 
 ## Configuration
 
@@ -63,8 +62,6 @@ To run the Shifts Logger Application, ensure you have the following installed:
    dotnet ef database update
    ```
 
----
-
 ## Usage
 
 ### Running the Application
@@ -73,13 +70,13 @@ Start the application:
 ```bash
 dotnet run
 ```
-The API will be accessible at `https://localhost:<port>`.
+The API will be accessible at `https://localhost:5000`.
 
 ### API Endpoints
 
 #### Authentication
 - **Create/Check User**: `POST /api/workers`
-    - Request Body: `{ "firstName": "John", "LastName": "Doe", "Email": "automatically.created@tcsa.com" }`
+    - Request Body: `{ "FirstName": "John", "LastName": "Doe", "Role": "Programmer" }`
 
 #### Shifts
 - **Create Shift**: `POST /api/shifts`
@@ -90,7 +87,16 @@ The API will be accessible at `https://localhost:<port>`.
     - Request Body: `{ "StartTime": "2025-01-01 08:00:00", "EndTime": "2025-01-01 16:00:00" }`
 - **Delete Shift**: `DELETE /api/shifts/{id}`
 
----
+#### Workers
+- **Create Shift**: `POST /api/workers`
+    - Request Body: `{ "FirstName": "John", "LastName": "Doe", "Role": "Programmer" }`
+- **Read Shifts**: `GET /api/shifts`
+- **Read Shift By Id**: `GET /api/shifts/{id}`
+- **Update Shift**: `PUT /api/shifts/{id}`
+    - Request Body: `{ "StartTime": "2025-01-01 08:00:00", "EndTime": "2025-01-01 16:00:00" }`
+- **Delete Shift**: `DELETE /api/shifts/{id}`
+
+*Email is automatically created when adding new user (firstName.lastName@thecsharpacademy.com), or it can be custom, when added from shift logging view, if user doesn't exists*
 
 ## Technologies Used
 
@@ -100,11 +106,9 @@ The API will be accessible at `https://localhost:<port>`.
 - **Authentication**: Custom user management logic
 - **Environment Configuration**: `appsettings.json`
 
----
-
 ## Contributing
 
-We welcome contributions! Follow these steps:
+If you want to contribute, please follow the steps below!
 
 1. Fork the repository.
 2. Create a new branch:
@@ -121,7 +125,6 @@ We welcome contributions! Follow these steps:
    ```
 5. Open a pull request.
 
----
 ## Contact
 
 For any questions or suggestions, feel free to reach out:
