@@ -16,10 +16,11 @@ internal class WorkerService
         {
             var worker = GetUserInputForWorkerCreation();
 
-            worker.Email = customEmail != "" 
-                ? customEmail 
-                : await GenerateUniqueEmail(worker.FirstName, worker.LastName);
-            
+            worker.Email =
+                customEmail != ""
+                    ? customEmail
+                    : await GenerateUniqueEmail(worker.FirstName, worker.LastName);
+
             var createdWorker = await _apiDataService.PostWorkerAsync(worker);
 
             AnsiConsole.MarkupLine(
@@ -156,7 +157,7 @@ internal class WorkerService
         table.AddColumn("[cyan2]Role[/]");
 
         var workers = await GetWorkersAsync();
-        
+
         foreach (var workerDto in workers)
         {
             table.AddRow(
@@ -166,7 +167,6 @@ internal class WorkerService
                 workerDto.Email,
                 workerDto.Role
             );
-            
         }
 
         table.Border(TableBorder.HeavyEdge);

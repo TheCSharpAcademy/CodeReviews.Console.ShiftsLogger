@@ -28,7 +28,7 @@ internal class ApiDataService
     {
         var response = await _sharedClient.PostAsJsonAsync("workers", worker);
         response.EnsureSuccessStatusCode();
-        
+
         var createdWorker = await response.Content.ReadFromJsonAsync<WorkerDto>();
         return createdWorker!;
     }

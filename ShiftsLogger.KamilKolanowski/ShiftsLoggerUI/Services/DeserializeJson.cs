@@ -8,9 +8,9 @@ internal class DeserializeJson
     {
         return await Task.FromResult(JsonSerializer.Deserialize<T>(json, Options));
     }
-    
+
     private static readonly JsonSerializerOptions Options = new()
     {
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
     };
 }

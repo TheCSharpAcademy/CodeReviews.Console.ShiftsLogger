@@ -42,28 +42,28 @@ internal class ShiftController
     private async Task AddShift()
     {
         await _shiftService.CreateShift();
-        
+
         Console.ReadKey();
     }
 
     private async Task UpdateShift()
     {
         await _shiftService.EditShift();
-        
+
         Console.ReadKey();
     }
 
     private async Task DeleteShift()
     {
         await _shiftService.DeleteShift();
-        
+
         Console.ReadKey();
     }
 
     private async Task ViewShifts()
     {
         await _shiftService.CreateShiftsTable();
-        
+
         AnsiConsole.MarkupLine("Press any key to continue...");
         Console.ReadKey();
     }

@@ -17,9 +17,13 @@ internal class ShiftService
             var shifts = await GetShiftsAsync();
             var shift = await GetUserInputForShiftCreation();
 
-            if (shifts.Any(s => s.WorkerId == shift.WorkerId &&
-                                s.StartTime == shift.StartTime &&
-                                s.EndTime == shift.EndTime))
+            if (
+                shifts.Any(s =>
+                    s.WorkerId == shift.WorkerId
+                    && s.StartTime == shift.StartTime
+                    && s.EndTime == shift.EndTime
+                )
+            )
             {
                 AnsiConsole.MarkupLine("[red]Shift already logged![/]");
                 AnsiConsole.MarkupLine("Press any key to continue...");
@@ -49,8 +53,9 @@ internal class ShiftService
 
             while (true)
             {
+                DateTime endTime;
                 var shiftId = AnsiConsole.Ask<int>("Choose [yellow2]shift id[/] to edit:");
-                
+
                 if (!idMap.TryGetValue(shiftId, out var dbId))
                 {
                     AnsiConsole.MarkupLine("[red]There is no shift with the specified id![/]");
@@ -58,15 +63,15 @@ internal class ShiftService
                 }
 
                 var shiftDtoToUpdate = await GetShiftAsync(dbId);
-                
+
                 var columnToUpdate = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Choose the property to edit")
                         .AddChoices("StartTime", "EndTime")
                 );
-                
+
                 var newValue = String.Empty;
-                
+
                 if (columnToUpdate == "StartTime")
                 {
                     DateTime startTime = AnsiConsole.Prompt(
@@ -83,15 +88,18 @@ internal class ShiftService
                 }
                 else if (columnToUpdate == "EndTime")
                 {
-                    DateTime endTime = AnsiConsole.Prompt(
-                        new TextPrompt<DateTime>("Enter shift end date and time [yellow](e.g. 2025-05-16 14:30)[/]:")
-                            .Validate(input =>
-                                input > shiftDtoToUpdate.StartTime
-                                    ? ValidationResult.Success()
-                                    : ValidationResult.Error(
-                                        "[red]Invalid date (end date must be greater than start date).[/]")
-                            ));
-                    
+                    endTime = AnsiConsole.Prompt(
+                        new TextPrompt<DateTime>(
+                            "Enter shift end date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
+                        ).Validate(input =>
+                            input > shiftDtoToUpdate.StartTime
+                                ? ValidationResult.Success()
+                                : ValidationResult.Error(
+                                    "[red]Invalid date (end date must be greater than start date).[/]"
+                                )
+                        )
+                    );
+
                     newValue = endTime.ToString("yyyy-MM-dd HH:mm");
                 }
 
@@ -105,15 +113,43 @@ internal class ShiftService
                         break;
                 }
 
-                shiftDtoToUpdate.ShiftType = shiftDtoToUpdate.StartTime.TimeOfDay >= TimeSpan.FromHours(8) && shiftDtoToUpdate.StartTime.TimeOfDay < TimeSpan.FromHours(16)
-                    ? "Day Shift"
-                    : shiftDtoToUpdate.StartTime.TimeOfDay >= TimeSpan.FromHours(16) && shiftDtoToUpdate.StartTime.TimeOfDay < TimeSpan.FromHours(24)
-                        ? "Swing Shift"
-                        : "Graveyard Shift";
+                if (shiftDtoToUpdate.EndTime < shiftDtoToUpdate.StartTime)
+                {
+                    AnsiConsole.MarkupLine(
+                        "[green]Shift start time edited[/]\n"
+                            + "[red]Start time can't be lower than end time.\n"
+                            + "Adjust the end time![/]"
+                    );
 
-                if (shifts.Any(s => s.WorkerId == shiftDtoToUpdate.WorkerId &&
-                                    s.StartTime == shiftDtoToUpdate.StartTime &&
-                                    s.EndTime == shiftDtoToUpdate.EndTime))
+                    shiftDtoToUpdate.EndTime = AnsiConsole.Prompt(
+                        new TextPrompt<DateTime>(
+                            "Enter shift end date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
+                        ).Validate(input =>
+                            input > shiftDtoToUpdate.StartTime
+                                ? ValidationResult.Success()
+                                : ValidationResult.Error(
+                                    "[red]Invalid date (end date must be greater than start date).[/]"
+                                )
+                        )
+                    );
+                }
+
+                shiftDtoToUpdate.ShiftType =
+                    shiftDtoToUpdate.StartTime.TimeOfDay >= TimeSpan.FromHours(8)
+                    && shiftDtoToUpdate.StartTime.TimeOfDay < TimeSpan.FromHours(16)
+                        ? "Day Shift"
+                    : shiftDtoToUpdate.StartTime.TimeOfDay >= TimeSpan.FromHours(16)
+                    && shiftDtoToUpdate.StartTime.TimeOfDay < TimeSpan.FromHours(24)
+                        ? "Swing Shift"
+                    : "Graveyard Shift";
+
+                if (
+                    shifts.Any(s =>
+                        s.WorkerId == shiftDtoToUpdate.WorkerId
+                        && s.StartTime == shiftDtoToUpdate.StartTime
+                        && s.EndTime == shiftDtoToUpdate.EndTime
+                    )
+                )
                 {
                     AnsiConsole.MarkupLine("[red]Shift already logged![/]");
                     AnsiConsole.MarkupLine("Press any key to continue...");
@@ -122,7 +158,7 @@ internal class ShiftService
                 else
                 {
                     await _apiDataService.PutShiftAsync(shiftDtoToUpdate);
-                
+
                     AnsiConsole.MarkupLine(
                         "\n[green]Successfully edited shift![/]\nPress any key to continue..."
                     );
@@ -180,7 +216,7 @@ internal class ShiftService
 
         var shifts = await GetShiftsAsync();
         var idMap = new Dictionary<int, int>();
-   
+
         int idx = 1;
         foreach (var shiftDto in shifts)
         {
@@ -195,11 +231,11 @@ internal class ShiftService
             idMap[idx] = shiftDto.ShiftId; // Mapping real id from database to artificial in the app
             idx++;
         }
-        
+
         table.Border(TableBorder.HeavyEdge);
-        
+
         AnsiConsole.Write(table);
-        
+
         return idMap;
     }
 
@@ -235,7 +271,10 @@ internal class ShiftService
             })
         );
 
-        var notExistsValidation = _workerService.ValidateIfUserWithEmailExists(workers, workerEmail);
+        var notExistsValidation = _workerService.ValidateIfUserWithEmailExists(
+            workers,
+            workerEmail
+        );
         WorkerDto? createdWorker = null;
 
         if (notExistsValidation.Successful)
@@ -244,13 +283,14 @@ internal class ShiftService
             createdWorker = await _workerService.CreateWorker(workerEmail); // ← You need this assignment
         }
 
-        int workerId = createdWorker != null
-            ? createdWorker.WorkerId
-            : workers
-                .Where(w => w.Email == workerEmail)
-                .Select(w => w.WorkerId)
-                .FirstOrDefault();
-        
+        int workerId =
+            createdWorker != null
+                ? createdWorker.WorkerId
+                : workers
+                    .Where(w => w.Email == workerEmail)
+                    .Select(w => w.WorkerId)
+                    .FirstOrDefault();
+
         var startTime = AnsiConsole.Prompt(
             new TextPrompt<DateTime>(
                 "Enter shift start date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
@@ -260,23 +300,27 @@ internal class ShiftService
                     : ValidationResult.Error("[red]Invalid date.[/]")
             )
         );
-        
+
         var endTime = AnsiConsole.Prompt(
             new TextPrompt<DateTime>(
                 "Enter shift end date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
             ).Validate(input =>
                 input > startTime
                     ? ValidationResult.Success()
-                    : ValidationResult.Error("[red]Invalid date (end date must be greater than start date).[/]")
+                    : ValidationResult.Error(
+                        "[red]Invalid date (end date must be greater than start date).[/]"
+                    )
             )
         );
-        
-        var shiftType = startTime.TimeOfDay >= TimeSpan.FromHours(8) && startTime.TimeOfDay < TimeSpan.FromHours(16)
-            ? "Day Shift"
-            : startTime.TimeOfDay >= TimeSpan.FromHours(16) && startTime.TimeOfDay < TimeSpan.FromHours(24)
-                ? "Swing Shift"
-                : "Graveyard Shift";
 
+        var shiftType =
+            startTime.TimeOfDay >= TimeSpan.FromHours(8)
+            && startTime.TimeOfDay < TimeSpan.FromHours(16)
+                ? "Day Shift"
+            : startTime.TimeOfDay >= TimeSpan.FromHours(16)
+            && startTime.TimeOfDay < TimeSpan.FromHours(24)
+                ? "Swing Shift"
+            : "Graveyard Shift";
 
         TimeSpan difference = endTime - startTime;
         string workedHours =
