@@ -4,7 +4,7 @@ namespace ShiftsLoggerUI;
 
 class Program
 {
-    static async Task Main(string[] args)
+    static async Task Main()
     {
         MainView mainView = new MainView();
         await mainView.Start();
