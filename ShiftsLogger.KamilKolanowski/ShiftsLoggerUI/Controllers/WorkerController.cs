@@ -42,7 +42,8 @@ internal class WorkerController
     private async Task AddWorker()
     {
         await _workerService.CreateWorker();
-
+        
+        AnsiConsole.MarkupLine("Press any key to continue...");
         Console.ReadKey();
     }
 

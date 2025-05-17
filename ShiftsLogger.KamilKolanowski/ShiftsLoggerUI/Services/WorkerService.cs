@@ -24,7 +24,7 @@ internal class WorkerService
             var createdWorker = await _apiDataService.PostWorkerAsync(worker);
 
             AnsiConsole.MarkupLine(
-                "\n[green]Successfully added worker![/]\nPress any key to continue..."
+                "\n[green]Successfully added worker![/]"
             );
             return createdWorker;
         }

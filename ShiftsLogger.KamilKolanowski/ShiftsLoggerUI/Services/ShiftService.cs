@@ -78,11 +78,14 @@ internal class ShiftService
                         new TextPrompt<DateTime>(
                             "Enter shift start date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
                         ).Validate(input =>
-                            input > DateTime.MinValue
-                                ? ValidationResult.Success()
-                                : ValidationResult.Error("[red]Invalid date.[/]")
-                        )
-                    );
+                            {
+                                if (shiftDtoToUpdate.EndTime <= input)
+                                    return ValidationResult.Error("[red]Start time must be before end time.[/]");
+                                if (shiftDtoToUpdate.EndTime - input > TimeSpan.FromHours(24))
+                                    return ValidationResult.Error("[red]You can't work longer than 24 hours![/]");
+                                return ValidationResult.Success();
+                            })
+                        );
 
                     newValue = startTime.ToString("yyyy-MM-dd HH:mm");
                 }
@@ -142,7 +145,10 @@ internal class ShiftService
                     && shiftDtoToUpdate.StartTime.TimeOfDay < TimeSpan.FromHours(24)
                         ? "Swing Shift"
                     : "Graveyard Shift";
-
+                
+                TimeSpan difference = shiftDtoToUpdate.EndTime - shiftDtoToUpdate.StartTime;
+                shiftDtoToUpdate.WorkedHours = $"{(int)difference.TotalHours:D2}:{difference.Minutes:D2}:{difference.Seconds:D2}";
+                
                 if (
                     shifts.Any(s =>
                         s.WorkerId == shiftDtoToUpdate.WorkerId
@@ -155,15 +161,13 @@ internal class ShiftService
                     AnsiConsole.MarkupLine("Press any key to continue...");
                     return;
                 }
-                else
-                {
-                    await _apiDataService.PutShiftAsync(shiftDtoToUpdate);
 
-                    AnsiConsole.MarkupLine(
-                        "\n[green]Successfully edited shift![/]\nPress any key to continue..."
-                    );
-                    break;
-                }
+                await _apiDataService.PutShiftAsync(shiftDtoToUpdate);
+
+                AnsiConsole.MarkupLine(
+                    "\n[green]Successfully edited shift![/]\nPress any key to continue..."
+                );
+                break;
             }
         }
         catch (Exception ex)
@@ -305,12 +309,13 @@ internal class ShiftService
             new TextPrompt<DateTime>(
                 "Enter shift end date and time [yellow](e.g. 2025-05-16 14:30)[/]:"
             ).Validate(input =>
-                input > startTime
-                    ? ValidationResult.Success()
-                    : ValidationResult.Error(
-                        "[red]Invalid date (end date must be greater than start date).[/]"
-                    )
-            )
+            {
+                if (input <= startTime)
+                    return ValidationResult.Error("[red]End time must be after start time.[/]");
+                if (input - startTime > TimeSpan.FromHours(24))
+                    return ValidationResult.Error("[red]Shift can't be longer than 24 hours.[/]");
+                return ValidationResult.Success();
+            })
         );
 
         var shiftType =
