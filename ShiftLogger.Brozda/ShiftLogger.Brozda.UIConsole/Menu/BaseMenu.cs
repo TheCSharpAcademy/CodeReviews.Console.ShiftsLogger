@@ -22,7 +22,7 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
         /// <summary>
         /// Represents menu panel - short descriptions of current menu capabilities
         /// </summary>
-        protected Panel _menuPanel = new Panel(AppConstants.PlaceHolderText);
+        protected Panel _menuPanel = new Panel(SharedConstants.PlaceHolderText);
 
         /// <summary>
         /// List of  integer values of menu options enumerable
@@ -34,8 +34,8 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
         /// </summary>
         protected Dictionary<int, (string label, Func<Task> action)> _menuItems = new()
         {
-            {(int)CommonMenuOptions.ReturnToMainMenu, (AppConstants.BaseMenuReturnToMainMenu, () => Task.CompletedTask) },
-            {(int)CommonMenuOptions.ExitApp, (AppConstants.BaseMenuExitApp, ()=> {Environment.Exit(0); return Task.CompletedTask;})}
+            {(int)CommonMenuOptions.ReturnToMainMenu, (MenuConstants.BaseMenuReturnToMainMenu, () => Task.CompletedTask) },
+            {(int)CommonMenuOptions.ExitApp, (MenuConstants.BaseMenuExitApp, ()=> {Environment.Exit(0); return Task.CompletedTask;})}
         };
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
                 }
                 else
                 {
-                    AppOutput.PrintText(AppConstants.MenuInvalidOption);
+                    AppOutput.PrintText(SharedConstants.MenuInvalidOption);
                 }
 
                 ClearConsoleAndPrintPanel();

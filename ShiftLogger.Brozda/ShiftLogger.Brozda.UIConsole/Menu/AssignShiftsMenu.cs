@@ -43,17 +43,17 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
         /// </summary>
         private void MapMenu()
         {
-            _menuPanel = new Panel(AppConstants.ShiftsMenuTitle);
+            _menuPanel = new Panel(MenuConstants.ShiftsMenuTitle);
 
             _menuOptions.AddRange(Enum.GetValues<AssignedShiftsMenuOptions>().Cast<int>().ToList());
             _menuOptions.Sort();
 
-            _menuItems.Add((int)AssignedShiftsMenuOptions.ViewAllForDate, (AppConstants.ShiftsMenuOptionViewByDate, _actionHandler.ProcessViewAllForDate));
-            _menuItems.Add((int)AssignedShiftsMenuOptions.SelectWorker, (AppConstants.ShiftsMenuOptionSelectWorker, _actionHandler.ProcessSelectWorker));
-            _menuItems.Add((int)AssignedShiftsMenuOptions.ViewAllForWorker, (AppConstants.ShiftsMenuOptionViewAll, _actionHandler.ProcessViewAllForWorker));
-            _menuItems.Add((int)AssignedShiftsMenuOptions.AssignNewShift, (AppConstants.ShiftsMenuOptionCreate, _actionHandler.ProcessAssignNewShift));
-            _menuItems.Add((int)AssignedShiftsMenuOptions.UpdateShiftForWorker, (AppConstants.ShiftsMenuOptionEdit, _actionHandler.ProcessUpdateShiftForWorker));
-            _menuItems.Add((int)AssignedShiftsMenuOptions.DeleteShiftForWorker, (AppConstants.ShiftsMenuOptionDelete, _actionHandler.ProcessDeleteShiftForWorker));
+            _menuItems.Add((int)AssignedShiftsMenuOptions.ViewAllForDate, (MenuConstants.ShiftsMenuOptionViewByDate, _actionHandler.ProcessViewAllForDate));
+            _menuItems.Add((int)AssignedShiftsMenuOptions.SelectWorker, (MenuConstants.ShiftsMenuOptionSelectWorker, _actionHandler.ProcessSelectWorker));
+            _menuItems.Add((int)AssignedShiftsMenuOptions.ViewAllForWorker, (MenuConstants.ShiftsMenuOptionViewAll, _actionHandler.ProcessViewAllForWorker));
+            _menuItems.Add((int)AssignedShiftsMenuOptions.AssignNewShift, (MenuConstants.ShiftsMenuOptionCreate, _actionHandler.ProcessAssignNewShift));
+            _menuItems.Add((int)AssignedShiftsMenuOptions.UpdateShiftForWorker, (MenuConstants.ShiftsMenuOptionEdit, _actionHandler.ProcessUpdateShiftForWorker));
+            _menuItems.Add((int)AssignedShiftsMenuOptions.DeleteShiftForWorker, (MenuConstants.ShiftsMenuOptionDelete, _actionHandler.ProcessDeleteShiftForWorker));
         }
 
         /// <summary>

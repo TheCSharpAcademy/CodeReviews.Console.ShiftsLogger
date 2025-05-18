@@ -66,7 +66,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
             //anything else
             else
             {
-                PrintText(AppConstants.OutputUnsuportedData);
+                PrintText(OutputConstants.OutputUnsuportedData);
             }
         }
 
@@ -77,7 +77,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         private static void PrintShiftTypes(List<ShiftTypeDto> entities)
         {
             Console.Clear();
-            AnsiConsole.Write(new Panel(AppConstants.OutputPanelShiftTypes));
+            AnsiConsole.Write(new Panel(OutputConstants.OutputPanelShiftTypes));
             var table = new Table();
             table.AddColumns(new string[] { "Id", "Name", "Description", "Start Time", "End Time" });
 
@@ -96,7 +96,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         private static void PrintWorkers(List<WorkerDto> entities)
         {
             Console.Clear();
-            AnsiConsole.Write(new Panel(AppConstants.OutputPanelWorker));
+            AnsiConsole.Write(new Panel(OutputConstants.OutputPanelWorker));
 
             var table = new Table();
             table.AddColumns(new string[] { "Id", "Name" });
@@ -116,11 +116,11 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         public static void PrintSelectedWorker(WorkerDto? entity)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(AppConstants.OutputPanelSelectedWorkerText);
+            sb.Append(OutputConstants.OutputPanelSelectedWorkerText);
 
             if (entity is null)
             {
-                sb.Append(AppConstants.OutputPanelNoSelectedWorker);
+                sb.Append(OutputConstants.OutputPanelNoSelectedWorker);
             }
             else
             {
@@ -137,7 +137,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         private static void PrintShifts(List<AssignedShiftMappedDto> entities)
         {
             Console.Clear();
-            AnsiConsole.Write(new Panel(AppConstants.OutputPanelAssignedShifts));
+            AnsiConsole.Write(new Panel(OutputConstants.OutputPanelAssignedShifts));
             var table = new Table();
             table.AddColumns(new string[] { "Id", "WorkerName", "ShiftTypeName", "Date", "Shift start", "Shift End" });
 
@@ -163,7 +163,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
                 dto.Id.ToString(),
                 dto.WorkerName,
                 dto.ShiftTypeName,
-                dto.Date.ToString(AppConstants.OutputDateFormat),
+                dto.Date.ToString(OutputConstants.OutputDateFormat),
                 dto.StartTime.ToString(),
                 dto.EndTime.ToString(),
             };
@@ -200,7 +200,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
             {
                 dto.DisplayId.ToString(),
                 dto.Name,
-                dto.Description ?? AppConstants.OutputNullValueSymbol,
+                dto.Description ?? OutputConstants.OutputNullValueSymbol,
                 dto.StartTime.ToString(),
                 dto.EndTime.ToString()
             };
@@ -212,7 +212,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         public static void PrintPressAnyKeyToContinue()
         {
             Console.WriteLine();
-            Console.WriteLine(AppConstants.OutputPressAnyKeyToContinue);
+            Console.WriteLine(OutputConstants.OutputPressAnyKeyToContinue);
             Console.ReadKey();
         }
 
@@ -223,7 +223,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         /// <param name="error"><see cref="string"/> error text to be shown</param>
         public static void PrintErrorApiResult(string prefix, string? error)
         {
-            Console.WriteLine($"{prefix}: {error ?? AppConstants.ActionErrorUnhandled}");
+            Console.WriteLine($"{prefix}: {error ?? SharedConstants.ActionErrorUnhandled}");
         }
 
         /// <summary>

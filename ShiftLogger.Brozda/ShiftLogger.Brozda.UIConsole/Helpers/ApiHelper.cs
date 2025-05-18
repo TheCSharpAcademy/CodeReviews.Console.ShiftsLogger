@@ -24,12 +24,12 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
         {
             if (result.StatusCode == 404)
             {
-                AppOutput.PrintErrorApiResult(AppConstants.ActionErrorNotFound, result.ErrorMessage ?? AppConstants.ActionErrorUnhandled);
+                AppOutput.PrintErrorApiResult(SharedConstants.ActionErrorNotFound, result.ErrorMessage ?? SharedConstants.ActionErrorUnhandled);
                 return false;
             }
             else if (!result.IsSuccessful || result.Data is null)
             {
-                AppOutput.PrintErrorApiResult(errorMsg ?? AppConstants.ActionErrorUnhandled, result.ErrorMessage ?? AppConstants.ActionErrorUnhandled);
+                AppOutput.PrintErrorApiResult(errorMsg ?? SharedConstants.ActionErrorUnhandled, result.ErrorMessage ?? SharedConstants.ActionErrorUnhandled);
                 return false;
             }
 
@@ -76,9 +76,9 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
                     if (response.ErrorException is not null && response.ErrorException.Message is not null)
                         error = response.ErrorException.Message;
                     else
-                        error = AppConstants.NotAvailable;
+                        error = ApiHelperConstants.NotAvailable;
 
-                    return ApiResult<T>.Fail($"{AppConstants.BadRequest}: {error} ", (int)System.Net.HttpStatusCode.BadRequest);
+                    return ApiResult<T>.Fail($"{ApiHelperConstants.BadRequest}: {error} ", (int)System.Net.HttpStatusCode.BadRequest);
                 }
 
                 if (response.Data is null)
@@ -88,19 +88,19 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
                     if (response.ErrorException is not null && response.ErrorException.Message is not null)
                         error = response.ErrorException.Message;
                     else
-                        error = AppConstants.DeserializationFailure;
+                        error = ApiHelperConstants.DeserializationFailure;
 
-                    return ApiResult<T>.Fail($"{AppConstants.ResponseFormatException}: {error}");
+                    return ApiResult<T>.Fail($"{ApiHelperConstants.ResponseFormatException}: {error}");
                 }
 
-                return ApiResult<T>.Fail($"{AppConstants.ServerError}: " +
+                return ApiResult<T>.Fail($"{ApiHelperConstants.ServerError}: " +
                     $"{response.StatusCode}; {response.StatusDescription}",
                     (int)response.StatusCode
                     );
             }
             catch (Exception ex)
             {
-                return ApiResult<T>.Fail($"{AppConstants.UnhandedServerError}: {ex.Message}");
+                return ApiResult<T>.Fail($"{ApiHelperConstants.UnhandedServerError}: {ex.Message}");
             }
         }
     }

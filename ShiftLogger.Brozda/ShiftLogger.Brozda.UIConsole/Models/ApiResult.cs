@@ -41,7 +41,7 @@ namespace ShiftLogger.Brozda.UIConsole.Models
             {
                 IsSuccessful = false,
                 StatusCode = 404,
-                ErrorMessage = AppConstants.ResultNoRecord,
+                ErrorMessage = ApiResultConstants.ResultNoRecord,
             };
         }
 
@@ -71,7 +71,7 @@ namespace ShiftLogger.Brozda.UIConsole.Models
             {
                 IsSuccessful = false,
                 Data = default(T),
-                ErrorMessage = AppConstants.ResultInvalidDataInRequest
+                ErrorMessage = ApiResultConstants.ResultInvalidDataInRequest
             };
         }
     }

@@ -37,7 +37,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
 
             var getAllForDateResult = await _service.GetShiftsForDate(date);
 
-            ApiHelper.HandleResult(getAllForDateResult, AppConstants.ActionErrorGetAll, null, true);
+            ApiHelper.HandleResult(getAllForDateResult, SharedConstants.ActionErrorGetAll, null, true);
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             if (_selectedWorker is null)
             {
-                AppOutput.PrintText(AppConstants.ShiftsWorkerNotSelected);
+                AppOutput.PrintText(MenuConstants.ShiftsWorkerNotSelected);
                 return;
             }
 
@@ -81,7 +81,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
             if (newShift is null) { return; }
 
             var assignNewShiftResult = await _service.Create(newShift);
-            ApiHelper.HandleResult(assignNewShiftResult, AppConstants.ActionSucessCreate, AppConstants.ActionSucessCreate);
+            ApiHelper.HandleResult(assignNewShiftResult, SharedConstants.ActionSucessCreate, SharedConstants.ActionSucessCreate);
         }
 
         /// <summary>
@@ -93,12 +93,12 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             if (_selectedWorker is null)
             {
-                AppOutput.PrintText(AppConstants.ShiftsWorkerNotSelected);
+                AppOutput.PrintText(MenuConstants.ShiftsWorkerNotSelected);
                 return;
             }
 
             var toBeUpdatedId = await GetSingleShiftId();
-            if (toBeUpdatedId == AppConstants.CancelledID) { return; }
+            if (toBeUpdatedId == SharedConstants.CancelledID) { return; }
 
             var toBeUpdatedShift = await GetShiftById(toBeUpdatedId);
             if (toBeUpdatedShift is null) { return; }
@@ -109,7 +109,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
             newShift.Id = toBeUpdatedId;
 
             var updateResult = await _service.Edit(toBeUpdatedId, newShift);
-            ApiHelper.HandleResult(updateResult, AppConstants.ActionErrorUpdate, AppConstants.ActionSuccessUpdate);
+            ApiHelper.HandleResult(updateResult, SharedConstants.ActionErrorUpdate, SharedConstants.ActionSuccessUpdate);
         }
 
         /// <summary>
@@ -120,15 +120,15 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             if (_selectedWorker is null)
             {
-                AppOutput.PrintText(AppConstants.ShiftsWorkerNotSelected);
+                AppOutput.PrintText(MenuConstants.ShiftsWorkerNotSelected);
                 return;
             }
 
             var toBeDeletedId = await GetSingleShiftId();
-            if (toBeDeletedId == AppConstants.CancelledID) { return; }
+            if (toBeDeletedId == SharedConstants.CancelledID) { return; }
 
             var deleteResult = await _service.Delete(toBeDeletedId);
-            ApiHelper.HandleResult(deleteResult, AppConstants.ActionErrorGetAll, AppConstants.ActionSuccessDelete);
+            ApiHelper.HandleResult(deleteResult, SharedConstants.ActionErrorGetAll, SharedConstants.ActionSuccessDelete);
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
 
             var workerShiftsResult = await _service.GetShiftsForWorker(_selectedWorker.Id);
 
-            var success = ApiHelper.HandleResult(workerShiftsResult, AppConstants.ActionErrorGetAll, null, printShifts);
+            var success = ApiHelper.HandleResult(workerShiftsResult, SharedConstants.ActionErrorGetAll, null, printShifts);
 
             return success
                 ? workerShiftsResult.Data
@@ -160,7 +160,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         private async Task<int> GetSingleShiftId()
         {
             var shifts = await GetAllShiftsForWorker(true);
-            if (shifts is null) { return AppConstants.CancelledID; }
+            if (shifts is null) { return SharedConstants.CancelledID; }
 
             var validIds = shifts.Select(x => x.Id).ToList();
             var selectedId = AppInput.GetId(validIds, null);
@@ -177,10 +177,10 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             var getShiftResult = await _service.GetShifts();
 
-            var success = ApiHelper.HandleResult(getShiftResult, AppConstants.ActionErrorGetAll, null, true);
+            var success = ApiHelper.HandleResult(getShiftResult, SharedConstants.ActionErrorGetAll, null, true);
             if (!success)
             {
-                return AppConstants.CancelledID;
+                return SharedConstants.CancelledID;
             }
 
             var validIds = getShiftResult.Data!.Select(x => x.Id).ToList();
@@ -207,13 +207,13 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
             if (currentShift is null)
             {
                 shiftTypeId = await GetShiftType();
-                if (shiftTypeId == AppConstants.CancelledID) { return null; }
+                if (shiftTypeId == SharedConstants.CancelledID) { return null; }
                 date = AppInput.GetDate();
             }
             else
             {
                 shiftTypeId = await GetShiftType(currentShift.ShiftTypeId);
-                if (shiftTypeId == AppConstants.CancelledID) { return null; }
+                if (shiftTypeId == SharedConstants.CancelledID) { return null; }
                 date = AppInput.GetDate(currentShift.Date);
             }
 
@@ -233,7 +233,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             var getWorkersResult = await _service.GetWorkers();
 
-            if (!ApiHelper.HandleResult(getWorkersResult, AppConstants.ActionErrorGetAll, null, true))
+            if (!ApiHelper.HandleResult(getWorkersResult, SharedConstants.ActionErrorGetAll, null, true))
             {
                 return null;
             }
@@ -266,7 +266,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             var getByIdResult = await _service.GetById(id);
 
-            var success = ApiHelper.HandleResult(getByIdResult, AppConstants.ActionErrorGetAll);
+            var success = ApiHelper.HandleResult(getByIdResult, SharedConstants.ActionErrorGetAll);
 
             return success
                 ? getByIdResult.Data

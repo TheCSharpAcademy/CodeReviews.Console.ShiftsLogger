@@ -29,9 +29,9 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         {
             var userChoice = AnsiConsole.Prompt(
                     new SelectionPrompt<int>()
-                    .Title(AppConstants.MenuNavigation)
+                    .Title(SharedConstants.MenuNavigation)
                     .AddChoices(menuOptions)
-                    .UseConverter(option => menuItems.ContainsKey(option) ? menuItems[option].label : AppConstants.MenuUnknownOption)
+                    .UseConverter(option => menuItems.ContainsKey(option) ? menuItems[option].label : SharedConstants.MenuUnknownOption)
                     );
 
             return Task.FromResult(userChoice);
@@ -51,15 +51,15 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
 
             if (dto is null)
             {
-                name = GetName(AppConstants.InputShiftName, nameRegex);
-                description = GetDescription(AppConstants.InputDescription, descriptionRegex);
+                name = GetName(InputConstants.InputShiftName, nameRegex);
+                description = GetDescription(InputConstants.InputDescription, descriptionRegex);
                 startTime = GetTimeSpan(true);
                 endTime = GetTimeSpan(false);
             }
             else
             {
-                name = GetName(AppConstants.InputShiftName, nameRegex, dto.Name);
-                description = GetDescription(AppConstants.InputDescription, descriptionRegex, dto.Description);
+                name = GetName(InputConstants.InputShiftName, nameRegex, dto.Name);
+                description = GetDescription(InputConstants.InputDescription, descriptionRegex, dto.Description);
                 startTime = GetTimeSpan(true, dto.StartTime);
                 endTime = GetTimeSpan(false, dto.EndTime);
             }
@@ -84,13 +84,13 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
 
             if (toBeUpdated is null)
             {
-                name = GetName(AppConstants.InputWorkerName, nameRegex);
+                name = GetName(InputConstants.InputWorkerName, nameRegex);
 
                 return new WorkerDto() { Name = name };
             }
             else
             {
-                name = GetName(AppConstants.InputWorkerName, nameRegex, toBeUpdated.Name);
+                name = GetName(InputConstants.InputWorkerName, nameRegex, toBeUpdated.Name);
                 toBeUpdated.Name = name;
 
                 return toBeUpdated;
@@ -104,20 +104,20 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         /// <returns><see cref="DateTime"/> from user input in specified format</returns>
         public static DateTime GetDate(DateTime? currentDate = null)
         {
-            var textPrompt = new TextPrompt<string>(AppConstants.InputDate)
+            var textPrompt = new TextPrompt<string>(InputConstants.InputDate)
                 .Validate(x =>
-                    DateTime.TryParseExact(x.ToString(), AppConstants.InputDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
+                    DateTime.TryParseExact(x.ToString(), InputConstants.InputDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _)
                     ? ValidationResult.Success()
-                    : ValidationResult.Error(AppConstants.InputInvalidDate));
+                    : ValidationResult.Error(InputConstants.InputInvalidDate));
 
             if (currentDate is not null)
             {
-                textPrompt.DefaultValue(currentDate.Value.ToString(AppConstants.InputDateFormat));
+                textPrompt.DefaultValue(currentDate.Value.ToString(InputConstants.InputDateFormat));
             }
 
             string date = AnsiConsole.Prompt(textPrompt);
 
-            return DateTime.ParseExact(date, AppConstants.InputDateFormat, CultureInfo.InvariantCulture);
+            return DateTime.ParseExact(date, InputConstants.InputDateFormat, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -134,14 +134,14 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
 
             if (allowCancel)
             {
-                ids.Add(AppConstants.CancelledID);
-                prompt = AppConstants.InputRecordId;
-                errorMsg = AppConstants.InputErrorRecordId;
+                ids.Add(SharedConstants.CancelledID);
+                prompt = InputConstants.InputRecordId;
+                errorMsg = InputConstants.InputErrorRecordId;
             }
             else
             {
-                prompt = AppConstants.InputSelectRecordId;
-                errorMsg = AppConstants.InputErrorRecordId;
+                prompt = InputConstants.InputSelectRecordId;
+                errorMsg = InputConstants.InputErrorRecordId;
             }
 
             var textPrompt = new TextPrompt<int>(prompt)
@@ -170,7 +170,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         {
             var textPrompt = new TextPrompt<string>(prompt)
                 .Validate(x => validator.IsMatch(x))
-                .ValidationErrorMessage(AppConstants.InputErrorName);
+                .ValidationErrorMessage(InputConstants.InputErrorName);
 
             if (defaultValue is not null)
             {
@@ -195,7 +195,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
             var textPrompt = new TextPrompt<string>(prompt)
                 .AllowEmpty()
                 .Validate(x => validator.IsMatch(x) || x == string.Empty)
-                .ValidationErrorMessage(AppConstants.InputErrorDescription);
+                .ValidationErrorMessage(InputConstants.InputErrorDescription);
 
             if (defaultValue is not null)
             {
@@ -216,17 +216,17 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         /// <returns><see cref="TimeSpan"/> based on user input</returns>
         private static TimeSpan GetTimeSpan(bool startTime, TimeSpan? defaultValue = null)
         {
-            string promptHour = startTime ? AppConstants.InputTimeHoursStart : AppConstants.InputTimeHoursEnd;
-            string promptMinute = startTime ? AppConstants.InputTimeMinutesStart : AppConstants.InputTimeMinutesEnd;
+            string promptHour = startTime ? InputConstants.InputTimeHoursStart : InputConstants.InputTimeHoursEnd;
+            string promptMinute = startTime ? InputConstants.InputTimeMinutesStart : InputConstants.InputTimeMinutesEnd;
 
 
             var hourPrompt = new TextPrompt<int>(promptHour)
                 .Validate(x => x >= 0 && x <= 23)
-                .ValidationErrorMessage(AppConstants.InputErrorTimeHour);
+                .ValidationErrorMessage(InputConstants.InputErrorTimeHour);
 
             var minutePrompt = new TextPrompt<int>(promptMinute)
                 .Validate(x => x >= 0 && x <= 59)
-                .ValidationErrorMessage(AppConstants.InputErrorTimeMinute);
+                .ValidationErrorMessage(InputConstants.InputErrorTimeMinute);
 
             if (defaultValue is not null)
             {

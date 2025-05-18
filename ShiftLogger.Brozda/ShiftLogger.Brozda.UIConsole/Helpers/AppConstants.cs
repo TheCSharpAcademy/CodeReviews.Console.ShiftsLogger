@@ -5,24 +5,50 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
     /// <summary>
     /// Static class containing constant values across the app
     /// </summary>
-    public static class AppConstants
+    /// 
+
+    public static class SharedConstants
     {
         public const int CancelledID = 0;
 
+        public const string PlaceHolderText = "This text wasnt properly set by developer";
 
-        //API HELPER
+        public const string MenuInvalidOption = "Invalid menu option";
+        public const string MenuUnknownOption = "Unknown option";
+
+        public const string MenuNavigation = "Use arrow keys to select an option";
+
+
+        public const string ActionSucessCreate = "Record created successfully";
+        public const string ActionSuccessUpdate = "Record updated successfully";
+        public const string ActionSuccessDelete = "Record deleted successfully";
+
+        public const string ActionErrorCreate = "Error occured during create";
+        public const string ActionErrorUpdate = "Error occured during update";
+        public const string ActionErrorDelete = "Error occured during delete";
+
+        public const string ActionErrorUnhandled = "Unexpected error";
+        public const string ActionErrorGetAll = "Error occured during fetching records";
+        public const string ActionErrorNotFound = "Record not found";
+    }
+    public static class ApiHelperConstants
+    {
         public const string NotAvailable = "n/a";
         public const string BadRequest = "Bad request";
         public const string DeserializationFailure = "Unknown deserialization failure";
         public const string ResponseFormatException = "Response format exception";
         public const string ServerError = "Server error";
         public const string UnhandedServerError = "Unhandled Server error";
+    }
 
-        //API Result
+    public static class ApiResultConstants
+    {
         public const string ResultNoRecord = "Your request did not match any record in the database";
         public const string ResultInvalidDataInRequest = "Invalid data passed";
+    }
 
-        //INPUT
+    public static class InputConstants
+    {
         public const string InputShiftName = "Please enter a shift type name: ";
         public const string InputWorkerName = "Enter worker name: ";
 
@@ -45,12 +71,15 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
         public const string InputTimeMinutesEnd = "Enter ending minute: ";
         public const string InputErrorTimeHour = "Hour value must be number between 0 and 23: ";
         public const string InputErrorTimeMinute = "Hour value must be number between 0 and 59: ";
+    }
 
-        //OUTPUT
+
+    public static class OutputConstants
+    {
         public const string OutputUnsuportedData = "Unsuported data";
         public const string OutputPanelShiftTypes = "Shift type details";
         public const string OutputPanelWorker = "Worker details";
-        public const string OutputPanelAssignedShifts = "Assigned shift(s) details"";
+        public const string OutputPanelAssignedShifts = "Assigned shift(s) details";
 
         public const string OutputPanelSelectedWorkerText = "Currently selected worker: ";
         public const string OutputPanelNoSelectedWorker = "No worker";
@@ -59,30 +88,11 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
         public const string OutputNullValueSymbol = " - ";
 
         public const string OutputPressAnyKeyToContinue = "Press any key to continue...";
+    }
 
-        //GENERAL
-        public const string PlaceHolderText = "This text wasnt properly set by developer";
 
-        public const string MenuInvalidOption = "Invalid menu option";
-        public const string MenuUnknownOption = "Unknown option";
-
-        public const string MenuNavigation = "Use arrow keys to select an option";
-        
-
-        public const string ActionSucessCreate = "Record created successfully";
-        public const string ActionSuccessUpdate = "Record updated successfully";
-        public const string ActionSuccessDelete = "Record deleted successfully";
-
-        public const string ActionErrorCreate = "Error occured during create";
-        public const string ActionErrorUpdate = "Error occured during update";
-        public const string ActionErrorDelete = "Error occured during delete";
-
-        public const string ActionErrorUnhandled = "Unexpected error";
-        public const string ActionErrorGetAll = "Error occured during fetching records";
-        public const string ActionErrorNotFound = "Record not found";
-
-        
-        
+    public static class MenuConstants
+    {        
 
         //BASE MENU
         public const string BaseMenuReturnToMainMenu = "Return to main menu";

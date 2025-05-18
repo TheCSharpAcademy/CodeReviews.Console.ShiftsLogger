@@ -38,15 +38,15 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
         /// </summary>
         private void MapMenu()
         {
-            _menuPanel = new Panel(AppConstants.ShiftTypesMenuTitle);
+            _menuPanel = new Panel(MenuConstants.ShiftTypesMenuTitle);
 
             _menuOptions.AddRange(Enum.GetValues<ShiftTypeMenuOptions>().Cast<int>().ToList());
             _menuOptions.Sort();
 
-            _menuItems.Add((int)ShiftTypeMenuOptions.ViewAll, (AppConstants.ShiftTypesMenuOptionViewAll, _actionHandler.ProcessViewAll));
-            _menuItems.Add((int)ShiftTypeMenuOptions.Create, (AppConstants.ShiftTypesMenuOptionCreate, _actionHandler.ProcessCreate));
-            _menuItems.Add((int)ShiftTypeMenuOptions.Edit, (AppConstants.ShiftTypesMenuOptionEdit, _actionHandler.ProcessEdit));
-            _menuItems.Add((int)ShiftTypeMenuOptions.Delete, (AppConstants.ShiftTypesMenuOptionDelete, _actionHandler.ProcessDelete));
+            _menuItems.Add((int)ShiftTypeMenuOptions.ViewAll, (MenuConstants.ShiftTypesMenuOptionViewAll, _actionHandler.ProcessViewAll));
+            _menuItems.Add((int)ShiftTypeMenuOptions.Create, (MenuConstants.ShiftTypesMenuOptionCreate, _actionHandler.ProcessCreate));
+            _menuItems.Add((int)ShiftTypeMenuOptions.Edit, (MenuConstants.ShiftTypesMenuOptionEdit, _actionHandler.ProcessEdit));
+            _menuItems.Add((int)ShiftTypeMenuOptions.Delete, (MenuConstants.ShiftTypesMenuOptionDelete, _actionHandler.ProcessDelete));
         }
     }
 }

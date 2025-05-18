@@ -56,11 +56,11 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
             _menuOptions.Remove((int)CommonMenuOptions.ReturnToMainMenu);
             _menuOptions.Sort();
 
-            _menuPanel = new Panel(AppConstants.MainMenuTitle);
+            _menuPanel = new Panel(MenuConstants.MainMenuTitle);
 
-            _menuItems.Add((int)MainMenuOptions.ManageWorkers, (AppConstants.MainMenuOptionWorkers, ProcessManageWorkers));
-            _menuItems.Add((int)MainMenuOptions.ManageWorkerShifts, (AppConstants.MainMenuOptionAssignedShifts, ProcessManageWorkerShifts));
-            _menuItems.Add((int)MainMenuOptions.ManageShiftTypes, (AppConstants.MainMenuOptionShiftTypes, ProcessManageShiftTypes));
+            _menuItems.Add((int)MainMenuOptions.ManageWorkers, (MenuConstants.MainMenuOptionWorkers, ProcessManageWorkers));
+            _menuItems.Add((int)MainMenuOptions.ManageWorkerShifts, (MenuConstants.MainMenuOptionAssignedShifts, ProcessManageWorkerShifts));
+            _menuItems.Add((int)MainMenuOptions.ManageShiftTypes, (MenuConstants.MainMenuOptionShiftTypes, ProcessManageShiftTypes));
         }
 
         /// <summary>

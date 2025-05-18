@@ -25,7 +25,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
 
             var createResult = await _service.Create(newWorker);
 
-            ApiHelper.HandleResult(createResult, AppConstants.ActionErrorCreate, AppConstants.ActionSucessCreate);
+            ApiHelper.HandleResult(createResult, SharedConstants.ActionErrorCreate, SharedConstants.ActionSucessCreate);
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         public async Task ProcessViewAll()
         {
             var getAllResult = await _service.GetAll();
-            ApiHelper.HandleResult(getAllResult, AppConstants.ActionErrorGetAll, null, true);
+            ApiHelper.HandleResult(getAllResult, SharedConstants.ActionErrorGetAll, null, true);
         }
 
         /// <summary>
@@ -46,12 +46,12 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             int workerId = await GetRecordId();
 
-            if (workerId == AppConstants.CancelledID)
+            if (workerId == SharedConstants.CancelledID)
             { return; }
 
             var getByIdResult = await _service.GetById(workerId);
 
-            ApiHelper.HandleResult(getByIdResult, AppConstants.ActionErrorGetAll, null, true);
+            ApiHelper.HandleResult(getByIdResult, SharedConstants.ActionErrorGetAll, null, true);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             //get ID id of the record to be updated
             var toBeUpdatedId = await GetRecordId();
-            if (toBeUpdatedId == AppConstants.CancelledID) { return; }
+            if (toBeUpdatedId == SharedConstants.CancelledID) { return; }
 
             //get new entity with new values
             var updatedEntity = await GetUpdatedEntity(toBeUpdatedId);
@@ -71,7 +71,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
 
             //push to db
             var editResult = await _service.Edit(toBeUpdatedId, updatedEntity);
-            ApiHelper.HandleResult(editResult, AppConstants.ActionErrorUpdate, AppConstants.ActionSuccessUpdate);
+            ApiHelper.HandleResult(editResult, SharedConstants.ActionErrorUpdate, SharedConstants.ActionSuccessUpdate);
         }
 
         /// <summary>
@@ -82,11 +82,11 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         public async Task ProcessDelete()
         {
             var toBeDeletedId = await GetRecordId();
-            if (toBeDeletedId == AppConstants.CancelledID) { return; }
+            if (toBeDeletedId == SharedConstants.CancelledID) { return; }
 
             var deleteResult = await _service.Delete(toBeDeletedId);
 
-            ApiHelper.HandleResult(deleteResult, AppConstants.ActionErrorDelete, AppConstants.ActionSuccessDelete);
+            ApiHelper.HandleResult(deleteResult, SharedConstants.ActionErrorDelete, SharedConstants.ActionSuccessDelete);
         }
 
         /// <summary>
@@ -97,8 +97,8 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             var getAllResult = await _service.GetAll();
 
-            if (!ApiHelper.HandleResult(getAllResult, AppConstants.ActionErrorGetAll, null, true))
-            { return AppConstants.CancelledID; }
+            if (!ApiHelper.HandleResult(getAllResult, SharedConstants.ActionErrorGetAll, null, true))
+            { return SharedConstants.CancelledID; }
 
             //data cannot be empty here as null check is already in ApiHelper.HandleResult
             var validIds = getAllResult.Data!.Select(x => x.Id).ToList();
@@ -115,7 +115,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             //get existing entity from DB
             var toBeUpdatedEntityResult = await _service.GetById(existingEntityId);
-            if (!ApiHelper.HandleResult(toBeUpdatedEntityResult, AppConstants.ActionErrorGetAll))
+            if (!ApiHelper.HandleResult(toBeUpdatedEntityResult, SharedConstants.ActionErrorGetAll))
             { return null; }
 
             //get new entity
