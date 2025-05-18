@@ -6,26 +6,26 @@ namespace ShiftsLoggerV2.RyanW84.Data;
 
 public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
 {
-    public DbSet<Shift> Shifts { get; set; }
-    public DbSet<Location> Locations { get; set; }
-    public DbSet<Worker> Workers { get; set; }
+    public DbSet<Shifts> Shifts { get; set; }
+    public DbSet<Locations> Locations { get; set; }
+    public DbSet<Workers> Workers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
-            .Entity<Shift>()
+            .Entity<Shifts>()
             .HasOne(s => s.Worker)
             .WithMany(w => w.Shifts)
             .HasForeignKey(s => s.WorkerId)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder
-            .Entity<Shift>()
+            .Entity<Shifts>()
             .HasOne(s => s.Location)
             .WithMany(l => l.Shifts)
             .HasForeignKey(s => s.LocationId)
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder
-            .Entity<Location>()
+            .Entity<Locations>()
             .HasMany(l => l.Shifts)
             .WithOne(s => s.Location)
             .HasForeignKey(s => s.LocationId)
@@ -34,13 +34,13 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
 
     public void SeedData()
     {
-        Shifts.RemoveRange(Shifts);
+        Shifts.RemoveRange(Shifts); // ? Cascade delete ?
         Locations.RemoveRange(Locations);
         Workers.RemoveRange(Workers);
 
-        var locations = new List<Location>
+        var locations = new List<Locations>
         {
-            new Location
+            new Locations
             {
                 Name = "Colchester General Hospital",
                 Address = "Turner Road",
@@ -49,7 +49,7 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
                 ZipOrPostCode = "CO4 5JL",
                 Country = "England",
             },
-            new Location
+            new Locations
             {
                 Name = "The Royal Brisbane and Women's Hospital",
                 Address = "Butterfield Street",
@@ -58,7 +58,7 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
                 ZipOrPostCode = "QLD 4006",
                 Country = "Australia",
             },
-            new Location
+            new Locations
             {
                 Name = "Location 3",
                 Address = "601 E Rollins Street",
@@ -71,21 +71,21 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
 
         Locations.AddRange(locations);
 
-        var workers = new List<Worker>
+        var workers = new List<Workers>
         {
-            new Worker
+            new Workers
             {
                 Name = "John Doe",
                 Phone = "123-456-7890",
                 Email = "John@Doe.com",
             },
-            new Worker
+            new Workers
             {
                 Name = "Jane Doe",
                 Phone = "123-456-7892",
                 Email = "Jane@Doe.com",
             },
-            new Worker
+            new Workers
             {
                 Name = "Jim Doe",
                 Phone = "123-456-7893",
@@ -101,21 +101,21 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
         var workerIds = Workers.Select(w => w.WorkerId).ToList();
 
         Shifts.AddRange(
-            new Shift
+            new Shifts
             {
                 WorkerId = workerIds[0],
                 StartTime = DateTimeOffset.UtcNow.AddHours(2),
                 EndTime = DateTimeOffset.UtcNow.AddHours(10),
                 Location = locations[0],
             },
-            new Shift
+            new Shifts
             {
                 WorkerId = workerIds[1],
                 StartTime = DateTimeOffset.UtcNow.AddHours(1),
                 EndTime = DateTimeOffset.UtcNow.AddHours(5),
                 Location = locations[1],
             },
-            new Shift
+            new Shifts
             {
                 WorkerId = workerIds[2],
                 StartTime = DateTimeOffset.UtcNow.AddHours(3),

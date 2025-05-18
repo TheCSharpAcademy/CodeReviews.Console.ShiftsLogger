@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShiftsLoggerV2.RyanW84.Models;
 
-public class Worker
+public class Workers
 {
     [Key]
     public int WorkerId { get; set; }
@@ -11,5 +11,6 @@ public class Worker
     public string? Phone { get; set; }
     public string? Email { get; set; }
 
-    public virtual ICollection<Shift?> Shifts { get; set; } // Navigation property to the Shifts entity
+    public virtual ICollection<Shifts?> Shifts { get; set; } // Navigation property to the Shifts entity
+    public virtual ICollection<Locations?> Locations { get; set; }
 }

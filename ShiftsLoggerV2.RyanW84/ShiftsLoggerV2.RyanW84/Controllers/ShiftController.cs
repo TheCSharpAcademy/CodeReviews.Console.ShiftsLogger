@@ -14,7 +14,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
 {
     // This is the route for getting all shifts
     [HttpGet(Name = "Get All Shifts")]
-    public async Task<ActionResult<List<Shift>>> GetAllShifts(ShiftFilterOptions shiftOptions)
+    public async Task<ActionResult<List<Shifts>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {
         try
         {
@@ -31,7 +31,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
 
     // This is the route for getting a createdShift by ID
     [HttpGet("{id}")] // This will be added to the API URI (send some data during the request
-    public async Task<ActionResult<Shift>> GetShiftById(int id)
+    public async Task<ActionResult<Shifts>> GetShiftById(int id)
     {
         try
         {
@@ -53,7 +53,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
 
     // This is the route for creating a createdShift
     [HttpPost]
-    public async Task<ActionResult<Shift>> CreateShift(ShiftApiRequestDto shift)
+    public async Task<ActionResult<Shifts>> CreateShift(ShiftApiRequestDto shift)
     {
         try
         {
@@ -68,14 +68,14 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Create Shifts failed, see Exception {ex}");
+            Console.WriteLine($"Create shift failed, see Exception {ex}");
             throw;
         }
     }
 
     // This is the route for updating a createdShift
     [HttpPut("{id}")]
-    public async Task<ActionResult<Shift>> UpdateShift(int id, ShiftApiRequestDto updatedShift)
+    public async Task<ActionResult<Shifts>> UpdateShift(int id, ShiftApiRequestDto updatedShift)
     {
         try
         {
@@ -90,7 +90,7 @@ public class ShiftController(IShiftService shiftService) : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Update Shifts failed, see Exception {ex}");
+            Console.WriteLine($"Update shift failed, see Exception {ex}");
             throw;
         }
     }

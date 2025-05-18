@@ -2,7 +2,7 @@
 
 namespace ShiftsLoggerV2.RyanW84.Models;
 
-public class Location
+public class Locations
 {
     [Key]
     public int LocationId { get; set; }
@@ -13,6 +13,6 @@ public class Location
     public string ZipOrPostCode { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
 
-    public virtual ICollection<Shift?> Shifts { get; set; } // Navigation property to the Shifts entity
-    public virtual ICollection<Worker?> Workers { get; set; } // Navigation property to the Workers entity
+    public virtual ICollection<Shifts?> Shifts { get; set; } // Navigation property to the Shifts entity
+    public virtual ICollection<Workers?> Workers { get; set; } // Navigation property to the Workers entity
 }

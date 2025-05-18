@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShiftsLoggerV2.RyanW84.Models;
 
-public class Shift
+public class Shifts
 {
     [Key]
     public int ShiftId { get; set; }
@@ -14,8 +14,8 @@ public class Shift
    
 
     // Navigation property to the Location entity
-    public virtual Location Location { get; set; }
+    public virtual Locations Location { get; set; }
 
     // Navigation property to the Worker entity
-    public virtual Worker Worker { get; set; }
+    public virtual Workers Worker { get; set; }
 }
