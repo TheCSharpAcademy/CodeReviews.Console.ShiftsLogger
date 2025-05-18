@@ -30,7 +30,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
 
             var createResult = await _service.Create(newWorker);
 
-            ApiHelper.HandleResult(createResult, AppConstants.ERROR_CREATE, AppConstants.SUCCESS_CREATE);
+            ApiHelper.HandleResult(createResult, AppConstants.ActionErrorCreate, AppConstants.ActionSucessCreate);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
                 getAllResult.Data = GetMappedResult(getAllResult.Data);
             }
 
-            ApiHelper.HandleResult(getAllResult, AppConstants.ERROR_FETCHING_ALL, null, true);
+            ApiHelper.HandleResult(getAllResult, AppConstants.ActionErrorGetAll, null, true);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
 
             //push to db
             var editResult = await _service.Edit(toBeUpdatedId, updatedEntity);
-            ApiHelper.HandleResult(editResult, AppConstants.ERROR_EDIT, AppConstants.SUCCESS_EDIT);
+            ApiHelper.HandleResult(editResult, AppConstants.ActionErrorUpdate, AppConstants.ActionSuccessUpdate);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
 
             var deleteResult = await _service.Delete(toBeDeletedId);
 
-            ApiHelper.HandleResult(deleteResult, AppConstants.ERROR_DELETE, AppConstants.SUCCESS_DELETE);
+            ApiHelper.HandleResult(deleteResult, AppConstants.ActionErrorDelete, AppConstants.ActionSuccessDelete);
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
                 getAllResult.Data = GetMappedResult(getAllResult.Data);
             }
 
-            if (!ApiHelper.HandleResult(getAllResult, AppConstants.ERROR_FETCHING_ALL, null, true))
+            if (!ApiHelper.HandleResult(getAllResult, AppConstants.ActionErrorGetAll, null, true))
             {
                 return AppConstants.CancelledID;
             }
@@ -122,7 +122,7 @@ namespace ShiftLogger.Brozda.UIConsole.MenuActionHandlers
         {
             //get existing entity from DB
             var toBeUpdatedEntityResult = await _service.GetById(existingEntityId);
-            if (!ApiHelper.HandleResult(toBeUpdatedEntityResult, AppConstants.ERROR_FETCHING_ALL))
+            if (!ApiHelper.HandleResult(toBeUpdatedEntityResult, AppConstants.ActionErrorGetAll))
             { return null; }
 
             //get new entity

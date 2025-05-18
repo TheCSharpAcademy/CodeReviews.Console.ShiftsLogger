@@ -39,16 +39,16 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
         /// </summary>
         private void MapMenu()
         {
-            _menuPanel = new Panel(AppConstants.WORKERS_MENU_TEXT);
+            _menuPanel = new Panel(AppConstants.WorkersMenuTitle);
 
             _menuOptions.AddRange(Enum.GetValues<WorkerMenuOptions>().Cast<int>().ToList());
             _menuOptions.Sort();
 
-            _menuItems.Add((int)WorkerMenuOptions.ViewAll, (AppConstants.WORKERS_VIEWALL, _actionHandler.ProcessViewAll));
-            _menuItems.Add((int)WorkerMenuOptions.ViewById, (AppConstants.WORKERS_VIEWBYID, _actionHandler.ProcessViewById));
-            _menuItems.Add((int)WorkerMenuOptions.Create, (AppConstants.WORKERS_CREATE, _actionHandler.ProcessCreate));
-            _menuItems.Add((int)WorkerMenuOptions.Edit, (AppConstants.WORKERS_EDIT, _actionHandler.ProcessEdit));
-            _menuItems.Add((int)WorkerMenuOptions.Delete, (AppConstants.WORKERS_DELETE, _actionHandler.ProcessDelete));
+            _menuItems.Add((int)WorkerMenuOptions.ViewAll, (AppConstants.WorkersMenuOptionViewAll, _actionHandler.ProcessViewAll));
+            _menuItems.Add((int)WorkerMenuOptions.ViewById, (AppConstants.WorkersMenuOptionViewById, _actionHandler.ProcessViewById));
+            _menuItems.Add((int)WorkerMenuOptions.Create, (AppConstants.WorkersMenuOptionCreate, _actionHandler.ProcessCreate));
+            _menuItems.Add((int)WorkerMenuOptions.Edit, (AppConstants.WorkersMenuOptionEdit, _actionHandler.ProcessEdit));
+            _menuItems.Add((int)WorkerMenuOptions.Delete, (AppConstants.WorkersMenuOptionDelete, _actionHandler.ProcessDelete));
         }
     }
 }

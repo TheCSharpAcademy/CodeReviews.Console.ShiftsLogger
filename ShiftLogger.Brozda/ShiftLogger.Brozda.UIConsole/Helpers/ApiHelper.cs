@@ -24,12 +24,12 @@ namespace ShiftLogger.Brozda.UIConsole.Helpers
         {
             if (result.StatusCode == 404)
             {
-                AppOutput.PrintErrorApiResult(AppConstants.ERROR_NOTFOUND, result.ErrorMessage ?? AppConstants.ERROR_UNHANDLED);
+                AppOutput.PrintErrorApiResult(AppConstants.ActionErrorNotFound, result.ErrorMessage ?? AppConstants.ActionErrorUnhandled);
                 return false;
             }
             else if (!result.IsSuccessful || result.Data is null)
             {
-                AppOutput.PrintErrorApiResult(errorMsg ?? AppConstants.ERROR_UNHANDLED, result.ErrorMessage ?? AppConstants.ERROR_UNHANDLED);
+                AppOutput.PrintErrorApiResult(errorMsg ?? AppConstants.ActionErrorUnhandled, result.ErrorMessage ?? AppConstants.ActionErrorUnhandled);
                 return false;
             }
 

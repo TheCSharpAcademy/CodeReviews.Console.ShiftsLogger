@@ -29,9 +29,9 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         {
             var userChoice = AnsiConsole.Prompt(
                     new SelectionPrompt<int>()
-                    .Title(AppConstants.MENU_NAVIGATION)
+                    .Title(AppConstants.MenuNavigation)
                     .AddChoices(menuOptions)
-                    .UseConverter(option => menuItems.ContainsKey(option) ? menuItems[option].label : AppConstants.MENU_UNKNOWN_OPTION)
+                    .UseConverter(option => menuItems.ContainsKey(option) ? menuItems[option].label : AppConstants.MenuUnknownOption)
                     );
 
             return Task.FromResult(userChoice);

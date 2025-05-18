@@ -223,7 +223,7 @@ namespace ShiftLogger.Brozda.UIConsole.InputOutput
         /// <param name="error"><see cref="string"/> error text to be shown</param>
         public static void PrintErrorApiResult(string prefix, string? error)
         {
-            Console.WriteLine($"{prefix}: {error ?? AppConstants.ERROR_UNHANDLED}");
+            Console.WriteLine($"{prefix}: {error ?? AppConstants.ActionErrorUnhandled}");
         }
 
         /// <summary>

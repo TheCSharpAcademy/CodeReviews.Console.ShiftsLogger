@@ -22,7 +22,7 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
         /// <summary>
         /// Represents menu panel - short descriptions of current menu capabilities
         /// </summary>
-        protected Panel _menuPanel = new Panel(AppConstants.PLACEHOLDER);
+        protected Panel _menuPanel = new Panel(AppConstants.PlaceHolderText);
 
         /// <summary>
         /// List of  integer values of menu options enumerable
@@ -56,7 +56,7 @@ namespace ShiftLogger.Brozda.UIConsole.Menu
                 }
                 else
                 {
-                    AppOutput.PrintText(AppConstants.INVALID_MENU_OPTION);
+                    AppOutput.PrintText(AppConstants.MenuInvalidOption);
                 }
 
                 ClearConsoleAndPrintPanel();
