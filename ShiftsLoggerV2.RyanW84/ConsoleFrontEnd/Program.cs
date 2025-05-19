@@ -112,26 +112,35 @@ class Program
 
     static async Task AddWorker(HttpClient httpClient)
     {
-        var name = AnsiConsole.Ask<string>("Enter [green]Worker Name[/]:");
-        var phone = AnsiConsole.Ask<string>("Enter [green]Phone[/]:");
-        var email = AnsiConsole.Ask<string>("Enter [green]Email[/]:");
 
-        var response = await httpClient.PostAsJsonAsync(
-            "api/workers",
-            new
+        try
+        {
+            var name = AnsiConsole.Ask<string>("Enter [green]Worker Name[/]:");
+            var phone = AnsiConsole.Ask<string>("Enter [green]Phone Number[/]:");
+            var email = AnsiConsole.Ask<string>("Enter [green]Email Address[/]:");
+
+            var response = await httpClient.PostAsJsonAsync(
+                "api/workers" ,
+                new
+                {
+                    Name = name ,
+                    PhoneNumber = phone ,
+                    Email = email ,
+                }
+            );
+            if (response.IsSuccessStatusCode)
             {
-                Name = name,
-                PhoneNumber = phone,
-                Email = email,
+                AnsiConsole.MarkupLine("[green]Worker added successfully![/]");
             }
-        );
-        if (response.IsSuccessStatusCode)
-        {
-            AnsiConsole.MarkupLine("[green]Worker added successfully![/]");
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Failed to add worker.[/]");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            AnsiConsole.MarkupLine("[red]Failed to add worker.[/]");
+			Console.WriteLine($"Adding worker failed due to: {ex}");
+            throw;
         }
     }
 
@@ -201,14 +210,12 @@ class Program
         if (response != null && response.Data != null && !response.RequestFailed)
         {
             var table = new Table()
-                .AddColumn("ID")
                 .AddColumn("Name")
                 .AddColumn("Phone")
                 .AddColumn("Email");
             foreach (var worker in response.Data)
             {
                 table.AddRow(
-                    worker.WorkerId.ToString(),
                     worker.Name,
                     worker.PhoneNumber,
                     worker.Email
