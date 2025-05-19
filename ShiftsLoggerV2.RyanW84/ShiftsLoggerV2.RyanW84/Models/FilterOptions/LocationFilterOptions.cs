@@ -1,4 +1,4 @@
-﻿namespace ShiftsLoggerV2.RyanW84.Dtos;
+﻿namespace ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 
 public class LocationFilterOptions
 {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
+using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 using ShiftsLoggerV2.RyanW84.Services;
 using Spectre.Console;
 

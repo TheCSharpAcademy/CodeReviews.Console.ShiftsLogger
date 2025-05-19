@@ -1,5 +1,6 @@
 ﻿using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
+using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 
 namespace ShiftsLoggerV2.RyanW84.Services;
 
