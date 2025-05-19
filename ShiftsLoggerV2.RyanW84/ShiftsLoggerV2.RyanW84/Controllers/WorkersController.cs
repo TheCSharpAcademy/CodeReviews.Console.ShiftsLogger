@@ -10,7 +10,7 @@ namespace ShiftsLoggerV2.RyanW84.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WorkerController (IWorkerService workerService) : ControllerBase
+public class WorkersController (IWorkerService workerService) : ControllerBase
 {
 	[HttpGet(Name = "Get All Workers")]
 	public async Task<ActionResult<ApiResponseDto<List<Workers>>>> GetAllWorkers( WorkerFilterOptions workerOptions)

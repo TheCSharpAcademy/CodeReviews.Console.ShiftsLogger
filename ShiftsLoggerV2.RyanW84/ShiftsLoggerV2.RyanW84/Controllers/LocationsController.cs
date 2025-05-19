@@ -9,11 +9,11 @@ namespace ShiftsLoggerV2.RyanW84.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class LocationController : ControllerBase
+public class LocationsController : ControllerBase
 {
     private readonly ILocationService locationService;
 
-    public LocationController(ILocationService locationService)
+    public LocationsController(ILocationService locationService)
     {
         this.locationService = locationService;
     }

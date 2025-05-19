@@ -60,7 +60,7 @@ public class WorkerService(ShiftsDbContext dbContext, IMapper mapper) : IWorkerS
             workers = data.Where(w =>
                     w.WorkerId.ToString().Contains(searchLower)
                     || w.Name.ToLower().Contains(searchLower)
-                    || w.Phone.Contains(searchLower)
+                    || w.PhoneNumber.Contains(searchLower)
                     || w.Email.ToLower().Contains(searchLower)
                 )
                 .ToList();

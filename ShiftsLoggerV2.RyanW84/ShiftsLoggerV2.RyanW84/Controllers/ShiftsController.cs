@@ -10,7 +10,7 @@ namespace ShiftsLoggerV2.RyanW84.Controllers;
 [ApiController]
 //http://localhost:5009/api/shiftcontroller/ this is what the route will look like
 [Route("api/[controller]")]
-public class ShiftController(IShiftService shiftService) : ControllerBase
+public class ShiftsController(IShiftService shiftService) : ControllerBase
 {
     // This is the route for getting all shifts
     [HttpGet(Name = "Get All Shifts")]

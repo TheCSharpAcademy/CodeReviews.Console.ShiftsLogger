@@ -60,7 +60,7 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
             },
             new Locations
             {
-                Name = "Location 3",
+                Name = "Advent Health",
                 Address = "601 E Rollins Street",
                 TownOrCity = "Orlando",
                 StateOrCounty = "Florida",
@@ -76,19 +76,19 @@ public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
             new Workers
             {
                 Name = "John Doe",
-                Phone = "123-456-7890",
+                PhoneNumber = "123-456-7890",
                 Email = "John@Doe.com",
             },
             new Workers
             {
                 Name = "Jane Doe",
-                Phone = "123-456-7892",
+                PhoneNumber = "123-456-7892",
                 Email = "Jane@Doe.com",
             },
             new Workers
             {
                 Name = "Jim Doe",
-                Phone = "123-456-7893",
+                PhoneNumber = "123-456-7893",
                 Email = "Jim@yahoo.com",
             },
         };

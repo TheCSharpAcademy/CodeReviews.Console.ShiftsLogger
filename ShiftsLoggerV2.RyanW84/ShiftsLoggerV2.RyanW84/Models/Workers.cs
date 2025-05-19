@@ -8,7 +8,7 @@ public class Workers
     [Key]
     public int WorkerId { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string? Phone { get; set; }
+    public string? PhoneNumber { get; set; }
     public string? Email { get; set; }
 
     public virtual ICollection<Shifts?> Shifts { get; set; } // Navigation property to the Shifts entity
