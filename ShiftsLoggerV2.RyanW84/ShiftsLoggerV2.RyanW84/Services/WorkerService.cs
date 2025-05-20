@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerV2.RyanW84.Controllers;
@@ -189,11 +188,11 @@ public class WorkerService(ShiftsDbContext dbContext, IMapper mapper) : IWorkerS
         };
     }
 
-    public static  async Task<ActionResult<Workers>> GetWorkerOptionInput(
+    public static async Task<ActionResult<ApiResponseDto<Workers?>>> GetWorkerOptionInput(
         ShiftsDbContext dbContext,
         IWorkerService workerService
     )
-    { 
+    {
         var workers = await dbContext.Workers.ToListAsync();
         var workersArray = workers.Select(w => w.Name).ToArray();
         var option = AnsiConsole.Prompt(
@@ -205,39 +204,40 @@ public class WorkerService(ShiftsDbContext dbContext, IMapper mapper) : IWorkerS
 
         // Create an instance of WorkersController to call the non-static method
         var workersController = new WorkersController(workerService);
-        var worker = await workersController.GetWorkerById(id ?? 0);
+        var workerResponse = await workersController.GetWorkerById(id ?? 0);
 
-        return worker;
+        return workerResponse;
     }
 
-	public static async Task FrontEndViewWorkers(HttpClient httpClient)
-	{
-		try
-		{
-			var response = await httpClient.GetFromJsonAsync<ApiResponseDto<List<WorkerDto>>>(
-				"api/workers"
-			);
-			if (response != null && response.Data != null && !response.RequestFailed)
-			{
-				var table = new Table().AddColumn("Name").AddColumn("Phone").AddColumn("Email");
-				foreach (var worker in response.Data)
-				{
-					table.AddRow(worker.Name , worker.PhoneNumber , worker.Email);
-				}
-				AnsiConsole.Write(table);
-			}
-			else
-			{
-				AnsiConsole.MarkupLine("[red]Failed to retrieve workers.[/]");
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"View workers failed, see {ex}");
-			throw;
-		}
-	}
-    public static async Task FrontEndViewWorkerById(HttpClient httpClient)
+    public static async Task FrontEndGetWorkers(HttpClient httpClient)
+    {
+        try
+        {
+            var response = await httpClient.GetFromJsonAsync<ApiResponseDto<List<WorkerDto>>>(
+                "api/workers"
+            );
+            if (response != null && response.Data != null && !response.RequestFailed)
+            {
+                var table = new Table().AddColumn("Name").AddColumn("Phone").AddColumn("Email");
+                foreach (var worker in response.Data)
+                {
+                    table.AddRow(worker.Name, worker.PhoneNumber, worker.Email);
+                }
+                AnsiConsole.Write(table);
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Failed to retrieve workers.[/]");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"View workers failed, see {ex}");
+            throw;
+        }
+    }
+
+    public static async Task FrontEndGetWorkerById(HttpClient httpClient)
     {
         try
         {
@@ -254,10 +254,10 @@ public class WorkerService(ShiftsDbContext dbContext, IMapper mapper) : IWorkerS
                     .AddColumn("Location ID")
                     .AddColumn("Shift ID");
                 table.AddRow(
-                    response.Data.Name ,
-                    response.Data.PhoneNumber ,
-                    response.Data.Email ,
-                    response.Data.Locations.ToString() ,
+                    response.Data.Name,
+                    response.Data.PhoneNumber,
+                    response.Data.Email,
+                    response.Data.Locations.ToString(),
                     response.Data.Shifts.ToString()
                 );
                 AnsiConsole.Write(table);
@@ -272,39 +272,41 @@ public class WorkerService(ShiftsDbContext dbContext, IMapper mapper) : IWorkerS
             Console.WriteLine($"View worker by ID failed, see {ex}");
             throw;
         }
-	}
-	public static async Task FrontEndAddWorker(HttpClient httpClient)
-	{
-		try
-		{
-			var name = AnsiConsole.Ask<string>("Enter [green]Worker Name[/]:");
-			var phone = AnsiConsole.Ask<string>("Enter [green]Phone Number[/]:");
-			var email = AnsiConsole.Ask<string>("Enter [green]Email Address[/]:");
+    }
 
-			var response = await httpClient.PostAsJsonAsync(
-				"api/workers" ,
-				new
-				{
-					Name = name ,
-					PhoneNumber = phone ,
-					Email = email ,
-				}
-			);
-			if (response.IsSuccessStatusCode)
-			{
-				AnsiConsole.MarkupLine("[green]Worker added successfully![/]");
-			}
-			else
-			{
-				AnsiConsole.MarkupLine("[red]Failed to add worker.[/]");
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Adding worker failed due to: {ex}");
-			throw;
-		}
-	}
+    public static async Task FrontEndAddWorker(HttpClient httpClient)
+    {
+        try
+        {
+            var name = AnsiConsole.Ask<string>("Enter [green]Worker Name[/]:");
+            var phone = AnsiConsole.Ask<string>("Enter [green]Phone Number[/]:");
+            var email = AnsiConsole.Ask<string>("Enter [green]Email Address[/]:");
+
+            var response = await httpClient.PostAsJsonAsync(
+                "api/workers",
+                new
+                {
+                    Name = name,
+                    PhoneNumber = phone,
+                    Email = email,
+                }
+            );
+            if (response.IsSuccessStatusCode)
+            {
+                AnsiConsole.MarkupLine("[green]Worker added successfully![/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Failed to add worker.[/]");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Adding worker failed due to: {ex}");
+            throw;
+        }
+    }
+
     public static async Task FrontEndUpdateWorker(HttpClient httpClient)
     {
         try
@@ -314,12 +316,12 @@ public class WorkerService(ShiftsDbContext dbContext, IMapper mapper) : IWorkerS
             var phone = AnsiConsole.Ask<string>("Enter [green]New Phone Number[/]:");
             var email = AnsiConsole.Ask<string>("Enter [green]New Email Address[/]:");
             var response = await httpClient.PutAsJsonAsync(
-                $"api/workers/{workerId}" ,
+                $"api/workers/{workerId}",
                 new
                 {
-                    Name = name ,
-                    PhoneNumber = phone ,
-                    Email = email ,
+                    Name = name,
+                    PhoneNumber = phone,
+                    Email = email,
                 }
             );
             if (response.IsSuccessStatusCode)
@@ -336,35 +338,37 @@ public class WorkerService(ShiftsDbContext dbContext, IMapper mapper) : IWorkerS
             Console.WriteLine($"Updating worker failed due to: {ex}");
             throw;
         }
-	}
+    }
 
-
-
-	public static async Task FrontEndDeleteWorker(HttpClient httpClient , ShiftsDbContext dbContext , IWorkerService workerService)
-	{
-		try
-		{
-			var workerResult = await GetWorkerOptionInput(dbContext , workerService);
-			var worker = workerResult.Value;
-			if (worker == null || worker.WorkerId == 0)
-			{
-				AnsiConsole.MarkupLine("[red]No worker selected or invalid worker.[/]");
-				return;
-			}
-			var response = await httpClient.DeleteAsync($"api/workers/{worker.WorkerId}");
-			if (response.IsSuccessStatusCode)
-			{
-				AnsiConsole.MarkupLine("[green]Worker deleted successfully![/]");
-			}
-			else
-			{
-				AnsiConsole.MarkupLine("[red]Failed to delete worker.[/]");
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Deleting worker failed due to: {ex}");
-			throw;
-		}
-	}
+    public static async Task FrontEndDeleteWorker(
+        HttpClient httpClient,
+        ShiftsDbContext dbContext,
+        IWorkerService workerService
+    )
+    {
+        try
+        {
+            var workerResult = await GetWorkerOptionInput(dbContext, workerService);
+            var worker = workerResult.Value;
+            if (worker == null || worker.Data.WorkerId == 0)
+            {
+                AnsiConsole.MarkupLine("[red]No worker selected or invalid worker.[/]");
+                return;
+            }
+            var response = await httpClient.DeleteAsync($"api/workers/{worker.Data.WorkerId}");
+            if (response.IsSuccessStatusCode)
+            {
+                AnsiConsole.MarkupLine("[green]Worker deleted successfully![/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Failed to delete worker.[/]");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Deleting worker failed due to: {ex}");
+            throw;
+        }
+    }
 }

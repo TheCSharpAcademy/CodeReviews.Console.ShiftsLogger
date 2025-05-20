@@ -1,4 +1,7 @@
-﻿using ShiftsLoggerV2.RyanW84.Dtos;
+﻿using Microsoft.EntityFrameworkCore;
+
+using ShiftsLoggerV2.RyanW84.Data;
+using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 using ShiftsLoggerV2.RyanW84.Services;
 using Spectre.Console;
@@ -10,7 +13,7 @@ public class UserInterface
     // UI method: Handles user interaction
     // and displays the results of the operations
 
-    public async Task CreateLocationUI(LocationService locationService)
+    public static async Task CreateLocationUI(LocationService locationService)
     {
         // 1. Gather user input (UI Layer)
         var name = AnsiConsole.Ask<string>("Enter [green]Location Name[/]:");
@@ -41,7 +44,7 @@ public class UserInterface
             AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
     }
 
-    public async Task GetLocationUI(LocationService locationService)
+    public static async Task GetLocationsUI(LocationService locationService)
     {
         Console.Clear();
         AnsiConsole.MarkupLine("[yellow]Fetching locations...[/]");
@@ -85,61 +88,62 @@ public class UserInterface
         }
     }
 
-    public async Task UpdateLocationUI(LocationService locationService, int id)
-    {
-        // 1. Gather user input (UI Layer)
-        var name = AnsiConsole.Confirm("Do you want to update the [green]Location Name[/]?", true)
-            ? AnsiConsole.Ask<string>("Enter [green]Location Name[/]:")
-            : null;
-        var address = AnsiConsole.Confirm("Do you want to update the [green]Address[/]?", true)
-            ? AnsiConsole.Ask<string>("Enter [green]Location Name[/]:")
-            : null;
-        var city = AnsiConsole.Confirm("Do you want to update the [green]Town or City[/]?", true)
-            ? AnsiConsole.Ask<string>("Enter [green]Town or City[/]:")
-            : null;
-        var state = AnsiConsole.Confirm(
-            "Do you want to update the [green]State or County[/]?",
-            true
-        )
-            ? AnsiConsole.Ask<string>("Enter [green]State or County[/]:")
-            : null;
-        var zip = AnsiConsole.Confirm(
-            "Do you want to update the [green]Zip Code or Post Code[/]?",
-            true
-        )
-            ? AnsiConsole.Ask<string>("Enter [green]Zip Code or Post Code[/]:")
-            : null;
+	public static async Task UpdateLocationUI(LocationService locationService , ShiftsDbContext dbContext , IWorkerService workerService)
+	{
+		// 1. Gather user input (UI Layer)
+		var id = await locationService.GetLocationOptionInput(dbContext , locationService);
+		var name = AnsiConsole.Confirm("Do you want to update the [green]Location Name[/]?" , true)
+			? AnsiConsole.Ask<string>("Enter [green]Location Name[/]:")
+			: null;
+		var address = AnsiConsole.Confirm("Do you want to update the [green]Address[/]?" , true)
+			? AnsiConsole.Ask<string>("Enter [green]Location Name[/]:")
+			: null;
+		var city = AnsiConsole.Confirm("Do you want to update the [green]Town or City[/]?" , true)
+			? AnsiConsole.Ask<string>("Enter [green]Town or City[/]:")
+			: null;
+		var state = AnsiConsole.Confirm(
+			"Do you want to update the [green]State or County[/]?" ,
+			true
+		)
+			? AnsiConsole.Ask<string>("Enter [green]State or County[/]:")
+			: null;
+		var zip = AnsiConsole.Confirm(
+			"Do you want to update the [green]Zip Code or Post Code[/]?" ,
+			true
+		)
+			? AnsiConsole.Ask<string>("Enter [green]Zip Code or Post Code[/]:")
+			: null;
 
-        var country = AnsiConsole.Confirm("Do you want to update the [green]Country[/]?", true)
-            ? AnsiConsole.Ask<string>("Enter [green]Country[/]:")
-            : null;
+		var country = AnsiConsole.Confirm("Do you want to update the [green]Country[/]?" , true)
+			? AnsiConsole.Ask<string>("Enter [green]Country[/]:")
+			: null;
 
-        var existing = await locationService.GetLocationById(id);
-        if (existing.Data == null)
-        {
-            AnsiConsole.MarkupLine("[red]Location not found.[/]");
-            return;
-        }
+		var existing = await locationService.GetLocationById(id);
+		if (existing.Data == null)
+		{
+			AnsiConsole.MarkupLine("[red]Location not found.[/]");
+			return;
+		}
 
-        // 2. Create DTO for the service (acts like a controller would)
-        var updatedLocation = new LocationApiRequestDto
-        {
-            Name = name ?? existing.Data.Name,
-            Address = address ?? existing.Data.Address,
-            TownOrCity = city ?? existing.Data.TownOrCity,
-            StateOrCounty = state ?? existing.Data.StateOrCounty,
-            ZipOrPostCode = zip ?? existing.Data.ZipOrPostCode,
-            Country = country ?? existing.Data.Country,
-        };
-        // 3. Call the service (business logic)
-        var result = await locationService.UpdateLocation(id, updatedLocation);
-        if (!result.RequestFailed)
-            AnsiConsole.MarkupLine("[green]Location updated successfully![/]");
-        else
-            AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
-    }
+		// 2. Create DTO for the service (acts like a controller would)
+		var updatedLocation = new LocationApiRequestDto
+		{
+			Name = name ?? existing.Data.Name ,
+			Address = address ?? existing.Data.Address ,
+			TownOrCity = city ?? existing.Data.TownOrCity ,
+			StateOrCounty = state ?? existing.Data.StateOrCounty ,
+			ZipOrPostCode = zip ?? existing.Data.ZipOrPostCode ,
+			Country = country ?? existing.Data.Country ,
+		};
+		// 3. Call the service (business logic)
+		var result = await locationService.UpdateLocation(id , updatedLocation);
+		if (!result.RequestFailed)
+			AnsiConsole.MarkupLine("[green]Location updated successfully![/]");
+		else
+			AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
+	}
 
-    public async Task DeleteLocationUI(LocationService locationService, int id)
+    public static async Task DeleteLocationUI(LocationService locationService, int id)
     {
         var result = await locationService.DeleteLocation(id);
         if (!result.RequestFailed)
@@ -150,7 +154,7 @@ public class UserInterface
 
     // --- Worker Methods ---
 
-    public async Task CreateWorkerUI(WorkerService workerService)
+    public static async Task CreateWorkerUI(WorkerService workerService)
     {
         Console.Clear();
         var name = AnsiConsole.Ask<string>("Enter [green]Worker Name[/]:");
@@ -171,7 +175,7 @@ public class UserInterface
             AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
     }
 
-    public async Task GetWorkerUI(WorkerService workerService)
+    public static async Task GetWorkerUI(WorkerService workerService)
     {
         Console.Clear();
         AnsiConsole.MarkupLine("[yellow]Fetching workers...[/]");
@@ -232,7 +236,7 @@ public class UserInterface
         }
     }
 
-    public async Task UpdateWorkerUI(WorkerService workerService, int id)
+    public static async Task UpdateWorkerUI(WorkerService workerService, int id)
     {
         // 1. Gather user input (UI Layer)
         Console.Clear();
@@ -271,7 +275,7 @@ public class UserInterface
             AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
     }
 
-    public async Task DeleteWorkerUI(WorkerService workerService, int id)
+    public static async Task DeleteWorkerUI(WorkerService workerService, int id)
     {
         Console.Clear();
         AnsiConsole.MarkupLine("[yellow]Deleting a worker...[/]");
@@ -283,7 +287,7 @@ public class UserInterface
     }
 
     // --- Shift Methods ---
-    public async Task CreateShiftUI(ShiftService shiftService)
+    public static async Task CreateShiftUI(ShiftService shiftService)
     {
         // 1. Gather user input (UI Layer)
         Console.Clear();

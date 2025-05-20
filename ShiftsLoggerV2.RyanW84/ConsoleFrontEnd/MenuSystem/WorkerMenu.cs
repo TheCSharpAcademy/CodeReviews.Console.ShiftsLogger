@@ -7,9 +7,9 @@ using Spectre.Console;
 
 
 namespace ConsoleFrontEnd.UserInterface;
-internal class WorkerMenu
+internal static class WorkerMenu
 {
-	public void DisplayWorkerMenu()
+	internal static void DisplayWorkerMenu()
 	{
 		AnsiConsole.Clear();
 		while (true)
@@ -21,21 +21,21 @@ internal class WorkerMenu
 					.Title("[yellow]Select an option:[/]")
 					.AddChoices("Create Worker", "View Workers", "Edit Worker", "Delete Worker", "Back to Main Menu")
 			);
-			//switch (choice)
-			//{
-			//	case "Create Worker":
-			//		return "Create Worker";
-			//	case "View Workers":
-			//		return "View Workers";
-			//	case "Edit Worker":
-			//		return "Edit Worker";
-			//	case "Delete Worker":
-			//		return "Delete Worker";
-			//	case "Back to Main Menu":
-			//		return "Main Menu";
-			//	default:
-			//		AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
-			//		break;
+			switch (choice)
+			{
+				case "Create Worker":
+					return "Create Worker";
+				case "View Workers":
+					return "View Workers";
+				case "Edit Worker":
+					return "Edit Worker";
+				case "Delete Worker":
+					return "Delete Worker";
+				case "Back to Main Menu":
+					return "Main Menu";
+				default:
+					AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
+					break;
 			}
 		}
 	}

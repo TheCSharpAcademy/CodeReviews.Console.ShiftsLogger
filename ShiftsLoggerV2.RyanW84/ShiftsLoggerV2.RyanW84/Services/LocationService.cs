@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ShiftsLoggerV2.RyanW84.Controllers;
 using ShiftsLoggerV2.RyanW84.Data;
 using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
@@ -355,5 +357,58 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
             Console.WriteLine($"Delete location failed, see {ex}");
             throw;
         }
+    }
+
+    public async Task<ActionResult<ApiResponseDto<Locations?>>> GetLocationOptionInput(
+        ShiftsDbContext dbContext,
+        ILocationService locationService
+    )
+    {
+        // Get all locations
+        var locationsResponse = await locationService.GetAllLocations(new LocationFilterOptions());
+        var locations = locationsResponse.Data ?? new List<Locations>();
+
+        if (locations.Count == 0)
+        {
+            return new ActionResult<ApiResponseDto<Locations?>>(
+                new ApiResponseDto<Locations?>
+                {
+                    Data = null,
+                    Message = "No locations available.",
+                    ResponseCode = System.Net.HttpStatusCode.NotFound,
+                    RequestFailed = true,
+                }
+            );
+        }
+
+        // Prompt user to select a location
+        var selectedLocation = AnsiConsole.Prompt(
+            new SelectionPrompt<Locations>()
+                .Title("[yellow]Select a location:[/]")
+                .UseConverter(l => $"{l.Name} ({l.Address}, {l.TownOrCity})")
+                .AddChoices(locations)
+        );
+
+        if (selectedLocation == null)
+        {
+            return new ActionResult<ApiResponseDto<Locations?>>(
+                new ApiResponseDto<Locations?>
+                {
+                    Data = null,
+                    Message = "No location selected.",
+                    ResponseCode = System.Net.HttpStatusCode.BadRequest,
+                    RequestFailed = true,
+                }
+            );
+        }
+        return new ActionResult<ApiResponseDto<Locations?>>(
+            new ApiResponseDto<Locations?>
+            {
+                Data = selectedLocation,
+                Message = "Location selected successfully.",
+                ResponseCode = System.Net.HttpStatusCode.OK,
+                RequestFailed = false,
+            }
+        );
     }
 }

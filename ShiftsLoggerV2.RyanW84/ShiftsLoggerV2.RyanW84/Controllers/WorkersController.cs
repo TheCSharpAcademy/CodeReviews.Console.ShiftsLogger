@@ -11,48 +11,54 @@ namespace ShiftsLoggerV2.RyanW84.Controllers;
 [Route("api/[controller]")]
 public class WorkersController(IWorkerService workerService) : ControllerBase
 {
-    [HttpGet(Name = "Get All Workers")]
+    [HttpGet]
     public async Task<ActionResult<ApiResponseDto<List<Workers>>>> GetAllWorkers(
         WorkerFilterOptions workerOptions
     )
     {
         try
         {
-            return Ok(await workerService.GetAllWorkers(workerOptions));
+            var result = await workerService.GetAllWorkers(workerOptions);
+            return Ok(result);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Get all workers failed, see Exception {ex}");
-
-            throw;
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 
-    // This is the route for getting a worker by ID
-    [HttpGet("{id}")] // This will be added to the API URI (send some data during the request
-    public async Task<ActionResult<Workers>> GetWorkerById(int id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ApiResponseDto<Workers?>>> GetWorkerById(int id)
     {
         try
         {
             var result = await workerService.GetWorkerById(id);
-
-            if (result == null)
+            if (result == null || result.Data == null)
             {
-                return NotFound(); // Equivalent to 404
+                return NotFound(
+                    new ApiResponseDto<Workers?>
+                    {
+                        RequestFailed = true,
+                        ResponseCode = HttpStatusCode.NotFound,
+                        Message = $"Worker with ID: {id} not found.",
+                        Data = null,
+                    }
+                );
             }
-
             return Ok(result);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Get by ID failed, see Exception {ex}");
-            throw;
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 
-    // This is the route for creating a createdShift
     [HttpPost]
-    public async Task<ActionResult<Workers>> CreateWorker(WorkerApiRequestDto worker)
+    public async Task<ActionResult<ApiResponseDto<Workers>>> CreateWorker(
+        WorkerApiRequestDto worker
+    )
     {
         try
         {
@@ -60,63 +66,78 @@ public class WorkersController(IWorkerService workerService) : ControllerBase
             {
                 return BadRequest(ModelState);
             }
-            else
-            {
-                return new ObjectResult(await workerService.CreateWorker(worker))
-                {
-                    StatusCode = 201,
-                }; //201 is the status code for Created
-            }
+            var result = await workerService.CreateWorker(worker);
+            return CreatedAtAction(
+                nameof(GetWorkerById),
+                new { id = result.Data.WorkerId },
+                result
+            );
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Create worker failed, see Exception {ex}");
-            throw;
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 
-    // This is the route for updating a createdShift
     [HttpPut("{id}")]
-    public async Task<ActionResult<Workers>> UpdateWorker(int id, WorkerApiRequestDto updatedWorker)
+    public async Task<ActionResult<ApiResponseDto<Workers?>>> UpdateWorker(
+        int id,
+        WorkerApiRequestDto updatedWorker
+    )
     {
         try
         {
-            var result = await workerService.UpdateWorker(id, updatedWorker);
-
-            if (result is null)
+            if (!ModelState.IsValid)
             {
-                return NotFound(); // Equivalent to 404
+                return BadRequest(ModelState);
             }
-
+            var result = await workerService.UpdateWorker(id, updatedWorker);
+            if (result == null || result.Data == null)
+            {
+                return NotFound(
+                    new ApiResponseDto<Workers?>
+                    {
+                        RequestFailed = true,
+                        ResponseCode = HttpStatusCode.NotFound,
+                        Message = $"Worker with ID: {id} not found.",
+                        Data = null,
+                    }
+                );
+            }
             return Ok(result);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Update worker failed, see Exception {ex}");
-            throw;
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 
-    // Fix for CS0019 and CS1525 errors in the DeleteShift method
     [HttpDelete("{id}")]
-    public async Task<ActionResult<string>> DeleteShift(int id)
+    public async Task<IActionResult> DeleteWorker(int id)
     {
         try
         {
             var result = await workerService.DeleteWorker(id);
-
-            // Corrected the condition to check the ResponseCode property of the result
-            if (result.ResponseCode == HttpStatusCode.NotFound || result is null)
+            if (result == null || result.ResponseCode == HttpStatusCode.NotFound)
             {
-                return NotFound();
+                return NotFound(
+                    new ApiResponseDto<string?>
+                    {
+                        RequestFailed = true,
+                        ResponseCode = HttpStatusCode.NotFound,
+                        Message = $"Worker with ID: {id} not found.",
+                        Data = null,
+                    }
+                );
             }
-
-            return NoContent(); // Equivalent to 204
+            return NoContent();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Delete worker failed, see Exception {ex}");
-            throw;
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
     }
 }
