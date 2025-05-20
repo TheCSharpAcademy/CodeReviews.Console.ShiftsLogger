@@ -1,29 +1,29 @@
-﻿using System.Diagnostics;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ShiftsLoggerV2.RyanW84.Data;
 using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
-
 using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Services;
 
 public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocationService
 {
-    public async Task<ApiResponseDto<List<Locations>>> GetAllLocations(LocationFilterOptions locationOptions)
+    public async Task<ApiResponseDto<List<Locations>>> GetAllLocations(
+        LocationFilterOptions locationOptions
+    )
     {
         var query = dbContext.Locations.Include(l => l.Shifts).AsQueryable();
 
         List<Locations>? locations;
 
-        if (!string.IsNullOrEmpty(locationOptions.LocationId.ToString()))
+        if (locationOptions.LocationId != 0)
         {
-            query = query.Where(l => l.LocationId.ToString() == locationOptions.LocationId.ToString());
+            query = query.Where(l => l.LocationId == locationOptions.LocationId);
         }
 
-        if (locationOptions.SortBy == "location_id" || !string.IsNullOrEmpty(locationOptions.SortBy))
+        if (!string.IsNullOrEmpty(locationOptions.SortBy) && locationOptions.SortBy != "None")
         {
             if (!string.IsNullOrEmpty(locationOptions.SortBy))
             {
@@ -33,12 +33,18 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
                 switch (sortBy)
                 {
                     case "location_id":
-                        query = locationOptions.SortOrder.Equals("ASC", StringComparison.CurrentCultureIgnoreCase)
+                        query = locationOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
                             ? query.OrderBy(l => l.LocationId)
                             : query.OrderByDescending(l => l.LocationId);
                         break;
                     default:
-                        query = locationOptions.SortOrder.Equals("ASC", StringComparison.CurrentCultureIgnoreCase)
+                        query = locationOptions.SortOrder.Equals(
+                            "ASC",
+                            StringComparison.CurrentCultureIgnoreCase
+                        )
                             ? query.OrderBy(l => l.LocationId)
                             : query.OrderByDescending(l => l.LocationId);
                         break;
@@ -48,17 +54,22 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
 
         if (!string.IsNullOrEmpty(locationOptions.Search))
         {
-            string searchLower = locationOptions.Search.ToLower();
+            string search = locationOptions.Search;
             var data = await query.ToListAsync();
 
             locations = data.Where(l =>
-                    l.LocationId.ToString().Contains(searchLower)
-                    || l.Name.ToLower().Contains(searchLower)
-                    || l.Address.ToLower().Contains(searchLower)
-                    || l.TownOrCity.ToLower().Contains(searchLower)
-                    || l.StateOrCounty.ToLower().Contains(searchLower)
-                    || l.ZipOrPostCode.ToLower().Contains(searchLower)
-                    || l.Country.ToLower().Contains(searchLower)
+                    l.LocationId.ToString()
+                        .Contains(search, StringComparison.CurrentCultureIgnoreCase)
+                    || l.Name.ToLower().Contains(search, StringComparison.CurrentCultureIgnoreCase)
+                    || l.Address.ToLower()
+                        .Contains(search, StringComparison.CurrentCultureIgnoreCase)
+                    || l.TownOrCity.Contains(search, StringComparison.CurrentCultureIgnoreCase)
+                    || l.StateOrCounty.ToLower()
+                        .Contains(search, StringComparison.CurrentCultureIgnoreCase)
+                    || l.ZipOrPostCode.ToLower()
+                        .Contains(search, StringComparison.CurrentCultureIgnoreCase)
+                    || l.Country.ToLower()
+                        .Contains(search, StringComparison.CurrentCultureIgnoreCase)
                 )
                 .ToList();
         }
@@ -124,7 +135,10 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
         };
     }
 
-    public async Task<ApiResponseDto<Locations?>> UpdateLocation(int id, LocationApiRequestDto updatedLocation)
+    public async Task<ApiResponseDto<Locations?>> UpdateLocation(
+        int id,
+        LocationApiRequestDto updatedLocation
+    )
     {
         Locations? savedLocation = await dbContext.Locations.FindAsync(id);
 
@@ -177,5 +191,169 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
             ResponseCode = System.Net.HttpStatusCode.NoContent,
             Message = $"Location with ID: {id} deleted successfully.",
         };
+    }
+
+    public async Task FrontEndViewLocations(HttpClient httpClient)
+    {
+        try
+        {
+            var response = await httpClient.GetFromJsonAsync<ApiResponseDto<List<LocationsDto>>>(
+                "api/locations"
+            );
+            if (response != null && response.Data != null && !response.RequestFailed)
+            {
+                var table = new Table()
+                    .AddColumn("Name")
+                    .AddColumn("Address")
+                    .AddColumn("Town or City")
+                    .AddColumn("State or County")
+                    .AddColumn("Zip or Postcode")
+                    .AddColumn("Country");
+                foreach (var location in response.Data)
+                {
+                    table.AddRow(
+                        location.Name,
+                        location.Address,
+                        location.TownOrCity,
+                        location.StateorCounty,
+                        location.ZipOrPostCode,
+                        location.Country
+                    );
+                }
+                AnsiConsole.Write(table);
+            }
+            else
+            {
+                AnsiConsole.MarkupLine(
+                    $"[red]Failed to retrieve locations: {response?.Message ?? "Unknown error"}[/]"
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[red]Get all locations failed, see Exception: {ex.Message}[/]");
+        }
+    }
+
+    public async Task FrontEndAddLocation(HttpClient httpClient)
+    {
+        var name = AnsiConsole.Ask<string>("Enter [green]Location Name[/]:");
+        var address = AnsiConsole.Ask<string>("Enter [green]Address[/]:");
+        var city = AnsiConsole.Ask<string>("Enter [green]Town or City[/]:");
+        var state = AnsiConsole.Ask<string>("Enter [green]State or County[/]:");
+        var zip = AnsiConsole.Ask<string>("Enter [green]Zip Code or Post Code[/]:");
+        var country = AnsiConsole.Ask<string>("Enter [green]Country[/]:");
+
+        try
+        {
+            var response = await httpClient.PostAsJsonAsync(
+                "api/locations",
+                new
+                {
+                    Name = name,
+                    Address = address,
+                    TownOrCity = city,
+                    StateorCounty = state,
+                    ZipOrPostCode = zip,
+                    Country = country,
+                }
+            );
+            if (response.IsSuccessStatusCode)
+            {
+                AnsiConsole.MarkupLine("[green]Location added successfully![/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Failed to add location.[/]");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Add location failed, see {ex}");
+            throw;
+        }
+    }
+
+    public async Task FrontEndUpdateLocation(HttpClient httpClient, int id)
+    {
+        var name = AnsiConsole.Confirm("Do you want to update the [green]Location Name[/]?", true)
+            ? AnsiConsole.Ask<string>("Enter [green]Location Name[/]:")
+            : null;
+
+        var address = AnsiConsole.Confirm("Do you want to update the [green]Address[/]?", true)
+            ? AnsiConsole.Ask<string>("Enter [green]Address[/]:")
+            : null;
+
+        var city = AnsiConsole.Confirm("Do you want to update the [green]Town or City[/]?", true)
+            ? AnsiConsole.Ask<string>("Enter [green]Town or City[/]:")
+            : null;
+
+        var state = AnsiConsole.Confirm(
+            "Do you want to update the [green]State or County[/]?",
+            true
+        )
+            ? AnsiConsole.Ask<string>("Enter [green]State or County[/]:")
+            : null;
+
+        var zip = AnsiConsole.Confirm(
+            "Do you want to update the [green]Zip Code or Post Code[/]?",
+            true
+        )
+            ? AnsiConsole.Ask<string>("Enter [green]Zip Code or Post Code[/]:")
+            : null;
+
+        var country = AnsiConsole.Confirm("Do you want to update the [green]Country[/]?", true)
+            ? AnsiConsole.Ask<string>("Enter [green]Country[/]:")
+            : null;
+
+        try
+        {
+            var response = await httpClient.PutAsJsonAsync(
+                $"api/locations/{id}",
+                new
+                {
+                    Name = name,
+                    Address = address,
+                    TownOrCity = city,
+                    StateorCounty = state,
+                    ZipOrPostCode = zip,
+                    Country = country,
+                }
+            );
+            if (response.IsSuccessStatusCode)
+            {
+                AnsiConsole.MarkupLine("[green]Location updated successfully![/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Failed to update location.[/]");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Update location failed, see {ex}");
+            throw;
+        }
+    }
+
+    public async Task FrontEndDeleteLocation(HttpClient httpClient, int id)
+    {
+        try
+        {
+            var response = await httpClient.DeleteAsync($"api/locations/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                AnsiConsole.MarkupLine("[green]Location deleted successfully![/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]Failed to delete location.[/]");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Delete location failed, see {ex}");
+            throw;
+        }
     }
 }

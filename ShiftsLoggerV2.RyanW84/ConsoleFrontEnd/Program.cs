@@ -38,21 +38,21 @@ class Program
 				case "Add Worker":
 					await WorkerService.FrontEndAddWorker(httpClient);
 					break;
-				//case "Add Location":
-				//	await AddLocation(httpClient);
-				//	break;
-				//case "Add Shift":
-				//	await AddShift(httpClient);
-				//	break;
-				//case "View Workers":
-				//	await ViewWorkers(httpClient);
-				//	break;
-				//case "View Locations":
-				//	await ViewLocations(httpClient);
-				//	break;
-				//case "View Shifts":
-				//	await ViewShifts(httpClient);
-				//	break;
+				case "Add Location":
+					await FrontEndAddLocation(httpClient);
+					break;
+				case "Add Shift":
+					await AddShift(httpClient);
+					break;
+				case "View Workers":
+					await ViewWorkers(httpClient);
+					break;
+				case "View Locations":
+					await ViewLocations(httpClient);
+					break;
+				case "View Shifts":
+					await ViewShifts(httpClient);
+					break;
 				case "Exit":
 					return;
 			}
@@ -111,163 +111,4 @@ class Program
 	}
 
 
-
-	private static async Task AddLocation(HttpClient httpClient)
-	{
-		var name = AnsiConsole.Ask<string>("Enter [green]Location Name[/]:");
-		var address = AnsiConsole.Ask<string>("Enter [green]Address[/]:");
-		var city = AnsiConsole.Ask<string>("Enter [green]Town or City[/]:");
-		var state = AnsiConsole.Ask<string>("Enter [green]State or County[/]:");
-		var zip = AnsiConsole.Ask<string>("Enter [green]Zip Code or Post Code[/]:");
-		var country = AnsiConsole.Ask<string>("Enter [green]Country[/]:");
-
-		try
-		{
-			var response = await httpClient.PostAsJsonAsync(
-				"api/locations" ,
-				new
-				{
-					Name = name ,
-					Address = address ,
-					TownOrCity = city ,
-					StateorCounty = state ,
-					ZipOrPostCode = zip ,
-					Country = country ,
-				}
-			);
-			if (response.IsSuccessStatusCode)
-			{
-				AnsiConsole.MarkupLine("[green]Location added successfully![/]");
-			}
-			else
-			{
-				AnsiConsole.MarkupLine("[red]Failed to add location.[/]");
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Add location failed, see {ex}");
-			throw;
-		}
-	}
-
-	static async Task AddShift(HttpClient httpClient)
-	{
-		try
-		{
-			var workerId = AnsiConsole.Ask<int>("Enter [green]Worker ID[/]:");
-			var locationId = AnsiConsole.Ask<int>("Enter [green]Location ID[/]:");
-			var startTime = AnsiConsole.Ask<DateTime>(
-				"Enter [green]Start Time (yyyy-MM-DD HH:mm)[/]:"
-			);
-			var endTime = AnsiConsole.Ask<DateTime>("Enter [green]End Time (yyyy-MM-DD HH:mm)[/]:");
-
-			var response = await httpClient.PostAsJsonAsync(
-				"api/shifts" ,
-				new
-				{
-					WorkerId = workerId ,
-					LocationId = locationId ,
-					StartTime = startTime ,
-					EndTime = endTime ,
-				}
-			);
-			if (response.IsSuccessStatusCode)
-			{
-				AnsiConsole.MarkupLine("[green]Shift added successfully![/]");
-			}
-			else
-			{
-				AnsiConsole.MarkupLine("[red]Failed to add location.[/]");
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Add shiuft failed, see {ex}");
-			throw;
-		}
-	}
-
-
-
-	static async Task ViewLocations(HttpClient httpClient)
-	{
-		try
-		{
-			var response = await httpClient.GetFromJsonAsync<ApiResponseDto<List<LocationsDto>>>(
-				"api/locations"
-			);
-			if (response != null && response.Data != null && !response.RequestFailed)
-			{
-				var table = new Table()
-					.AddColumn("Name")
-					.AddColumn("Address")
-					.AddColumn("Town or City")
-					.AddColumn("State or County")
-					.AddColumn("Zip or Postcode")
-					.AddColumn("Country");
-				foreach (var location in response.Data)
-				{
-					table.AddRow(
-						location.Name ,
-						location.Address ,
-						location.TownOrCity ,
-						location.StateorCounty ,
-						location.ZipOrPostCode ,
-						location.Country
-					);
-				}
-				AnsiConsole.Write(table);
-			}
-			else
-			{
-				AnsiConsole.MarkupLine(
-					$"[red]Failed to retrieve locations: {response?.Message ?? "Unknown error"}[/]"
-				);
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"[red]Get all locations failed, see Exception: {ex.Message}[/]");
-		}
-	}
-
-	static async Task ViewShifts(HttpClient httpClient)
-	{
-		try
-		{
-			var response = await httpClient.GetFromJsonAsync<ApiResponseDto<List<ShiftsDto>>>(
-				"api/shifts"
-			);
-			if (response != null && response.Data != null && !response.RequestFailed)
-			{
-				var table = new Table()
-					.AddColumn("Worker ID")
-					.AddColumn("Location ID")
-					.AddColumn("Start Time")
-					.AddColumn("End Time");
-
-				foreach (var shift in response.Data)
-				{
-					table.AddRow(
-						shift.WorkerId.ToString() ,
-						shift.LocationId.ToString() ,
-						shift.StartTime.ToString("yyyy-MM-d HH:mm:ss (en-GB)") ,
-						shift.EndTime.ToString("yyyy-MM-d HH:mm:ss (en-GB)")
-					);
-				}
-				AnsiConsole.Write(table);
-			}
-			else
-			{
-				AnsiConsole.MarkupLine(
-					$"[red]Failed to retrieve shifts: {response?.Message ?? "Unknown error"}[/]"
-				);
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"[red]Get All Shifts failed, see Exception: {ex.Message}[/]");
-		}
-	}
 }
