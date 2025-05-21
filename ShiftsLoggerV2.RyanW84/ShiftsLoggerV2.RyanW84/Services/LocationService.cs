@@ -217,7 +217,7 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
                         location.Name,
                         location.Address,
                         location.TownOrCity,
-                        location.StateorCounty,
+                        location.StateOrCounty,
                         location.ZipOrPostCode,
                         location.Country
                     );

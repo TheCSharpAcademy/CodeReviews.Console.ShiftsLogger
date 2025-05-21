@@ -1,13 +1,13 @@
 ﻿using ShiftsLoggerV2.RyanW84.Services; // Assuming UserInterface is in this namespace
-
 using Spectre.Console;
+using ConsoleFrontEnd.Controller;
 
 namespace ConsoleFrontEnd.MenuSystem;
 
 public static class LocationMenu
 {
 	// Pass an instance of UserInterface to handle user input and service calls
-	public static async Task DisplayLocationMenu(LocationService location)
+	public static async Task DisplayLocationMenu(LocationService location , FrontEndController frontEndController)
 	{
 		AnsiConsole.Clear();
 		while (true)
@@ -30,22 +30,10 @@ public static class LocationMenu
 			switch (choice)
 			{
 				case "Create Location":
-					await UserInterface.CreateLocationUI();
-					break;
-				case "View Locations":
-					await UserInterface.GetLocationsUI(locationService);
-					break;
-					case "Edit Location":
-					await UserInterface.UpdateLocationUI(locationService);
-					break;
-					case "Delete Location":
-					await UserInterface.DeleteLocationUI(locationService);
-					break;
-					case "Back to Main Menu":
-					MainMenu.DisplayMainMenu();
+					var NewLocation = UserInterface.CreateLocationUI();
+					await frontEndController.AddLocationAsync(NewLocation);
 					break;
 			}
 		}
 	}
 }
-

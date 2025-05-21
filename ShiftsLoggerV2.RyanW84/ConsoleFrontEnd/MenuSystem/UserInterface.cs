@@ -13,7 +13,7 @@ public class UserInterface
     // UI method: Handles user interaction
     // and displays the results of the operations
 
-    public static async Task CreateLocationUI(LocationService locationService)
+    public static LocationsDto CreateLocationUI()
     {
         // 1. Gather user input (UI Layer)
         var name = AnsiConsole.Ask<string>("Enter [green]Location Name[/]:");
@@ -24,7 +24,7 @@ public class UserInterface
         var country = AnsiConsole.Ask<string>("Enter [green]Country[/]:");
 
         // 2. Create DTO for the service (acts like a controller would)
-        var newLocation = new LocationApiRequestDto
+        var newLocation = new LocationsDto
         {
             Name = name,
             Address = address,
@@ -34,59 +34,10 @@ public class UserInterface
             Country = country,
         };
 
-        // 3. Call the service (business logic)
-        var result = await locationService.CreateLocation(newLocation);
-
-        // 4. Handle the result (UI Layer)
-        if (!result.RequestFailed)
-            AnsiConsole.MarkupLine("[green]Location created successfully![/]");
-        else
-            AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
+        return newLocation;
     }
 
-    public static async Task GetLocationsUI(LocationService locationService)
-    {
-        Console.Clear();
-        AnsiConsole.MarkupLine("[yellow]Fetching locations...[/]");
-        var locationOptions = new LocationFilterOptions
-        {
-            LocationId = AnsiConsole.Confirm("Filter by [green]Location ID[/]?", false)
-                ? AnsiConsole.Ask<int>("Enter [green]Location ID[/]:")
-                : 0, // or use a nullable int? and set to null if not filtering
-            SortBy = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Select [green]Sort By[/]:")
-                    .AddChoices(
-                        "None",
-                        "location_id",
-                        "name",
-                        "address",
-                        "town_or_city",
-                        "state_or_county",
-                        "zip_or_post_code",
-                        "country"
-                    )
-            ),
-            SortOrder = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Select [green]Sort Order[/]:")
-                    .AddChoices("None", "asc", "desc")
-            ),
-        };
-        var result = await locationService.GetAllLocations(locationOptions);
-        if (result.Data != null && result.Data.Count > 0)
-        {
-            AnsiConsole.MarkupLine("[green]Locations found:[/]");
-            foreach (var location in result.Data)
-            {
-                AnsiConsole.MarkupLine($"[green]{location.Name}[/]");
-            }
-        }
-        else
-        {
-            AnsiConsole.MarkupLine("[red]No locations found.[/]");
-        }
-    }
+
 
 	public static async Task UpdateLocationUI(LocationService locationService , ShiftsDbContext dbContext , IWorkerService workerService)
 	{
@@ -118,14 +69,7 @@ public class UserInterface
 			? AnsiConsole.Ask<string>("Enter [green]Country[/]:")
 			: null;
 
-		var existing = await locationService.GetLocationById(id);
-		if (existing.Data == null)
-		{
-			AnsiConsole.MarkupLine("[red]Location not found.[/]");
-			return;
-		}
-
-		// 2. Create DTO for the service (acts like a controller would)
+		
 		var updatedLocation = new LocationApiRequestDto
 		{
 			Name = name ?? existing.Data.Name ,
@@ -133,7 +77,7 @@ public class UserInterface
 			TownOrCity = city ?? existing.Data.TownOrCity ,
 			StateOrCounty = state ?? existing.Data.StateOrCounty ,
 			ZipOrPostCode = zip ?? existing.Data.ZipOrPostCode ,
-			Country = country ?? existing.Data.Country ,
+			Country = country 
 		};
 		// 3. Call the service (business logic)
 		var result = await locationService.UpdateLocation(id , updatedLocation);
