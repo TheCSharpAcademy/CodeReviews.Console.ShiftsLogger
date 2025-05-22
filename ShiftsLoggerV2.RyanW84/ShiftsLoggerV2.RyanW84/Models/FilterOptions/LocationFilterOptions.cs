@@ -2,8 +2,8 @@
 
 public class LocationFilterOptions
 {
-    public int? LocationId { get; set; }
-    public string? SortBy { get; set; }
-    public string? SortOrder { get; set; }
-    public string? Search { get; set; }
+    public int? LocationId { get; set; } = 1;
+    public string? SortBy { get; set; } = "locationID";
+    public string? SortOrder { get; set; } = "ASC";
+    public string? Search { get; set; } = string.Empty;
 }

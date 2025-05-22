@@ -16,6 +16,16 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
         LocationFilterOptions locationOptions
     )
     {
+        if (locationOptions == null)
+        {
+            return new ApiResponseDto<List<Locations>>
+            {
+                RequestFailed = true,
+                ResponseCode = System.Net.HttpStatusCode.BadRequest,
+                Message = "Location filter options cannot be null.",
+            };
+        }
+
         var query = dbContext.Locations.Include(l => l.Shifts).AsQueryable();
 
         List<Locations>? locations;

@@ -21,10 +21,11 @@ public class LocationsController : ControllerBase
 
     // GET: api/Location
     [HttpGet(Name = "Get All Locations")]
-    public async Task<ActionResult<ApiResponseDto<List<Locations>>>> GetAllLocations([FromQuery] LocationFilterOptions locationOptions)
+    public async Task<ActionResult<ApiResponseDto<List<Locations>>>> GetAllLocations(LocationFilterOptions? locationOptions)
     {
         try
         {
+            locationOptions ??= new LocationFilterOptions(); // Provide a default value
             return Ok(await locationService.GetAllLocations(locationOptions));
         }
         catch (Exception ex)

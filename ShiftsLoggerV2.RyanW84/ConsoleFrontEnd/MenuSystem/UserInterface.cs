@@ -40,7 +40,6 @@ public class UserInterface
         table.AddColumn("Duration");
 
         table.AddRow(
-            shiftsDto.ShiftId.ToString(),
             shiftsDto.WorkerId.ToString(),
             shiftsDto.LocationId.ToString(),
             shiftsDto.StartTime.ToString(),

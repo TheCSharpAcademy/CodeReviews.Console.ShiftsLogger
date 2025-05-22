@@ -188,19 +188,27 @@ public class ShiftService(ShiftsDbContext dbContext, IMapper mapper) : IShiftSer
 
     public async Task<ApiResponseDto<Shifts>> CreateShift(ShiftApiRequestDto shift)
     {
-        Shifts newShift = mapper.Map<Shifts>(shift); // Map the DTO to the Shifts entity
-        var savedShift = await dbContext.Shifts.AddAsync(newShift);
-        await dbContext.SaveChangesAsync();
+        try
+            {
+            Shifts newShift = mapper.Map<Shifts>(shift); // Map the DTO to the Shifts entity
+            var savedShift = await dbContext.Shifts.AddAsync(newShift);
+            await dbContext.SaveChangesAsync();
 
-        AnsiConsole.MarkupLine(
-            $"\n[green]Successfully created shift with ID: {savedShift.Entity.ShiftId}[/]"
-        );
-        return new ApiResponseDto<Shifts>
-        {
-            Data = savedShift.Entity,
-            Message = "Shifts created successfully",
-            ResponseCode = System.Net.HttpStatusCode.Created,
-        };
+            AnsiConsole.MarkupLine(
+                $"\n[green]Successfully created shift with ID: {savedShift.Entity.ShiftId}[/]"
+            );
+            return new ApiResponseDto<Shifts>
+                {
+                Data = savedShift.Entity ,
+                Message = "Shifts created successfully" ,
+                ResponseCode = System.Net.HttpStatusCode.Created ,
+                };
+            }
+        catch(Exception ex)
+            {
+			Console.WriteLine($"Back end shift service - {ex}");
+            throw;
+            }
     }
 
     public async Task<ApiResponseDto<Shifts?>> UpdateShift(int id, ShiftApiRequestDto updatedShift)

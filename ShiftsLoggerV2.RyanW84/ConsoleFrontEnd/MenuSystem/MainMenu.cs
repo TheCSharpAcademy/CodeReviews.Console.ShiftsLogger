@@ -1,5 +1,7 @@
 ﻿using ConsoleFrontEnd.UserInterface;
+
 using ShiftsLoggerV2.RyanW84.Services;
+
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.MenuSystem;
