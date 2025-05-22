@@ -1,14 +1,12 @@
 ﻿using ConsoleFrontEnd.UserInterface;
-
 using ShiftsLoggerV2.RyanW84.Services;
-
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.MenuSystem;
 
 internal class MainMenu
 {
-    public void DisplayMainMenu()
+    public static void DisplayMainMenu()
     {
         while (true)
         {
@@ -20,23 +18,24 @@ internal class MainMenu
                     .Title("[yellow]Select an option:[/]")
                     .AddChoices("Shift Menu", "Location Menu", "Worker Menu", "Exit")
             );
+
             switch (choice)
             {
                 case "Shift Menu":
                     ShiftMenu.DisplayShiftMenu();
                     break;
                 case "Location Menu":
-                    LocationMenu.DisplayLocationMenu(LocationService locationService);
+                    LocationMenu.DisplayLocationMenu();
                     break;
                 case "Worker Menu":
                     WorkerMenu.DisplayWorkerMenu();
                     break;
                 case "Exit":
-                    AnsiConsole.MarkupLine("[red]Exiting application...[/]");
-                    Environment.Exit(0);
-                    break;
+                    AnsiConsole.MarkupLine("[red]Exiting the application...[/]");
+                    return;
                 default:
-                    AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
+                    Console.WriteLine("invalid choice entered");
+                    DisplayMainMenu();
                     break;
             }
         }

@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using ShiftsLoggerV2.RyanW84.Data;
-using ShiftsLoggerV2.RyanW84.Dtos;
-using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
-using ShiftsLoggerV2.RyanW84.Services;
+﻿using ShiftsLoggerV2.RyanW84.Dtos;
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.MenuSystem;
@@ -12,6 +7,50 @@ public class UserInterface
 {
     // UI method: Handles user interaction
     // and displays the results of the operations
+
+    public static ShiftsDto CreateShiftUi()
+    {
+        // 1. Gather user input (UI Layer)
+        AnsiConsole.WriteLine("\nPlease enter the following details for the shift:");
+        var startTime = AnsiConsole.Ask<DateTime>("Enter [green]Start Time[/]:");
+        var endTime = AnsiConsole.Ask<DateTime>("Enter [green]End Time[/]:");
+        var locationId = AnsiConsole.Ask<int>("Enter [green]Location ID[/]:");
+        var workerId = AnsiConsole.Ask<int>("Enter [green]Worker ID[/]:");
+
+        // Corrected instantiation of ShiftsDto
+        var newShift = new ShiftsDto
+        {
+            StartTime = startTime,
+            EndTime = endTime,
+            LocationId = locationId,
+            WorkerId = workerId,
+        };
+
+        return newShift;
+    }
+
+    public static void DisplayShiftTable(ShiftsDto shiftsDto)
+    {
+        Table table = new Table();
+        table.AddColumn("Shift ID");
+        table.AddColumn("Worker ID");
+        table.AddColumn("Location ID");
+        table.AddColumn("Start Time");
+        table.AddColumn("End Time");
+        table.AddColumn("Duration");
+
+        table.AddRow(
+            shiftsDto.ShiftId.ToString(),
+            shiftsDto.WorkerId.ToString(),
+            shiftsDto.LocationId.ToString(),
+            shiftsDto.StartTime.ToString(),
+            shiftsDto.EndTime.ToString(),
+            (shiftsDto.EndTime - shiftsDto.StartTime).ToString()
+        );
+        AnsiConsole.Write(table);
+        Console.WriteLine("Press any key to continue...");
+        Console.ReadKey();
+    }
 
     public static LocationsDto CreateLocationUI()
     {
@@ -35,222 +74,5 @@ public class UserInterface
         };
 
         return newLocation;
-    }
-
-
-
-	public static async Task UpdateLocationUI(LocationService locationService , ShiftsDbContext dbContext , IWorkerService workerService)
-	{
-		// 1. Gather user input (UI Layer)
-		var id = await locationService.GetLocationOptionInput(dbContext , locationService);
-		var name = AnsiConsole.Confirm("Do you want to update the [green]Location Name[/]?" , true)
-			? AnsiConsole.Ask<string>("Enter [green]Location Name[/]:")
-			: null;
-		var address = AnsiConsole.Confirm("Do you want to update the [green]Address[/]?" , true)
-			? AnsiConsole.Ask<string>("Enter [green]Location Name[/]:")
-			: null;
-		var city = AnsiConsole.Confirm("Do you want to update the [green]Town or City[/]?" , true)
-			? AnsiConsole.Ask<string>("Enter [green]Town or City[/]:")
-			: null;
-		var state = AnsiConsole.Confirm(
-			"Do you want to update the [green]State or County[/]?" ,
-			true
-		)
-			? AnsiConsole.Ask<string>("Enter [green]State or County[/]:")
-			: null;
-		var zip = AnsiConsole.Confirm(
-			"Do you want to update the [green]Zip Code or Post Code[/]?" ,
-			true
-		)
-			? AnsiConsole.Ask<string>("Enter [green]Zip Code or Post Code[/]:")
-			: null;
-
-		var country = AnsiConsole.Confirm("Do you want to update the [green]Country[/]?" , true)
-			? AnsiConsole.Ask<string>("Enter [green]Country[/]:")
-			: null;
-
-		
-		var updatedLocation = new LocationApiRequestDto
-		{
-			Name = name ?? existing.Data.Name ,
-			Address = address ?? existing.Data.Address ,
-			TownOrCity = city ?? existing.Data.TownOrCity ,
-			StateOrCounty = state ?? existing.Data.StateOrCounty ,
-			ZipOrPostCode = zip ?? existing.Data.ZipOrPostCode ,
-			Country = country 
-		};
-		// 3. Call the service (business logic)
-		var result = await locationService.UpdateLocation(id , updatedLocation);
-		if (!result.RequestFailed)
-			AnsiConsole.MarkupLine("[green]Location updated successfully![/]");
-		else
-			AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
-	}
-
-    public static async Task DeleteLocationUI(LocationService locationService, int id)
-    {
-        var result = await locationService.DeleteLocation(id);
-        if (!result.RequestFailed)
-            AnsiConsole.MarkupLine("[green]Location deleted successfully![/]");
-        else
-            AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
-    }
-
-    // --- Worker Methods ---
-
-    public static async Task CreateWorkerUI(WorkerService workerService)
-    {
-        Console.Clear();
-        var name = AnsiConsole.Ask<string>("Enter [green]Worker Name[/]:");
-        var phone = AnsiConsole.Ask<string>("Enter [green]Phone Number[/]:");
-        var email = AnsiConsole.Ask<string>("Enter [green]Email Address[/]:");
-
-        var dto = new WorkerApiRequestDto
-        {
-            Name = name,
-            PhoneNumber = phone,
-            Email = email,
-        };
-
-        var result = await workerService.CreateWorker(dto);
-        if (!result.RequestFailed)
-            AnsiConsole.MarkupLine("[green]Worker created successfully![/]");
-        else
-            AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
-    }
-
-    public static async Task GetWorkerUI(WorkerService workerService)
-    {
-        Console.Clear();
-        AnsiConsole.MarkupLine("[yellow]Fetching workers...[/]");
-
-        var workerOptions = new WorkerFilterOptions
-        {
-            WorkerId = AnsiConsole.Confirm("Filter by [green]Worker ID[/]?", false)
-                ? AnsiConsole.Ask<int>("Enter [green]Worker ID[/]:")
-                : null,
-            Name = AnsiConsole.Confirm("Filter by [green]Name[/]?", false)
-                ? AnsiConsole.Ask<string>("Enter [green]Name[/]:")
-                : null,
-            Phone = AnsiConsole.Confirm("Filter by [green]Phone Number[/]?", false)
-                ? AnsiConsole.Ask<string>("Enter [green]Phone Number[/]:")
-                : null,
-            Email = AnsiConsole.Confirm("Filter by [green]Email[/]?", false)
-                ? AnsiConsole.Ask<string>("Enter [green]Email[/]:")
-                : null,
-            SortBy = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Select [green]Sort By[/]:")
-                    .AddChoices("None", "worker_id", "name", "phone", "email")
-            ),
-            SortOrder = AnsiConsole.Prompt(
-                new SelectionPrompt<string>()
-                    .Title("Select [green]Sort Order[/]:")
-                    .AddChoices("None", "asc", "desc")
-            ),
-            Search = AnsiConsole.Confirm("Search by [green]keyword[/]?", false)
-                ? AnsiConsole.Ask<string>("Enter [green]Search keyword[/]:")
-                : null,
-        };
-
-        var result = await workerService.GetAllWorkers(workerOptions);
-        if (result.Data != null && result.Data.Count > 0)
-        {
-            var table = new Table()
-                .AddColumn("Worker ID")
-                .AddColumn("Name")
-                .AddColumn("Phone Number")
-                .AddColumn("Email");
-
-            foreach (var worker in result.Data)
-            {
-                table.AddRow(
-                    worker.WorkerId.ToString(),
-                    worker.Name ?? "N/A",
-                    worker.PhoneNumber ?? "N/A",
-                    worker.Email ?? "N/A"
-                );
-            }
-
-            AnsiConsole.Write(table);
-        }
-        else
-        {
-            AnsiConsole.MarkupLine("[red]No workers found.[/]");
-        }
-    }
-
-    public static async Task UpdateWorkerUI(WorkerService workerService, int id)
-    {
-        // 1. Gather user input (UI Layer)
-        Console.Clear();
-        AnsiConsole.MarkupLine("[yellow]Updating a worker...[/]");
-
-        var name = AnsiConsole.Confirm("Do you want to update the [green]Worker Name[/]?", true)
-            ? AnsiConsole.Ask<string>("Enter [green]Worker Name[/]:")
-            : null;
-        var phone = AnsiConsole.Confirm("Do you want to update the [green]Phone Number[/]?", true)
-            ? AnsiConsole.Ask<string>("Enter [green]Phone Number[/]:")
-            : null;
-        var email = AnsiConsole.Confirm("Do you want to update the [green]Email Address[/]?", true)
-            ? AnsiConsole.Ask<string>("Enter [green]Email Address[/]:")
-            : null;
-
-        var existing = await workerService.GetWorkerById(id);
-        if (existing.Data == null)
-        {
-            AnsiConsole.MarkupLine("[red]Worker not found.[/]");
-            return;
-        }
-
-        // Use WorkerApiRequestDto as required by the service
-        var updatedWorker = new WorkerApiRequestDto
-        {
-            WorkerId = id,
-            Name = name ?? existing.Data.Name ?? string.Empty,
-            PhoneNumber = phone ?? existing.Data.PhoneNumber ?? string.Empty,
-            Email = email ?? existing.Data.Email ?? string.Empty,
-        };
-
-        var result = await workerService.UpdateWorker(id, updatedWorker);
-        if (!result.RequestFailed)
-            AnsiConsole.MarkupLine("[green]Worker updated successfully![/]");
-        else
-            AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
-    }
-
-    public static async Task DeleteWorkerUI(WorkerService workerService, int id)
-    {
-        Console.Clear();
-        AnsiConsole.MarkupLine("[yellow]Deleting a worker...[/]");
-        var result = await workerService.DeleteWorker(id);
-        if (!result.RequestFailed)
-            AnsiConsole.MarkupLine("[green]Worker deleted successfully![/]");
-        else
-            AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
-    }
-
-    // --- Shift Methods ---
-    public static async Task CreateShiftUI(ShiftService shiftService)
-    {
-        // 1. Gather user input (UI Layer)
-        Console.Clear();
-        AnsiConsole.MarkupLine("[yellow]Creating a new shift...[/]");
-        var startTime = AnsiConsole.Ask<DateTime>("Enter [green]Start Time[/]:");
-        var endTime = AnsiConsole.Ask<DateTime>("Enter [green]End Time[/]:");
-        var locationId = AnsiConsole.Ask<int>("Enter [green]Location ID[/]:");
-        var workerId = AnsiConsole.Ask<int>("Enter [green]Worker ID[/]:");
-        var newShift = new ShiftApiRequestDto
-        {
-            StartTime = startTime,
-            EndTime = endTime,
-            LocationId = locationId,
-            WorkerId = workerId,
-        };
-        var result = await shiftService.CreateShift(newShift);
-        if (!result.RequestFailed)
-            AnsiConsole.MarkupLine("[green]Shift created successfully![/]");
-        else
-            AnsiConsole.MarkupLine($"[red]{result.Message}[/]");
     }
 }
