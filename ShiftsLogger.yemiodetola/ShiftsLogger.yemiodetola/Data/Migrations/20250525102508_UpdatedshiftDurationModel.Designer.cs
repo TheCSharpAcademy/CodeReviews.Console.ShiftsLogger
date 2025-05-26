@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShfitsLogger.yemiodetola.Contexts;
 
@@ -11,9 +12,11 @@ using ShfitsLogger.yemiodetola.Contexts;
 namespace ShfitsLogger.yemiodetola.Data.Migrations
 {
     [DbContext(typeof(ShiftsContext))]
-    partial class ShiftsContextModelSnapshot : ModelSnapshot
+    [Migration("20250525102508_UpdatedshiftDurationModel")]
+    partial class UpdatedshiftDurationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

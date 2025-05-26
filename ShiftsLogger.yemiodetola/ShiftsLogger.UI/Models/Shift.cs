@@ -1,4 +1,5 @@
-namespace ShfitsLogger.yemiodetola.Models;
+namespace ShiftsLogger.UI.Models;
+
 public class Shift
 {
   public int Id { get; set; }
