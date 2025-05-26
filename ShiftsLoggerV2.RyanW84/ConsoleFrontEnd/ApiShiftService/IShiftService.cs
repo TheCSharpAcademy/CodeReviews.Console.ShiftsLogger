@@ -1,10 +1,12 @@
-﻿namespace ConsoleFrontEnd.ApiShiftService;
+﻿using ConsoleFrontEnd.Models;
+
+namespace ConsoleFrontEnd.ApiShiftService;
 
 public interface IShiftService
 {
-    Task GetAllShifts();
-    Task GetShiftById(int id);
-    Task CreateShift();
-    Task UpdateShift(int id, Shift updatedShift);
-    Task DeleteShift(int id);
+    Task<List<Shifts>> GetAllShifts();
+    Task<List<Shifts>> GetShiftById(int id);
+    Task<Shifts> CreateShift(Shifts createdShift);
+    Task<Shifts> UpdateShift(int id, Shifts updatedShift);
+    Task<string> DeleteShift(int id);
 }

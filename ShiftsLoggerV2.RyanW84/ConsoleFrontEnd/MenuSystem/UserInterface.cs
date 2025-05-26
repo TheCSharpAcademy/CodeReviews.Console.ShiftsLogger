@@ -1,4 +1,4 @@
-﻿using ShiftsLoggerV2.RyanW84.Dtos;
+﻿using ConsoleFrontEnd.Models;
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.MenuSystem;
@@ -8,7 +8,7 @@ public class UserInterface
     // UI method: Handles user interaction
     // and displays the results of the operations
 
-    public static ShiftsDto CreateShiftUi()
+    public static Shifts CreateShiftUi()
     {
         // 1. Gather user input (UI Layer)
         AnsiConsole.WriteLine("\nPlease enter the following details for the shift:");
@@ -17,8 +17,7 @@ public class UserInterface
         var locationId = AnsiConsole.Ask<int>("Enter [green]Location ID[/]:");
         var workerId = AnsiConsole.Ask<int>("Enter [green]Worker ID[/]:");
 
-        // Corrected instantiation of ShiftsDto
-        var newShift = new ShiftsDto
+        var createdShift = new Shifts
         {
             StartTime = startTime,
             EndTime = endTime,
@@ -26,10 +25,10 @@ public class UserInterface
             WorkerId = workerId,
         };
 
-        return newShift;
+        return createdShift;
     }
 
-    public static void DisplayAllShiftsTable(ShiftsDto shiftsDto)
+    public static void DisplayAllShiftsTable(List<Shifts> shift)
     {
         Table table = new Table();
         table.AddColumn("Worker ID");
@@ -38,17 +37,21 @@ public class UserInterface
         table.AddColumn("End Time");
         table.AddColumn("Duration");
 
-        table.AddRow(
-            shiftsDto.WorkerId.ToString(),
-            shiftsDto.LocationId.ToString(),
-            shiftsDto.StartTime.ToString(),
-            shiftsDto.EndTime.ToString(),
-            (shiftsDto.EndTime - shiftsDto.StartTime).ToString()
-        );
+        foreach (var s in shift)
+        {
+            table.AddRow(
+                s.WorkerId.ToString(),
+                s.LocationId.ToString(),
+                s.StartTime.ToString("g"),
+                s.EndTime.ToString("g"),
+                (s.EndTime - s.StartTime).ToString(@"hh\:mm\:ss")
+            );
+        }
+
         AnsiConsole.Write(table);
     }
 
-    public static LocationsDto CreateLocationUI()
+    public static Locations CreateLocationUI()
     {
         // 1. Gather user input (UI Layer)
         var name = AnsiConsole.Ask<string>("Enter [green]Location Name[/]:");
@@ -58,8 +61,7 @@ public class UserInterface
         var zip = AnsiConsole.Ask<string>("Enter [green]Zip Code or Post Code[/]:");
         var country = AnsiConsole.Ask<string>("Enter [green]Country[/]:");
 
-        // 2. Create DTO for the service (acts like a controller would)
-        var newLocation = new LocationsDto
+        return new Locations
         {
             Name = name,
             Address = address,
@@ -68,7 +70,5 @@ public class UserInterface
             ZipOrPostCode = zip,
             Country = country,
         };
-
-        return newLocation;
     }
 }

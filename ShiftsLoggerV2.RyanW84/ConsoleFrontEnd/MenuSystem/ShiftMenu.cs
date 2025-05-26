@@ -6,14 +6,9 @@ namespace ConsoleFrontEnd.MenuSystem;
 
 public class ShiftMenu
 {
-    ShiftController shiftController =new ShiftController();
-
-
-
-	public static async Task DisplayShiftMenu()
+    public static async Task DisplayShiftMenu()
     {
-        // Initialize the ShiftController with the ShiftService
-   
+        ShiftController shiftController = new ShiftController();
 
         AnsiConsole.Clear();
         while (true)
