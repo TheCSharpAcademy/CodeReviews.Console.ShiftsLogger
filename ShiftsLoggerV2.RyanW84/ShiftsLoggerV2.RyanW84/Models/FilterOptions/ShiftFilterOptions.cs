@@ -25,11 +25,11 @@ public class ShiftFilterOptions
 	[FromQuery(Name = "locationName")]
     public string LocationName { get; set; } = string.Empty; // Use string for location name filtering
 
-	[FromQuery(Name = "sort_by")]
-    public string SortBy { get; set; } = "shift_id"; // Use string for sorting options
+    [FromQuery(Name = "sort_by")]
+    public string SortBy { get; set; } = string.Empty;
 
     [FromQuery(Name = "sort_order")]
-    public string SortOrder { get; set; } = "ASC"; // Use string for sorting options
+    public string SortOrder { get; set; } = string.Empty;
 
     [FromQuery(Name = "search")]
 	public string Search { get; set; } = string.Empty; // Use string for search options

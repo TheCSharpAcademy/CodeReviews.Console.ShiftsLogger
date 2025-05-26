@@ -14,7 +14,6 @@ internal class MainMenu
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule("[bold yellow]Main Menu[/]").RuleStyle("yellow").Centered());
-            AnsiConsole.WriteLine("Please select an option from the menu below:");
             var choice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("[yellow]Select an option:[/]")

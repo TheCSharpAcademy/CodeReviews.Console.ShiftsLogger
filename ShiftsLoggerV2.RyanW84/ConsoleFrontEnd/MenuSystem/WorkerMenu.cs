@@ -12,7 +12,7 @@ internal static class WorkerMenu
 {
     public static void DisplayWorkerMenu()
     {
-        var workerController = new WorkerController();
+        var workerController = new FrontEndWorkerController();
 
         AnsiConsole.Clear();
         while (true)

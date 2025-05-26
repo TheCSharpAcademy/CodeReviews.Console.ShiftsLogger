@@ -29,10 +29,9 @@ public class UserInterface
         return newShift;
     }
 
-    public static void DisplayShiftTable(ShiftsDto shiftsDto)
+    public static void DisplayAllShiftsTable(ShiftsDto shiftsDto)
     {
         Table table = new Table();
-        table.AddColumn("Shift ID");
         table.AddColumn("Worker ID");
         table.AddColumn("Location ID");
         table.AddColumn("Start Time");
@@ -47,8 +46,6 @@ public class UserInterface
             (shiftsDto.EndTime - shiftsDto.StartTime).ToString()
         );
         AnsiConsole.Write(table);
-        Console.WriteLine("Press any key to continue...");
-        Console.ReadKey();
     }
 
     public static LocationsDto CreateLocationUI()

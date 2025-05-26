@@ -14,5 +14,9 @@ public class MappingProfile : Profile
         CreateMap<WorkerApiRequestDto, Workers>();
         CreateMap<Locations, LocationApiRequestDto>();
         CreateMap<LocationApiRequestDto, Locations>();
-    }
+		CreateMap<ShiftsDto , Shifts>()
+		.ForMember(dest => dest.ShiftId , opt => opt.Ignore()) // Ignore unmapped properties
+		.ForMember(dest => dest.Location , opt => opt.Ignore())
+		.ForMember(dest => dest.Worker , opt => opt.Ignore());
+	}
 }
