@@ -1,6 +1,6 @@
 ﻿namespace ConsoleFrontEnd.ApiShiftService;
 
-public interface FrontEndIShiftService
+public interface IShiftService
 {
     Task GetAllShifts();
     Task GetShiftById(int id);

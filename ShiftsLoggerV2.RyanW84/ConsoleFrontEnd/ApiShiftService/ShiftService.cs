@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using AutoMapper;
+using ConsoleFrontEnd.ApiShiftService;
 using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
@@ -9,57 +10,38 @@ namespace ConsoleFrontEnd.Services;
 
 public class ShiftService : IShiftService
 {
-    private readonly HttpClient _httpClient;
-    private readonly IMapper _mapper;
+    private static HttpClient httpClient = new HttpClient();
 
-    public ShiftService(HttpClient httpClient, IMapper mapper)
+    public async Task<ApiResponseDto<List<ShiftsDto>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {
-        _httpClient = httpClient;
-        _mapper = mapper;
-        _httpClient.BaseAddress = new Uri("https://localhost:7009");
-    }
-
-    public async Task<ApiResponseDto<List<Shifts>>> GetAllShifts(ShiftFilterOptions shiftOptions)
-    {
+        HttpResponseMessage response;
         try
         {
-            var response = await _httpClient.GetAsync($"api/shifts?{shiftOptions}");
-            if (response.IsSuccessStatusCode)
+            response = await _httpClient.GetAsync($"api/shifts?{shiftOptions}");
+
+            var result = await response.Content.ReadFromJsonAsync<
+                ApiResponseDto<List<ShiftsDto>>
+            >();
+            if (result is not null && result.Data is not null)
             {
-                var result = await response.Content.ReadFromJsonAsync<
-                    ApiResponseDto<List<ShiftsDto>>
-                >();
-                if (result != null && result.Data != null)
+                return new ApiResponseDto<List<ShiftsDto>>
                 {
-                    // Map List<ShiftsDto> to List<Shifts>
-                    var shifts = _mapper.Map<List<Shifts>>(result.Data);
-                    return new ApiResponseDto<List<Shifts>>
-                    {
-                        RequestFailed = result.RequestFailed,
-                        ResponseCode = result.ResponseCode,
-                        Message = result.Message,
-                        Data = shifts,
-                        TotalCount = result.TotalCount,
-                    };
-                }
-                else
-                {
-                    return new ApiResponseDto<List<Shifts>>
-                    {
-                        RequestFailed = true,
-                        Message = "No data returned.",
-                    };
-                }
+                    RequestFailed = result.RequestFailed,
+                    ResponseCode = result.ResponseCode,
+                    Message = result.Message,
+                    Data = result.Data,
+                    TotalCount = result.TotalCount,
+                };
             }
             else
             {
-                var errorResponse = await response.Content.ReadFromJsonAsync<
-                    ApiResponseDto<List<Shifts>>
-                >();
-                return new ApiResponseDto<List<Shifts>>
+                return new ApiResponseDto<List<ShiftsDto>>
                 {
                     RequestFailed = true,
-                    Message = errorResponse?.Message ?? "Unknown error.",
+                    Message = "No data returned.",
+                    ResponseCode = System.Net.HttpStatusCode.NoContent,
+                    Data = null,
+                    TotalCount = 0,
                 };
             }
         }
@@ -70,7 +52,7 @@ public class ShiftService : IShiftService
         }
     }
 
-    public async Task<ApiResponseDto<Shifts?>> GetShiftById(int id)
+    public async Task<ApiResponseDto<ShiftsDto?>> GetShiftById(int id)
     {
         try
         {
@@ -78,37 +60,38 @@ public class ShiftService : IShiftService
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<ApiResponseDto<ShiftsDto?>>();
-                if (result != null && result.Data != null)
+                if (result is not null)
                 {
-                    // Use AutoMapper to map ShiftsDto to Shifts
-                    var shift = _mapper.Map<Shifts>(result.Data);
-                    return new ApiResponseDto<Shifts?>
+                    return new ApiResponseDto<ShiftsDto?>
                     {
                         RequestFailed = result.RequestFailed,
                         ResponseCode = result.ResponseCode,
                         Message = result.Message,
-                        Data = shift,
+                        Data = result.Data,
                         TotalCount = result.TotalCount,
                     };
                 }
                 else
                 {
-                    return new ApiResponseDto<Shifts?>
+                    return new ApiResponseDto<ShiftsDto?>
                     {
                         RequestFailed = true,
                         Message = "No data returned.",
+                        ResponseCode = response.StatusCode,
+                        Data = null,
+                        TotalCount = 0,
                     };
                 }
             }
             else
             {
-                var errorResponse = await response.Content.ReadFromJsonAsync<
-                    ApiResponseDto<ShiftsDto?>
-                >();
-                return new ApiResponseDto<Shifts?>
+                return new ApiResponseDto<ShiftsDto?>
                 {
                     RequestFailed = true,
-                    Message = errorResponse?.Message ?? "Unknown error.",
+                    Message = "Unsuccessful HTTP request",
+                    ResponseCode = response.StatusCode,
+                    Data = null,
+                    TotalCount = 0,
                 };
             }
         }
@@ -119,16 +102,18 @@ public class ShiftService : IShiftService
         }
     }
 
-    public async Task<ApiResponseDto<Shifts>> CreateShift(ShiftApiRequestDto shift)
+    public async Task<ApiResponseDto<ShiftsDto>> CreateShift(ShiftApiRequestDto shift)
     {
         try
         {
             var response = await _httpClient.PostAsJsonAsync("api/shifts", shift);
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode is not System.Net.HttpStatusCode.Created)
             {
-                var result = await response.Content.ReadFromJsonAsync<ApiResponseDto<Shifts>>();
+                ApiResponseDto<ShiftsDto>? result = await response.Content.ReadFromJsonAsync<
+                    ApiResponseDto<ShiftsDto>
+                >();
                 return result
-                    ?? new ApiResponseDto<Shifts>
+                    ?? new ApiResponseDto<ShiftsDto>
                     {
                         RequestFailed = true,
                         Message = "No data returned.",
@@ -137,9 +122,9 @@ public class ShiftService : IShiftService
             else
             {
                 var errorResponse = await response.Content.ReadFromJsonAsync<
-                    ApiResponseDto<Shifts>
+                    ApiResponseDto<ShiftsDto>
                 >();
-                return new ApiResponseDto<Shifts>
+                return new ApiResponseDto<ShiftsDto>
                 {
                     RequestFailed = true,
                     Message = errorResponse?.Message ?? "Unknown error.",
@@ -153,16 +138,21 @@ public class ShiftService : IShiftService
         }
     }
 
-    public async Task<ApiResponseDto<Shifts?>> UpdateShift(int id, ShiftApiRequestDto updatedShift)
+    public async Task<ApiResponseDto<ShiftsDto>> UpdateShift(
+        int id,
+        ShiftApiRequestDto updatedShift
+    )
     {
         try
         {
             var response = await _httpClient.PutAsJsonAsync($"api/shifts/{id}", updatedShift);
             if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadFromJsonAsync<ApiResponseDto<Shifts?>>();
+                ApiResponseDto<ShiftsDto?>? result = await response.Content.ReadFromJsonAsync<
+                    ApiResponseDto<ShiftsDto?>
+                >();
                 return result
-                    ?? new ApiResponseDto<Shifts?>
+                    ?? new ApiResponseDto<ShiftsDto?>
                     {
                         RequestFailed = true,
                         Message = "No data returned.",
@@ -170,13 +160,15 @@ public class ShiftService : IShiftService
             }
             else
             {
-                var errorResponse = await response.Content.ReadFromJsonAsync<
-                    ApiResponseDto<Shifts?>
-                >();
-                return new ApiResponseDto<Shifts?>
+                ApiResponseDto<ShiftsDto?>? errorResponse =
+                    await response.Content.ReadFromJsonAsync<ApiResponseDto<ShiftsDto?>>();
+                return new ApiResponseDto<ShiftsDto?>
                 {
                     RequestFailed = true,
                     Message = errorResponse?.Message ?? "Unknown error.",
+                    ResponseCode = response.StatusCode,
+                    Data = null,
+                    TotalCount = 0,
                 };
             }
         }

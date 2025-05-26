@@ -6,15 +6,14 @@ namespace ConsoleFrontEnd.MenuSystem;
 
 public class ShiftMenu
 {
-    private static HttpClient _httpClient = new HttpClient();
+    ShiftController shiftController =new ShiftController();
 
-    private static FrontEndIShiftService _frontEndShiftService =
-        new ConsoleFrontEnd.Services.FrontEndShiftService(_httpClient)
 
-    public static async Task DisplayShiftMenu()
+
+	public static async Task DisplayShiftMenu()
     {
         // Initialize the ShiftController with the ShiftService
-        var shiftController = new FrontEndShiftController(_frontEndShiftService);
+   
 
         AnsiConsole.Clear();
         while (true)
