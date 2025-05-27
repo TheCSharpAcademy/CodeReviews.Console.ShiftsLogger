@@ -6,7 +6,7 @@ class Program
 {
   private static ApiService _apiService = new ApiService();
 
-  static async Task Main(string[] args)
+  static async Task Main()
   {
     Console.WriteLine("---------- Shifts Record ----------");
     Console.WriteLine();
