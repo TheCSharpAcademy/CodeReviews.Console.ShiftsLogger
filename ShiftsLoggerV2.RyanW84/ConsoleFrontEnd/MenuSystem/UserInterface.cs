@@ -8,7 +8,53 @@ public class UserInterface
     // UI method: Handles user interaction
     // and displays the results of the operations
 
-    public static Shifts CreateShiftUi()
+    public ShiftFilterOptions FilterShiftsUi()
+    {
+        var filterOptions = new ShiftFilterOptions
+        {
+            WorkerId = null,
+            LocationId = null,
+            StartTime = null,
+            EndTime = null,
+        };
+        // 1. Gather user input (UI Layer)
+        AnsiConsole.WriteLine("\nPlease enter filter criteria for shifts (leave blank to skip):");
+        var filterCriteria = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("[yellow]Dp you wish to apply any Filters?:[/]")
+                .AddChoices("Yes", "No")
+        );
+
+        if (filterCriteria == "No")
+        {
+            AnsiConsole.MarkupLine("[green]No filters applied.[/]");
+            return filterOptions; // Return default filter options with null values
+        }
+        else
+        {
+            AnsiConsole.MarkupLine("[yellow]Choose which filters...[/]");
+            filterOptions.WorkerId = AnsiConsole.Ask<int?>(
+                "Enter [green]Worker ID[/] (or leave blank):",
+                defaultValue: null
+            );
+            filterOptions.LocationId = AnsiConsole.Ask<int?>(
+                "Enter [green]Location ID[/] (or leave blank):",
+                defaultValue: null
+            );
+            filterOptions.StartTime = AnsiConsole.Ask<DateTime?>(
+                "Enter [green]Start Time[/] (or leave blank):",
+                defaultValue: null
+            );
+            filterOptions.EndTime = AnsiConsole.Ask<DateTime?>(
+                "Enter [green]End Time[/] (or leave blank):",
+                defaultValue: null
+            );
+
+            return filterOptions; // Return the filter options with user input
+        }
+    }
+
+    public Shifts CreateShiftUi()
     {
         // 1. Gather user input (UI Layer)
         AnsiConsole.WriteLine("\nPlease enter the following details for the shift:");
@@ -28,7 +74,7 @@ public class UserInterface
         return createdShift;
     }
 
-    public static void DisplayAllShiftsTable(List<Shifts> shift)
+    public void DisplayShiftsTable(IEnumerable<Shifts> shifts)
     {
         Table table = new Table();
         table.AddColumn("Worker ID");
@@ -37,18 +83,27 @@ public class UserInterface
         table.AddColumn("End Time");
         table.AddColumn("Duration");
 
-        foreach (var s in shift)
+        foreach (var shift in shifts)
         {
             table.AddRow(
-                s.WorkerId.ToString(),
-                s.LocationId.ToString(),
-                s.StartTime.ToString("g"),
-                s.EndTime.ToString("g"),
-                (s.EndTime - s.StartTime).ToString(@"hh\:mm\:ss")
+                shift.WorkerId.ToString(),
+                shift.LocationId.ToString(),
+                shift.StartTime.ToString("g"),
+                shift.EndTime.ToString("g"),
+                (shift.EndTime - shift.StartTime).ToString(@"hh\:mm\:ss")
             );
         }
 
         AnsiConsole.Write(table);
+    }
+
+    public int GetShiftByIdUi()
+    {
+        // 1. Gather user input (UI Layer)
+        var shiftId = AnsiConsole.Ask<int>(
+            $"Enter [green]Shift ID[/] to view details of a single Shift:"
+        );
+        return shiftId;
     }
 
     public static Locations CreateLocationUI()
@@ -61,7 +116,7 @@ public class UserInterface
         var zip = AnsiConsole.Ask<string>("Enter [green]Zip Code or Post Code[/]:");
         var country = AnsiConsole.Ask<string>("Enter [green]Country[/]:");
 
-        return new Locations
+        var createdLocation = new Locations
         {
             Name = name,
             Address = address,
@@ -70,5 +125,7 @@ public class UserInterface
             ZipOrPostCode = zip,
             Country = country,
         };
+
+        return createdLocation;
     }
 }

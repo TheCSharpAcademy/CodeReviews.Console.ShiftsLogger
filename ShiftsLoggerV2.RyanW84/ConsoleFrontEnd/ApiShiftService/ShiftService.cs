@@ -6,18 +6,20 @@ namespace ConsoleFrontEnd.Services;
 
 public class ShiftService : IShiftService
 {
-    internal static ShiftFilterOptions shiftFilterOptions = new()
+    internal ShiftFilterOptions shiftFilterOptions = new()
     {
         WorkerId = null,
         LocationId = null,
         StartTime = null,
         EndTime = null,
     };
-    private static HttpClient httpClient = new HttpClient();
+    internal HttpClient httpClient = new HttpClient()
+    {
+        BaseAddress = new Uri("https://localhost:7009"),
+        Timeout = TimeSpan.FromSeconds(30), // Set a timeout for the HTTP requests
+    };
 
-    // Fix: Implement interface signatures exactly as declared in IShiftService
-
-    public async Task<List<Shifts>> GetAllShifts()
+    public async Task<List<Shifts>> GetAllShifts(ShiftFilterOptions shiftFilterOptions)
     {
         HttpResponseMessage response;
         try

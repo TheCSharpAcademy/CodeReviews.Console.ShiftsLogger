@@ -5,7 +5,7 @@
 namespace ShiftsLoggerV2.RyanW84.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AmendedEntityRelationships2 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

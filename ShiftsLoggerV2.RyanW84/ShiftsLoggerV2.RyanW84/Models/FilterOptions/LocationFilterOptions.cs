@@ -1,9 +1,12 @@
-﻿namespace ShiftsLoggerV2.RyanW84.Models.FilterOptions;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 
 public class LocationFilterOptions
 {
-    public int? LocationId { get; set; } = 1;
-    public string? SortBy { get; set; } = "locationID";
-    public string? SortOrder { get; set; } = "ASC";
-    public string? Search { get; set; } = string.Empty;
+    
+    public int LocationId { get; set; }
+    public string SortBy { get; set; } 
+    public string SortOrder { get; set; } 
+    public string Search { get; set; } 
 }

@@ -1,6 +1,6 @@
 ﻿namespace ConsoleFrontEnd.Models;
 
-internal class ShiftFilterOptions
+public class ShiftFilterOptions
 {
     public int? WorkerId { get; set; }
     public int? LocationId { get; set; }

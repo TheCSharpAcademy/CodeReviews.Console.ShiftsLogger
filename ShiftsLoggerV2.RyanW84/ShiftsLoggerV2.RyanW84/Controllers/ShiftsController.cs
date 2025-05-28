@@ -105,7 +105,7 @@ public class ShiftsController(IShiftService shiftService) : ControllerBase
             var result = await shiftService.DeleteShift(id);
 
             // Corrected the condition to check the ResponseCode property of the result
-            if (result.ResponseCode == HttpStatusCode.NotFound || result is null)
+            if (result is null)
             {
                 return NotFound();
             }
