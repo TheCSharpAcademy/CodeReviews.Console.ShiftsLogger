@@ -43,10 +43,10 @@ public class ShiftMenu
                     case "Update Shift":
                     await shiftController.UpdateShift();
                     break;
-                    //case "Delete Shift":
-                    //await shiftController.DeleteShift();
-                    //break;
-                    case "Back to Main Menu":
+                case "Delete Shift":
+                    await shiftController.DeleteShift();
+                    break;
+                case "Back to Main Menu":
                     return;
                     default:
                     AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");

@@ -109,6 +109,8 @@ public class UserInterface
 		var shiftId = AnsiConsole.Ask<int>(
 			$"Enter [green]Shift ID:[/] "
 		);
+
+
 		return shiftId;
 	}
 

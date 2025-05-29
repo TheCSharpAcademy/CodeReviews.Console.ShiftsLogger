@@ -79,7 +79,7 @@ public class ShiftController()
             else
             {
                 userInterface.DisplayShiftsTable(shift.Data);
-				Console.WriteLine("Press any key to continue...");
+                Console.WriteLine("Press any key to continue...");
                 Console.ReadKey();
             }
         }
@@ -88,41 +88,70 @@ public class ShiftController()
             AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
         }
     }
-	public async Task UpdateShift( )
-	{
-		try
-		{
-			AnsiConsole.Clear();
-			AnsiConsole.Write(
-				new Rule("[bold yellow]Update Shift[/]").RuleStyle("yellow").Centered()
-			);
-			var shiftId = userInterface.GetShiftByIdUi();
-			var existingShift = await shiftService.GetShiftById(shiftId);
-			var shiftExists = existingShift != null && existingShift.Data.Count > 0;
-			if (!shiftExists)
-			{
-				AnsiConsole.MarkupLine("[red]Error: Shift not found.[/]");
-				UpdateShift();
-				return;
-			}
 
-			var updatedShift = userInterface.UpdateShiftUi(existingShift.Data);
+    public async Task UpdateShift()
+    {
+        try
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Write(
+                new Rule("[bold yellow]Update Shift[/]").RuleStyle("yellow").Centered()
+            );
+            var shiftId = userInterface.GetShiftByIdUi();
+            var existingShift = await shiftService.GetShiftById(shiftId);
+            var shiftExists = existingShift != null && existingShift.Data.Count > 0;
+            if (!shiftExists)
+            {
+                AnsiConsole.MarkupLine("[red]Error: Shift not found.[/]");
+                UpdateShift();
+                return;
+            }
 
-			var updatedShiftResponse = await shiftService.UpdateShift(shiftId , updatedShift);
-			if (updatedShiftResponse == null || updatedShiftResponse.Data == null)
-			{
-				AnsiConsole.MarkupLine("[red]Error: Failed to update shift.[/]");
-			}
-			else
-			{
-				AnsiConsole.MarkupLine("[green]Shift updated successfully![/]");
-				AnsiConsole.MarkupLine($"[green]Shift ID: {updatedShiftResponse.Data.ShiftId}[/]");
+            var updatedShift = userInterface.UpdateShiftUi(existingShift.Data);
 
-			}
-		}
-		catch (Exception ex)
-		{
-			AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
-		}
-	}
+            var updatedShiftResponse = await shiftService.UpdateShift(shiftId, updatedShift);
+            if (updatedShiftResponse == null || updatedShiftResponse.Data == null)
+            {
+                AnsiConsole.MarkupLine("[red]Error: Failed to update shift.[/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[green]Shift updated successfully![/]");
+                AnsiConsole.MarkupLine($"[green]Shift ID: {updatedShiftResponse.Data.ShiftId}[/]");
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+        }
+    }
+
+    public async Task DeleteShift()
+    {
+        try
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Write(
+                new Rule("[bold yellow]Delete Shift[/]").RuleStyle("yellow").Centered()
+            );
+            var shiftId = userInterface.GetShiftByIdUi();
+            var deletedShift = await shiftService.DeleteShift(shiftId);
+            if (deletedShift is null)
+            {
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine("\nPress any key to continue...");
+                Console.ReadKey();
+            }
+        }
+        catch (Exception ex)
+        {
+			Console.WriteLine($"Try Pass failed in Shift Controller: Delete Shift {ex}");
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+        }
+    }
 }

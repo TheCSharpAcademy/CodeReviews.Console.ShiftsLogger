@@ -4,6 +4,8 @@ using ConsoleFrontEnd.ApiShiftService;
 using ConsoleFrontEnd.Models;
 using ConsoleFrontEnd.Models.Dtos;
 
+using Spectre.Console;
+
 namespace ConsoleFrontEnd.Services;
 
 public class ShiftService : IShiftService
@@ -189,9 +191,20 @@ public class ShiftService : IShiftService
         try
         {
             response = await httpClient.DeleteAsync($"api/shifts/{id}");
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode is System.Net.HttpStatusCode.NotFound)
             {
-                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                AnsiConsole.Markup("[red]Error: Shift not found.[/]");
+                return new ApiResponseDto<string>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = "Shift not found.",
+                    Data = null,
+                };
+            }
+          
+            else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
+            {
+                AnsiConsole.Markup("[green]Shift deleted successfully![/]");
                 return new ApiResponseDto<string>
                 {
                     ResponseCode = response.StatusCode,
@@ -199,22 +212,21 @@ public class ShiftService : IShiftService
                     Data = null,
                 };
             }
-            else
-            {
-                Console.WriteLine("Shift deleted successfully.");
-                return await response.Content.ReadFromJsonAsync<ApiResponseDto<string>>()
-                    ?? new ApiResponseDto<string>
-                    {
-                        ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
-                        Data = null,
-                    };
-            }
-        }
+			else
+			{
+				AnsiConsole.Markup($"[red]Error: {response.StatusCode} - {response.ReasonPhrase}[/]");
+				return new ApiResponseDto<string>
+				{
+					ResponseCode = response.StatusCode ,
+					Message = response.ReasonPhrase ,
+					Data = null ,
+				};
+			}
+		}
         catch (Exception ex)
         {
             Console.WriteLine($"Try catch failed for DeleteShift: {ex}");
             throw;
         }
-	}
+    }
 }
