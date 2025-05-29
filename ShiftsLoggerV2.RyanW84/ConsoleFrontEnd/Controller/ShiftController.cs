@@ -79,6 +79,8 @@ public class ShiftController()
             else
             {
                 userInterface.DisplayShiftsTable(shift.Data);
+				Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
             }
         }
         catch (Exception ex)
@@ -86,29 +88,41 @@ public class ShiftController()
             AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
         }
     }
-    public async Task UpdateShift()
-    {
-        try
-        {
-            AnsiConsole.Clear();
-            AnsiConsole.Write(
-                new Rule("[bold yellow]Update Shift[/]").RuleStyle("yellow").Centered()
-            );
-            var shift = userInterface.UpdateShiftUi();
-            var updatedShift = await shiftService.UpdateShift(shift);
-            if (updatedShift == null)
-            {
-                AnsiConsole.MarkupLine("[red]Error: Failed to update shift.[/]");
-            }
-            else
-            {
-                AnsiConsole.MarkupLine("[green]Shift updated successfully![/]");
-                AnsiConsole.MarkupLine($"[green]Shift ID: {updatedShift.Data.ShiftId}[/]");
-            }
-        }
-        catch (Exception ex)
-        {
-            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
-        }
+	public async Task UpdateShift( )
+	{
+		try
+		{
+			AnsiConsole.Clear();
+			AnsiConsole.Write(
+				new Rule("[bold yellow]Update Shift[/]").RuleStyle("yellow").Centered()
+			);
+			var shiftId = userInterface.GetShiftByIdUi();
+			var existingShift = await shiftService.GetShiftById(shiftId);
+			var shiftExists = existingShift != null && existingShift.Data.Count > 0;
+			if (!shiftExists)
+			{
+				AnsiConsole.MarkupLine("[red]Error: Shift not found.[/]");
+				UpdateShift();
+				return;
+			}
+
+			var updatedShift = userInterface.UpdateShiftUi(existingShift.Data);
+
+			var updatedShiftResponse = await shiftService.UpdateShift(shiftId , updatedShift);
+			if (updatedShiftResponse == null || updatedShiftResponse.Data == null)
+			{
+				AnsiConsole.MarkupLine("[red]Error: Failed to update shift.[/]");
+			}
+			else
+			{
+				AnsiConsole.MarkupLine("[green]Shift updated successfully![/]");
+				AnsiConsole.MarkupLine($"[green]Shift ID: {updatedShiftResponse.Data.ShiftId}[/]");
+
+			}
+		}
+		catch (Exception ex)
+		{
+			AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+		}
 	}
 }

@@ -24,7 +24,7 @@ public class ShiftMenu
                         "Create Shift",
                         "View Shifts",
                         "View Shift by ID",
-                        "Edit Shift",
+                        "Update Shift",
                         "Delete Shift",
                         "Back to Main Menu"
                     )
@@ -43,9 +43,9 @@ public class ShiftMenu
                     case "Update Shift":
                     await shiftController.UpdateShift();
                     break;
-                    case "Delete Shift":
-                    await shiftController.DeleteShift();
-                    break;
+                    //case "Delete Shift":
+                    //await shiftController.DeleteShift();
+                    //break;
                     case "Back to Main Menu":
                     return;
                     default:
