@@ -37,10 +37,21 @@ public class ShiftMenu
                 case "View Shifts":
                     await shiftController.GetAllShifts();
                     break;
-                //case "View Shift by ID":
-                //	await shiftController.GetShiftById();
-                //	break;
-            }
+                case "View Shift by ID":
+                    await shiftController.GetShiftById();
+                    break;
+                    case "Update Shift":
+                    await shiftController.UpdateShift();
+                    break;
+                    case "Delete Shift":
+                    await shiftController.DeleteShift();
+                    break;
+                    case "Back to Main Menu":
+                    return;
+                    default:
+                    AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
+                    break;
+			}
         }
     }
 }

@@ -1,10 +1,8 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 using ShiftsLoggerV2.RyanW84.Services;
-using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Controllers;
 
@@ -19,7 +17,6 @@ public class ShiftsController(IShiftService shiftService) : ControllerBase
     {
         try
         {
-         
             return Ok(await shiftService.GetAllShifts(shiftOptions));
         }
         catch (Exception ex)

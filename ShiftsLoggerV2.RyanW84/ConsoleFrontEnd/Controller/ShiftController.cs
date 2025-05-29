@@ -30,7 +30,7 @@ public class ShiftController()
             else
             {
                 AnsiConsole.MarkupLine("[green]Shift created successfully![/]");
-                AnsiConsole.MarkupLine($"[green]Shift ID: {createdShift.ShiftId}[/]");
+                AnsiConsole.MarkupLine($"[green]Shift ID: {createdShift.Data.ShiftId}[/]");
             }
         }
         catch (Exception ex)
@@ -52,7 +52,7 @@ public class ShiftController()
 
             shiftFilterOptions = filterOptions;
             var shifts = await shiftService.GetAllShifts(shiftFilterOptions);
-            userInterface.DisplayShiftsTable(shifts);
+            userInterface.DisplayShiftsTable(shifts.Data);
             Console.WriteLine("Press any key to continue");
             Console.ReadKey();
         }
@@ -78,7 +78,7 @@ public class ShiftController()
             }
             else
             {
-                userInterface.DisplayShiftsTable(shift);
+                userInterface.DisplayShiftsTable(shift.Data);
             }
         }
         catch (Exception ex)
@@ -86,4 +86,29 @@ public class ShiftController()
             AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
         }
     }
+    public async Task UpdateShift()
+    {
+        try
+        {
+            AnsiConsole.Clear();
+            AnsiConsole.Write(
+                new Rule("[bold yellow]Update Shift[/]").RuleStyle("yellow").Centered()
+            );
+            var shift = userInterface.UpdateShiftUi();
+            var updatedShift = await shiftService.UpdateShift(shift);
+            if (updatedShift == null)
+            {
+                AnsiConsole.MarkupLine("[red]Error: Failed to update shift.[/]");
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[green]Shift updated successfully![/]");
+                AnsiConsole.MarkupLine($"[green]Shift ID: {updatedShift.Data.ShiftId}[/]");
+            }
+        }
+        catch (Exception ex)
+        {
+            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+        }
+	}
 }

@@ -1,47 +1,220 @@
 ﻿using System.Net.Http.Json;
 using System.Web.Http;
-
 using ConsoleFrontEnd.ApiShiftService;
 using ConsoleFrontEnd.Models;
+using ConsoleFrontEnd.Models.Dtos;
 
 namespace ConsoleFrontEnd.Services;
 
 public class ShiftService : IShiftService
 {
-	private readonly HttpClient httpClient;
-	HttpClient base
+    private readonly HttpClient httpClient = new HttpClient()
+    {
+        BaseAddress = new Uri("https://localhost:7009/"),
+    };
 
-	[HttpGet("api/shifts/{id}")] // Fixed the attribute syntax
-	public async Task<List<Shifts>> GetShiftById(int id)
-	{
-		HttpResponseMessage response;
-		try
-		{
-			response = await httpClient.GetAsync($"api/shifts/{id}");
+    public async Task<ApiResponseDto<List<Shifts>>> GetAllShifts(
+        ShiftFilterOptions shiftFilterOptions
+    )
+    {
+        HttpResponseMessage response;
+        try
+        {
+            var queryString =
+                $"api/shifts?workerId={shiftFilterOptions.WorkerId}&locationId={shiftFilterOptions.LocationId}&startTime={shiftFilterOptions.StartTime}&endTime={shiftFilterOptions.EndTime}";
 
-			if (!response.IsSuccessStatusCode)
-			{
-				Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-				return new List<Shifts>();
+            response = await httpClient.GetAsync(queryString);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                return new ApiResponseDto<List<Shifts>>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Data = null,
+                };
+            }
+            else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
+            {
+                Console.WriteLine("No shifts found.");
+                return new ApiResponseDto<List<Shifts>>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = "No shifts found.",
+                    Data = new List<Shifts>(),
+                    TotalCount = 0,
+                };
+            }
+            else
+            {
+                Console.WriteLine("Shifts retrieved successfully.");
+               var createdShift= await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
+                    ?? new ApiResponseDto<List<Shifts>>
+                    {
+                        ResponseCode = response.StatusCode,
+                        Message = "No data returned.",
+                        Data = new List<Shifts>(),
+                        TotalCount = 0,
+                    };
+
+                return createdShift;
 			}
-			else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
-			{
-				Console.WriteLine("No shifts found.");
-				return new List<Shifts>();
-			}
-			else
-			{
-				Console.WriteLine("Shift retrieved successfully.");
-				var result = await response.Content.ReadFromJsonAsync<Shifts>();
-				return result != null ? new List<Shifts> { result } : new List<Shifts>();
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Try catch failed for GetShiftById: {ex}");
-			throw;
-		}
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Try catch failed for GetAllShifts: {ex}");
+            throw;
+        }
+    }
+
+    public async Task<ApiResponseDto<List<Shifts>>> GetShiftById(int id)
+    {
+        HttpResponseMessage response;
+        try
+        {
+            response = await httpClient.GetAsync($"api/shifts/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                return new ApiResponseDto<List<Shifts>>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Data = null,
+                };
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                Console.WriteLine("No shifts found.");
+                return new ApiResponseDto<List<Shifts>>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = "No shifts found.",
+                    Data = new List<Shifts>(),
+                    TotalCount = 0,
+                };
+            }
+            else
+            {
+                Console.WriteLine("Shift retrieved successfully.");
+                return await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
+                    ?? new ApiResponseDto<List<Shifts>>
+                    {
+                        ResponseCode = response.StatusCode,
+                        Message = "No data returned.",
+                        Data = new List<Shifts>(),
+                        TotalCount = 0,
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Try catch failed for GetShiftById: {ex}");
+            throw;
+        }
+    }
+
+    public async Task<ApiResponseDto<Shifts>> CreateShift(Shifts createdShift)
+    {
+        HttpResponseMessage response;
+        try
+        {
+            response = await httpClient.PostAsJsonAsync("api/shifts", createdShift);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                return new ApiResponseDto<Shifts>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Data = null,
+                };
+            }
+            else
+            {
+                Console.WriteLine("Shift created successfully.");
+                return await response.Content.ReadFromJsonAsync<ApiResponseDto<Shifts>>()
+                    ?? new ApiResponseDto<Shifts>
+                    {
+                        ResponseCode = response.StatusCode,
+                        Message = "No data returned.",
+                        Data = null,
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Try catch failed for CreateShift: {ex}");
+            throw;
+        }
+    }
+    public async Task<ApiResponseDto<Shifts>> UpdateShift(int id, Shifts updatedShift)
+    {
+        HttpResponseMessage response;
+        try
+        {
+            response = await httpClient.PutAsJsonAsync($"api/shifts/{id}", updatedShift);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                return new ApiResponseDto<Shifts>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Data = null,
+                };
+            }
+            else
+            {
+                Console.WriteLine("Shift updated successfully.");
+                return await response.Content.ReadFromJsonAsync<ApiResponseDto<Shifts>>()
+                    ?? new ApiResponseDto<Shifts>
+                    {
+                        ResponseCode = response.StatusCode,
+                        Message = "No data returned.",
+                        Data = null,
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Try catch failed for UpdateShift: {ex}");
+            throw;
+        }
 	}
-
-	// Existing code...
+    public async Task<ApiResponseDto<string>> DeleteShift(int id)
+    {
+        HttpResponseMessage response;
+        try
+        {
+            response = await httpClient.DeleteAsync($"api/shifts/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                return new ApiResponseDto<string>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Data = null,
+                };
+            }
+            else
+            {
+                Console.WriteLine("Shift deleted successfully.");
+                return await response.Content.ReadFromJsonAsync<ApiResponseDto<string>>()
+                    ?? new ApiResponseDto<string>
+                    {
+                        ResponseCode = response.StatusCode,
+                        Message = "No data returned.",
+                        Data = null,
+                    };
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Try catch failed for DeleteShift: {ex}");
+            throw;
+        }
+	}
 }
