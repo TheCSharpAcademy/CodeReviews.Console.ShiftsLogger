@@ -72,20 +72,17 @@ public class ShiftController()
             );
             var shiftId = userInterface.GetShiftByIdUi();
             var shift = await shiftService.GetShiftById(shiftId);
-            if (shift == null)
+            if (shift.Data is null)
             {
-                AnsiConsole.MarkupLine("[red]Error: Shift not found.[/]");
+                AnsiConsole.Markup("[red] No Shifts returned/]");
+                return;
             }
-            else
-            {
-                userInterface.DisplayShiftsTable(shift.Data);
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey();
-            }
+
+            
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+            Console.WriteLine($"Exception: {ex}");
         }
     }
 
@@ -149,7 +146,7 @@ public class ShiftController()
         }
         catch (Exception ex)
         {
-			Console.WriteLine($"Try Pass failed in Shift Controller: Delete Shift {ex}");
+            Console.WriteLine($"Try Pass failed in Shift Controller: Delete Shift {ex}");
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
         }

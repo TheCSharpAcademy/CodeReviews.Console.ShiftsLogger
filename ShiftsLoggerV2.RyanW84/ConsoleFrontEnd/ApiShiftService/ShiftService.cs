@@ -3,7 +3,6 @@ using System.Web.Http;
 using ConsoleFrontEnd.ApiShiftService;
 using ConsoleFrontEnd.Models;
 using ConsoleFrontEnd.Models.Dtos;
-
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.Services;
@@ -50,7 +49,8 @@ public class ShiftService : IShiftService
             else
             {
                 Console.WriteLine("Shifts retrieved successfully.");
-               var createdShift= await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
+                var createdShift =
+                    await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
                     ?? new ApiResponseDto<List<Shifts>>
                     {
                         ResponseCode = response.StatusCode,
@@ -60,7 +60,7 @@ public class ShiftService : IShiftService
                     };
 
                 return createdShift;
-			}
+            }
         }
         catch (Exception ex)
         {
@@ -76,7 +76,7 @@ public class ShiftService : IShiftService
         {
             response = await httpClient.GetAsync($"api/shifts/{id}");
 
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode is System.Net.HttpStatusCode.NotFound)
             {
                 Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
                 return new ApiResponseDto<List<Shifts>>
@@ -86,15 +86,15 @@ public class ShiftService : IShiftService
                     Data = null,
                 };
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
             {
-                Console.WriteLine("No shifts found.");
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+
                 return new ApiResponseDto<List<Shifts>>
                 {
                     ResponseCode = response.StatusCode,
-                    Message = "No shifts found.",
-                    Data = new List<Shifts>(),
-                    TotalCount = 0,
+                    Message = response.ReasonPhrase,
+                    Data = null,
                 };
             }
             else
@@ -103,10 +103,10 @@ public class ShiftService : IShiftService
                 return await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
                     ?? new ApiResponseDto<List<Shifts>>
                     {
-                        ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
-                        Data = new List<Shifts>(),
-                        TotalCount = 0,
+                        ResponseCode = response.StatusCode ,
+                        Message = "No data returned." ,
+                        Data = new List<Shifts>() ,
+                        TotalCount = 0 ,
                     };
             }
         }
@@ -151,13 +151,14 @@ public class ShiftService : IShiftService
             throw;
         }
     }
+
     public async Task<ApiResponseDto<Shifts>> UpdateShift(int id, Shifts updatedShift)
     {
         HttpResponseMessage response;
         try
         {
             response = await httpClient.PutAsJsonAsync($"api/shifts/{id}", updatedShift);
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode.Equals(System.Net.HttpStatusCode.OK))
             {
                 Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
                 return new ApiResponseDto<Shifts>
@@ -184,7 +185,8 @@ public class ShiftService : IShiftService
             Console.WriteLine($"Try catch failed for UpdateShift: {ex}");
             throw;
         }
-	}
+    }
+
     public async Task<ApiResponseDto<string>> DeleteShift(int id)
     {
         HttpResponseMessage response;
@@ -201,7 +203,6 @@ public class ShiftService : IShiftService
                     Data = null,
                 };
             }
-          
             else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
             {
                 AnsiConsole.Markup("[green]Shift deleted successfully![/]");
@@ -212,17 +213,19 @@ public class ShiftService : IShiftService
                     Data = null,
                 };
             }
-			else
-			{
-				AnsiConsole.Markup($"[red]Error: {response.StatusCode} - {response.ReasonPhrase}[/]");
-				return new ApiResponseDto<string>
-				{
-					ResponseCode = response.StatusCode ,
-					Message = response.ReasonPhrase ,
-					Data = null ,
-				};
-			}
-		}
+            else
+            {
+                AnsiConsole.Markup(
+                    $"[red]Error: {response.StatusCode} - {response.ReasonPhrase}[/]"
+                );
+                return new ApiResponseDto<string>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Data = null,
+                };
+            }
+        }
         catch (Exception ex)
         {
             Console.WriteLine($"Try catch failed for DeleteShift: {ex}");

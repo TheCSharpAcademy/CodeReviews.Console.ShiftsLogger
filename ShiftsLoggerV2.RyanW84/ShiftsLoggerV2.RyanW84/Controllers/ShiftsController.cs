@@ -35,12 +35,25 @@ public class ShiftsController(IShiftService shiftService) : ControllerBase
         {
             var result = await shiftService.GetShiftById(id);
 
-            if (result == null)
-            {
+            if (result.ResponseCode is System.Net.HttpStatusCode.NotFound)
+			{
                 return NotFound(); // Equivalent to 404
             }
-
-            return Ok(result);
+            else if (result.ResponseCode is System.Net.HttpStatusCode.NoContent)
+            {
+                return NoContent(); // Equivalent to 204
+			}
+			else if (result.ResponseCode is System.Net.HttpStatusCode.BadRequest)
+            {
+                return BadRequest(result.Message); // Equivalent to 400
+            }
+            else if (result.RequestFailed)
+            {
+                return StatusCode((int)result.ResponseCode , result.Message); // Return the response code and message
+            }
+            Console.WriteLine($"Shift with ID {id} retrieved successfully.");
+			// Return the shift data with a 200 OK status code
+			return Ok(result);
         }
         catch (Exception ex)
         {
@@ -101,12 +114,20 @@ public class ShiftsController(IShiftService shiftService) : ControllerBase
         {
             var result = await shiftService.DeleteShift(id);
 
-            // Corrected the condition to check the ResponseCode property of the result
-            if (result.ResponseCode.Equals(System.Net.HttpStatusCode.NotFound))
-			{
+            if (result.ResponseCode is System.Net.HttpStatusCode.NotFound)
+            {
                 return NotFound();
             }
+            else if (result.ResponseCode is System.Net.HttpStatusCode.BadRequest)
+            {
+                return BadRequest(result.Message);
+            }
+            else if (result.RequestFailed)
+            {
+                return StatusCode((int)result.ResponseCode, result.Message);
+            }
 
+            Console.WriteLine($"Shift with ID {id} deleted successfully.");
             return NoContent(); // Equivalent to 204
         }
         catch (Exception ex)
