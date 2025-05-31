@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace HKHemanthSharma.ShiftsLogger.Model
 {
     public class Shift
     {
         [JsonPropertyName("shiftId")]
-        public int shiftId { get; set; }
+        public int ShiftId { get; set; }
 
         [JsonPropertyName("workerId")]
-        public int workerId { get; set; }
+        public int WorkerId { get; set; }
 
         [JsonPropertyName("shiftStartTime")]
-        public string shiftStartTime { get; set; } // Treat as string
+        public string ShiftStartTime { get; set; } // Treat as string
 
         [JsonPropertyName("shiftEndTime")]
-        public string shiftEndTime { get; set; } // Treat as string
+        public string ShiftEndTime { get; set; } // Treat as string
 
         [JsonPropertyName("shiftDuration")]
-        public double? shiftDuration { get; set; }
+        public double? ShiftDuration { get; set; }
 
         [JsonPropertyName("shiftDate")]
-        public string shiftDate { get; set; } // Treat as string
+        public string ShiftDate { get; set; } // Treat as string
     }
 }

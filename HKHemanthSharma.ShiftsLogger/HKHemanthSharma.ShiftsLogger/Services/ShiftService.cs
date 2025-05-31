@@ -1,10 +1,5 @@
 ﻿using HKHemanthSharma.ShiftsLogger.Model;
 using HKHemanthSharma.ShiftsLogger.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HKHemanthSharma.ShiftsLogger.Services
 {
@@ -15,10 +10,8 @@ namespace HKHemanthSharma.ShiftsLogger.Services
         public void DeleteShift();
         public void CreateShift();
         public void UpdateShift();
-
-
     }
-    public class ShiftService:IShiftService
+    public class ShiftService : IShiftService
     {
         private readonly IShiftRepository repository;
         private readonly UserInputs Uinp;
@@ -26,7 +19,6 @@ namespace HKHemanthSharma.ShiftsLogger.Services
         {
             repository = _repo;
             Uinp = ui;
-
         }
         public void CreateShift()
         {
@@ -34,27 +26,23 @@ namespace HKHemanthSharma.ShiftsLogger.Services
             ResponseDto<Shift> CreateResponse = repository.CreateShift(NewShift).GetAwaiter().GetResult();
             UserInterface.ShowResponse(CreateResponse);
         }
-
         public void DeleteShift()
         {
             int ToBeDeleteShift = Uinp.SelectDeleteShift().GetAwaiter().GetResult();
             ResponseDto<Shift> CreateResponse = repository.DeleteShift(ToBeDeleteShift).GetAwaiter().GetResult();
             UserInterface.ShowResponse(CreateResponse);
         }
-
         public void GetAllShifts()
         {
             ResponseDto<List<Shift>> Shiftresponse = repository.GetAllShifts().GetAwaiter().GetResult();
             UserInterface.ShowResponse(Shiftresponse);
         }
-
         public void GetSingleShift()
         {
             int ShiftId = Uinp.InputId();
             ResponseDto<List<Shift>> Shiftresponse = repository.GetSingleShift(ShiftId).GetAwaiter().GetResult();
             UserInterface.ShowResponse(Shiftresponse);
         }
-
         public void UpdateShift()
         {
             Shift UpdatedShift = Uinp.SelectShift().GetAwaiter().GetResult();

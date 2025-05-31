@@ -1,10 +1,5 @@
 ﻿using HKHemanthSharma.ShiftsLogger.Model;
 using HKHemanthSharma.ShiftsLogger.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HKHemanthSharma.ShiftsLogger.Services
 {
@@ -17,7 +12,7 @@ namespace HKHemanthSharma.ShiftsLogger.Services
         public void UpdateWorker();
 
     }
-    public class WorkerService:IWorkerService
+    public class WorkerService : IWorkerService
     {
         private readonly IWorkerRepository repository;
         private readonly UserInputs Uinp;

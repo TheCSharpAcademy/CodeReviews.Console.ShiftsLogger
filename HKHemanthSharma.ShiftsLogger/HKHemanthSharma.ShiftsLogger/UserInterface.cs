@@ -148,9 +148,9 @@ namespace HKHemanthSharma.ShiftsLogger
                         var RowValues = new List<string>();
                         foreach (var prop in props)
                         {
-                            if (prop.Name == "shiftStartTime" || prop.Name == "shiftEndTime" || prop.Name == "shiftDate")
+                            if (prop.Name == "ShiftStartTime" || prop.Name == "ShiftEndTime" || prop.Name == "ShiftDate")
                             {
-                                if (prop.Name == "shiftDate")
+                                if (prop.Name == "ShiftDate")
                                 {
                                     string date = DateTime.Parse(prop.GetValue(obj).ToString()).ToString("dd-MM-yyyy");
                                     RowValues.Add(Markup.Escape(date));
@@ -184,8 +184,8 @@ namespace HKHemanthSharma.ShiftsLogger
                             TableProps.ForEach(x => WorkerShiftTable.AddColumn(Markup.Escape(x.Name.ToString())));
                             foreach (var shift in Shifts)
                             {
-                                WorkerShiftTable.AddRow(shift.shiftId.ToString(), shift.workerId.ToString(), DateTime.Parse(shift.shiftStartTime).ToString("HH:mm"), DateTime.Parse(shift.shiftEndTime).ToString("HH:mm"),
-                                    shift.shiftDuration.ToString(), DateTime.Parse(shift.shiftDate.ToString()).ToString("dd:MM:yyyy"));
+                                WorkerShiftTable.AddRow(shift.ShiftId.ToString(), shift.WorkerId.ToString(), DateTime.Parse(shift.ShiftStartTime).ToString("HH:mm"), DateTime.Parse(shift.ShiftEndTime).ToString("HH:mm"),
+                                    shift.ShiftDuration.ToString(), DateTime.Parse(shift.ShiftDate.ToString()).ToString("dd:MM:yyyy"));
                             }
                             WorkerShiftTable.Border = TableBorder.HeavyEdge;
                             if (Shifts.Count > 0)
@@ -226,12 +226,12 @@ namespace HKHemanthSharma.ShiftsLogger
         }
         public static void ShowShift(Shift shift)
         {
-            Panel Messagepanel = new Panel($"[aqua] Shift Id:{shift.shiftId}\n" +
-                $"Worker Id:{shift.workerId}\n" +
-                $"ShiftStartTime:{shift.shiftStartTime}\n" +
-                $"ShiftEndTime:{shift.shiftEndTime}\n" +
-                $"ShiftDate:{shift.shiftDate}\n" +
-                $"ShiftDuration:{shift.shiftDuration}[/]");
+            Panel Messagepanel = new Panel($"[aqua] Shift Id:{shift.ShiftId}\n" +
+                $"Worker Id:{shift.WorkerId}\n" +
+                $"ShiftStartTime:{shift.ShiftStartTime}\n" +
+                $"ShiftEndTime:{shift.ShiftEndTime}\n" +
+                $"ShiftDate:{shift.ShiftDate}\n" +
+                $"ShiftDuration:{shift.ShiftDuration}[/]");
             Messagepanel.Header = new PanelHeader("[green3_1] Present Shift[/]");
             Messagepanel.Border = BoxBorder.Double;
             Messagepanel.Padding = new Padding(2, 2, 2, 2);

@@ -39,12 +39,12 @@ namespace HKHemanthSharma.ShiftsLogger
                 endTime = AnsiConsole.Ask<string>("Wrong format!!! Enter the EndTime of shift in 'HH:mm format'");
             }
 
-            string shiftDate = AnsiConsole.Ask<string>("Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
-            if (!string.IsNullOrEmpty(shiftDate))
+            string ShiftDate = AnsiConsole.Ask<string>("Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
+            if (!string.IsNullOrEmpty(ShiftDate))
             {
-                while (!validations.validateDate(shiftDate))
+                while (!validations.validateDate(ShiftDate))
                 {
-                    shiftDate = AnsiConsole.Ask<string>("Wrong input!!! Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
+                    ShiftDate = AnsiConsole.Ask<string>("Wrong input!!! Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
                 }
             }
 
@@ -61,29 +61,29 @@ namespace HKHemanthSharma.ShiftsLogger
 
             return new Shift
             {
-                workerId = chosenWorkerId,
-                shiftStartTime = startTime,
-                shiftEndTime = endTime,
-                shiftDate = shiftDate
+                WorkerId = chosenWorkerId,
+                ShiftStartTime = startTime,
+                ShiftEndTime = endTime,
+                ShiftDate = ShiftDate
             };
         }
         public async Task<Shift> SelectShift()
         {
             var ShiftResponse = await Shiftrepository.GetAllShifts();
             List<Shift> Shifts = (List<Shift>)ShiftResponse.Data;
-            List<string> ShiftNames = Shifts.Select(x => $"ShiftID-{x.shiftId}:WorkerId-{x.workerId}:{x.shiftDate}:{x.shiftStartTime}:{x.shiftEndTime}").ToList();
+            List<string> ShiftNames = Shifts.Select(x => $"ShiftId-{x.ShiftId}:WorkerId-{x.WorkerId}:{x.ShiftDate}:{x.ShiftStartTime}:{x.ShiftEndTime}").ToList();
             var userChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("Please select the Worker")
                     .AddChoices(ShiftNames));
             int SelectedShiftId = int.Parse(userChoice.Split(":")[0].Split("-")[1]);
-            return Shifts.Where(x => x.shiftId == SelectedShiftId).FirstOrDefault();
+            return Shifts.Where(x => x.ShiftId == SelectedShiftId).FirstOrDefault();
         }
         public async Task<int> SelectDeleteShift()
         {
             var ShiftResponse = await Shiftrepository.GetAllShifts();
             List<Shift> Shifts = (List<Shift>)ShiftResponse.Data;
-            List<string> ShiftNames = Shifts.Select(x => $"ShiftID-{x.shiftId}:WorkerId-{x.workerId}:{x.shiftDate}:{x.shiftStartTime}:{x.shiftEndTime}").ToList();
+            List<string> ShiftNames = Shifts.Select(x => $"ShiftId-{x.ShiftId}:WorkerId-{x.WorkerId}:{x.ShiftDate}:{x.ShiftStartTime}:{x.ShiftEndTime}").ToList();
             var userChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("Please select the Worker")
@@ -116,9 +116,9 @@ namespace HKHemanthSharma.ShiftsLogger
                 {
                     startTime = AnsiConsole.Ask<string>("Wrong format!!! Enter the StartTime of shift in 'HH:mm format'");
                 }
-                updatedShift.shiftStartTime = startTime;
+                updatedShift.ShiftStartTime = startTime;
             }
-            updatedShift.shiftStartTime = DateTime.Parse(updatedShift.shiftStartTime).ToString("HH:mm");
+            updatedShift.ShiftStartTime = DateTime.Parse(updatedShift.ShiftStartTime).ToString("HH:mm");
             confirm = AnsiConsole.Prompt(new ConfirmationPrompt("Do you want to Change EndTime of Shift?"));
             if (confirm)
             {
@@ -127,23 +127,23 @@ namespace HKHemanthSharma.ShiftsLogger
                 {
                     EndTime = AnsiConsole.Ask<string>("Wrong format!!! Enter the EndTime of shift in 'HH:mm format'");
                 }
-                updatedShift.shiftEndTime = EndTime;
+                updatedShift.ShiftEndTime = EndTime;
             }
-            updatedShift.shiftEndTime = DateTime.Parse(updatedShift.shiftEndTime).ToString("HH:mm");
+            updatedShift.ShiftEndTime = DateTime.Parse(updatedShift.ShiftEndTime).ToString("HH:mm");
             confirm = AnsiConsole.Prompt(new ConfirmationPrompt("Do you want to Change Date of Shift?"));
             if (confirm)
             {
-                string shiftDate = AnsiConsole.Ask<string>("Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
-                if (!string.IsNullOrEmpty(shiftDate))
+                string ShiftDate = AnsiConsole.Ask<string>("Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
+                if (!string.IsNullOrEmpty(ShiftDate))
                 {
-                    while (!validations.validateDate(shiftDate))
+                    while (!validations.validateDate(ShiftDate))
                     {
-                        shiftDate = AnsiConsole.Ask<string>("Wrong input!!! Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
+                        ShiftDate = AnsiConsole.Ask<string>("Wrong input!!! Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
                     }
                 }
-                updatedShift.shiftDate = shiftDate;
+                updatedShift.ShiftDate = ShiftDate;
             }
-            updatedShift.shiftDate = DateTime.Parse(updatedShift.shiftDate).ToString("dd-MM-yyyy");
+            updatedShift.ShiftDate = DateTime.Parse(updatedShift.ShiftDate).ToString("dd-MM-yyyy");
             return updatedShift;
         }
 

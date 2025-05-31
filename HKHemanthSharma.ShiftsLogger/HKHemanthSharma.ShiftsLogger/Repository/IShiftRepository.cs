@@ -1,11 +1,6 @@
 ﻿using HKHemanthSharma.ShiftsLogger.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace HKHemanthSharma.ShiftsLogger.Repository
 {
@@ -17,7 +12,7 @@ namespace HKHemanthSharma.ShiftsLogger.Repository
         public Task<ResponseDto<Shift>> DeleteShift(int DeleteId);
         public Task<ResponseDto<Shift>> UpdateShift(Shift UpdatedShift);
     }
-    public class ShiftRepository:IShiftRepository
+    public class ShiftRepository : IShiftRepository
     {
         private readonly IMyHttpClient client;
         public ShiftRepository(IMyHttpClient _client)
@@ -127,13 +122,13 @@ namespace HKHemanthSharma.ShiftsLogger.Repository
             try
             {
                 HttpClient ShiftClient = client.GetClient();
-                string ShiftUrl = client.GetBaseUrl() + $"Shifts/{UpdatedShift.shiftId}";
+                string ShiftUrl = client.GetBaseUrl() + $"Shifts/{UpdatedShift.ShiftId}";
                 var ObjectResponse = await ShiftClient.PutAsJsonAsync(ShiftUrl, new ShiftDto
                 {
-                    workerId = UpdatedShift.workerId,
-                    shiftStartTime = UpdatedShift.shiftStartTime,
-                    shiftEndTime = UpdatedShift.shiftEndTime,
-                    shiftDate = UpdatedShift.shiftDate
+                    WorkerId = UpdatedShift.WorkerId,
+                    ShiftStartTime = UpdatedShift.ShiftStartTime,
+                    ShiftEndTime = UpdatedShift.ShiftEndTime,
+                    ShiftDate = UpdatedShift.ShiftDate
                 });
                 var ResponseStream = await ObjectResponse.Content.ReadAsStreamAsync();
                 ResponseDto<Shift> UpdatedResponse = await JsonSerializer.DeserializeAsync<ResponseDto<Shift>>(ResponseStream);

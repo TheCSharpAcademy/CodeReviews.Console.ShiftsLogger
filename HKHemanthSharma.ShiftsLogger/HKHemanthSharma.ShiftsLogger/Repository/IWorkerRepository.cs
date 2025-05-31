@@ -1,11 +1,6 @@
 ﻿using HKHemanthSharma.ShiftsLogger.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace HKHemanthSharma.ShiftsLogger.Repository
 {
@@ -17,7 +12,7 @@ namespace HKHemanthSharma.ShiftsLogger.Repository
         public Task<ResponseDto<Worker>> DeleteWorker(int Id);
         public Task<ResponseDto<Worker>> UpdateWorker(Worker worker);
     }
-    public class WorkerRepository:IWorkerRepository
+    public class WorkerRepository : IWorkerRepository
     {
         private readonly IMyHttpClient client;
         public WorkerRepository(IMyHttpClient _client)

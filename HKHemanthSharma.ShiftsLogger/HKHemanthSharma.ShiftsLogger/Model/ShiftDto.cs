@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HKHemanthSharma.ShiftsLogger.Model
+﻿namespace HKHemanthSharma.ShiftsLogger.Model
 {
     public class ShiftDto
     {
-        public int workerId { get; set; }
-        public string shiftStartTime { get; set; } // Treat as string
-        public string shiftEndTime { get; set; } // Treat as string
-        public string shiftDate { get; set; }
+        public int WorkerId { get; set; }
+        public string ShiftStartTime { get; set; } // Treat as string
+        public string ShiftEndTime { get; set; } // Treat as string
+        public string ShiftDate { get; set; }
     }
 }

@@ -1,5 +1,5 @@
-﻿using HKhemanthSharma.ShiftLoggerAPI.Model.Dto;
-using HKhemanthSharma.ShiftLoggerAPI.Model;
+﻿using HKhemanthSharma.ShiftLoggerAPI.Model;
+using HKhemanthSharma.ShiftLoggerAPI.Model.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace HKhemanthSharma.ShiftLoggerAPI.Services
