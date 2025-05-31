@@ -1,0 +1,6 @@
+@HKhemanthSharma.ShiftLoggerAPI_HostAddress = http://localhost:5091
+
+GET {{HKhemanthSharma.ShiftLoggerAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
