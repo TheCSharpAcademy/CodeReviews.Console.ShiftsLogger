@@ -5,7 +5,8 @@ using Spectre.Console;
 
 public class ShiftController()
 {
-   
+    // This class acts as a controller for managing shifts, handling user input and interaction with the ShiftService.
+    // It provides methods to create a shift and retrieve all shifts with optional filtering.
     public readonly UserInterface userInterface = new UserInterface();
     internal readonly ShiftService shiftService = new ShiftService();
     internal ShiftFilterOptions shiftFilterOptions = new()
