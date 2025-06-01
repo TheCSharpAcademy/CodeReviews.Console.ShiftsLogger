@@ -19,8 +19,10 @@ namespace HKhemanthSharma.ShiftLoggerAPI
             builder.Services.AddDbContext<ShiftDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ShiftDbConnection")));
             builder.Services.AddScoped<IShiftRepository, ShiftRepository>();
             builder.Services.AddScoped<IWorkerRepository, WorkerRepository>();
-            builder.Services.AddCors(options => {
-                options.AddPolicy("AllowAll", builder => {
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
                     builder.AllowAnyOrigin()
                            .AllowAnyMethod()
                            .AllowAnyHeader();

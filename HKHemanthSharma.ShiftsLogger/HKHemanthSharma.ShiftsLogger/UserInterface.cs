@@ -1,14 +1,8 @@
 ﻿using HKHemanthSharma.ShiftsLogger.Model;
 using HKHemanthSharma.ShiftsLogger.Services;
 using Spectre.Console;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HKHemanthSharma.ShiftsLogger
 {
@@ -171,9 +165,9 @@ namespace HKHemanthSharma.ShiftsLogger
                     ResponseTable.Title = new TableTitle("[orange3] Here is the Retrieved Data[/]");
                     ResponseTable.Border(TableBorder.AsciiDoubleHead);
                     AnsiConsole.Write(ResponseTable);
-                    AnsiConsole.MarkupLine("[mistyrose3]Details of shifts done by workers[/]\n Note: [lightcyan1]Details not shown for Workers that have not done any shifts yet![/]");
                     if (ElementType == typeof(Worker))
                     {
+                        AnsiConsole.MarkupLine("[mistyrose3]Details of shifts done by workers[/]\n Note: [lightcyan1]Details not shown for Workers that have not done any shifts yet![/]");
                         foreach (var obj in ResponseObjects)
                         {
                             Worker worker = (Worker)obj;

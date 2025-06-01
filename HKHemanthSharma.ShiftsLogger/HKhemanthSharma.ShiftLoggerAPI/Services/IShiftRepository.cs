@@ -1,7 +1,7 @@
-﻿using HKhemanthSharma.ShiftLoggerAPI.Model.Dto;
-using HKhemanthSharma.ShiftLoggerAPI.Model;
-using System.Globalization;
+﻿using HKhemanthSharma.ShiftLoggerAPI.Model;
+using HKhemanthSharma.ShiftLoggerAPI.Model.Dto;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace HKhemanthSharma.ShiftLoggerAPI.Services
 {
@@ -22,7 +22,7 @@ namespace HKhemanthSharma.ShiftLoggerAPI.Services
         }
         public async Task<List<Shift>> GetAllShiftsAsync()
         {
-            return await _context.Shifts.Include(x=>x.Worker).ToListAsync();
+            return await _context.Shifts.Include(x => x.Worker).ToListAsync();
         }
         public async Task<Shift> GetShiftByIdAsync(int Id)
         {
@@ -72,5 +72,4 @@ namespace HKhemanthSharma.ShiftLoggerAPI.Services
             return DeleteShift;
         }
     }
-
 }

@@ -1,11 +1,6 @@
 ﻿using HKHemanthSharma.ShiftsLogger.Model;
 using HKHemanthSharma.ShiftsLogger.Repository;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HKHemanthSharma.ShiftsLogger
 {
@@ -133,13 +128,18 @@ namespace HKHemanthSharma.ShiftsLogger
             confirm = AnsiConsole.Prompt(new ConfirmationPrompt("Do you want to Change Date of Shift?"));
             if (confirm)
             {
-                string ShiftDate = AnsiConsole.Ask<string>("Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
+                 AnsiConsole.MarkupLine("Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
+                string ShiftDate = Console.ReadLine();
                 if (!string.IsNullOrEmpty(ShiftDate))
                 {
                     while (!validations.validateDate(ShiftDate))
                     {
                         ShiftDate = AnsiConsole.Ask<string>("Wrong input!!! Enter the Date of shift in 'dd-MM-yyyy' format or leave it empty for today's Date:");
                     }
+                }
+                else
+                {
+                    ShiftDate = DateTime.Now.ToString("dd-MM-yyyy");
                 }
                 updatedShift.ShiftDate = ShiftDate;
             }
