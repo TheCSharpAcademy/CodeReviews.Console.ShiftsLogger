@@ -1,27 +1,28 @@
 ﻿using ConsoleFrontEnd.Controller;
+using ConsoleFrontEnd.MenuSystem;
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.UserInterface;
 
-internal static class WorkerMenu
+public class WorkerMenu
 {
-    public static void DisplayWorkerMenu()
+    public static async Task DisplayWorkerMenu() // Changed from 'void' to 'Task' to properly handle async
     {
-        var workerController = new WorkerController();
-
-        AnsiConsole.Clear();
+        Console.Clear();
+        var workerController = new WorkerController(); // Added an instance of WorkerController
         while (true)
         {
             AnsiConsole.Write(
                 new Rule("[bold yellow]Worker Menu[/]").RuleStyle("yellow").Centered()
             );
-            AnsiConsole.WriteLine("Please select an option from the menu below:");
+
             var choice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("[yellow]Select an option:[/]")
                     .AddChoices(
                         "Create Worker",
                         "View Workers",
+                        "View Worker By ID",
                         "Edit Worker",
                         "Delete Worker",
                         "Back to Main Menu"
@@ -30,19 +31,22 @@ internal static class WorkerMenu
             switch (choice)
             {
                 case "Create Worker":
-                    workerController.CreateWorker();
+                    await workerController.CreateWorker(); // Use the instance of WorkerController
                     break;
                 case "View Workers":
-                    workerController.GetAllWorkers();
+                    await workerController.GetAllWorkers();
+                    break;
+                case "View Worker by ID":
+                    await workerController.GetWorkerById();
                     break;
                 case "Edit Worker":
-                    workerController.UpdateWorker();
+                    await workerController.UpdateWorker();
                     break;
                 case "Delete Worker":
-                    workerController.DeleteWorker();
+                    await workerController.DeleteWorker();
                     break;
                 case "Back to Main Menu":
-                    return;
+                    await MainMenu.DisplayMainMenu();
                     break;
                 default:
                     AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");

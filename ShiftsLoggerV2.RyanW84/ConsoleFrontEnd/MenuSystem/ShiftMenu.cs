@@ -1,19 +1,17 @@
 using ConsoleFrontEnd.Controller;
-
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.MenuSystem;
 
 public class ShiftMenu
 {
-    ShiftController shiftController = new ShiftController();
-
-    public async Task DisplayShiftMenu()
+    public static async Task DisplayShiftMenu()
     {
-        AnsiConsole.Clear();
+        Console.Clear();
         while (true)
         {
-            Console.Clear();
+            ShiftController shiftController = new();
+			Console.Clear();
             AnsiConsole.Write(
                 new Rule("[bold yellow]Shift Menu[/]").RuleStyle("yellow").Centered()
             );
@@ -47,7 +45,8 @@ public class ShiftMenu
                     await shiftController.DeleteShift();
                     break;
                 case "Back to Main Menu":
-                    return;
+                    await MainMenu.DisplayMainMenu();
+                    break;
                 default:
                     AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
                     break;

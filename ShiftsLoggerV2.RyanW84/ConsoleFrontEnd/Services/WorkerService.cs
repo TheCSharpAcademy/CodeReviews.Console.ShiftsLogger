@@ -91,7 +91,7 @@ public class WorkerService : IWorkerService
             }
             else
             {
-                Console.WriteLine("Shift retrieved successfully.");
+                Console.WriteLine("Worker retrieved successfully.");
                 return await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Workers>>>()
                     ?? new ApiResponseDto<List<Workers>>
                     {
@@ -220,7 +220,7 @@ public class WorkerService : IWorkerService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Try catch failed for DeleteShift: {ex}");
+            Console.WriteLine($"Try catch failed for DeleteWorker: {ex}");
             throw;
         }
     }
