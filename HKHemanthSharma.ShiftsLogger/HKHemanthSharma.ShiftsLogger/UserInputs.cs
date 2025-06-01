@@ -66,7 +66,7 @@ namespace HKHemanthSharma.ShiftsLogger
         {
             var ShiftResponse = await Shiftrepository.GetAllShifts();
             List<Shift> Shifts = (List<Shift>)ShiftResponse.Data;
-            List<string> ShiftNames = Shifts.Select(x => $"ShiftId-{x.ShiftId}:WorkerId-{x.WorkerId}:{x.ShiftDate}:{x.ShiftStartTime}:{x.ShiftEndTime}").ToList();
+            List<string> ShiftNames = Shifts.Select(x => $"ShiftId-{x.ShiftId} : WorkerId-{x.WorkerId} :ShiftDate {DateTime.Parse(x.ShiftDate.ToString()).ToString("dd-MM-yyyy")}: StartTime {DateTime.Parse(x.ShiftStartTime.ToString()).ToString("HH:mm")}: EndTime {DateTime.Parse(x.ShiftEndTime.ToString()).ToString("HH:mm")}").ToList();
             var userChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("Please select the Worker")
@@ -78,7 +78,7 @@ namespace HKHemanthSharma.ShiftsLogger
         {
             var ShiftResponse = await Shiftrepository.GetAllShifts();
             List<Shift> Shifts = (List<Shift>)ShiftResponse.Data;
-            List<string> ShiftNames = Shifts.Select(x => $"ShiftId-{x.ShiftId}:WorkerId-{x.WorkerId}:{x.ShiftDate}:{x.ShiftStartTime}:{x.ShiftEndTime}").ToList();
+            List<string> ShiftNames = Shifts.Select(x => $"ShiftId-{x.ShiftId} : WorkerId-{x.WorkerId} :ShiftDate {DateTime.Parse(x.ShiftDate.ToString()).ToString("dd-MM-yyyy")}: StartTime {DateTime.Parse(x.ShiftStartTime.ToString()).ToString("HH:mm")}: EndTime {DateTime.Parse(x.ShiftEndTime.ToString()).ToString("HH:mm")}").ToList();
             var userChoice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
                     .Title("Please select the Worker")
