@@ -9,7 +9,7 @@ public static class LocationMenu
 	// Pass an instance of UserInterface to handle user input and service calls
 	public static void DisplayLocationMenu( )
 	{
-		FrontEndLocationController frontEndLocationController = new();
+		LocationController frontEndLocationController = new();
 
 		AnsiConsole.Clear();
 		while (true)

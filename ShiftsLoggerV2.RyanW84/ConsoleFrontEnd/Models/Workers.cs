@@ -14,6 +14,6 @@ public class Workers
     [EmailAddress]
     public string? Email { get; set; }
 
-    public virtual ICollection<Shifts?> Shifts { get; set; } // Navigation property to the Shifts entity
+    public virtual ICollection<Shifts?> Shifts { get; set; }
     public virtual ICollection<Locations?> Locations { get; set; }
 }

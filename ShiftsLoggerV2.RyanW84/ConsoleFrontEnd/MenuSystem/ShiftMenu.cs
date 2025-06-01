@@ -1,5 +1,5 @@
-using ConsoleFrontEnd.ApiShiftService;
-using ConsoleFrontEnd.Services;
+using ConsoleFrontEnd.Controller;
+
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.MenuSystem;
@@ -40,7 +40,7 @@ public class ShiftMenu
                 case "View Shift by ID":
                     await shiftController.GetShiftById();
                     break;
-                    case "Update Shift":
+                case "Update Shift":
                     await shiftController.UpdateShift();
                     break;
                 case "Delete Shift":
@@ -48,10 +48,10 @@ public class ShiftMenu
                     break;
                 case "Back to Main Menu":
                     return;
-                    default:
+                default:
                     AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
                     break;
-			}
+            }
         }
     }
 }

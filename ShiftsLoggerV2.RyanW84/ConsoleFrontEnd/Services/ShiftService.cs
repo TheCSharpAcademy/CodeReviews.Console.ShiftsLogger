@@ -1,8 +1,7 @@
 ﻿using System.Net.Http.Json;
-using System.Web.Http;
-using ConsoleFrontEnd.ApiShiftService;
 using ConsoleFrontEnd.Models;
 using ConsoleFrontEnd.Models.Dtos;
+using ConsoleFrontEnd.Models.FilterOptions;
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.Services;
@@ -76,20 +75,13 @@ public class ShiftService : IShiftService
         {
             response = await httpClient.GetAsync($"api/shifts/{id}");
 
-            if (response.StatusCode is System.Net.HttpStatusCode.NotFound)
+            if (response.StatusCode is not System.Net.HttpStatusCode.OK)
             {
-                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                return new ApiResponseDto<List<Shifts>>
-                {
-                    ResponseCode = response.StatusCode,
-                    Message = response.ReasonPhrase,
-                    Data = null,
-                };
-            }
-            else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
-            {
-                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-
+                Console.WriteLine(
+                    $"Error: Status Code:{response.StatusCode} - Reason Phrase:{response.ReasonPhrase}"
+                );
+                Console.WriteLine("Press any key to continue");
+                Console.ReadKey();
                 return new ApiResponseDto<List<Shifts>>
                 {
                     ResponseCode = response.StatusCode,
@@ -103,10 +95,10 @@ public class ShiftService : IShiftService
                 return await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
                     ?? new ApiResponseDto<List<Shifts>>
                     {
-                        ResponseCode = response.StatusCode ,
-                        Message = "No data returned." ,
-                        Data = new List<Shifts>() ,
-                        TotalCount = 0 ,
+                        ResponseCode = response.StatusCode,
+                        Message = "No data returned.",
+                        Data = new List<Shifts>(),
+                        TotalCount = 0,
                     };
             }
         }
@@ -152,7 +144,7 @@ public class ShiftService : IShiftService
         }
     }
 
-    public async Task<ApiResponseDto<Shifts>> UpdateShift(int id, Shifts updatedShift)
+    public async Task<ApiResponseDto<Shifts?>> UpdateShift(int id, Shifts updatedShift)
     {
         HttpResponseMessage response;
         try
@@ -187,7 +179,7 @@ public class ShiftService : IShiftService
         }
     }
 
-    public async Task<ApiResponseDto<string>> DeleteShift(int id)
+    public async Task<ApiResponseDto<string?>> DeleteShift(int id)
     {
         HttpResponseMessage response;
         try

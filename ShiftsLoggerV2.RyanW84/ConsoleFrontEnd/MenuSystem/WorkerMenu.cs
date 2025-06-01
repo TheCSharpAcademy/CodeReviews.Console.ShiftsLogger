@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ConsoleFrontEnd.Controller;
+﻿using ConsoleFrontEnd.Controller;
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.UserInterface;
@@ -12,7 +7,7 @@ internal static class WorkerMenu
 {
     public static void DisplayWorkerMenu()
     {
-        var workerController = new FrontEndWorkerController();
+        var workerController = new WorkerController();
 
         AnsiConsole.Clear();
         while (true)
@@ -32,14 +27,27 @@ internal static class WorkerMenu
                         "Back to Main Menu"
                     )
             );
-            //switch (choice)
-            //{
-            //	case "Create Worker":
-            //	workerController.
-            //	default:
-            //		AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
-            //		break;
-            //}
+            switch (choice)
+            {
+                case "Create Worker":
+                    workerController.CreateWorker();
+                    break;
+                case "View Workers":
+                    workerController.GetAllWorkers();
+                    break;
+                case "Edit Worker":
+                    workerController.UpdateWorker();
+                    break;
+                case "Delete Worker":
+                    workerController.DeleteWorker();
+                    break;
+                case "Back to Main Menu":
+                    return;
+                    break;
+                default:
+                    AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
+                    break;
+            }
         }
     }
 }

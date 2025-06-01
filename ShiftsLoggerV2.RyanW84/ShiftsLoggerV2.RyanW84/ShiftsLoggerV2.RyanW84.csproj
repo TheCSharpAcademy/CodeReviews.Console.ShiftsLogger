@@ -25,7 +25,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.5" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.6.24" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.4.4" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.4.7" />
     <PackageReference Include="Spectre.Console" Version="0.50.0" />
   </ItemGroup>
 

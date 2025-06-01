@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsoleFrontEnd.Controller;
-internal class FrontEndLocationController
+internal class LocationController
 {
 }
