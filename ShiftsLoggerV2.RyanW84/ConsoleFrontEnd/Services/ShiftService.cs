@@ -115,7 +115,7 @@ public class ShiftService : IShiftService
         try
         {
             response = await httpClient.PostAsJsonAsync("api/shifts", createdShift);
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode is not System.Net.HttpStatusCode.OK || response.StatusCode is not System.Net.HttpStatusCode.Created )
             {
                 Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
                 return new ApiResponseDto<Shifts>
@@ -128,13 +128,11 @@ public class ShiftService : IShiftService
             else
             {
                 Console.WriteLine("Shift created successfully.");
-                return await response.Content.ReadFromJsonAsync<ApiResponseDto<Shifts>>()
-                    ?? new ApiResponseDto<Shifts>
-                    {
-                        ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
-                        Data = null,
-                    };
+                return new ApiResponseDto<Shifts>
+                {
+                    ResponseCode = response.StatusCode,
+                    Data = createdShift
+                };
             }
         }
         catch (Exception ex)

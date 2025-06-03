@@ -109,40 +109,37 @@ public class WorkerService : IWorkerService
         }
     }
 
-    public async Task<ApiResponseDto<Workers>> CreateWorker(Workers createdWorker)
-    {
-        HttpResponseMessage response;
-        try
-        {
-            response = await httpClient.PostAsJsonAsync("api/workers", createdWorker);
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                return new ApiResponseDto<Workers>
+	public async Task<ApiResponseDto<Workers>> CreateWorker(Workers createdWorker)
+	{
+		HttpResponseMessage response;
+		try
+		{
+			response = await httpClient.PostAsJsonAsync("api/workers" , createdWorker);
+			if (response.StatusCode is not System.Net.HttpStatusCode.Created)
+			{
+				Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+				return new ApiResponseDto<Workers>
+				{
+					ResponseCode = response.StatusCode ,
+					Message = response.ReasonPhrase ,
+					Data = null ,
+				};
+			}
+			else
+			{
+				Console.WriteLine("Worker created successfully.");
+				return new ApiResponseDto<Workers>()
                 {
-                    ResponseCode = response.StatusCode,
-                    Message = response.ReasonPhrase,
-                    Data = null,
+                    Data = response.Content
                 };
             }
-            else
-            {
-                Console.WriteLine("Shift created successfully.");
-                return await response.Content.ReadFromJsonAsync<ApiResponseDto<Workers>>()
-                    ?? new ApiResponseDto<Workers>
-                    {
-                        ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
-                        Data = null,
-                    };
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Try catch failed for CreateWorker: {ex}");
-            throw;
-        }
-    }
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Try catch failed for CreateWorker: {ex}");
+			throw;
+		}
+	}
 
     public async Task<ApiResponseDto<Workers?>> UpdateWorker(int id, Workers updatedWorker)
     {
@@ -150,7 +147,7 @@ public class WorkerService : IWorkerService
         try
         {
             response = await httpClient.PutAsJsonAsync($"api/workers/{id}", updatedWorker);
-            if (response.StatusCode.Equals(System.Net.HttpStatusCode.OK))
+            if (response.StatusCode is not System.Net.HttpStatusCode.OK)
             {
                 Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
                 return new ApiResponseDto<Workers>
@@ -167,8 +164,7 @@ public class WorkerService : IWorkerService
                     ?? new ApiResponseDto<Workers>
                     {
                         ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
-                        Data = null,
+                        Data = updatedWorker,
                     };
             }
         }

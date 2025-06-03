@@ -1,5 +1,6 @@
 ﻿using ConsoleFrontEnd.Models.FilterOptions;
 using ConsoleFrontEnd.Services;
+using ConsoleFrontEnd.MenuSystem;
 
 using Spectre.Console;
 
@@ -25,19 +26,23 @@ namespace ConsoleFrontEnd.Controller
 			{
 				var shift = userInterface.CreateShiftUi();
 				var createdShift = await shiftService.CreateShift(shift);
-				if (createdShift == null)
+				if (createdShift.ResponseCode is not System.Net.HttpStatusCode.Created || createdShift.ResponseCode is not System.Net.HttpStatusCode.OK)
 				{
-					AnsiConsole.MarkupLine("[red]Error: Failed to create shift.[/]");
+					AnsiConsole.MarkupLine($"[red]Error: Failed to create shift: {createdShift.ResponseCode}[/]");
 				}
 				else
 				{
 					AnsiConsole.MarkupLine("[green]Shift created successfully![/]");
 					AnsiConsole.MarkupLine($"[green]Shift ID: {createdShift.Data.ShiftId}[/]");
+					Console.WriteLine("Press any key to continue");
+					Console.ReadKey();
 				}
 			}
 			catch (Exception ex)
 			{
 				AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+				Console.WriteLine("Press any key to continue");
+				Console.ReadKey();
 			}
 		}
 
@@ -79,6 +84,9 @@ namespace ConsoleFrontEnd.Controller
 					AnsiConsole.Markup("[red] No Shifts returned/]");
 					return;
 				}
+				userInterface.DisplayShiftsTable(shift.Data);
+				Console.WriteLine("Press any key to continue");
+				Console.ReadKey();
 			}
 			catch (Exception ex)
 			{

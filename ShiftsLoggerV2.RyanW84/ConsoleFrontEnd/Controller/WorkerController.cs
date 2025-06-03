@@ -22,8 +22,9 @@ internal class WorkerController
             );
             var worker = userInterface.CreateWorkerUi();
             var createdWorker = await workerService.CreateWorker(worker);
-            if (createdWorker == null)
+            if (createdWorker.ResponseCode is not System.Net.HttpStatusCode.OK || createdWorker.ResponseCode is not System.Net.HttpStatusCode.Created)
             {
+				Console.WriteLine($"Error {createdWorker.ResponseCode}");
                 AnsiConsole.MarkupLine("[red]Error: Failed to create worker.[/]");
             }
             else

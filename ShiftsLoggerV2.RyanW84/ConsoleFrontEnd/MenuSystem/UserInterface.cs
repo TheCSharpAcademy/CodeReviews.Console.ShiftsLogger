@@ -1,4 +1,5 @@
 ﻿using ConsoleFrontEnd.Models;
+using ConsoleFrontEnd.Models.Dtos;
 using ConsoleFrontEnd.Models.FilterOptions;
 using ConsoleFrontEnd.Services;
 
@@ -201,6 +202,7 @@ public class UserInterface
 			Email = email ,
 			PhoneNumber = phoneNumber ,
 		};
+
 		return createdWorker;
 	}
 
