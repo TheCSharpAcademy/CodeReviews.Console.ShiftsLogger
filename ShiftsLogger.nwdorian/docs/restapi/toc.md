@@ -1,0 +1,1 @@
+# [Shifts Logger API](shifts-logger-open-api.swagger.json)

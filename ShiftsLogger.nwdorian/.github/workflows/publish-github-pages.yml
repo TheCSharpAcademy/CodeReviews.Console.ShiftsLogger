@@ -1,0 +1,56 @@
+name: Publish Documentation
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+
+      - name: Restore Dependencies
+        run: dotnet restore WebApi/WebApi.sln
+
+      - name: Build Solution (Generates OpenAPI JSON)
+        run: dotnet build WebApi/WebApi.sln
+
+      - name: Install DocFxOpenApi Tool
+        run: dotnet tool install --global DocFxOpenApi --version 1.32.0
+
+      - name: Convert OpenAPI to Swagger
+        run: DocFxOpenApi -s WebApi/ShiftsLogger.WebApi/shifts-logger-open-api.json -o docs/restapi
+
+      - name: Install DocFX
+        run: dotnet tool install -g docfx
+
+      - name: Build Documentation
+        run: docfx docs/docfx.json
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Documentation Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/_site # DocFX outputs files inside 'docs/_site'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

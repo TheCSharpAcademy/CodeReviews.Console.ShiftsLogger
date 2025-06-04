@@ -1,0 +1,698 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ShiftsLogger.WebApi | v1",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/Seeding": {
+      "post": {
+        "tags": [
+          "Seeding"
+        ],
+        "description": "Seeds database with preset data for demonstration purposes.",
+        "operationId": "SeedData",
+        "produces": [
+          "text/plain"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/Shifts": {
+      "get": {
+        "tags": [
+          "Shifts"
+        ],
+        "description": "Retrieves all shifts from the database.",
+        "operationId": "GetAll",
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ShiftRead"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Shifts"
+        ],
+        "description": "Creates a new shift.",
+        "operationId": "Create",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Shift to create.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ShiftCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/Shifts/{id}": {
+      "get": {
+        "tags": [
+          "Shifts"
+        ],
+        "description": "Retrieves a single shift from the database by Id.",
+        "operationId": "GetById",
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the shift.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ShiftRead"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Shifts"
+        ],
+        "description": "Deletes an existing shift.",
+        "operationId": "Delete",
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the shift.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Shifts"
+        ],
+        "description": "Updates an existing shift.",
+        "operationId": "Update",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the shift.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Shift to update.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ShiftUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/Shifts/{id}/users": {
+      "put": {
+        "tags": [
+          "Shifts"
+        ],
+        "description": "Updates users assigned to a shift.",
+        "operationId": "UpdateUsers",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the shift.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "A list of users that will be assigned to the shift after update.",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserRead"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Shifts"
+        ],
+        "description": "Retrieves users assigned to a shift.",
+        "operationId": "GetUsers",
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the shift.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserRead"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/Users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Retrieves all users from the database.",
+        "operationId": "GetAll",
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserRead"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Creates a new user.",
+        "operationId": "Create",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User to create.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Retrieves a single user from the database by Id.",
+        "operationId": "GetById",
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the user.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserRead"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Deletes an existing user.",
+        "operationId": "Delete",
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the user.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Updates an existing user.",
+        "operationId": "Update",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the user.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User to update.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/{id}/shifts": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Updates shifts assigned to a user.",
+        "operationId": "UpdateShifts",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/*+json"
+        ],
+        "produces": [
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the user.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "A list of shifts that will be assigned to the user after update.",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ShiftRead"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Retrieves shifts assigned to a user.",
+        "operationId": "GetShifts",
+        "produces": [
+          "application/json",
+          "text/plain"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Id of the user.",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ShiftRead"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ShiftCreate": {
+      "required": [
+        "startTime",
+        "endTime"
+      ],
+      "type": "object",
+      "properties": {
+        "startTime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "endTime": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "ShiftRead": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "startTime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "endTime": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "ShiftUpdate": {
+      "required": [
+        "startTime",
+        "endTime"
+      ],
+      "type": "object",
+      "properties": {
+        "startTime": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "endTime": {
+          "format": "date-time",
+          "type": "string"
+        }
+      }
+    },
+    "UserCreate": {
+      "required": [
+        "firstName",
+        "lastName",
+        "email"
+      ],
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": "string"
+        },
+        "lastName": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": "string"
+        },
+        "email": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": "string"
+        }
+      }
+    },
+    "UserRead": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "UserUpdate": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": "string"
+        },
+        "lastName": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": "string"
+        },
+        "email": {
+          "maxLength": 100,
+          "minLength": 0,
+          "type": "string"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Seeding"
+    },
+    {
+      "name": "Shifts"
+    },
+    {
+      "name": "Users"
+    }
+  ]
+}
