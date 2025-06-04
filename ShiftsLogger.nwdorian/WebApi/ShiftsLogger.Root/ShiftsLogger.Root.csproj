@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="AutoMapper.Contrib.Autofac.DependencyInjection" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShiftsLogger.Repository.Common\ShiftsLogger.Repository.Common.csproj" />
+    <ProjectReference Include="..\ShiftsLogger.Repository\ShiftsLogger.Repository.csproj" />
+    <ProjectReference Include="..\ShiftsLogger.Service.Common\ShiftsLogger.Service.Common.csproj" />
+    <ProjectReference Include="..\ShiftsLogger.Service\ShiftsLogger.Service.csproj" />
+  </ItemGroup>
+
+</Project>
