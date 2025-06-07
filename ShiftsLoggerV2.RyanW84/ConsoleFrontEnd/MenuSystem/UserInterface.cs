@@ -219,9 +219,9 @@ public class UserInterface
 			{
 				table.AddRow(
 					worker.WorkerId.ToString() ,
-					worker.Name ?? "N/A" ,
-					worker.Email ?? "N/A" ,
-					worker.PhoneNumber ?? "N/A"
+					worker.Name ,
+					worker.Email,
+					worker.PhoneNumber 
 				);
 			}
 		}

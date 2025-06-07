@@ -115,7 +115,7 @@ public class WorkerService : IWorkerService
 		try
 		{
 			response = await httpClient.PostAsJsonAsync("api/workers" , createdWorker);
-			if (response.StatusCode is not System.Net.HttpStatusCode.Created)
+			if ( response.StatusCode is not System.Net.HttpStatusCode.Created)
 			{
 				Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
 				return new ApiResponseDto<Workers>
@@ -128,20 +128,21 @@ public class WorkerService : IWorkerService
 			else
 			{
 				Console.WriteLine("Worker created successfully.");
-				return new ApiResponseDto<Workers>()
-                {
-                    Data = response.Content
-                };
-            }
+				return new ApiResponseDto<Workers>
+				{
+					ResponseCode = response.StatusCode ,
+					Data = response.Content.ReadFromJsonAsync<Workers>().Result ?? createdWorker ,
+				};
+			}
 		}
 		catch (Exception ex)
 		{
-			Console.WriteLine($"Try catch failed for CreateWorker: {ex}");
+			Console.WriteLine($"Try catch failed for CreateShift: {ex}");
 			throw;
 		}
 	}
 
-    public async Task<ApiResponseDto<Workers?>> UpdateWorker(int id, Workers updatedWorker)
+	public async Task<ApiResponseDto<Workers?>> UpdateWorker(int id, Workers updatedWorker)
     {
         HttpResponseMessage response;
         try

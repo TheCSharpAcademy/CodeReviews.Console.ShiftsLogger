@@ -12,7 +12,7 @@ internal class WorkerController
     internal readonly WorkerService workerService = new();
     internal WorkerFilterOptions workerFilterOptions = new() { Name = null };
 
-    public async Task CreateWorker()
+    public async Task CreateWorker( )
     {
         try
         {
@@ -22,20 +22,11 @@ internal class WorkerController
             );
             var worker = userInterface.CreateWorkerUi();
             var createdWorker = await workerService.CreateWorker(worker);
-            if (createdWorker.ResponseCode is not System.Net.HttpStatusCode.OK || createdWorker.ResponseCode is not System.Net.HttpStatusCode.Created)
-            {
-				Console.WriteLine($"Error {createdWorker.ResponseCode}");
-                AnsiConsole.MarkupLine("[red]Error: Failed to create worker.[/]");
-            }
-            else
-            {
-                AnsiConsole.MarkupLine("[green]Worker created successfully![/]");
-                AnsiConsole.MarkupLine($"[green]Worker ID: {createdWorker.Data.WorkerId}[/]");
-            }
         }
         catch (Exception ex)
         {
             AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+
         }
     }
 

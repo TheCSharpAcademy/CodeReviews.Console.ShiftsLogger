@@ -6,7 +6,7 @@ public class Workers
 {
     [Key]
     public int WorkerId { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } 
 
     [Phone]
     public string? PhoneNumber { get; set; }
