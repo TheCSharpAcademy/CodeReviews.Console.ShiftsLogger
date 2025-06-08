@@ -12,7 +12,7 @@ internal class WorkerController
     internal readonly WorkerService workerService = new();
     internal WorkerFilterOptions workerFilterOptions = new() { Name = null };
 
-    public async Task CreateWorker( )
+    public async Task CreateWorker()
     {
         try
         {
@@ -26,7 +26,6 @@ internal class WorkerController
         catch (Exception ex)
         {
             AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
-
         }
     }
 
@@ -58,15 +57,14 @@ internal class WorkerController
             Console.Clear();
             AnsiConsole.Write(
                 new Rule("[bold yellow]View Worker by ID[/]").RuleStyle("yellow").Centered()
-            );          
+            );
             var workerId = userInterface.GetWorkerByIdUi();
             var worker = await workerService.GetWorkerById(workerId);
-            if (worker.Data is null)
+
+            if (worker.Data is not null)
             {
-                AnsiConsole.Markup("[red] No Workers returned[/]");
-                return;
+                userInterface.DisplayWorkersTable(worker.Data);
             }
-            userInterface.DisplayWorkersTable(worker.Data);
         }
         catch (Exception ex)
         {
@@ -74,7 +72,7 @@ internal class WorkerController
         }
     }
 
-    public async Task UpdateWorker()    
+    public async Task UpdateWorker()
     {
         try
         {
@@ -84,28 +82,10 @@ internal class WorkerController
             );
             var workerId = userInterface.GetWorkerByIdUi();
             var existingWorker = await workerService.GetWorkerById(workerId);
-            var workerExists = existingWorker != null && existingWorker.Data.Count > 0;
-            if (!workerExists)
-            {
-                AnsiConsole.MarkupLine("[red]Error: Worker not found.[/]");
-                UpdateWorker();
-                return;
-            }
 
             var updatedWorker = userInterface.UpdateWorkerUi(existingWorker.Data);
 
             var updatedWorkerResponse = await workerService.UpdateWorker(workerId, updatedWorker);
-            if (updatedWorkerResponse == null || updatedWorkerResponse.Data == null)
-            {
-                AnsiConsole.MarkupLine("[red]Error: Failed to update worker.[/]");
-            }
-            else
-            {
-                AnsiConsole.MarkupLine("[green]Worker updated successfully![/]");
-                AnsiConsole.MarkupLine(
-                    $"[green]Worker ID: {updatedWorkerResponse.Data.WorkerId}[/]"
-                );
-            }
         }
         catch (Exception ex)
         {
@@ -123,15 +103,10 @@ internal class WorkerController
             );
             var workerId = userInterface.GetWorkerByIdUi();
             var deletedWorker = await workerService.DeleteWorker(workerId);
-            if (deletedWorker is null)
+            if (deletedWorker.ResponseCode is System.Net.HttpStatusCode.NotFound)
             {
-                Console.WriteLine("\nPress any key to continue...");
-                Console.ReadKey();
-            }
-            else
-            {
-                Console.WriteLine("\nPress any key to continue...");
-                Console.ReadKey();
+				Console.WriteLine("Press any key to try again or X to exit");
+                
             }
         }
         catch (Exception ex)

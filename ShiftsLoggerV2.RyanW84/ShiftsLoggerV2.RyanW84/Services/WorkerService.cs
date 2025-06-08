@@ -127,7 +127,9 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
 			Workers newWorker = new Workers
 			{
 				Name = worker.Name ,
-				// Add other properties as needed
+				Email = worker.Email ,
+				PhoneNumber = worker.PhoneNumber ,
+
 			};
 			var savedWorker = await dbContext.Workers.AddAsync(newWorker);
 			await dbContext.SaveChangesAsync();
@@ -175,7 +177,9 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
 		}
 		savedWorker.WorkerId = id; // Ensure the WorkerId is set to the ID being updated
 		savedWorker.Name = updatedWorker.Name;
-		// Update other properties as needed
+		savedWorker.Email = updatedWorker.Email;
+		savedWorker.PhoneNumber = updatedWorker.PhoneNumber;
+
 
 		dbContext.Workers.Update(savedWorker);
 		await dbContext.SaveChangesAsync();

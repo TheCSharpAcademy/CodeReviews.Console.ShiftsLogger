@@ -23,7 +23,7 @@ public class WorkerMenu
                         "Create Worker",
                         "View Workers",
                         "View Worker By ID",
-                        "Edit Worker",
+                        "Update Worker",
                         "Delete Worker",
                         "Back to Main Menu"
                     )
@@ -36,10 +36,10 @@ public class WorkerMenu
                 case "View Workers":
                     await workerController.GetAllWorkers();
                     break;
-                case "View Worker by ID":
-                    await workerController.GetWorkerById();
+                case "View Worker By ID":
+					await workerController.GetWorkerById();
                     break;
-                case "Edit Worker":
+                case "Update Worker":
                     await workerController.UpdateWorker();
                     break;
                 case "Delete Worker":
