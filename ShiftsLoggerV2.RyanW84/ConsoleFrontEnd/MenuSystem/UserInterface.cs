@@ -117,19 +117,19 @@ public class UserInterface
     {
         var startTime = AnsiConsole.Ask<DateTime?>(
             "Enter [green]Start Time[/] (leave blank to keep current):",
-            null
+            existingShift[0].StartTime.DateTime
         );
         var endTime = AnsiConsole.Ask<DateTime?>(
             "Enter [green]End Time[/] (leave blank to keep current):",
-            null
+            existingShift[0].EndTime.DateTime
         );
         var locationId = AnsiConsole.Ask<int?>(
             "Enter [green]Location ID[/] (leave blank to keep current):",
-            null
+            existingShift[0].LocationId
         );
         var workerId = AnsiConsole.Ask<int?>(
             "Enter [green]Worker ID[/] (leave blank to keep current):",
-            null
+            existingShift[0].WorkerId
         );
 
         var updatedShift = new Shifts

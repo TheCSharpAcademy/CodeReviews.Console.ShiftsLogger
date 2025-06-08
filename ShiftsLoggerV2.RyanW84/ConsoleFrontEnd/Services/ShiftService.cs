@@ -142,13 +142,13 @@ public class ShiftService : IShiftService
         }
     }
 
-    public async Task<ApiResponseDto<Shifts?>> UpdateShift(int id, Shifts updatedShift)
+    public async Task<ApiResponseDto<Shifts?>> UpdateShift(int id, Shifts updatedShift) //TODO: ensure this works correctly
     {
         HttpResponseMessage response;
         try
         {
             response = await httpClient.PutAsJsonAsync($"api/shifts/{id}", updatedShift);
-            if (response.StatusCode.Equals(System.Net.HttpStatusCode.OK))
+            if (response.StatusCode is not System.Net.HttpStatusCode.OK)
             {
                 Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
                 return new ApiResponseDto<Shifts>
@@ -165,7 +165,7 @@ public class ShiftService : IShiftService
                     ?? new ApiResponseDto<Shifts>
                     {
                         ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
+                        Message = "Update Shift succeeded.",
                         Data = null,
                     };
             }

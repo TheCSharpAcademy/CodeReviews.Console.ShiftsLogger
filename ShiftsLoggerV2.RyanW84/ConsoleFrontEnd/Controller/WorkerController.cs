@@ -1,5 +1,4 @@
-﻿using ConsoleFrontEnd.MenuSystem;
-using ConsoleFrontEnd.Models.Dtos;
+﻿using System.Reflection.Metadata.Ecma335;
 using ConsoleFrontEnd.Models.FilterOptions;
 using ConsoleFrontEnd.Services;
 using Spectre.Console;
@@ -61,10 +60,27 @@ internal class WorkerController
             var workerId = userInterface.GetWorkerByIdUi();
             var worker = await workerService.GetWorkerById(workerId);
 
-            if (worker.Data is not null)
+            while (worker.ResponseCode is System.Net.HttpStatusCode.NotFound)
             {
-                userInterface.DisplayWorkersTable(worker.Data);
+                var exitSelection = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Try again or exit?")
+                        .AddChoices(new[] { "Try Again", "Exit" })
+                );
+                if (exitSelection is "Exit")
+                {
+                    Console.Clear();
+                    return;
+                }
+                else if (exitSelection is "Try Again")
+                {
+                    Console.Clear();
+                    workerId = userInterface.GetWorkerByIdUi();
+                    worker = await workerService.GetWorkerById(workerId);
+                }
             }
+
+            userInterface.DisplayWorkersTable(worker.Data);
         }
         catch (Exception ex)
         {
@@ -80,8 +96,30 @@ internal class WorkerController
             AnsiConsole.Write(
                 new Rule("[bold yellow]Update Worker[/]").RuleStyle("yellow").Centered()
             );
+
             var workerId = userInterface.GetWorkerByIdUi();
+
             var existingWorker = await workerService.GetWorkerById(workerId);
+
+            while (existingWorker.ResponseCode is System.Net.HttpStatusCode.NotFound)
+            {
+                var exitSelection = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Try again or exit?")
+                        .AddChoices(new[] { "Try Again", "Exit" })
+                );
+                if (exitSelection is "Exit")
+                {
+                    Console.Clear();
+                    return;
+                }
+                else if (exitSelection is "Try Again")
+                {
+                    Console.Clear();
+                    workerId = userInterface.GetWorkerByIdUi();
+                    existingWorker = await workerService.GetWorkerById(workerId);
+                }
+            }
 
             var updatedWorker = userInterface.UpdateWorkerUi(existingWorker.Data);
 
@@ -105,8 +143,21 @@ internal class WorkerController
             var deletedWorker = await workerService.DeleteWorker(workerId);
             if (deletedWorker.ResponseCode is System.Net.HttpStatusCode.NotFound)
             {
-				Console.WriteLine("Press any key to try again or X to exit");
-                
+                var exitSelection = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Try again or exit?")
+                        .AddChoices(new[] { "Try Again", "Exit" })
+                );
+                if (exitSelection == "Exit")
+                {
+                    Console.Clear();
+                    return;
+                }
+                else
+                {
+                    Console.Clear();
+                    await DeleteWorker(); // Retry
+                }
             }
         }
         catch (Exception ex)

@@ -2,6 +2,9 @@
 using ConsoleFrontEnd.Models;
 using ConsoleFrontEnd.Models.Dtos;
 using ConsoleFrontEnd.Models.FilterOptions;
+
+using Microsoft.AspNetCore.Http.HttpResults;
+
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.Services;
@@ -77,10 +80,7 @@ public class WorkerService : IWorkerService
 
             if (response.StatusCode is not System.Net.HttpStatusCode.OK)
             {
-                Console.WriteLine($"Error: Worker not found");
-                Console.WriteLine("Press any key to continue");
-                Console.ReadKey();
-                Console.Clear();
+                AnsiConsole.Markup($"[Red]Error: Worker not found[/]\n");
                 return new ApiResponseDto<List<Workers>>
                 {
                     ResponseCode = response.StatusCode,
@@ -90,7 +90,7 @@ public class WorkerService : IWorkerService
             }
             else
             {
-                Console.WriteLine("Worker retrieved successfully.");
+                AnsiConsole.Markup("[Green]Worker retrieved successfully.[/]\n");
                 return await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Workers>>>()
                     ?? new ApiResponseDto<List<Workers>>
                     {
@@ -158,19 +158,18 @@ public class WorkerService : IWorkerService
                 };
             }
             else
-            {
-                Console.WriteLine("Worker updated successfully.");
-                Console.WriteLine("Press any key to continue");
+			{
+				AnsiConsole.Markup("[Green]Worker updated successfully.[/]\n");
+				Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
                 Console.Clear();
-                return await response.Content.ReadFromJsonAsync<ApiResponseDto<Workers>>()
-                    ?? new ApiResponseDto<Workers>
-                    {
-                        ResponseCode = response.StatusCode,
-                        Data = updatedWorker,
-                    };
-            }
-        }
+				return new ApiResponseDto<Workers>
+				{
+					ResponseCode = response.StatusCode ,
+					Data = response.Content.ReadFromJsonAsync<Workers>().Result ?? updatedWorker ,
+				};
+			}
+		}
         catch (Exception ex)
         {
             Console.WriteLine($"Try catch failed for UpdateWorker: {ex}");
@@ -187,8 +186,6 @@ public class WorkerService : IWorkerService
             if (response.StatusCode is not System.Net.HttpStatusCode.NoContent)
             {
                 AnsiConsole.Markup("[red]Error: Worker not found please try again![/]\n");
-                Console.ReadKey();
-                Console.Clear();
                 return new ApiResponseDto<string>
                 {
                     ResponseCode = response.StatusCode,
