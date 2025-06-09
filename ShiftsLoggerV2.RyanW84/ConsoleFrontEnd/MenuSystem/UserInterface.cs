@@ -10,11 +10,21 @@ public class UserInterface
 {
     private readonly ShiftService shiftService;
 
-    // UI method: Handles user interaction
-    // and displays the results of the operations
+	// UI method: Handles user interaction
+	// and displays the results of the operations
 
-    // Shifts
-    public ShiftFilterOptions FilterShiftsUi()
+	// Helpers
+	public void ContinueAndClearScreen( )
+	{
+		{
+			Console.WriteLine("\nPress any key to continue");
+			Console.ReadKey();
+			Console.Clear();
+		}
+	}
+
+	// Shifts
+	public ShiftFilterOptions FilterShiftsUi()
     {
         var filterOptions = new ShiftFilterOptions
         {

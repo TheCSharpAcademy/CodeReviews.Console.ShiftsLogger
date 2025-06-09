@@ -1,4 +1,6 @@
 ﻿using ConsoleFrontEnd.MenuSystem;
+using ConsoleFrontEnd.Models;
+using ConsoleFrontEnd.Models.Dtos;
 using ConsoleFrontEnd.Models.FilterOptions;
 using ConsoleFrontEnd.Services;
 using Spectre.Console;
@@ -11,6 +13,7 @@ namespace ConsoleFrontEnd.Controller
         // It provides methods to create a shift and retrieve all shifts with optional filtering.
         public readonly MenuSystem.UserInterface userInterface = new();
         internal readonly ShiftService shiftService = new ShiftService();
+
         internal ShiftFilterOptions shiftFilterOptions = new()
         {
             WorkerId = null,
@@ -19,6 +22,34 @@ namespace ConsoleFrontEnd.Controller
             EndTime = null,
         };
 
+        // Helpers
+        public async Task (ApiResponseDto<List<Shifts>>checkedShift) NotFoundHelper(ApiResponseDto<List<Shifts>>? shift , int shiftId)
+        {
+            var checkedShift = await shiftService.GetShiftById(shiftId);
+            while (checkedShift.ResponseCode is System.Net.HttpStatusCode.NotFound)
+            {
+                var exitSelection = AnsiConsole.Prompt(
+                    new SelectionPrompt<string>()
+                        .Title("Try again or exit?")
+                        .AddChoices(new[] { "Try Again" , "Exit" })
+                );
+                if (exitSelection is "Exit")
+                {
+                    Console.Clear();
+                    return;
+                }
+                else if (exitSelection is "Try Again")
+                {
+                    Console.Clear();
+                    shiftId = userInterface.GetShiftByIdUi();
+                    checkedShift = await shiftService.GetShiftById(shiftId); //TODO: resolve this error
+                }
+                return;
+            }
+        }
+
+
+        // CRUD
         public async Task CreateShift()
         {
             try
@@ -102,8 +133,7 @@ namespace ConsoleFrontEnd.Controller
                         shift = await shiftService.GetShiftById(shiftId);
                     }
                     userInterface.DisplayShiftsTable(shift.Data);
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
+                    userInterface.ContinueAndClearScreen();
                 }
             }
             catch (Exception ex)
@@ -128,7 +158,7 @@ namespace ConsoleFrontEnd.Controller
                     var exitSelection = AnsiConsole.Prompt(
                         new SelectionPrompt<string>()
                             .Title("Try again or exit?")
-                            .AddChoices(new[] { "Try Again" , "Exit" })
+                            .AddChoices(new[] { "Try Again", "Exit" })
                     );
                     if (exitSelection is "Exit")
                     {
@@ -144,13 +174,15 @@ namespace ConsoleFrontEnd.Controller
 
                     var updatedShift = userInterface.UpdateShiftUi(existingShift.Data);
 
-                    var updatedShiftResponse = await shiftService.UpdateShift(shiftId , updatedShift);
+                    var updatedShiftResponse = await shiftService.UpdateShift(
+                        shiftId,
+                        updatedShift
+                    );
                 }
             }
-
             catch (Exception ex)
             {
-                AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+                Console.WriteLine($"Exception - {ex.Message}");
             }
         }
 
@@ -164,23 +196,35 @@ namespace ConsoleFrontEnd.Controller
                 );
                 var shiftId = userInterface.GetShiftByIdUi();
                 var deletedShift = await shiftService.DeleteShift(shiftId);
-                if (deletedShift is null)
+
+                while (deletedShift.ResponseCode is System.Net.HttpStatusCode.NotFound)
                 {
-                    Console.WriteLine("\nPress any key to continue...");
-                    Console.ReadKey();
+                    var exitSelection = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                            .Title("\nTry again or exit?")
+                            .AddChoices(new[] { "Try Again", "Exit" })
+                    );
+                    if (exitSelection is "Exit")
+                    {
+                        Console.Clear();
+                        return;
+                    }
+                    else if (exitSelection is "Try Again")
+                    {
+                        Console.Clear();
+                        shiftId = userInterface.GetShiftByIdUi();
+                        deletedShift = await shiftService.DeleteShift(shiftId);
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("\nPress any key to continue...");
-                    Console.ReadKey();
-                }
+                userInterface.ContinueAndClearScreen();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Try Pass failed in Shift Controller: Delete Shift {ex}");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey();
+                userInterface.ContinueAndClearScreen();
             }
         }
+
+       
     }
 }

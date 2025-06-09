@@ -78,10 +78,9 @@ public class ShiftService : IShiftService
             if (response.StatusCode is not System.Net.HttpStatusCode.OK)
             {
                 Console.WriteLine(
-                    $"Error: Status Code:{response.StatusCode} - Reason Phrase:{response.ReasonPhrase}"
+                    $"Error: Status Code - {response.StatusCode}"
                 );
-                Console.WriteLine("Press any key to continue");
-                Console.ReadKey();
+              
                 return new ApiResponseDto<List<Shifts>>
                 {
                     ResponseCode = response.StatusCode,
@@ -150,7 +149,7 @@ public class ShiftService : IShiftService
             response = await httpClient.PutAsJsonAsync($"api/shifts/{id}", updatedShift);
             if (response.StatusCode is not System.Net.HttpStatusCode.OK)
             {
-                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                Console.WriteLine($"Error - {response.StatusCode}");
                 return new ApiResponseDto<Shifts>
                 {
                     ResponseCode = response.StatusCode,
@@ -185,7 +184,7 @@ public class ShiftService : IShiftService
             response = await httpClient.DeleteAsync($"api/shifts/{id}");
             if (response.StatusCode is System.Net.HttpStatusCode.NotFound)
             {
-                AnsiConsole.Markup("[red]Error: Shift not found.[/]");
+				Console.WriteLine($"Error - {response.StatusCode}");
                 return new ApiResponseDto<string>
                 {
                     ResponseCode = response.StatusCode,
@@ -206,7 +205,7 @@ public class ShiftService : IShiftService
             else
             {
                 AnsiConsole.Markup(
-                    $"[red]Error: {response.StatusCode} - {response.ReasonPhrase}[/]"
+                    $"[red]Error - {response.StatusCode}[/]"
                 );
                 return new ApiResponseDto<string>
                 {
