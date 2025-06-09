@@ -2,9 +2,6 @@
 using ConsoleFrontEnd.Models;
 using ConsoleFrontEnd.Models.Dtos;
 using ConsoleFrontEnd.Models.FilterOptions;
-
-using Microsoft.AspNetCore.Http.HttpResults;
-
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.Services;
@@ -158,18 +155,18 @@ public class WorkerService : IWorkerService
                 };
             }
             else
-			{
-				AnsiConsole.Markup("[Green]Worker updated successfully.[/]\n");
-				Console.WriteLine("Press any key to continue");
+            {
+                AnsiConsole.Markup("[Green]Worker updated successfully.[/]\n");
+                Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
                 Console.Clear();
-				return new ApiResponseDto<Workers>
-				{
-					ResponseCode = response.StatusCode ,
-					Data = response.Content.ReadFromJsonAsync<Workers>().Result ?? updatedWorker ,
-				};
-			}
-		}
+                return new ApiResponseDto<Workers>
+                {
+                    ResponseCode = response.StatusCode,
+                    Data = response.Content.ReadFromJsonAsync<Workers>().Result ?? updatedWorker,
+                };
+            }
+        }
         catch (Exception ex)
         {
             Console.WriteLine($"Try catch failed for UpdateWorker: {ex}");

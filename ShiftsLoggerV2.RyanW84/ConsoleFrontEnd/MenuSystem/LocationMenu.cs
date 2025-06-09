@@ -7,7 +7,7 @@ public class LocationMenu(MainMenu mainMenu)
 {
     public static async Task DisplayLocationMenu()
     {
-        LocationController frontEndLocationController = new();
+        WorkerController frontEndLocationController = new();
 
         AnsiConsole.Clear();
         while (true)

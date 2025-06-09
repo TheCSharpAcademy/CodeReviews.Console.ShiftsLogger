@@ -8,7 +8,7 @@ namespace ConsoleFrontEnd.Controller;
 internal class WorkerController
 {
     internal readonly MenuSystem.UserInterface userInterface = new();
-    internal readonly WorkerService workerService = new();
+    internal readonly WorkerService loc = new();
     internal WorkerFilterOptions workerFilterOptions = new() { Name = null };
 
     public async Task CreateWorker()

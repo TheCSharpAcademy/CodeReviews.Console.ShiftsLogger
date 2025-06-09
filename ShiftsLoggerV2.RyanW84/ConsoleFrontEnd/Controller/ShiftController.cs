@@ -1,5 +1,4 @@
-﻿using ConsoleFrontEnd.MenuSystem;
-using ConsoleFrontEnd.Models;
+﻿using ConsoleFrontEnd.Models;
 using ConsoleFrontEnd.Models.Dtos;
 using ConsoleFrontEnd.Models.FilterOptions;
 using ConsoleFrontEnd.Services;
@@ -23,31 +22,38 @@ namespace ConsoleFrontEnd.Controller
         };
 
         // Helpers
-        public async Task (ApiResponseDto<List<Shifts>>checkedShift) NotFoundHelper(ApiResponseDto<List<Shifts>>? shift , int shiftId)
+        public async Task<ApiResponseDto<List<Shifts>>> ShiftsNotFoundHelper(int shiftId)
         {
             var checkedShift = await shiftService.GetShiftById(shiftId);
-            while (checkedShift.ResponseCode is System.Net.HttpStatusCode.NotFound)
+            while (checkedShift.ResponseCode == System.Net.HttpStatusCode.NotFound)
             {
+                Console.WriteLine();
                 var exitSelection = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Try again or exit?")
-                        .AddChoices(new[] { "Try Again" , "Exit" })
+                        .AddChoices(new[] { "Try Again", "Exit" })
                 );
                 if (exitSelection is "Exit")
                 {
                     Console.Clear();
-                    return;
+                    return new ApiResponseDto<List<Shifts>>
+                    {
+                        RequestFailed = true,
+                        ResponseCode = System.Net.HttpStatusCode.NotFound,
+                        Message = "Shift not found.",
+                        Data = null,
+                    };
                 }
-                else if (exitSelection is "Try Again")
+                else
                 {
                     Console.Clear();
                     shiftId = userInterface.GetShiftByIdUi();
-                    checkedShift = await shiftService.GetShiftById(shiftId); //TODO: resolve this error
+                    checkedShift = await shiftService.GetShiftById(shiftId);
                 }
-                return;
             }
-        }
 
+            return checkedShift;
+        }
 
         // CRUD
         public async Task CreateShift()
@@ -94,13 +100,14 @@ namespace ConsoleFrontEnd.Controller
 
                 shiftFilterOptions = filterOptions;
                 var shifts = await shiftService.GetAllShifts(shiftFilterOptions);
+
+                Console.WriteLine();
                 userInterface.DisplayShiftsTable(shifts.Data);
-                Console.WriteLine("Press any key to continue");
-                Console.ReadKey();
+                userInterface.ContinueAndClearScreen();
             }
             catch (Exception ex)
             {
-                AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+                Console.WriteLine($"[red]Exception: {ex.Message}[/]");
             }
         }
 
@@ -113,28 +120,13 @@ namespace ConsoleFrontEnd.Controller
                     new Rule("[bold yellow]View Shift by ID[/]").RuleStyle("yellow").Centered()
                 );
                 var shiftId = userInterface.GetShiftByIdUi();
-                var shift = await shiftService.GetShiftById(shiftId);
-                while (shift.ResponseCode is System.Net.HttpStatusCode.NotFound)
+                var shift = await ShiftsNotFoundHelper(shiftId);
+                if (shift.ResponseCode is System.Net.HttpStatusCode.NotFound)
                 {
-                    var exitSelection = AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("Try again or exit?")
-                            .AddChoices(new[] { "Try Again", "Exit" })
-                    );
-                    if (exitSelection is "Exit")
-                    {
-                        Console.Clear();
-                        return;
-                    }
-                    else if (exitSelection is "Try Again")
-                    {
-                        Console.Clear();
-                        shiftId = userInterface.GetShiftByIdUi();
-                        shift = await shiftService.GetShiftById(shiftId);
-                    }
-                    userInterface.DisplayShiftsTable(shift.Data);
-                    userInterface.ContinueAndClearScreen();
+                    return;
                 }
+                userInterface.DisplayShiftsTable(shift.Data);
+                userInterface.ContinueAndClearScreen();
             }
             catch (Exception ex)
             {
@@ -151,34 +143,16 @@ namespace ConsoleFrontEnd.Controller
                     new Rule("[bold yellow]Update Shift[/]").RuleStyle("yellow").Centered()
                 );
                 var shiftId = userInterface.GetShiftByIdUi();
-                var existingShift = await shiftService.GetShiftById(shiftId);
+                var existingShift = await ShiftsNotFoundHelper(shiftId);
 
-                while (existingShift.ResponseCode is System.Net.HttpStatusCode.NotFound)
+                if (existingShift.ResponseCode is System.Net.HttpStatusCode.NotFound)
                 {
-                    var exitSelection = AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("Try again or exit?")
-                            .AddChoices(new[] { "Try Again", "Exit" })
-                    );
-                    if (exitSelection is "Exit")
-                    {
-                        Console.Clear();
-                        return;
-                    }
-                    else if (exitSelection is "Try Again")
-                    {
-                        Console.Clear();
-                        shiftId = userInterface.GetShiftByIdUi();
-                        existingShift = await shiftService.GetShiftById(shiftId);
-                    }
-
-                    var updatedShift = userInterface.UpdateShiftUi(existingShift.Data);
-
-                    var updatedShiftResponse = await shiftService.UpdateShift(
-                        shiftId,
-                        updatedShift
-                    );
+                    return;
                 }
+
+                var updatedShift = userInterface.UpdateShiftUi(existingShift.Data);
+                var updatedShiftResponse = await shiftService.UpdateShift(shiftId, updatedShift);
+                userInterface.ContinueAndClearScreen();
             }
             catch (Exception ex)
             {
@@ -195,27 +169,13 @@ namespace ConsoleFrontEnd.Controller
                     new Rule("[bold yellow]Delete Shift[/]").RuleStyle("yellow").Centered()
                 );
                 var shiftId = userInterface.GetShiftByIdUi();
-                var deletedShift = await shiftService.DeleteShift(shiftId);
+                var deletedShift = await ShiftsNotFoundHelper(shiftId);
 
-                while (deletedShift.ResponseCode is System.Net.HttpStatusCode.NotFound)
+                if (deletedShift.ResponseCode is System.Net.HttpStatusCode.NotFound)
                 {
-                    var exitSelection = AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("\nTry again or exit?")
-                            .AddChoices(new[] { "Try Again", "Exit" })
-                    );
-                    if (exitSelection is "Exit")
-                    {
-                        Console.Clear();
-                        return;
-                    }
-                    else if (exitSelection is "Try Again")
-                    {
-                        Console.Clear();
-                        shiftId = userInterface.GetShiftByIdUi();
-                        deletedShift = await shiftService.DeleteShift(shiftId);
-                    }
+                    return;
                 }
+                var deleteResponse = await shiftService.DeleteShift(shiftId);
                 userInterface.ContinueAndClearScreen();
             }
             catch (Exception ex)
@@ -224,7 +184,5 @@ namespace ConsoleFrontEnd.Controller
                 userInterface.ContinueAndClearScreen();
             }
         }
-
-       
     }
 }
