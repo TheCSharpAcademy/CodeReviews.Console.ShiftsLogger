@@ -7,7 +7,7 @@ public class LocationMenu(MainMenu mainMenu)
 {
     public static async Task DisplayLocationMenu()
     {
-        WorkerController frontEndLocationController = new();
+        LocationController locationController = new();
 
         AnsiConsole.Clear();
         while (true)
@@ -22,18 +22,32 @@ public class LocationMenu(MainMenu mainMenu)
                     .AddChoices(
                         "Create Location",
                         "View Locations",
+                        "View Location by ID",
                         "Edit Location",
                         "Delete Location",
                         "Back to Main Menu"
                     )
             );
 
-            switch (choice)
-            {
+            switch (choice) {
                 case "Create Location":
-                    //var newLocation = UserInterface.CreateLocationUI();
-                    // Call the service to create the location
-                    // await locationService.CreateLocation(newLocation);
+                    await locationController.CreateLocation();
+                    break;
+                case "View Locations":
+                    await locationController.GetAllLocations();
+                    break;
+                case "Edit Location":
+                    await locationController.GetLocationById();
+                    break;
+                case "Delete Location":
+                    await locationController.DeleteLocation();
+                    AnsiConsole.MarkupLine("[red]Delete Location functionality is not implemented yet.[/]");
+                    break;
+                case "Back to Main Menu":
+                    await MainMenu.DisplayMainMenu();
+                    return;
+                default:
+                    AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");
                     break;
             }
         }

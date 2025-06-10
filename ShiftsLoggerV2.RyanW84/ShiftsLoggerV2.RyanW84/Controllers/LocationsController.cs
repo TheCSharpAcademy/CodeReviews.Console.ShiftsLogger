@@ -4,7 +4,6 @@ using ShiftsLoggerV2.RyanW84.Dtos;
 using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 using ShiftsLoggerV2.RyanW84.Services;
-using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Controllers;
 
@@ -21,7 +20,9 @@ public class LocationsController : ControllerBase
 
     // GET: api/Location
     [HttpGet(Name = "Get All Locations")]
-    public async Task<ActionResult<ApiResponseDto<List<Locations>>>> GetAllLocations(LocationFilterOptions? locationOptions)
+    public async Task<ActionResult<ApiResponseDto<List<Locations>>>> GetAllLocations(
+        LocationFilterOptions? locationOptions
+    )
     {
         try
         {
@@ -57,7 +58,9 @@ public class LocationsController : ControllerBase
 
     // POST: api/Location
     [HttpPost]
-    public async Task<ActionResult<ApiResponseDto<Locations>>> CreateLocation(LocationApiRequestDto location)
+    public async Task<ActionResult<ApiResponseDto<Locations>>> CreateLocation(
+        LocationApiRequestDto location
+    )
     {
         try
         {
@@ -67,7 +70,10 @@ public class LocationsController : ControllerBase
             }
             else
             {
-                return new ObjectResult(await locationService.CreateLocation(location)) { StatusCode = 201 };
+                return new ObjectResult(await locationService.CreateLocation(location))
+                {
+                    StatusCode = 201,
+                };
             }
         }
         catch (Exception ex)
@@ -79,7 +85,10 @@ public class LocationsController : ControllerBase
 
     // PUT: api/Location/{id}
     [HttpPut("{id}")]
-    public async Task<ActionResult<ApiResponseDto<Locations?>>> UpdateLocation(int id, LocationApiRequestDto updatedLocation)
+    public async Task<ActionResult<ApiResponseDto<Locations?>>> UpdateLocation(
+        int id,
+        LocationApiRequestDto updatedLocation
+    )
     {
         try
         {

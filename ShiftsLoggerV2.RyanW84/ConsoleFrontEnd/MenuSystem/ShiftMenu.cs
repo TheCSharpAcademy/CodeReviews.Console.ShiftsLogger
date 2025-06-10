@@ -11,7 +11,7 @@ public class ShiftMenu
         while (true)
         {
             ShiftController shiftController = new();
-			Console.Clear();
+            Console.Clear();
             AnsiConsole.Write(
                 new Rule("[bold yellow]Shift Menu[/]").RuleStyle("yellow").Centered()
             );

@@ -6,12 +6,12 @@ public class Locations
 {
     [Key]
     public int LocationId { get; set; }
-    public string Name { get; set; } 
-    public string Address { get; set; } 
-    public string TownOrCity { get; set; } 
-    public string StateOrCounty { get; set; } 
-    public string ZipOrPostCode { get; set; } 
-    public string Country { get; set; } 
+    public required string Name { get; set; }
+    public required string Address { get; set; }
+    public required string TownOrCity { get; set; }
+    public required string StateOrCounty { get; set; }
+    public required string ZipOrPostCode { get; set; }
+    public required string Country { get; set; }
 
     public virtual ICollection<Shifts> Shifts { get; set; } // Navigation property to the Shifts entity
     public virtual ICollection<Workers> Workers { get; set; } // Navigation property to the Workers entity

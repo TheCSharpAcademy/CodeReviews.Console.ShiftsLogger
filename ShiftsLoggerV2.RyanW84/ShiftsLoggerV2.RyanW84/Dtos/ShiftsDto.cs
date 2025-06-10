@@ -1,6 +1,8 @@
 ﻿namespace ShiftsLoggerV2.RyanW84.Dtos;
 
-public class ShiftsDto
+
+
+class ShiftsDto
 {
     public int WorkerId { get; set; }
     public int LocationId { get; set; }

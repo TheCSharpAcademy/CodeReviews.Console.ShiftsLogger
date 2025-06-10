@@ -1,6 +1,8 @@
 ﻿namespace ShiftsLoggerV2.RyanW84.Dtos;
 
-public class LocationsDto
+
+
+class LocationsDto
 {
     public int LocationId { get; set; }
     public string Name { get; set; } = string.Empty;

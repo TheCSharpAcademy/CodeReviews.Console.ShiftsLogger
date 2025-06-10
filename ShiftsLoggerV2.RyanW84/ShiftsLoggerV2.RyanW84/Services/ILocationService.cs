@@ -6,9 +6,14 @@ namespace ShiftsLoggerV2.RyanW84.Services;
 
 public interface ILocationService
 {
-    Task<ApiResponseDto<List<Locations>>> GetAllLocations(LocationFilterOptions locationOptions);
-    Task<ApiResponseDto<Locations?>> GetLocationById(int id);
-    Task<ApiResponseDto<Locations>> CreateLocation(LocationApiRequestDto locationDto);
-    Task<ApiResponseDto<Locations?>> UpdateLocation(int id, LocationApiRequestDto updatedLocation);
-    Task<ApiResponseDto<string?>> DeleteLocation(int id);
+    public Task<ApiResponseDto<List<Locations>>> GetAllLocations(
+        LocationFilterOptions locationOptions
+    );
+    public Task<ApiResponseDto<Locations?>> GetLocationById(int id);
+    public Task<ApiResponseDto<Locations>> CreateLocation(LocationApiRequestDto locationDto);
+    public Task<ApiResponseDto<Locations?>> UpdateLocation(
+        int id,
+        LocationApiRequestDto updatedLocation
+    );
+    public Task<ApiResponseDto<string?>> DeleteLocation(int id);
 }

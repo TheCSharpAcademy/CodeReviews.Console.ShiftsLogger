@@ -1,15 +1,15 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using ConsoleFrontEnd.Models;
 using ConsoleFrontEnd.Models.FilterOptions;
 using ConsoleFrontEnd.Services;
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.Controller;
 
-internal class WorkerController
+public class WorkerController
 {
-    internal readonly MenuSystem.UserInterface userInterface = new();
-    internal readonly WorkerService loc = new();
-    internal WorkerFilterOptions workerFilterOptions = new() { Name = null };
+    public readonly MenuSystem.UserInterface userInterface = new();
+    public readonly WorkerService workerService = new();
+    public WorkerFilterOptions workerFilterOptions = new() { Name = null };
 
     public async Task CreateWorker()
     {
@@ -41,7 +41,15 @@ internal class WorkerController
 
             workerFilterOptions = filterOptions;
             var workers = await workerService.GetAllWorkers(workerFilterOptions);
-            userInterface.DisplayWorkersTable(workers.Data);
+
+            if (workers.Data != null)
+            {
+                userInterface.DisplayWorkersTable(workers.Data);
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[red]No workers found.[/]");
+            }
         }
         catch (Exception ex)
         {
@@ -88,48 +96,54 @@ internal class WorkerController
         }
     }
 
-    public async Task UpdateWorker()
-    {
-        try
-        {
-            Console.Clear();
-            AnsiConsole.Write(
-                new Rule("[bold yellow]Update Worker[/]").RuleStyle("yellow").Centered()
-            );
+	public async Task UpdateWorker( )
+	{
+		try
+		{
+			Console.Clear();
+			AnsiConsole.Write(
+				new Rule("[bold yellow]Update Worker[/]").RuleStyle("yellow").Centered()
+			);
 
-            var workerId = userInterface.GetWorkerByIdUi();
+			var workerId = userInterface.GetWorkerByIdUi();
 
-            var existingWorker = await workerService.GetWorkerById(workerId);
+			var existingWorker = await workerService.GetWorkerById(workerId);
 
-            while (existingWorker.ResponseCode is System.Net.HttpStatusCode.NotFound)
-            {
-                var exitSelection = AnsiConsole.Prompt(
-                    new SelectionPrompt<string>()
-                        .Title("Try again or exit?")
-                        .AddChoices(new[] { "Try Again", "Exit" })
-                );
-                if (exitSelection is "Exit")
-                {
-                    Console.Clear();
-                    return;
-                }
-                else if (exitSelection is "Try Again")
-                {
-                    Console.Clear();
-                    workerId = userInterface.GetWorkerByIdUi();
-                    existingWorker = await workerService.GetWorkerById(workerId);
-                }
-            }
+			while (existingWorker.ResponseCode is System.Net.HttpStatusCode.NotFound)
+			{
+				var exitSelection = AnsiConsole.Prompt(
+					new SelectionPrompt<string>()
+						.Title("Try again or exit?")
+						.AddChoices(new[] { "Try Again" , "Exit" })
+				);
+				if (exitSelection is "Exit")
+				{
+					Console.Clear();
+					return;
+				}
+				else if (exitSelection is "Try Again")
+				{
+					Console.Clear();
+					workerId = userInterface.GetWorkerByIdUi();
+					existingWorker = await workerService.GetWorkerById(workerId);
+				}
+			}
 
-            var updatedWorker = userInterface.UpdateWorkerUi(existingWorker.Data);
+			// Safely convert List<Workers?> to List<Workers> and handle nulls
+			var nonNullWorkers = (existingWorker.Data ?? new List<Workers?>())
+				.Where(w => w != null)
+				.Cast<Workers>()
+				.ToList();
 
-            var updatedWorkerResponse = await workerService.UpdateWorker(workerId, updatedWorker);
-        }
-        catch (Exception ex)
-        {
-            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
-        }
-    }
+			var updatedWorker = userInterface.UpdateWorkerUi(nonNullWorkers);
+
+			var updatedWorkerResponse = await workerService.UpdateWorker(workerId , updatedWorker);
+		}
+		catch (Exception ex)
+		{
+			AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+		}
+	}
 
     public async Task DeleteWorker()
     {

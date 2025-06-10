@@ -130,16 +130,16 @@ public class WorkersController(IWorkerService workerService) : ControllerBase
         try
         {
             var result = await workerService.DeleteWorker(id);
-           if (result.ResponseCode is HttpStatusCode.NotFound)
+            if (result.ResponseCode is HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
-           else if (result.ResponseCode is HttpStatusCode.NoContent)
+            else if (result.ResponseCode is HttpStatusCode.NoContent)
             {
                 return NoContent();
             }
             return Ok(result);
-		}
+        }
         catch (Exception ex)
         {
             Console.WriteLine($"Delete worker failed, see Exception {ex}");

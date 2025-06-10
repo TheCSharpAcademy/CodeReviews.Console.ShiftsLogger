@@ -11,9 +11,9 @@ namespace ConsoleFrontEnd.Controller
         // This class acts as a controller for managing shifts, handling user input and interaction with the ShiftService.
         // It provides methods to create a shift and retrieve all shifts with optional filtering.
         public readonly MenuSystem.UserInterface userInterface = new();
-        internal readonly ShiftService shiftService = new ShiftService();
+        public readonly ShiftService shiftService = new ShiftService();
 
-        internal ShiftFilterOptions shiftFilterOptions = new()
+        public ShiftFilterOptions shiftFilterOptions = new()
         {
             WorkerId = null,
             LocationId = null,
@@ -111,28 +111,28 @@ namespace ConsoleFrontEnd.Controller
             }
         }
 
-        public async Task GetShiftById()
-        {
-            try
-            {
-                AnsiConsole.Clear();
-                AnsiConsole.Write(
-                    new Rule("[bold yellow]View Shift by ID[/]").RuleStyle("yellow").Centered()
-                );
-                var shiftId = userInterface.GetShiftByIdUi();
-                var shift = await ShiftsNotFoundHelper(shiftId);
-                if (shift.ResponseCode is System.Net.HttpStatusCode.NotFound)
-                {
-                    return;
-                }
-                userInterface.DisplayShiftsTable(shift.Data);
-                userInterface.ContinueAndClearScreen();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex}");
-            }
-        }
+		public async Task GetShiftById( )
+		{
+			try
+			{
+				AnsiConsole.Clear();
+				AnsiConsole.Write(
+					new Rule("[bold yellow]View Shift by ID[/]").RuleStyle("yellow").Centered()
+				);
+				var shiftId = userInterface.GetShiftByIdUi();
+				var shift = await ShiftsNotFoundHelper(shiftId);
+				if (shift.ResponseCode is System.Net.HttpStatusCode.NotFound || shift.Data == null)
+				{
+					return;
+				}
+				userInterface.DisplayShiftsTable(shift.Data);
+				userInterface.ContinueAndClearScreen();
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Exception: {ex}");
+			}
+		}
 
         public async Task UpdateShift()
         {

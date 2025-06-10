@@ -2,6 +2,7 @@
 
 namespace ConsoleFrontEnd.Models;
 
+
 public class Shifts
 {
     [Key]

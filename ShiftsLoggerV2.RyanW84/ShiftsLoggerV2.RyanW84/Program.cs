@@ -1,6 +1,4 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using Scalar.AspNetCore;
 using ShiftsLoggerV2.RyanW84.Data;
 using ShiftsLoggerV2.RyanW84.Services;
@@ -26,8 +24,8 @@ builder.Services.AddDbContext<ShiftsDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 builder.Services.AddScoped<IShiftService, ShiftService>(); //Implementing the service in the DI container
-builder.Services.AddScoped<IWorkerService , WorkerService>();
-builder.Services.AddScoped<ILocationService , LocationService>();
+builder.Services.AddScoped<IWorkerService, WorkerService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
@@ -38,8 +36,8 @@ if (app.Environment.IsDevelopment())
 
     using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ShiftsDbContext>();
-    dbContext.Database.EnsureDeleted(); 
-    dbContext.Database.EnsureCreated(); 
+    dbContext.Database.EnsureDeleted();
+    dbContext.Database.EnsureCreated();
     dbContext.SeedData();
     Console.WriteLine("Database seeded");
 }
