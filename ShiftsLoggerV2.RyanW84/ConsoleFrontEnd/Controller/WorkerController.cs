@@ -7,9 +7,15 @@ namespace ConsoleFrontEnd.Controller;
 
 public class WorkerController
 {
-    public readonly MenuSystem.UserInterface userInterface = new();
-    public readonly WorkerService workerService = new();
-    public WorkerFilterOptions workerFilterOptions = new() { Name = null };
+    private readonly MenuSystem.UserInterface userInterface = new();
+    private readonly WorkerService workerService = new();
+    private WorkerFilterOptions workerFilterOptions = new()
+    {
+        WorkerId = null ,
+        Name = null ,
+        PhoneNumber = null ,
+        Email = null
+    };
 
     public async Task CreateWorker()
     {
@@ -24,7 +30,7 @@ public class WorkerController
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+			Console.WriteLine ($"Exception: {ex.Message}");
         }
     }
 
@@ -42,18 +48,19 @@ public class WorkerController
             workerFilterOptions = filterOptions;
             var workers = await workerService.GetAllWorkers(workerFilterOptions);
 
-            if (workers.Data != null)
+            if (workers.Data is not null)
             {
                 userInterface.DisplayWorkersTable(workers.Data);
             }
             else
             {
                 AnsiConsole.MarkupLine("[red]No workers found.[/]");
+                userInterface.ContinueAndClearScreen();
             }
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+			Console.WriteLine ($"Exception: {ex.Message}");
         }
     }
 

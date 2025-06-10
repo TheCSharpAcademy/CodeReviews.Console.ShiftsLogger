@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 
 namespace ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 
 public class ShiftFilterOptions
 {
+    [FromQuery(Name ="shiftId")]
+        public int shiftId { get; set; }
+
     [FromQuery(Name = "startTime")]
     public DateTimeOffset? StartTime { get; set; }
 
@@ -25,10 +29,10 @@ public class ShiftFilterOptions
     [FromQuery(Name = "locationName")]
     public string LocationName { get; set; } = string.Empty; // Use string for location name filtering
 
-    [FromQuery(Name = "sort_by")]
+    [FromQuery(Name = "sortBy")]
     public string SortBy { get; set; } = string.Empty;
 
-    [FromQuery(Name = "sort_order")]
+    [FromQuery(Name = "sortOrder")]
     public string SortOrder { get; set; } = string.Empty;
 
     [FromQuery(Name = "search")]

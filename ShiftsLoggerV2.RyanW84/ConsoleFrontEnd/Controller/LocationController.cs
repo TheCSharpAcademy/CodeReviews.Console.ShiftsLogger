@@ -1,4 +1,5 @@
-﻿using ConsoleFrontEnd.Models.FilterOptions;
+﻿using ConsoleFrontEnd.Models;
+using ConsoleFrontEnd.Models.FilterOptions;
 using ConsoleFrontEnd.Services;
 using Spectre.Console;
 
@@ -8,7 +9,16 @@ public class LocationController
 {
     private readonly MenuSystem.UserInterface userInterface = new();
     private readonly LocationService locationService = new();
-    private LocationFilterOptions locationFilterOptions = new();
+    private LocationFilterOptions locationFilterOptions = new()
+    {
+        LocationId = null,
+        Name = null,
+        Address = null,
+        TownOrCity = null,
+        StateOrCounty = null,
+        ZipOrPostCode = null,
+        Country = null,
+    };
 
     public async Task CreateLocation()
     {
@@ -23,7 +33,7 @@ public class LocationController
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+            Console.WriteLine($"Exception: {ex.Message}");
         }
     }
 
@@ -40,11 +50,19 @@ public class LocationController
 
             locationFilterOptions = filterLocationOptions;
             var locations = await locationService.GetAllLocations(locationFilterOptions);
-            userInterface.DisplayLocationsTable(locations.Data);
-        }
+
+            if (locations.Data != null)
+            {
+                userInterface.DisplayLocationsTable(locations.Data);
+            }
+			else
+			{
+				AnsiConsole.MarkupLine("[red]No locations found.[/]");
+			}
+		}
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
+			Console.WriteLine ($"[red]Exception: {ex.Message}");
         }
     }
 

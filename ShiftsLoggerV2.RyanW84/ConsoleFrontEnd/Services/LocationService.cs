@@ -2,7 +2,6 @@
 using ConsoleFrontEnd.Models;
 using ConsoleFrontEnd.Models.Dtos;
 using ConsoleFrontEnd.Models.FilterOptions;
-using Microsoft.AspNetCore.HttpLogging;
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.Services;
@@ -49,17 +48,17 @@ public class LocationService : ILocationService
             else
             {
                 Console.WriteLine("Locations retrieved successfully.");
-                ApiResponseDto<List<Locations>>? createdLocation =
+                ApiResponseDto<List<Locations>>? locations =
                     await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Locations>>>()
                     ?? new ApiResponseDto<List<Locations>>
                     {
                         ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
+                        Message = "Data obtained",
                         Data = new List<Locations>(),
                         TotalCount = 0,
                     };
 
-                return createdLocation;
+                return locations;
             }
         }
         catch (Exception ex)

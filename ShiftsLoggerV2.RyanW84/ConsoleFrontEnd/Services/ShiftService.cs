@@ -20,8 +20,21 @@ public class ShiftService : IShiftService
         HttpResponseMessage response;
         try
         {
-            var queryString =
-                $"api/shifts?workerId={shiftFilterOptions.WorkerId}&locationId={shiftFilterOptions.LocationId}&startTime={shiftFilterOptions.StartTime}&endTime={shiftFilterOptions.EndTime}";
+            var queryParams = new List<string>();
+            if (shiftFilterOptions.ShiftId != null)
+                queryParams.Add($"shiftId={shiftFilterOptions.ShiftId}");
+            if (shiftFilterOptions.WorkerId != null)
+                queryParams.Add($"workerId={shiftFilterOptions.WorkerId}");
+            if (shiftFilterOptions.LocationId != null)
+                queryParams.Add($"locationId={shiftFilterOptions.LocationId}");
+            if (shiftFilterOptions.StartTime != null)
+                queryParams.Add($"startTime={shiftFilterOptions.StartTime:O}");
+            if (shiftFilterOptions.EndTime != null)
+                queryParams.Add($"endTime={shiftFilterOptions.EndTime:O}");
+
+            var queryString = "api/shifts";
+            if (queryParams.Count > 0)
+                queryString += "?" + string.Join("&", queryParams);
 
             response = await httpClient.GetAsync(queryString);
             if (!response.IsSuccessStatusCode)
@@ -41,22 +54,22 @@ public class ShiftService : IShiftService
                     ResponseCode = response.StatusCode,
                     Message = "No shifts found.",
                     Data = new List<Shifts>(),
-                    TotalCount = 0,
+                    TotalCount = 0
                 };
             }
             else
             {
-                var createdShift =
+                var shifts =
                     await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
                     ?? new ApiResponseDto<List<Shifts>>
                     {
-                        ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
-                        Data = new List<Shifts>(),
-                        TotalCount = 0,
+                        ResponseCode = response.StatusCode ,
+                        Message = "Data obtained" ,
+                        Data = new List<Shifts>()
                     };
 
-                return createdShift;
+
+				return shifts;
             }
         }
         catch (Exception ex)

@@ -27,7 +27,7 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
 
             switch (sortBy)
             {
-                case "worker_id":
+                case "workerId":
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(w => w.WorkerId)
@@ -39,7 +39,17 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
                             ? query.OrderBy(w => w.Name)
                             : query.OrderByDescending(w => w.Name);
                     break;
-                default:
+                case "phoneNumber":
+                    query = sortOrder == "asc"
+                        ? query.OrderBy(w => w.PhoneNumber)
+                        : query.OrderByDescending(w => w.PhoneNumber);
+                    break;
+                    case "email":
+                        query = sortOrder == "asc"
+                        ? query.OrderBy(w => w.Email)
+                        : query.OrderByDescending(w => w.Email);
+                    break;
+				default:
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(w => w.WorkerId)

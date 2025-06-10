@@ -51,37 +51,37 @@ class ShiftService(ShiftsDbContext dbContext) : IShiftService
 
             switch (sortBy)
             {
-                case "shift_id":
+                case "shiftId":
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(s => s.ShiftId)
                             : query.OrderByDescending(s => s.ShiftId);
                     break;
-                case "start_time":
+                case "startTime":
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(s => s.StartTime)
                             : query.OrderByDescending(s => s.StartTime);
                     break;
-                case "end_time":
+                case "endTime":
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(s => s.EndTime)
                             : query.OrderByDescending(s => s.EndTime);
                     break;
-                case "worker_id":
+                case "workerId":
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(s => s.WorkerId)
                             : query.OrderByDescending(s => s.WorkerId);
                     break;
-                case "location_id":
+                case "locationId":
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(s => s.LocationId)
                             : query.OrderByDescending(s => s.LocationId);
                     break;
-                case "location_name":
+                case "locationName":
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(s => s.Location.Name)

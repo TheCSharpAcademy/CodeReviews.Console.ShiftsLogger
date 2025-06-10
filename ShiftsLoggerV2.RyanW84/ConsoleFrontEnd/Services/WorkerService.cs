@@ -20,53 +20,64 @@ public class WorkerService : IWorkerService
         HttpResponseMessage response;
         try
         {
-            var queryString =
-                $"api/workers?workerId={workerFilterOptions.WorkerId}&workerName={workerFilterOptions.Name}&workerPhoneNumber{workerFilterOptions.PhoneNumber}&workerEmail{workerFilterOptions.Email}";
+			var queryParams = new List<string>();
+			if (workerFilterOptions.WorkerId != null)
+				queryParams.Add($"workerId={workerFilterOptions.WorkerId}");
+			if (workerFilterOptions.Name != null)
+				queryParams.Add($"name={workerFilterOptions.Name}");
+			if (workerFilterOptions.PhoneNumber != null)
+				queryParams.Add($"phoneNumber={workerFilterOptions.PhoneNumber}");
+			if (workerFilterOptions.Email != null)
+				queryParams.Add($"email={workerFilterOptions.Email:O}");
+			
 
-            response = await httpClient.GetAsync(queryString);
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
-                return new ApiResponseDto<List<Workers>>
-                {
-                    ResponseCode = response.StatusCode,
-                    Message = response.ReasonPhrase,
-                    Data = null,
-                };
-            }
-            else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
-            {
-                Console.WriteLine("No workers found.");
-                return new ApiResponseDto<List<Workers>>
-                {
-                    ResponseCode = response.StatusCode,
-                    Message = "No workers found.",
-                    Data = new List<Workers>(),
-                    TotalCount = 0,
-                };
-            }
-            else
-            {
-                Console.WriteLine("Workers retrieved successfully.");
-                ApiResponseDto<List<Workers>>? createdWorker =
-                    await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Workers>>>()
-                    ?? new ApiResponseDto<List<Workers>>
-                    {
-                        ResponseCode = response.StatusCode,
-                        Message = "No data returned.",
-                        Data = new List<Workers>(),
-                        TotalCount = 0,
-                    };
+			var queryString = "api/workers";
+			if (queryParams.Count > 0)
+				queryString += "?" + string.Join("&" , queryParams);
 
-                return createdWorker;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Try catch failed for GetAllWorkers: {ex}");
-            throw;
-        }
-    }
+			response = await httpClient.GetAsync(queryString);
+			if (!response.IsSuccessStatusCode)
+			{
+				return new ApiResponseDto<List<Workers>>
+				{
+					ResponseCode = response.StatusCode ,
+					Message = response.ReasonPhrase ,
+					Data = null ,
+				};
+			}
+			else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
+			{
+				Console.WriteLine("No workers found.");
+				return new ApiResponseDto<List<Workers>>
+				{
+					ResponseCode = response.StatusCode ,
+					Message = "No workers found." ,
+					Data = new List<Workers>() ,
+					TotalCount = 0
+				};
+			}
+			else
+			{
+				var workers =
+					await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Workers>>>()
+					?? new ApiResponseDto<List<Workers>>
+					{
+						ResponseCode = response.StatusCode ,
+						Message = "Data obtained" ,
+						Data = new List<Workers>()
+					};
+
+
+				return workers;
+			}
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Try catch failed for GetAllWorkers: {ex}");
+			throw;
+		}
+
+	}
 
     public async Task<ApiResponseDto<List<Workers?>>> GetWorkerById(int id)
     {
@@ -133,7 +144,7 @@ public class WorkerService : IWorkerService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Try catch failed for CreateShift: {ex}");
+            Console.WriteLine($"Try catch failed for CreateWorker: {ex}");
             throw;
         }
     }

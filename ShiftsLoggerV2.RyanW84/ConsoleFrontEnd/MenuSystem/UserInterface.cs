@@ -27,6 +27,7 @@ public class UserInterface
     {
         var filterOptions = new ShiftFilterOptions
         {
+            ShiftId = null,
             WorkerId = null,
             LocationId = null,
             StartTime = null,
@@ -50,12 +51,16 @@ public class UserInterface
         else
         {
             AnsiConsole.MarkupLine("[yellow]Choose which filters...[/]");
-            filterOptions.WorkerId = AnsiConsole.Ask<int?>(
-                "Enter [green]Worker ID[/] (or leave blank):",
+			filterOptions.ShiftId = AnsiConsole.Ask<int?>(
+			  "Enter [green]Shift #[/] (or leave blank):" ,
+			  defaultValue: null
+		  );
+			filterOptions.WorkerId = AnsiConsole.Ask<int?>(
+                "Enter [green]Worker #[/] (or leave blank):",
                 defaultValue: null
             );
             filterOptions.LocationId = AnsiConsole.Ask<int?>(
-                "Enter [green]Location ID[/] (or leave blank):",
+                "Enter [green]Location #[/] (or leave blank):",
                 defaultValue: null
             );
             filterOptions.StartTime = AnsiConsole.Ask<DateTime?>(
@@ -94,24 +99,31 @@ public class UserInterface
     public void DisplayShiftsTable(IEnumerable<Shifts> shifts)
     {
         Table table = new Table();
-        table.AddColumn("Worker ID");
-        table.AddColumn("Location ID");
+        table.AddColumn("Shift #");
+        table.AddColumn("Worker #");
+        table.AddColumn("Location #");
         table.AddColumn("Start Time");
         table.AddColumn("End Time");
         table.AddColumn("Duration");
 
-        foreach (var shift in shifts)
+        var shiftList = shifts.ToList();
+        for (int i = 0; i < shiftList.Count; i++)
         {
-            table.AddRow(
-                shift.WorkerId.ToString(),
-                shift.LocationId.ToString(),
-                shift.StartTime.ToString("g"),
-                shift.EndTime.ToString("g"),
-                (shift.EndTime - shift.StartTime).ToString(@"hh\:mm\:ss")
-            );
+            var shift = shiftList[i];
+            if (shift != null)
+            {
+                table.AddRow(
+                    (i + 1).ToString(),
+                    shift.WorkerId.ToString(),
+                    shift.LocationId.ToString(),
+                    shift.StartTime.ToString("g"), // Format DateTimeOffset to a readable string
+                    shift.EndTime.ToString("g"), // Format DateTimeOffset to a readable string
+                    (shift.EndTime - shift.StartTime).ToString(@"hh\:mm") // Calculate duration and format as hours and minutes
+                );
+            }
         }
-
         AnsiConsole.Write(table);
+        ContinueAndClearScreen();
     }
 
     public int GetShiftByIdUi()
@@ -277,12 +289,11 @@ public class UserInterface
         {
             LocationId = null,
             Name = null,
-            Description = string.Empty,
-            Address = string.Empty,
-            TownOrCity = string.Empty,
-            StateOrCounty = string.Empty,
-            ZipOrPostCode = string.Empty,
-            Country = string.Empty,
+            Address = null,
+            TownOrCity = null,
+            StateOrCounty = null ,
+            ZipOrPostCode = null ,
+            Country = null ,
         };
         // 1. Gather user input (UI Layer)
         AnsiConsole.WriteLine(
@@ -302,7 +313,7 @@ public class UserInterface
         {
             AnsiConsole.MarkupLine("[yellow]Choose which filters...[/]");
             filterLocationOptions.LocationId = AnsiConsole.Ask<int?>(
-                "Enter [green]Worker ID[/] (or leave blank):",
+                "Enter [green]Location ID[/] (or leave blank):",
                 defaultValue: null
             );
             filterLocationOptions.Name = AnsiConsole.Ask<string?>(
@@ -384,9 +395,7 @@ public class UserInterface
             }
         }
         AnsiConsole.Write(table);
-        Console.WriteLine("Press any key to continue");
-        Console.ReadKey();
-        Console.Clear();
+        ContinueAndClearScreen();
     }
 
     public int GetLocationByIdUi()

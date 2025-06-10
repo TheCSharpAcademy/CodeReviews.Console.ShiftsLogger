@@ -7,7 +7,7 @@ using ShiftsLoggerV2.RyanW84.Services;
 namespace ShiftsLoggerV2.RyanW84.Controllers;
 
 [ApiController]
-//http://localhost:5009/api/shiftcontroller/ this is what the route will look like
+//http://localhost:5009/api/shifts/ this is what the route will look like
 [Route("api/[controller]")]
 public class ShiftsController(IShiftService shiftService) : ControllerBase
 {

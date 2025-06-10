@@ -23,7 +23,7 @@ public class LocationMenu(MainMenu mainMenu)
                         "Create Location",
                         "View Locations",
                         "View Location by ID",
-                        "Edit Location",
+                        "Update Location",
                         "Delete Location",
                         "Back to Main Menu"
                     )
@@ -36,7 +36,10 @@ public class LocationMenu(MainMenu mainMenu)
                 case "View Locations":
                     await locationController.GetAllLocations();
                     break;
-                case "Edit Location":
+                case "View Location by ID":
+                    await locationController.GetLocationById();
+                    break;
+				case "Update Location":
                     await locationController.GetLocationById();
                     break;
                 case "Delete Location":
