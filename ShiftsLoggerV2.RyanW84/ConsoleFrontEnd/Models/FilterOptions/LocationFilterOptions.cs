@@ -3,7 +3,7 @@
 public class LocationFilterOptions
 {
     // This class defines the filter options for retrieving locations, allowing filtering by location ID and name.
-    public int? LocationId { get; set; } // Optional filter by location ID
+    public int? locationId { get; set; } // Optional filter by location ID
     public string? Name { get; set; } // Optional filter by location name
     public string? Description { get; set; } = string.Empty;
     public string? Address { get; set; } = string.Empty; // Optional filter by location address

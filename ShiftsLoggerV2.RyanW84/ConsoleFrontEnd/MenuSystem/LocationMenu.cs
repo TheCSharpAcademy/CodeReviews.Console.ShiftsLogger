@@ -42,8 +42,8 @@ public class LocationMenu(MainMenu mainMenu)
 				case "Update Location":
                     await locationController.GetLocationById();
                     break;
-                case "Delete Location":
-                    await locationController.DeleteLocation();
+                //case "Delete Location":
+                //    await locationController.DeleteLocation();
                     AnsiConsole.MarkupLine("[red]Delete Location functionality is not implemented yet.[/]");
                     break;
                 case "Back to Main Menu":

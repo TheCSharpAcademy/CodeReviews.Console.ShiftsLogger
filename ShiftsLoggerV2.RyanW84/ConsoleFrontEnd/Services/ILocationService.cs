@@ -16,5 +16,5 @@ public interface ILocationService
 
     public Task<ApiResponseDto<Locations?>> UpdateLocation(int id, Locations updatedLocation);
 
-    public Task<ApiResponseDto<string?>> DeleteLocation(int id);
+    //public Task<ApiResponseDto<string?>> DeleteLocation(int id);
 }

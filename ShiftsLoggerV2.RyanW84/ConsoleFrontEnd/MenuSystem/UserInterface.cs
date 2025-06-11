@@ -287,7 +287,7 @@ public class UserInterface
     {
         var filterLocationOptions = new LocationFilterOptions
         {
-            LocationId = null,
+            locationId = null,
             Name = null,
             Address = null,
             TownOrCity = null,
@@ -312,7 +312,7 @@ public class UserInterface
         else
         {
             AnsiConsole.MarkupLine("[yellow]Choose which filters...[/]");
-            filterLocationOptions.LocationId = AnsiConsole.Ask<int?>(
+            filterLocationOptions.locationId = AnsiConsole.Ask<int?>(
                 "Enter [green]Location ID[/] (or leave blank):",
                 defaultValue: null
             );
@@ -357,12 +357,12 @@ public class UserInterface
         var country = AnsiConsole.Ask<string>("Enter [green]Country[/]:");
         var createdLocation = new Locations
         {
-            Name = name,
-            Address = address,
-            TownOrCity = townOrCity,
-            StateOrCounty = stateOrCounty,
-            ZipOrPostCode = zipOrPostCode,
-            Country = country,
+            name = name,
+            address = address,
+            townOrCity = townOrCity,
+            stateOrCounty = stateOrCounty,
+            zipOrPostCode = zipOrPostCode,
+            country = country,
         };
 
         return createdLocation;
@@ -386,11 +386,11 @@ public class UserInterface
             {
                 table.AddRow(
                     (i + 1).ToString(),
-                    location.Name,
-                    location.Address,
-                    location.TownOrCity,
-                    location.StateOrCounty,
-                    location.Country
+                    location.name,
+                    location.address,
+                    location.townOrCity,
+                    location.stateOrCounty,
+                    location.country
                 );
             }
         }
@@ -409,39 +409,39 @@ public class UserInterface
     {
         var name = AnsiConsole.Ask<string>(
             "Enter [green]Name[/] (leave blank to keep current):",
-            existingLocation.FirstOrDefault()?.Name ?? string.Empty
+            existingLocation.FirstOrDefault()?.name ?? string.Empty
         );
         var address = AnsiConsole.Ask<string>(
             "Enter [green]Email[/] (leave blank to keep current):",
-            existingLocation.FirstOrDefault()?.Address ?? string.Empty
+            existingLocation.FirstOrDefault()?.address ?? string.Empty
         );
         var townOrCity = AnsiConsole.Ask<string>(
             "Enter [green]Phone Number[/] (leave blank to keep current):",
-            existingLocation.FirstOrDefault()?.TownOrCity ?? string.Empty
+            existingLocation.FirstOrDefault()?.townOrCity ?? string.Empty
         );
 
         var stateOrCounty = AnsiConsole.Ask<string>(
             "Enter [green]State or County[/] (leave blank to keep current):",
-            existingLocation.FirstOrDefault()?.StateOrCounty ?? string.Empty
+            existingLocation.FirstOrDefault()?.stateOrCounty ?? string.Empty
         );
 
         var zipOrPostCode = AnsiConsole.Ask<string>(
             "Enter [green]Zip or Post Code[/] (leave blank to keep current):",
-            existingLocation.FirstOrDefault()?.ZipOrPostCode ?? string.Empty
+            existingLocation.FirstOrDefault()?.zipOrPostCode ?? string.Empty
         );
 
         var country = AnsiConsole.Ask<string>(
             "Enter [green]Country[/] (leave blank to keep current):",
-            existingLocation.FirstOrDefault()?.Country ?? string.Empty
+            existingLocation.FirstOrDefault()?.country ?? string.Empty
         );
         var updatedLocation = new Locations
         {
-            Name = name,
-            Address = address,
-            TownOrCity = townOrCity,
-            StateOrCounty = stateOrCounty,
-            ZipOrPostCode = zipOrPostCode,
-            Country = country,
+            name = name,
+            address = address,
+            townOrCity = townOrCity,
+            stateOrCounty = stateOrCounty,
+            zipOrPostCode = zipOrPostCode,
+            country = country,
         };
         return updatedLocation;
     }
