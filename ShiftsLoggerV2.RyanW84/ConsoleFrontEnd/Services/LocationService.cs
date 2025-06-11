@@ -10,7 +10,7 @@ namespace ConsoleFrontEnd.Services;
 
 public class LocationService : ILocationService
 {
-	private readonly HttpClient httpClient = new HttpClient()
+	private readonly HttpClient httpClient = new ()
 	{
 		BaseAddress = new Uri("https://localhost:7009/") ,
 	};
@@ -23,16 +23,20 @@ public class LocationService : ILocationService
 		try
 		{
 			var queryParams = new List<string>();
-			if (locationFilterOptions.locationId != null)
-				queryParams.Add($"locationId={locationFilterOptions.locationId}");
-			//if (locationFilterOptions.WorkerId != null)
-			//	queryParams.Add($"workerId={locationFilterOptions.WorkerId}");
-			//if (locationFilterOptions.LocationId != null)
-			//	queryParams.Add($"locationId={locationFilterOptions.LocationId}");
-			//if (locationFilterOptions.StartTime != null)
-			//	queryParams.Add($"startTime={locationFilterOptions.StartTime:O}");
-			//if (locationFilterOptions.EndTime != null)
-			//	queryParams.Add($"endTime={locationFilterOptions.EndTime:O}");
+			if (locationFilterOptions.LocationId != null)
+				queryParams.Add($"LocationId={locationFilterOptions.LocationId}");
+			if (locationFilterOptions.Name != null)
+				queryParams.Add($"Name={locationFilterOptions.Name}");
+			if (locationFilterOptions.LocationId != null)
+				queryParams.Add($"Address={locationFilterOptions.Address}");
+			if (locationFilterOptions.TownOrCity != null)
+				queryParams.Add($"TownOrCity={locationFilterOptions.TownOrCity:O}");
+			if (locationFilterOptions.StateOrCounty != null)
+				queryParams.Add($"endTime={locationFilterOptions.StateOrCounty:O}");
+			if (locationFilterOptions.ZipOrPostCode != null)
+				queryParams.Add($"ZipOrPostCode={locationFilterOptions.ZipOrPostCode:O}");
+			if (locationFilterOptions.Country != null)
+				queryParams.Add($"Country={locationFilterOptions.Country:O}");
 
 			var queryString = "api/locations";
 			if (queryParams.Count > 0)
@@ -55,7 +59,7 @@ public class LocationService : ILocationService
 				{
 					ResponseCode = response.StatusCode ,
 					Message = "No locations found." ,
-					Data = new List<Locations>() ,
+					Data = [],
 					TotalCount = 0
 				};
 			}
@@ -67,7 +71,7 @@ public class LocationService : ILocationService
 					{
 						ResponseCode = response.StatusCode ,
 						Message = "Data obtained" ,
-						Data = new List<Locations>()
+						Data = []
 					};
 
 
@@ -107,7 +111,7 @@ public class LocationService : ILocationService
 					{
 						ResponseCode = response.StatusCode ,
 						Message = "No data returned." ,
-						Data = new() ,
+						Data = [],
 						TotalCount = 0 ,
 					};
 			}

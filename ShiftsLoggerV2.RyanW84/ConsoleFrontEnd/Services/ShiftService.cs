@@ -22,54 +22,48 @@ public class ShiftService : IShiftService
         {
             var queryParams = new List<string>();
             if (shiftFilterOptions.ShiftId != null)
-                queryParams.Add($"shiftId={shiftFilterOptions.ShiftId}");
+                queryParams.Add($"ShiftId={shiftFilterOptions.ShiftId}");
             if (shiftFilterOptions.WorkerId != null)
-                queryParams.Add($"workerId={shiftFilterOptions.WorkerId}");
+                queryParams.Add($"WorkerId={shiftFilterOptions.WorkerId}");
             if (shiftFilterOptions.LocationId != null)
-                queryParams.Add($"locationId={shiftFilterOptions.LocationId}");
+                queryParams.Add($"LocationId={shiftFilterOptions.LocationId}");
             if (shiftFilterOptions.StartTime != null)
-                queryParams.Add($"startTime={shiftFilterOptions.StartTime:O}");
+                queryParams.Add($"StartTime={shiftFilterOptions.StartTime:O}");
             if (shiftFilterOptions.EndTime != null)
-                queryParams.Add($"endTime={shiftFilterOptions.EndTime:O}");
+                queryParams.Add($"EndTime={shiftFilterOptions.EndTime:O}");
 
             var queryString = "api/shifts";
             if (queryParams.Count > 0)
                 queryString += "?" + string.Join("&", queryParams);
 
+            // Log the final query string
+            Console.WriteLine($"Requesting: {httpClient.BaseAddress}{queryString}");
+
             response = await httpClient.GetAsync(queryString);
-            if (!response.IsSuccessStatusCode)
-            {
-                return new ApiResponseDto<List<Shifts>>
-                {
-                    ResponseCode = response.StatusCode,
-                    Message = response.ReasonPhrase,
-                    Data = null,
-                };
-            }
-            else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
-            {
-                Console.WriteLine("No shifts found.");
-                return new ApiResponseDto<List<Shifts>>
-                {
-                    ResponseCode = response.StatusCode,
-                    Message = "No shifts found.",
-                    Data = new List<Shifts>(),
-                    TotalCount = 0
-                };
-            }
-            else
+            if (response.StatusCode is System.Net.HttpStatusCode.OK)
             {
                 var shifts =
                     await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
                     ?? new ApiResponseDto<List<Shifts>>
                     {
-                        ResponseCode = response.StatusCode ,
-                        Message = "Data obtained" ,
-                        Data = new List<Shifts>()
+                        ResponseCode = response.StatusCode,
+                        Message = "Data obtained",
+                        Data = [],
                     };
 
-
-				return shifts;
+                return shifts;
+            }
+            else
+            {
+                var shifts =
+                    await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Shifts>>>()
+                    ?? new ApiResponseDto<List<Shifts>>()
+                    {
+                        RequestFailed = true,
+                        Message = $"{response.ReasonPhrase}",
+                        Data = [],
+                    };
+                return shifts;
             }
         }
         catch (Exception ex)
@@ -105,7 +99,7 @@ public class ShiftService : IShiftService
                     {
                         ResponseCode = response.StatusCode,
                         Message = "No data returned.",
-                        Data = new (),
+                        Data = new(),
                         TotalCount = 0,
                     };
             }

@@ -11,7 +11,7 @@ public class LocationController
     private readonly LocationService locationService = new();
     private LocationFilterOptions locationFilterOptions = new()
     {
-        locationId = null,
+        LocationId = null,
         Name = null,
         Address = null,
         TownOrCity = null,
@@ -55,14 +55,14 @@ public class LocationController
             {
                 userInterface.DisplayLocationsTable(locations.Data);
             }
-			else
-			{
-				AnsiConsole.MarkupLine("[red]No locations found.[/]");
-			}
-		}
+            else
+            {
+                AnsiConsole.MarkupLine("[red]No locations found.[/]");
+            }
+        }
         catch (Exception ex)
         {
-			Console.WriteLine ($"[red]Exception: {ex.Message}");
+            Console.WriteLine($"[red]Exception: {ex.Message}");
         }
     }
 
@@ -82,7 +82,7 @@ public class LocationController
                 var exitSelection = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Try again or exit?")
-                        .AddChoices(new[] { "Try Again", "Exit" })
+                        .AddChoices(["Try Again", "Exit"])
                 );
                 if (exitSelection is "Exit")
                 {
@@ -123,7 +123,7 @@ public class LocationController
                 var exitSelection = AnsiConsole.Prompt(
                     new SelectionPrompt<string>()
                         .Title("Try again or exit?")
-                        .AddChoices(new[] { "Try Again", "Exit" })
+                        .AddChoices(["Try Again", "Exit"])
                 );
                 if (exitSelection is "Exit")
                 {

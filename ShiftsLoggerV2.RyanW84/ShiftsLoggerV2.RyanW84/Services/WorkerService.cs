@@ -16,10 +16,23 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
         var query = dbContext.Workers.AsQueryable();
         List<Workers?> workers;
 
+        if (workerOptions.WorkerId is not 0)
+        {
+            query = query.Where(w => w.WorkerId.ToString() == workerOptions.WorkerId.ToString());
+        }
         if (!string.IsNullOrEmpty(workerOptions.Name))
         {
-            query = query.Where(w => w.Name.ToLower().Contains(workerOptions.Name.ToLower()));
+            query = query.Where(w => w.Name == workerOptions.Name);
         }
+        if (workerOptions.PhoneNumber != null)
+        {
+            query = query.Where(w => w.PhoneNumber == workerOptions.PhoneNumber);
+        }
+        if (workerOptions.Email != null)
+        {
+            query = query.Where(w => w.Email == workerOptions.Email);
+        }
+
         if (!string.IsNullOrEmpty(workerOptions.SortBy))
         {
             var sortBy = workerOptions.SortBy.ToLowerInvariant();
@@ -40,16 +53,18 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
                             : query.OrderByDescending(w => w.Name);
                     break;
                 case "phoneNumber":
-                    query = sortOrder == "asc"
-                        ? query.OrderBy(w => w.PhoneNumber)
-                        : query.OrderByDescending(w => w.PhoneNumber);
+                    query =
+                        sortOrder == "asc"
+                            ? query.OrderBy(w => w.PhoneNumber)
+                            : query.OrderByDescending(w => w.PhoneNumber);
                     break;
-                    case "email":
-                        query = sortOrder == "asc"
-                        ? query.OrderBy(w => w.Email)
-                        : query.OrderByDescending(w => w.Email);
+                case "email":
+                    query =
+                        sortOrder == "asc"
+                            ? query.OrderBy(w => w.Email)
+                            : query.OrderByDescending(w => w.Email);
                     break;
-				default:
+                default:
                     query =
                         sortOrder == "asc"
                             ? query.OrderBy(w => w.WorkerId)
@@ -72,7 +87,7 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
         }
         else
         {
-            workers = (await query.ToListAsync()).Cast<Workers?>().ToList();
+            workers = [.. (await query.ToListAsync()).Cast<Workers?>()];
         }
 
         if (workers is null || workers.Count == 0)

@@ -25,7 +25,10 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
             };
         }
 
-        var query = dbContext.Locations.Include(l => l.Shifts).AsQueryable();
+        var query = dbContext
+            .Locations.Include(l => l.Shifts)
+            .Include(l => l.Workers)
+            .AsQueryable();
 
         List<Locations>? locations;
 

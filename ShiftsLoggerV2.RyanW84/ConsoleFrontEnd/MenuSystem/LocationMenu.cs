@@ -29,7 +29,8 @@ public class LocationMenu(MainMenu mainMenu)
                     )
             );
 
-            switch (choice) {
+            switch (choice)
+            {
                 case "Create Location":
                     await locationController.CreateLocation();
                     break;
@@ -39,12 +40,14 @@ public class LocationMenu(MainMenu mainMenu)
                 case "View Location by ID":
                     await locationController.GetLocationById();
                     break;
-				case "Update Location":
+                case "Update Location":
                     await locationController.GetLocationById();
                     break;
-                //case "Delete Location":
-                //    await locationController.DeleteLocation();
-                    AnsiConsole.MarkupLine("[red]Delete Location functionality is not implemented yet.[/]");
+                    //case "Delete Location":
+                    //    await locationController.DeleteLocation();
+                    AnsiConsole.MarkupLine(
+                        "[red]Delete Location functionality is not implemented yet.[/]"
+                    );
                     break;
                 case "Back to Main Menu":
                     await MainMenu.DisplayMainMenu();
