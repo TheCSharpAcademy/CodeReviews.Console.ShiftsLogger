@@ -20,64 +20,70 @@ public class WorkerService : IWorkerService
         HttpResponseMessage response;
         try
         {
-			var queryParams = new List<string>();
-			if (workerFilterOptions.WorkerId != null)
-				queryParams.Add($"workerId={workerFilterOptions.WorkerId}");
-			if (workerFilterOptions.Name != null)
-				queryParams.Add($"name={workerFilterOptions.Name}");
-			if (workerFilterOptions.PhoneNumber != null)
-				queryParams.Add($"phoneNumber={workerFilterOptions.PhoneNumber}");
-			if (workerFilterOptions.Email != null)
-				queryParams.Add($"email={workerFilterOptions.Email:O}");
-			
+            // Debug log for incoming search parameter
+            AnsiConsole.MarkupLine(
+                $"[yellow]Filter options received:[/]\n\n"
+                    + $"[blue]WorkerId:[/] {workerFilterOptions.WorkerId}\t"
+                    + $"[blue]Name:[/] {workerFilterOptions.Name}\t"
+                    + $"[blue]Phone Number:[/] {workerFilterOptions.PhoneNumber}\t"
+                    + $"[blue]Email:[/] {workerFilterOptions.Email}\t"
+                    + $"[blue]Search:[/] {workerFilterOptions.Search}\t"
+                    + $"[blue]Sort By:[/] {workerFilterOptions.SortBy}\t"
+                    + $"[blue]Sort Order:[/] {workerFilterOptions.SortOrder}\t"
+            );
 
-			var queryString = "api/workers";
-			if (queryParams.Count > 0)
-				queryString += "?" + string.Join("&" , queryParams);
+            var queryParams = new List<string>();
+            if (workerFilterOptions.WorkerId != null && workerFilterOptions.WorkerId != 0)
+                queryParams.Add($"workerId={workerFilterOptions.WorkerId}");
+            if (!string.IsNullOrWhiteSpace(workerFilterOptions.Name))
+                queryParams.Add($"name={workerFilterOptions.Name}");
+            if (!string.IsNullOrWhiteSpace(workerFilterOptions.PhoneNumber))
+                queryParams.Add($"phoneNumber={workerFilterOptions.PhoneNumber}");
+            if (!string.IsNullOrWhiteSpace(workerFilterOptions.Email))
+                queryParams.Add($"email={workerFilterOptions.Email}");
+            if (!string.IsNullOrWhiteSpace(workerFilterOptions.Search))
+                queryParams.Add($"search={workerFilterOptions.Search}");
 
-			response = await httpClient.GetAsync(queryString);
-			if (!response.IsSuccessStatusCode)
-			{
-				return new ApiResponseDto<List<Workers>>
-				{
-					ResponseCode = response.StatusCode ,
-					Message = response.ReasonPhrase ,
-					Data = null ,
-				};
-			}
-			else if (response.StatusCode is System.Net.HttpStatusCode.NoContent)
-			{
-				Console.WriteLine("No workers found.");
-				return new ApiResponseDto<List<Workers>>
-				{
-					ResponseCode = response.StatusCode ,
-					Message = "No workers found." ,
-					Data = new List<Workers>() ,
-					TotalCount = 0
-				};
-			}
-			else
-			{
-				var workers =
-					await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Workers>>>()
-					?? new ApiResponseDto<List<Workers>>
-					{
-						ResponseCode = response.StatusCode ,
-						Message = "Data obtained" ,
-						Data = new List<Workers>()
-					};
+            var queryString = "api/workers";
+            if (queryParams.Count > 0)
+                queryString += "?" + string.Join("&", queryParams);
 
+            AnsiConsole.MarkupLine(
+                $"[blue]Final request URL: {httpClient.BaseAddress}{queryString}[/]\n"
+            );
 
-				return workers;
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Try catch failed for GetAllWorkers: {ex}");
-			throw;
-		}
+            response = await httpClient.GetAsync(queryString);
+            if (!response.IsSuccessStatusCode)
+            {
+                AnsiConsole.Markup("[Red]Workers not retrieved.[/]\n");
+                return new ApiResponseDto<List<Workers>>
+                {
+                    ResponseCode = response.StatusCode,
+                    Message = response.ReasonPhrase,
+                    Data = null,
+                };
+            }
+            else
+            {
+                AnsiConsole.Markup("[Green]Workers retrieved successfully.[/]\n");
+                var workers =
+                    await response.Content.ReadFromJsonAsync<ApiResponseDto<List<Workers>>>()
+                    ?? new ApiResponseDto<List<Workers>>
+                    {
+                        ResponseCode = response.StatusCode,
+                        Message = "Data obtained",
+                        Data = new List<Workers>(),
+                    };
 
-	}
+                return workers;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Try catch failed for GetAllWorkers: {ex}");
+            throw;
+        }
+    }
 
     public async Task<ApiResponseDto<List<Workers?>>> GetWorkerById(int id)
     {
@@ -124,7 +130,7 @@ public class WorkerService : IWorkerService
             response = await httpClient.PostAsJsonAsync("api/workers", createdWorker);
             if (response.StatusCode is not System.Net.HttpStatusCode.Created)
             {
-                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                Console.WriteLine($"Error: Status Code - {response.StatusCode}");
                 return new ApiResponseDto<Workers>
                 {
                     ResponseCode = response.StatusCode,

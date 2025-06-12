@@ -8,12 +8,17 @@ public class ShiftFilterOptions
     public int? LocationId { get; set; }
     public DateTimeOffset? StartTime { get; set; }
     public DateTimeOffset? EndTime { get; set; }
-    public string? Search { get; set; }
-    public string? LocationName { get; set; } = string.Empty;
-    public string? SortBy { get; set; } = string.Empty;
-    public string? SortOrder { get; set; } = string.Empty;
+	public DateTime? StartDate { get; set; } // Use DateTime for date-only filtering
+	public DateTime? EndDate { get; set; } // Use DateTime for date-only filtering
+	public string? Search { get; set; }
 
-    // Additional properties for date filtering
-    public DateTime? StartDate { get; set; } // Use DateTime for date-only filtering
-    public DateTime? EndDate { get; set; } // Use DateTime for date-only filtering
+    // Linked table searching
+    public string? LocationName { get; set; } 
+
+    // Sorting options
+    public string? SortBy { get; set; } 
+    public string? SortOrder { get; set; }
+
+
+
 }

@@ -205,6 +205,7 @@ public class UserInterface
 			Name = null ,
 			PhoneNumber = null ,
 			Email = null ,
+			Search = null,
 		};
 		// 1. Gather user input (UI Layer)
 		AnsiConsole.WriteLine("\nPlease enter filter criteria for Workers (leave blank to skip):");
@@ -237,6 +238,11 @@ public class UserInterface
 				"Enter [green]Email[/] (or leave blank):" ,
 				defaultValue: null
 			);
+			filterOptions.Search = AnsiConsole.Ask<String?>("Enter [green]Search criteria[/] (or leave blank):" ,
+				defaultValue: null
+				);
+			
+
 			return filterOptions; // Return the filter options with user input
 		}
 	}
@@ -261,7 +267,7 @@ public class UserInterface
 	public void DisplayWorkersTable(IEnumerable<Workers?> workers)
 	{
 		Table table = new();
-		table.AddColumn("Worker #");
+		table.AddColumn("Index #");
 		table.AddColumn("Name");
 		table.AddColumn("Email");
 		table.AddColumn("Phone Number");

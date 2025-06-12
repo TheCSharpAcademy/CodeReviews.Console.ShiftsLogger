@@ -10,7 +10,7 @@ using ShiftsLoggerV2.RyanW84.Data;
 
 namespace ShiftsLoggerV2.RyanW84.Migrations
 {
-    [DbContext(typeof(ShiftsDbContext))]
+    [DbContext(typeof(Data.ShiftsLoggerDbContext))]
     partial class ShiftsDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -9,7 +9,7 @@ using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Services;
 
-public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocationService
+public class LocationService(Data.ShiftsLoggerDbContext dbContext, IMapper mapper) : ILocationService
 {
     public async Task<ApiResponseDto<List<Locations>>> GetAllLocations(
         LocationFilterOptions locationOptions
@@ -372,7 +372,7 @@ public class LocationService(ShiftsDbContext dbContext, IMapper mapper) : ILocat
     }
 
     public async Task<ActionResult<ApiResponseDto<Locations?>>> GetLocationOptionInput(
-        ShiftsDbContext dbContext,
+		Data.ShiftsLoggerDbContext dbContext,
         ILocationService locationService
     )
     {

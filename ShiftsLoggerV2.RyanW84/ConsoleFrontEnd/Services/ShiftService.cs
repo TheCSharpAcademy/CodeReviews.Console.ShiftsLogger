@@ -78,10 +78,10 @@ public class ShiftService : IShiftService
             if (queryParams.Count > 0)
                 queryString += "?" + string.Join("&", queryParams);
 
-            AnsiConsole.MarkupLine($"[blue]Final request URL: {httpClient.BaseAddress}{queryString}[/]\n");
+			AnsiConsole.MarkupLine($"[blue]Final request URL: {httpClient.BaseAddress}{queryString}[/]\n");
 
-            // Make the request
-            var response = await httpClient.GetAsync(queryString);
+			// Make the request
+			var response = await httpClient.GetAsync(queryString);
 
             if (response.StatusCode is System.Net.HttpStatusCode.OK)
             {

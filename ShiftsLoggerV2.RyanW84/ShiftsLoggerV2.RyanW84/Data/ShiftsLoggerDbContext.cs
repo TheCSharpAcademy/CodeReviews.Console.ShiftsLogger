@@ -3,7 +3,7 @@ using ShiftsLoggerV2.RyanW84.Models;
 
 namespace ShiftsLoggerV2.RyanW84.Data;
 
-public class ShiftsDbContext(DbContextOptions options) : DbContext(options)
+public class ShiftsLoggerDbContext(DbContextOptions options) : DbContext(options)
 {
     public DbSet<Shifts> Shifts { get; set; }
     public DbSet<Locations> Locations { get; set; }

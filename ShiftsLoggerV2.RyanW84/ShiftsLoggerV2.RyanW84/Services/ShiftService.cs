@@ -7,7 +7,7 @@ using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Services;
 
-class ShiftService(ShiftsDbContext dbContext) : IShiftService
+class ShiftService(ShiftsLoggerDbContext dbContext) : IShiftService
 {
     public async Task<ApiResponseDto<List<Shifts?>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {

@@ -7,90 +7,88 @@ using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Services;
 
-public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
+class WorkerService(ShiftsLoggerDbContext dbContext) : IWorkerService
 {
     public async Task<ApiResponseDto<List<Workers?>>> GetAllWorkers(
         WorkerFilterOptions workerOptions
     )
     {
-        var query = dbContext.Workers.AsQueryable();
-        List<Workers?> workers;
+        AnsiConsole.MarkupLine(
+            $"[yellow]Filter options received:[/]\n"
+                + $"  [blue]WorkerId:[/] {workerOptions.WorkerId ?? 0}\n"
+                + $"  [blue]LocationId:[/] {workerOptions.Name ?? "null"}\n"
+                + $"  [blue]LocationName:[/] {workerOptions.PhoneNumber ?? "null"}\n"
+                + $"  [blue]StartTime:[/] {workerOptions.Email ?? "null"}\n"
+                + $"  [blue]SortBy:[/] {workerOptions.SortBy ?? "null"}\n"
+                + $"  [blue]SortOrder:[/] {workerOptions.SortOrder ?? "null"}\n"
+                + $"  [blue]Search:[/] '{workerOptions.Search ?? "null"}'"
+        );
 
-        if (workerOptions.WorkerId is not 0)
+        var query = dbContext
+            .Workers.Include(w => w.Locations)
+            .Include(w => w.Shifts)
+            .AsQueryable();
+
+        // Apply all filters
+        if (workerOptions.WorkerId != null && workerOptions.WorkerId is not 0) // This had to be done this way as Worker ID is not nullable
         {
-            query = query.Where(w => w.WorkerId.ToString() == workerOptions.WorkerId.ToString());
-        }
-        if (!string.IsNullOrEmpty(workerOptions.Name))
-        {
-            query = query.Where(w => w.Name == workerOptions.Name);
-        }
-        if (workerOptions.PhoneNumber != null)
-        {
-            query = query.Where(w => w.PhoneNumber == workerOptions.PhoneNumber);
-        }
-        if (workerOptions.Email != null)
-        {
-            query = query.Where(w => w.Email == workerOptions.Email);
+            query = query.Where(s => s.WorkerId == workerOptions.WorkerId);
         }
 
+        if (string.IsNullOrWhiteSpace(workerOptions.Name))
+        {
+            query = query.Where(s => EF.Functions.Like(s.Name, $"%{workerOptions.Name}%"));
+        }
+        if (string.IsNullOrWhiteSpace(workerOptions.PhoneNumber))
+        {
+            query = query.Where(s =>
+                EF.Functions.Like(s.PhoneNumber, $"%{workerOptions.PhoneNumber}%")
+            );
+        }
+        if (string.IsNullOrWhiteSpace(workerOptions.Email))
+        {
+            query = query.Where(s => EF.Functions.Like(s.Email, $"%{workerOptions.Email}%"));
+        }
+
+        // Simplified search implementation
+        if (!string.IsNullOrWhiteSpace(workerOptions.Search))
+        {
+            query = query.Where(w =>
+                w.WorkerId.ToString().Contains(workerOptions.Search)
+                || EF.Functions.Like(w.Name, $"%{workerOptions.Search}%")
+                || EF.Functions.Like(w.PhoneNumber, $"%{workerOptions.Search}%")
+                || EF.Functions.Like(w.Email, $"%{workerOptions.Search}%")
+            );
+        }
+
+        // Apply sorting
         if (!string.IsNullOrEmpty(workerOptions.SortBy))
         {
             var sortBy = workerOptions.SortBy.ToLowerInvariant();
-            var sortOrder = workerOptions.SortOrder?.ToLowerInvariant() ?? "asc";
+            var sortOrder = workerOptions.SortOrder?.ToLowerInvariant() ?? "ASC";
 
-            switch (sortBy)
+            query = sortBy switch
             {
-                case "workerId":
-                    query =
-                        sortOrder == "asc"
-                            ? query.OrderBy(w => w.WorkerId)
-                            : query.OrderByDescending(w => w.WorkerId);
-                    break;
-                case "name":
-                    query =
-                        sortOrder == "asc"
-                            ? query.OrderBy(w => w.Name)
-                            : query.OrderByDescending(w => w.Name);
-                    break;
-                case "phoneNumber":
-                    query =
-                        sortOrder == "asc"
-                            ? query.OrderBy(w => w.PhoneNumber)
-                            : query.OrderByDescending(w => w.PhoneNumber);
-                    break;
-                case "email":
-                    query =
-                        sortOrder == "asc"
-                            ? query.OrderBy(w => w.Email)
-                            : query.OrderByDescending(w => w.Email);
-                    break;
-                default:
-                    query =
-                        sortOrder == "asc"
-                            ? query.OrderBy(w => w.WorkerId)
-                            : query.OrderByDescending(w => w.WorkerId);
-                    break;
-            }
+                "WorkerId" => sortOrder == "asc"
+                    ? query.OrderBy(w => w.WorkerId)
+                    : query.OrderByDescending(s => s.WorkerId),
+                "Name" => sortOrder == "asc"
+                    ? query.OrderBy(w => w.Name)
+                    : query.OrderByDescending(w => w.Name),
+                "PhoneNumber" => sortOrder == "asc"
+                    ? query.OrderBy(w => w.PhoneNumber)
+                    : query.OrderByDescending(w => w.PhoneNumber),
+                "Email" => sortOrder == "asc"
+                    ? query.OrderBy(w => w.Email)
+                    : query.OrderByDescending(w => w.Email),
+                _ => query.OrderBy(w => w.WorkerId), // Default sorting by WorkerId if no valid sortBy is provided
+            };
         }
 
-        if (!string.IsNullOrEmpty(workerOptions.Search))
-        {
-            string search = workerOptions.Search.ToLowerInvariant();
-            var data = await query.ToListAsync();
+        // Execute query and get results
+        var workers = (await query.ToListAsync()).Cast<Workers?>().ToList();
 
-            workers = data.Where(w =>
-                    w.WorkerId.ToString().Contains(search)
-                    || (w.Name != null && w.Name.ToLower().Contains(search))
-                )
-                .Cast<Workers?>()
-                .ToList();
-        }
-        else
-        {
-            workers = [.. (await query.ToListAsync()).Cast<Workers?>()];
-        }
-
-        if (workers is null || workers.Count == 0)
+        if (workers.Count == 0)
         {
             AnsiConsole.MarkupLine("[red]No workers found with the specified criteria.[/]");
             return new ApiResponseDto<List<Workers?>>
@@ -101,22 +99,23 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
                 Data = workers,
             };
         }
-        else
+
+        AnsiConsole.MarkupLine($"[green]Successfully retrieved {workers.Count} workers.[/]");
+        return new ApiResponseDto<List<Workers?>>
         {
-            AnsiConsole.MarkupLine($"[green]Successfully retrieved {workers.Count} workers.[/]");
-            return new ApiResponseDto<List<Workers?>>()
-            {
-                RequestFailed = false,
-                ResponseCode = System.Net.HttpStatusCode.OK,
-                Message = "Workers retrieved successfully.",
-                Data = workers,
-            };
-        }
+            RequestFailed = false,
+            ResponseCode = System.Net.HttpStatusCode.OK,
+            Message = "Workers retrieved successfully.",
+            Data = workers,
+        };
     }
 
     public async Task<ApiResponseDto<List<Workers?>>> GetWorkerById(int id)
     {
-        Workers? worker = await dbContext.Workers.FirstOrDefaultAsync(w => w.WorkerId == id);
+        Workers? worker = await dbContext
+            .Workers.Include(w => w.Locations)
+            .Include(w => w.Shifts)
+            .FirstOrDefaultAsync(s => s.WorkerId == id);
 
         if (worker is null)
         {
@@ -125,7 +124,7 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
                 RequestFailed = true,
                 ResponseCode = System.Net.HttpStatusCode.NotFound,
                 Message = $"Worker with ID: {id} not found.",
-                Data = new List<Workers?>(),
+                Data = [],
             };
         }
         else
@@ -138,7 +137,7 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
                 RequestFailed = false,
                 ResponseCode = System.Net.HttpStatusCode.OK,
                 Message = $"Worker with ID: {id} retrieved successfully.",
-                Data = new List<Workers?> { worker },
+                Data = [],
             };
         }
     }
@@ -147,11 +146,11 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
     {
         try
         {
-            Workers newWorker = new Workers
+            Workers newWorker = new()
             {
                 Name = worker.Name,
-                Email = worker.Email,
                 PhoneNumber = worker.PhoneNumber,
+                Email = worker.Email,
             };
             var savedWorker = await dbContext.Workers.AddAsync(newWorker);
             await dbContext.SaveChangesAsync();
@@ -199,8 +198,8 @@ public class WorkerService(ShiftsDbContext dbContext) : IWorkerService
         }
         savedWorker.WorkerId = id; // Ensure the WorkerId is set to the ID being updated
         savedWorker.Name = updatedWorker.Name;
-        savedWorker.Email = updatedWorker.Email;
         savedWorker.PhoneNumber = updatedWorker.PhoneNumber;
+        savedWorker.Email = updatedWorker.Email;
 
         dbContext.Workers.Update(savedWorker);
         await dbContext.SaveChangesAsync();

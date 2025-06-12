@@ -20,7 +20,7 @@ builder
             .IgnoreCycles
     );
 
-builder.Services.AddDbContext<ShiftsDbContext>(opt =>
+builder.Services.AddDbContext<ShiftsLoggerDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 builder.Services.AddScoped<IShiftService, ShiftService>(); //Implementing the service in the DI container
@@ -35,7 +35,7 @@ if (app.Environment.IsDevelopment())
     Console.WriteLine("Development Mode");
 
     using var scope = app.Services.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<ShiftsDbContext>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<ShiftsLoggerV2.RyanW84.Data.ShiftsLoggerDbContext>();
     dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
     dbContext.SeedData();
