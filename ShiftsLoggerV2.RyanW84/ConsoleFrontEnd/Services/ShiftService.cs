@@ -8,7 +8,7 @@ namespace ConsoleFrontEnd.Services;
 
 public class ShiftService : IShiftService
 {
-    private readonly HttpClient httpClient = new HttpClient()
+    private readonly HttpClient httpClient = new()
     {
         BaseAddress = new Uri("https://localhost:7009/"),
     };
@@ -31,10 +31,23 @@ public class ShiftService : IShiftService
                 queryParams.Add($"StartTime={shiftFilterOptions.StartTime:O}");
             if (shiftFilterOptions.EndTime != null)
                 queryParams.Add($"EndTime={shiftFilterOptions.EndTime:O}");
+            if (shiftFilterOptions.StartTime != null && shiftFilterOptions.EndTime != null)
+                queryParams.Add($"StartDate={shiftFilterOptions.StartTime.Value.Date:yyyy-MM-dd}");
+            if (shiftFilterOptions.EndTime != null)
+                queryParams.Add($"EndDate={shiftFilterOptions.EndTime.Value.Date:yyyy-MM-dd}");
+            if (!string.IsNullOrWhiteSpace(shiftFilterOptions.LocationName))
+                queryParams.Add(
+                    $"LocationName={Uri.EscapeDataString(shiftFilterOptions.LocationName)}"
+                );
+            if (!string.IsNullOrWhiteSpace(shiftFilterOptions.SortBy))
+                queryParams.Add($"SortBy={Uri.EscapeDataString(shiftFilterOptions.SortBy)}");
 
             var queryString = "api/shifts";
             if (queryParams.Count > 0)
                 queryString += "?" + string.Join("&", queryParams);
+
+            if (!string.IsNullOrWhiteSpace(shiftFilterOptions.Search))
+                queryParams.Add($"Search={Uri.EscapeDataString(shiftFilterOptions.Search)}");
 
             // Log the final query string
             Console.WriteLine($"Requesting: {httpClient.BaseAddress}{queryString}");
@@ -99,7 +112,7 @@ public class ShiftService : IShiftService
                     {
                         ResponseCode = response.StatusCode,
                         Message = "No data returned.",
-                        Data = new(),
+                        Data = [],
                         TotalCount = 0,
                     };
             }

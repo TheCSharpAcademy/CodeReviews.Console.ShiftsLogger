@@ -27,11 +27,17 @@ public class UserInterface
     {
         var filterOptions = new ShiftFilterOptions
         {
-            ShiftId = null,
-            WorkerId = null,
-            LocationId = null,
+            ShiftId = 0,
+            WorkerId = 0,
+            LocationId = 0,
             StartTime = null,
             EndTime = null,
+            Search = null,
+            LocationName = null,
+            StartDate = null,
+            EndDate = null,
+            SortBy = null,
+            SortOrder = null,
         };
         // 1. Gather user input (UI Layer)
         AnsiConsole.WriteLine(
@@ -71,6 +77,30 @@ public class UserInterface
                 "Enter [green]End Time[/] (or leave blank):",
                 defaultValue: null
             );
+            filterOptions.Search = AnsiConsole.Ask<string?>(
+                "Enter [green]Search criteria[/] (or leave blank):",
+                defaultValue: null
+            );
+            filterOptions.LocationName = AnsiConsole.Ask<string?>(
+                "Enter [green]Location Name[/] (or leave blank):",
+                defaultValue: null
+            );
+            filterOptions.SortBy = AnsiConsole.Ask<string?>(
+                "Enter [green]Sort By[/] (or leave blank):",
+                defaultValue: null
+            );
+            filterOptions.SortOrder = AnsiConsole.Ask<string?>(
+                "Enter [green]Sort Order[/] (or leave blank):",
+                defaultValue: null
+            );
+            filterOptions.StartDate = AnsiConsole.Ask<DateTime?>(
+                "Enter [green]Start Date[/] (or leave blank):",
+                defaultValue: null
+            );
+            filterOptions.EndDate = AnsiConsole.Ask<DateTime?>(
+                "Enter [green]End Date[/] (or leave blank):",
+                defaultValue: null
+            );
 
             return filterOptions; // Return the filter options with user input
         }
@@ -99,7 +129,7 @@ public class UserInterface
     public void DisplayShiftsTable(IEnumerable<Shifts> shifts)
     {
         Table table = new();
-        table.AddColumn("Shift #");
+        table.AddColumn("Index #");
         table.AddColumn("Worker #");
         table.AddColumn("Location #");
         table.AddColumn("Start Time");
@@ -229,27 +259,27 @@ public class UserInterface
     public void DisplayWorkersTable(IEnumerable<Workers?> workers)
     {
         Table table = new();
-        table.AddColumn("Worker ID");
+        table.AddColumn("Worker #");
         table.AddColumn("Name");
         table.AddColumn("Email");
         table.AddColumn("Phone Number");
 
-        foreach (var worker in workers)
+        var workersList = workers.ToList();
+        for (int i = 0; i < workersList.Count; i++)
         {
+            var worker = workersList[i];
             if (worker != null)
             {
                 table.AddRow(
-                    worker.WorkerId.ToString(),
+                    (i + 1).ToString(),
                     worker.Name,
-                    worker.Email,
-                    worker.PhoneNumber
+                    worker.Email ?? "N/A", // Handle null email addresses
+                    worker.PhoneNumber ?? "N/A" // Handle null phone numbers
                 );
             }
         }
         AnsiConsole.Write(table);
-        Console.WriteLine("Press any key to continue");
-        Console.ReadKey();
-        Console.Clear();
+        ContinueAndClearScreen();
     }
 
     public int GetWorkerByIdUi()

@@ -3,7 +3,7 @@ using Spectre.Console;
 
 namespace ConsoleFrontEnd.MenuSystem;
 
-public class LocationMenu(MainMenu mainMenu)
+public class LocationMenu()
 {
     public static async Task DisplayLocationMenu()
     {
@@ -43,12 +43,12 @@ public class LocationMenu(MainMenu mainMenu)
                 case "Update Location":
                     await locationController.GetLocationById();
                     break;
-                    //case "Delete Location":
-                    //    await locationController.DeleteLocation();
-                    AnsiConsole.MarkupLine(
-                        "[red]Delete Location functionality is not implemented yet.[/]"
-                    );
-                    break;
+                //case "Delete Location":
+                //    await locationController.DeleteLocation();
+                //AnsiConsole.MarkupLine(
+                //    "[red]Delete Location functionality is not implemented yet.[/]"
+                //);
+                //break;
                 case "Back to Main Menu":
                     await MainMenu.DisplayMainMenu();
                     return;

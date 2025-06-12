@@ -15,10 +15,17 @@ namespace ConsoleFrontEnd.Controller
 
         private ShiftFilterOptions shiftFilterOptions = new()
         {
-            WorkerId = null,
-            LocationId = null,
+            ShiftId = 0,
+            WorkerId = 0,
+            LocationId = 0,
             StartTime = null,
             EndTime = null,
+            StartDate = null,
+            EndDate = null,
+            LocationName = null,
+            SortBy = null,
+            SortOrder = null,
+            Search=null,
         };
 
         // Helpers
@@ -102,7 +109,6 @@ namespace ConsoleFrontEnd.Controller
                 var shifts = await shiftService.GetAllShifts(shiftFilterOptions);
 
                 userInterface.DisplayShiftsTable(shifts.Data);
-                
             }
             catch (Exception ex)
             {

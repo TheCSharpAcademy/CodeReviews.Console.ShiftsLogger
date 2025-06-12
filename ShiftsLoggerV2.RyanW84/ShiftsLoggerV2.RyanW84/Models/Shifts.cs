@@ -11,9 +11,9 @@ public class Shifts
     public DateTimeOffset StartTime { get; set; }
     public DateTimeOffset EndTime { get; set; }
 
-    // Navigation property to the Location entity
-    public virtual Locations Location { get; set; }
+	// Navigation property to the Location entity
+	public virtual Locations Location { get; set; }
 
-    // Navigation property to the Worker entity
-    public virtual Workers Worker { get; set; }
+	// Navigation property to the Worker entity
+	public virtual Workers Worker { get; set; }
 }
