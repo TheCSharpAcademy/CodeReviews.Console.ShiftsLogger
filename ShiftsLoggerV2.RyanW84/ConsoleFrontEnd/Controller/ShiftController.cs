@@ -15,9 +15,9 @@ namespace ConsoleFrontEnd.Controller
 
         private ShiftFilterOptions shiftFilterOptions = new()
         {
-            ShiftId = 0,
-            WorkerId = 0,
-            LocationId = 0,
+            ShiftId = null,
+            WorkerId = null,
+            LocationId = null,
             StartTime = null,
             EndTime = null,
             StartDate = null,
@@ -25,7 +25,7 @@ namespace ConsoleFrontEnd.Controller
             LocationName = null,
             SortBy = null,
             SortOrder = null,
-            Search=null,
+            Search = null,
         };
 
         // Helpers

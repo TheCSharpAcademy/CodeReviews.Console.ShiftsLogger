@@ -17,42 +17,72 @@ public class ShiftService : IShiftService
         ShiftFilterOptions shiftFilterOptions
     )
     {
-        HttpResponseMessage response;
         try
         {
+            // Debug log for incoming search parameter
+            AnsiConsole.MarkupLine($"[yellow]Filter options received:[/]\n\n" +
+                $"  [blue]ShiftId:[/] {shiftFilterOptions.ShiftId}\t" +
+                $"  [blue]WorkerId:[/] {shiftFilterOptions.WorkerId}\t" +
+                $"  [blue]LocationId:[/] {shiftFilterOptions.LocationId}\t" +
+                $"  [blue]LocationName:[/] '{shiftFilterOptions.LocationName ?? "null"}'\n" +
+                $"  [blue]StartTime:[/] {shiftFilterOptions.StartTime?.ToString() ?? "null"}\t" +
+                $"  [blue]EndTime:[/] {shiftFilterOptions.EndTime?.ToString() ?? "null"}'\t" +
+                $"  [blue]SortBy:[/] '{shiftFilterOptions.SortBy ?? "null"}'\t" +
+                $"  [blue]SortOrder:[/] '{shiftFilterOptions.SortOrder ?? "null"}'\t" +
+                $"  [blue]Search:[/] '{shiftFilterOptions.Search ?? "null"}'\n");
+
             var queryParams = new List<string>();
+
+            // Add all filter parameters
             if (shiftFilterOptions.ShiftId != null)
                 queryParams.Add($"ShiftId={shiftFilterOptions.ShiftId}");
+
             if (shiftFilterOptions.WorkerId != null)
                 queryParams.Add($"WorkerId={shiftFilterOptions.WorkerId}");
+
             if (shiftFilterOptions.LocationId != null)
                 queryParams.Add($"LocationId={shiftFilterOptions.LocationId}");
+
+            // Date/time parameters
             if (shiftFilterOptions.StartTime != null)
                 queryParams.Add($"StartTime={shiftFilterOptions.StartTime:O}");
+
             if (shiftFilterOptions.EndTime != null)
                 queryParams.Add($"EndTime={shiftFilterOptions.EndTime:O}");
-            if (shiftFilterOptions.StartTime != null && shiftFilterOptions.EndTime != null)
+
+            if (shiftFilterOptions.StartTime != null)
                 queryParams.Add($"StartDate={shiftFilterOptions.StartTime.Value.Date:yyyy-MM-dd}");
+
             if (shiftFilterOptions.EndTime != null)
                 queryParams.Add($"EndDate={shiftFilterOptions.EndTime.Value.Date:yyyy-MM-dd}");
+
+            // Search parameter - improved with trimming and proper null checking
+            if (!string.IsNullOrWhiteSpace(shiftFilterOptions.Search?.Trim()))
+            {
+                queryParams.Add($"Search={Uri.EscapeDataString(shiftFilterOptions.Search.Trim())}");
+                AnsiConsole.MarkupLine($"[green]Adding search parameter: '{shiftFilterOptions.Search.Trim()}'[/]");
+            }
+
+            // Other parameters
             if (!string.IsNullOrWhiteSpace(shiftFilterOptions.LocationName))
-                queryParams.Add(
-                    $"LocationName={Uri.EscapeDataString(shiftFilterOptions.LocationName)}"
-                );
+                queryParams.Add($"LocationName={Uri.EscapeDataString(shiftFilterOptions.LocationName)}");
+
             if (!string.IsNullOrWhiteSpace(shiftFilterOptions.SortBy))
                 queryParams.Add($"SortBy={Uri.EscapeDataString(shiftFilterOptions.SortBy)}");
 
+            if (!string.IsNullOrWhiteSpace(shiftFilterOptions.SortOrder))
+                queryParams.Add($"SortOrder={Uri.EscapeDataString(shiftFilterOptions.SortOrder)}");
+
+            // Build and log the final URL
             var queryString = "api/shifts";
             if (queryParams.Count > 0)
                 queryString += "?" + string.Join("&", queryParams);
 
-            if (!string.IsNullOrWhiteSpace(shiftFilterOptions.Search))
-                queryParams.Add($"Search={Uri.EscapeDataString(shiftFilterOptions.Search)}");
+            AnsiConsole.MarkupLine($"[blue]Final request URL: {httpClient.BaseAddress}{queryString}[/]\n");
 
-            // Log the final query string
-            Console.WriteLine($"Requesting: {httpClient.BaseAddress}{queryString}");
+            // Make the request
+            var response = await httpClient.GetAsync(queryString);
 
-            response = await httpClient.GetAsync(queryString);
             if (response.StatusCode is System.Net.HttpStatusCode.OK)
             {
                 var shifts =

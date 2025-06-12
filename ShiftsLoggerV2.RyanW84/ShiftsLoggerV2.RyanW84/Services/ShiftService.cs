@@ -5,120 +5,115 @@ using ShiftsLoggerV2.RyanW84.Models;
 using ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 using Spectre.Console;
 
-using System.Linq;
-
 namespace ShiftsLoggerV2.RyanW84.Services;
 
 class ShiftService(ShiftsDbContext dbContext) : IShiftService
 {
     public async Task<ApiResponseDto<List<Shifts?>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {
-        var query = dbContext.Shifts.Include(s => s.Location).Include(s => s.Worker).AsQueryable();
-        List<Shifts?> shifts;
+        AnsiConsole.MarkupLine(
+            $"[yellow]Filter options received:[/]\n"
+                + $"  [blue]ShiftId:[/] {shiftOptions.ShiftId}\n"
+                + $"  [blue]WorkerId:[/] {shiftOptions.WorkerId ?? 0}\n"
+                + $"  [blue]LocationId:[/] {shiftOptions.LocationId ?? 0}\n"
+                + $"  [blue]LocationName:[/] {shiftOptions.LocationName ?? "null"}\n"
+                + $"  [blue]StartTime:[/] {shiftOptions.StartTime?.ToString() ?? "null"}\n"
+                + $"  [blue]EndTime:[/] {shiftOptions.EndTime?.ToString() ?? "null"}\n"
+                + $"  [blue]SortBy:[/] {shiftOptions.SortBy ?? "null"}\n"
+                + $"  [blue]SortOrder:[/] {shiftOptions.SortOrder ?? "null"}\n"
+                + $"  [blue]Search:[/] '{shiftOptions.Search ?? "null"}'"
+        );
 
-        if (shiftOptions.ShiftId is not 0)
+        var query = dbContext.Shifts.Include(s => s.Location).Include(s => s.Worker).AsQueryable();
+
+        // Apply all filters
+        if (shiftOptions.ShiftId != null && shiftOptions.ShiftId is not 0) // This had to be done this way as Shift ID is not nullable
         {
             query = query.Where(s => s.ShiftId == shiftOptions.ShiftId);
         }
-        if (shiftOptions.WorkerId is not 0)
+
+        if (shiftOptions.WorkerId is not null and not 0)
         {
-            query = query.Where(s => s.WorkerId.ToString() == shiftOptions.WorkerId.ToString());
+            if (shiftOptions.ShiftId is not 0)
+                query = query.Where(s => s.WorkerId == shiftOptions.WorkerId);
         }
-        if (shiftOptions.StartTime != null)
+
+        if (shiftOptions.LocationId is not null and not 0)
         {
-            query = query.Where(s => s.StartTime <= shiftOptions.StartTime);
+            query = query.Where(s => s.LocationId == shiftOptions.LocationId);
         }
-        if (shiftOptions.EndTime != null)
-        {
-            query = query.Where(s => s.EndTime <= shiftOptions.EndTime);
-        }
-        if (shiftOptions.LocationId is not 0)
-        {
-            query = query.Where(s => s.LocationId.ToString() == shiftOptions.LocationId.ToString());
-        }
+
         if (!string.IsNullOrEmpty(shiftOptions.LocationName))
         {
             query = query.Where(s =>
-                s.Location.Name.Contains(shiftOptions.LocationName , StringComparison.CurrentCultureIgnoreCase)
-			);
+                EF.Functions.Like(s.Location.Name, $"%{shiftOptions.LocationName}%")
+            );
         }
-        if (shiftOptions.StartTime != null)
+
+        // Date filters
+        if (shiftOptions.StartTime is not null)
         {
             query = query.Where(s => s.StartTime.Date >= shiftOptions.StartTime.Value.Date);
         }
-        if (shiftOptions.EndTime != null)
+
+        if (shiftOptions.EndTime is not null)
         {
             query = query.Where(s => s.EndTime.Date <= shiftOptions.EndTime.Value.Date);
         }
+
+        // Simplified search implementation
+        if (!string.IsNullOrWhiteSpace(shiftOptions.Search))
+        {
+            query = query.Where(s =>
+                s.WorkerId.ToString().Contains(shiftOptions.Search)
+                || s.LocationId.ToString().Contains(shiftOptions.Search)
+                || EF.Functions.Like(s.Location.Name, $"%{shiftOptions.Search}%")
+                || EF.Functions.Like(s.Location.TownOrCity, $"%{shiftOptions.Search}%")
+                || EF.Functions.Like(s.Location.StateOrCounty, $"%{shiftOptions.Search}%")
+                || EF.Functions.Like(s.Location.Country, $"%{shiftOptions.Search}%")
+                || s.StartTime.ToString().Contains(shiftOptions.Search)
+                || s.EndTime.ToString().Contains(shiftOptions.Search)
+            );
+        }
+
+        // Apply sorting
         if (!string.IsNullOrEmpty(shiftOptions.SortBy))
         {
             var sortBy = shiftOptions.SortBy.ToLowerInvariant();
             var sortOrder = shiftOptions.SortOrder?.ToLowerInvariant() ?? "ASC";
 
-			query = sortBy switch
-			{
-				"ShiftId" => sortOrder == "ASC"
-											? query.OrderBy(s => s.ShiftId)
-											: query.OrderByDescending(s => s.ShiftId),
-				"StartTime" => sortOrder == "ASC"
-											? query.OrderBy(s => s.StartTime)
-											: query.OrderByDescending(s => s.StartTime),
-				"EndTime" => sortOrder == "ASC"
-											? query.OrderBy(s => s.EndTime)
-											: query.OrderByDescending(s => s.EndTime),
-				"WorkerId" => sortOrder == "ASC"
-											? query.OrderBy(s => s.WorkerId)
-											: query.OrderByDescending(s => s.WorkerId),
-				"LocationId" => sortOrder == "ASC"
-											? query.OrderBy(s => s.LocationId)
-											: query.OrderByDescending(s => s.LocationId),
-				"LocationName" => sortOrder == "ASC"
-											? query.OrderBy(s => s.Location.Name)
-											: query.OrderByDescending(s => s.Location.Name),
-				_ => sortOrder == "ASC"
-											? query.OrderBy(s => s.ShiftId)
-											: query.OrderByDescending(s => s.ShiftId),
-			};
-		}
-
-        if (!string.IsNullOrEmpty(shiftOptions.Search))
-        {
-            string search =
-                shiftOptions.Search.Contains((char)StringComparison.InvariantCultureIgnoreCase) 
-                    ? shiftOptions.Search.ToLowerInvariant()
-                    : shiftOptions.Search;
-            var searchChars = search.ToCharArray();
-
-            var data = await query.ToListAsync();
-
-            shifts = [.. data.Where(s =>
-                s.WorkerId.ToString().Contains(search)
-                || s.StartTime.ToString().Contains(search)
-                || s.EndTime.ToString().Contains(search)
-                || s.LocationId.ToString().Contains(search)
-                || s.Location.Name.Contains(search)
-                || s.Location.TownOrCity.Contains(search)
-                || s.Location.StateOrCounty.Contains(search)
-                || s.Location.Country.Contains(search)
-                || searchChars.All(c =>
-                    s.StartTime.ToString("yyyy-MM-ddTHH:mm:ss").ToLower().Contains(c)
-                )
-                || searchChars.All(c =>
-                    s.EndTime.ToString("yyyy-MM-ddTHH:mm:ss").ToLower().Contains(c)
-                )
-            ).Cast<Shifts?>()];
+            query = sortBy switch
+            {
+                "shiftid" => sortOrder == "asc"
+                    ? query.OrderBy(s => s.ShiftId)
+                    : query.OrderByDescending(s => s.ShiftId),
+                "starttime" => sortOrder == "asc"
+                    ? query.OrderBy(s => s.StartTime)
+                    : query.OrderByDescending(s => s.StartTime),
+                "endtime" => sortOrder == "asc"
+                    ? query.OrderBy(s => s.EndTime)
+                    : query.OrderByDescending(s => s.EndTime),
+                "workerid" => sortOrder == "asc"
+                    ? query.OrderBy(s => s.WorkerId)
+                    : query.OrderByDescending(s => s.WorkerId),
+                "locationid" => sortOrder == "asc"
+                    ? query.OrderBy(s => s.LocationId)
+                    : query.OrderByDescending(s => s.LocationId),
+                "locationname" => sortOrder == "asc"
+                    ? query.OrderBy(s => s.Location.Name)
+                    : query.OrderByDescending(s => s.Location.Name),
+                _ => sortOrder == "asc"
+                    ? query.OrderBy(s => s.ShiftId)
+                    : query.OrderByDescending(s => s.ShiftId),
+            };
         }
-        else
-        {
-            shifts = [.. (await query.ToListAsync()).Cast<Shifts?>()];
-        }
-	
-	
 
-		if (shifts is null || shifts.Count == 0)
+        // Execute query and get results
+        var shifts = (await query.ToListAsync()).Cast<Shifts?>().ToList();
+
+        if (shifts.Count == 0)
         {
             AnsiConsole.MarkupLine("[red]No shifts found with the specified criteria.[/]");
-
             return new ApiResponseDto<List<Shifts?>>
             {
                 RequestFailed = true,
@@ -127,18 +122,15 @@ class ShiftService(ShiftsDbContext dbContext) : IShiftService
                 Data = shifts,
             };
         }
-        else
-        {
-            AnsiConsole.MarkupLine($"[green]Successfully retrieved {shifts.Count} shifts.[/]");
 
-            return new ApiResponseDto<List<Shifts?>>()
-            {
-                RequestFailed = false,
-                ResponseCode = System.Net.HttpStatusCode.OK,
-                Message = "Shifts retrieved successfully.",
-                Data = shifts,
-            };
-        }
+        AnsiConsole.MarkupLine($"[green]Successfully retrieved {shifts.Count} shifts.[/]");
+        return new ApiResponseDto<List<Shifts?>>
+        {
+            RequestFailed = false,
+            ResponseCode = System.Net.HttpStatusCode.OK,
+            Message = "Shifts retrieved successfully.",
+            Data = shifts,
+        };
     }
 
     public async Task<ApiResponseDto<List<Shifts?>>> GetShiftById(int id)
@@ -155,8 +147,8 @@ class ShiftService(ShiftsDbContext dbContext) : IShiftService
                 RequestFailed = true,
                 ResponseCode = System.Net.HttpStatusCode.NotFound,
                 Message = $"Shift with ID: {id} not found.",
-                Data = [] ,
-			};
+                Data = [],
+            };
         }
         else
         {
@@ -168,7 +160,7 @@ class ShiftService(ShiftsDbContext dbContext) : IShiftService
                 RequestFailed = false,
                 ResponseCode = System.Net.HttpStatusCode.OK,
                 Message = $"Shift with ID: {id} retrieved successfully.",
-                Data = []
+                Data = [],
             };
         }
     }
@@ -177,7 +169,7 @@ class ShiftService(ShiftsDbContext dbContext) : IShiftService
     {
         try
         {
-            Shifts newShift = new ()
+            Shifts newShift = new()
             {
                 StartTime = shift.StartTime,
                 EndTime = shift.EndTime,

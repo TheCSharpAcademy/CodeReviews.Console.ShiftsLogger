@@ -5,9 +5,9 @@ namespace ShiftsLoggerV2.RyanW84.Models.FilterOptions;
 public class ShiftFilterOptions
 {
     [FromQuery(Name = "shiftId")]
-    public int ShiftId { get; set; } =0; // Use int for shift ID filtering
+    public int ShiftId { get; set; } // Use int for shift ID filtering
 
-	[FromQuery(Name = "startTime")]
+    [FromQuery(Name = "startTime")]
     public DateTimeOffset? StartTime { get; set; }
 
     [FromQuery(Name = "endTime")]
@@ -20,10 +20,10 @@ public class ShiftFilterOptions
     public DateTime? EndDate { get; set; } // Use DateTime for date-only filtering
 
     [FromQuery(Name = "workerId")]
-    public int? WorkerId { get; set; } = 0;
+    public int? WorkerId { get; set; }
 
     [FromQuery(Name = "locationId")]
-    public int? LocationId { get; set; } = 0;
+    public int? LocationId { get; set; }
 
     [FromQuery(Name = "locationName")]
     public string LocationName { get; set; } = string.Empty; // Use string for location name filtering
