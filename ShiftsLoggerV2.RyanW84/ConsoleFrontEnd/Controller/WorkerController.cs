@@ -27,11 +27,13 @@ public class WorkerController
             );
             var worker = userInterface.CreateWorkerUi();
             var createdWorker = await workerService.CreateWorker(worker);
-        }
+            userInterface.ContinueAndClearScreen();
+		}
         catch (Exception ex)
         {
 			Console.WriteLine ($"Exception: {ex.Message}");
-        }
+            userInterface.ContinueAndClearScreen();
+		}
     }
 
     public async Task GetAllWorkers()

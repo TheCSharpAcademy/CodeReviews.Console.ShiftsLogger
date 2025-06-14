@@ -7,7 +7,7 @@ using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Services;
 
-class WorkerService(ShiftsLoggerDbContext dbContext) : IWorkerService
+public class WorkerService(ShiftsLoggerDbContext dbContext) : IWorkerService
 {
     public async Task<ApiResponseDto<List<Workers?>>> GetAllWorkers(
         WorkerFilterOptions workerOptions
@@ -15,10 +15,10 @@ class WorkerService(ShiftsLoggerDbContext dbContext) : IWorkerService
     {
         AnsiConsole.MarkupLine(
             $"[yellow]Filter options received:[/]\n"
-                + $"  [blue]WorkerId:[/] {workerOptions.WorkerId ?? 0}\n"
-                + $"  [blue]LocationId:[/] {workerOptions.Name ?? "null"}\n"
-                + $"  [blue]LocationName:[/] {workerOptions.PhoneNumber ?? "null"}\n"
-                + $"  [blue]StartTime:[/] {workerOptions.Email ?? "null"}\n"
+                + $"  [blue]WorkerId:[/] {workerOptions.WorkerId ?? null}\n"
+                + $"  [blue]Name:[/] {workerOptions.Name ?? "null"}\n"
+                + $"  [blue]PhoneNumber:[/] {workerOptions.PhoneNumber ?? "null"}\n"
+                + $"  [blue]Email:[/] {workerOptions.Email ?? "null"}\n"
                 + $"  [blue]SortBy:[/] {workerOptions.SortBy ?? "null"}\n"
                 + $"  [blue]SortOrder:[/] {workerOptions.SortOrder ?? "null"}\n"
                 + $"  [blue]Search:[/] '{workerOptions.Search ?? "null"}'"
@@ -30,24 +30,24 @@ class WorkerService(ShiftsLoggerDbContext dbContext) : IWorkerService
             .AsQueryable();
 
         // Apply all filters
-        if (workerOptions.WorkerId != null && workerOptions.WorkerId is not 0) // This had to be done this way as Worker ID is not nullable
+        if (workerOptions.WorkerId != null && workerOptions.WorkerId is not 0)
         {
-            query = query.Where(s => s.WorkerId == workerOptions.WorkerId);
+            query = query.Where(w => w.WorkerId == workerOptions.WorkerId);
         }
 
-        if (string.IsNullOrWhiteSpace(workerOptions.Name))
+        if (!string.IsNullOrWhiteSpace(workerOptions.Name))
         {
-            query = query.Where(s => EF.Functions.Like(s.Name, $"%{workerOptions.Name}%"));
+            query = query.Where(w => EF.Functions.Like(w.Name, $"%{workerOptions.Name}%"));
         }
-        if (string.IsNullOrWhiteSpace(workerOptions.PhoneNumber))
+        if (!string.IsNullOrWhiteSpace(workerOptions.PhoneNumber))
         {
-            query = query.Where(s =>
-                EF.Functions.Like(s.PhoneNumber, $"%{workerOptions.PhoneNumber}%")
+            query = query.Where(w =>
+                EF.Functions.Like(w.PhoneNumber, $"%{workerOptions.PhoneNumber}%")
             );
         }
-        if (string.IsNullOrWhiteSpace(workerOptions.Email))
+        if (!string.IsNullOrWhiteSpace(workerOptions.Email))
         {
-            query = query.Where(s => EF.Functions.Like(s.Email, $"%{workerOptions.Email}%"));
+            query = query.Where(w => EF.Functions.Like(w.Email, $"%{workerOptions.Email}%"));
         }
 
         // Simplified search implementation
@@ -61,29 +61,39 @@ class WorkerService(ShiftsLoggerDbContext dbContext) : IWorkerService
             );
         }
 
-        // Apply sorting
-        if (!string.IsNullOrEmpty(workerOptions.SortBy))
+        if (!string.IsNullOrWhiteSpace(workerOptions.SortBy))
         {
-            var sortBy = workerOptions.SortBy.ToLowerInvariant();
-            var sortOrder = workerOptions.SortOrder?.ToLowerInvariant() ?? "ASC";
-
-            query = sortBy switch
-            {
-                "WorkerId" => sortOrder == "asc"
-                    ? query.OrderBy(w => w.WorkerId)
-                    : query.OrderByDescending(s => s.WorkerId),
-                "Name" => sortOrder == "asc"
-                    ? query.OrderBy(w => w.Name)
-                    : query.OrderByDescending(w => w.Name),
-                "PhoneNumber" => sortOrder == "asc"
-                    ? query.OrderBy(w => w.PhoneNumber)
-                    : query.OrderByDescending(w => w.PhoneNumber),
-                "Email" => sortOrder == "asc"
-                    ? query.OrderBy(w => w.Email)
-                    : query.OrderByDescending(w => w.Email),
-                _ => query.OrderBy(w => w.WorkerId), // Default sorting by WorkerId if no valid sortBy is provided
-            };
+            workerOptions.SortBy = workerOptions.SortBy.ToLowerInvariant();
+            workerOptions.SortOrder = workerOptions.SortOrder?.ToLowerInvariant(); // Normalize sort order to lowercase
         }
+        else
+        {
+            workerOptions.SortBy = "workerid"; // Default sort by WorkerId if not specified
+        }
+
+        AnsiConsole.MarkupLine(
+            $"[yellow]Applying sorting:[/] SortBy='{workerOptions.SortBy}', SortOrder='{workerOptions.SortOrder}'"
+        );
+
+        // Always apply sorting - whether SortBy is specified or not
+        query = workerOptions.SortBy switch
+        {
+            "workerid" => workerOptions.SortOrder == "asc"
+                ? query.OrderBy(w => w.WorkerId)
+                : query.OrderByDescending(w => w.WorkerId),
+            "name" => workerOptions.SortOrder == "asc"
+                ? query.OrderBy(w => w.Name)
+                : query.OrderByDescending(w => w.Name),
+            "phonenumber" => workerOptions.SortOrder == "asc"
+                ? query.OrderBy(w => w.PhoneNumber)
+                : query.OrderByDescending(w => w.PhoneNumber),
+            "email" => workerOptions.SortOrder == "asc"
+                ? query.OrderBy(w => w.Email)
+                : query.OrderByDescending(w => w.Email),
+            _ => query.OrderBy(w => w.WorkerId), // Default sorting by WorkerId
+        };
+
+        AnsiConsole.MarkupLine("[yellow]Executing final query...[/]");
 
         // Execute query and get results
         var workers = (await query.ToListAsync()).Cast<Workers?>().ToList();
@@ -100,7 +110,9 @@ class WorkerService(ShiftsLoggerDbContext dbContext) : IWorkerService
             };
         }
 
-        AnsiConsole.MarkupLine($"[green]Successfully retrieved {workers.Count} workers.[/]");
+        AnsiConsole.MarkupLine(
+            $"[green]Successfully retrieved {workers.Count} workers, sorted by '{workerOptions.SortBy}' in {workerOptions.SortOrder} order.[/]"
+        );
         return new ApiResponseDto<List<Workers?>>
         {
             RequestFailed = false,
@@ -115,7 +127,7 @@ class WorkerService(ShiftsLoggerDbContext dbContext) : IWorkerService
         Workers? worker = await dbContext
             .Workers.Include(w => w.Locations)
             .Include(w => w.Shifts)
-            .FirstOrDefaultAsync(s => s.WorkerId == id);
+            .FirstOrDefaultAsync(w => w.WorkerId == id);
 
         if (worker is null)
         {

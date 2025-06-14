@@ -82,15 +82,13 @@ namespace ConsoleFrontEnd.Controller
                 {
                     AnsiConsole.MarkupLine("[green]Shift created successfully![/]");
                     AnsiConsole.MarkupLine($"[green]Shift ID: {createdShift.Data.ShiftId}[/]");
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
+                    userInterface.ContinueAndClearScreen();
                 }
             }
             catch (Exception ex)
             {
                 AnsiConsole.MarkupLine($"[red]Exception: {ex.Message}[/]");
-                Console.WriteLine("Press any key to continue");
-                Console.ReadKey();
+                userInterface.ContinueAndClearScreen();
             }
         }
 

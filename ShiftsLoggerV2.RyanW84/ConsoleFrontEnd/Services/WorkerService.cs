@@ -33,7 +33,7 @@ public class WorkerService : IWorkerService
             );
 
             var queryParams = new List<string>();
-            if (workerFilterOptions.WorkerId != null && workerFilterOptions.WorkerId != 0)
+            if (workerFilterOptions.WorkerId != null)
                 queryParams.Add($"workerId={workerFilterOptions.WorkerId}");
             if (!string.IsNullOrWhiteSpace(workerFilterOptions.Name))
                 queryParams.Add($"name={workerFilterOptions.Name}");
@@ -43,8 +43,12 @@ public class WorkerService : IWorkerService
                 queryParams.Add($"email={workerFilterOptions.Email}");
             if (!string.IsNullOrWhiteSpace(workerFilterOptions.Search))
                 queryParams.Add($"search={workerFilterOptions.Search}");
+            if(!string.IsNullOrWhiteSpace(workerFilterOptions.SortBy))
+                queryParams.Add($"sortBy={workerFilterOptions.SortBy}");
+            if(!string.IsNullOrWhiteSpace(workerFilterOptions.SortOrder))
+                queryParams.Add($"sortOrder={workerFilterOptions.SortOrder}");
 
-            var queryString = "api/workers";
+			var queryString = "api/workers";
             if (queryParams.Count > 0)
                 queryString += "?" + string.Join("&", queryParams);
 

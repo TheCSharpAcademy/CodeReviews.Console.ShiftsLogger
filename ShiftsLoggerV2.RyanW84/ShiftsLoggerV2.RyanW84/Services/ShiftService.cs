@@ -7,7 +7,7 @@ using Spectre.Console;
 
 namespace ShiftsLoggerV2.RyanW84.Services;
 
-class ShiftService(ShiftsLoggerDbContext dbContext) : IShiftService
+public class ShiftService(ShiftsLoggerDbContext dbContext) : IShiftService
 {
     public async Task<ApiResponseDto<List<Shifts?>>> GetAllShifts(ShiftFilterOptions shiftOptions)
     {
@@ -77,7 +77,7 @@ class ShiftService(ShiftsLoggerDbContext dbContext) : IShiftService
         }
 
         // Apply sorting
-        if (!string.IsNullOrEmpty(shiftOptions.SortBy))
+        if (!string.IsNullOrWhiteSpace(shiftOptions.SortBy)|| !string.IsNullOrWhiteSpace(shiftOptions.SortOrder))
         {
             var sortBy = shiftOptions.SortBy.ToLowerInvariant();
             var sortOrder = shiftOptions.SortOrder?.ToLowerInvariant() ?? "ASC";
