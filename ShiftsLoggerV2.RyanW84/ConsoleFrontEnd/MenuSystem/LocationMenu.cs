@@ -1,15 +1,20 @@
 ﻿using ConsoleFrontEnd.Controller;
+using ConsoleFrontEnd.Services;
 using Spectre.Console;
 
 namespace ConsoleFrontEnd.MenuSystem;
 
 public class LocationMenu()
 {
-    public static async Task DisplayLocationMenu()
+    public static async Task DisplayLocationMenu(
+        IShiftService shiftService,
+        IWorkerService workerService,
+        ILocationService locationService
+    )
     {
+        Console.Clear();
         LocationController locationController = new();
 
-        AnsiConsole.Clear();
         while (true)
         {
             AnsiConsole.Write(
@@ -50,7 +55,7 @@ public class LocationMenu()
                 //);
                 //break;
                 case "Back to Main Menu":
-                    await MainMenu.DisplayMainMenu();
+                    await MainMenu.DisplayMainMenu(workerService, shiftService, locationService);
                     return;
                 default:
                     AnsiConsole.MarkupLine("[red]Invalid choice, please try again.[/]");

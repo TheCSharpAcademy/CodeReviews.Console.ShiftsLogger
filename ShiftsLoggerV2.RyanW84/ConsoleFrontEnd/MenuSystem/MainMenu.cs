@@ -1,15 +1,19 @@
 ﻿using ConsoleFrontEnd.UserInterface;
 using Spectre.Console;
+using ConsoleFrontEnd.Services;
 
 namespace ConsoleFrontEnd.MenuSystem;
 
 public class MainMenu
 {
-    public static async Task DisplayMainMenu()
+    public static async Task DisplayMainMenu(
+        IWorkerService workerService,
+        IShiftService shiftService,
+        ILocationService locationService)
     {
         bool continueLoop = true;
         Console.Clear();
-        while (continueLoop is true)
+        while (continueLoop)
         {
             AnsiConsole.Clear();
             AnsiConsole.Write(new Rule("[bold yellow]Main Menu[/]").RuleStyle("yellow").Centered());
@@ -22,21 +26,20 @@ public class MainMenu
             switch (choice)
             {
                 case "Shift Menu":
-                    await ShiftMenu.DisplayShiftMenu();
+                    await ShiftMenu.DisplayShiftMenu(shiftService);
                     break;
                 case "Location Menu":
-                    await LocationMenu.DisplayLocationMenu();
+                    await LocationMenu.DisplayLocationMenu(locationService);
                     break;
                 case "Worker Menu":
-                    await WorkerMenu.DisplayWorkerMenu();
+                    await WorkerMenu.DisplayWorkerMenu(workerService);
                     break;
                 case "Exit":
                     AnsiConsole.MarkupLine("[red]Exiting the application...[/]");
                     continueLoop = false;
                     break;
                 default:
-                    Console.WriteLine("invalid choice entered");
-                    await DisplayMainMenu();
+                    AnsiConsole.MarkupLine("[red]Invalid choice entered[/]");
                     break;
             }
         }
